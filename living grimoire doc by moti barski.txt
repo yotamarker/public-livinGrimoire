@@ -1,0 +1,59 @@
+copyrights moti barski
+
+AP classes : extend the AbsAlgPart
+those classes encapsulate the actual action or skill
+APCuss : will cuss using the same word while the cause of the cuss is detected
+
+APDirtyTalk : dirty talks with the user
+conjuratis : "ok next" finishes the AP
+c'tor : APDirtyTalk(Hashtable<String, String> hashtable)
+gets a dirty talk DB as a dictionary. *that must start with "start"
+further dev recommended : output filter : I U we they convert to U I and so on
+advanced ver will learn new scripts, using vision and other techniques
+
+APMoan : this is the moaning stage that comes after the dirty talk forplay AP in the algorithm.
+a rather primitive moan system with preset moans :
+moan0 to 2 = default moans, IMoan1 to 3 = moans when doll moved
+thank you moan : finisher groan
+private void playMoan(String input) {
+is responsible for working the moan * could do this async
+
+APSay : say x, y times
+
+APSleep0  : sleeps : activates the private void sleep of the chobit class
+
+APSleep : simulates sleep, until wake time or special wake input was inputed
+*such input must undergo translation (noise = "wake up")and an if code line in the action function.
+
+APSpell : can activate without permission(chobit name or hidden name)
+such as telling times
+
+D classes : extends the AbsCmdReq
+
+this classes summon the AP classes using conjuratis(regex)
+
+DDirtyTalker  : dirty talk *
+replace * with fuck
+or program more options instead of *
+
+Detective : this is a special DClass it doesn't use conjuratis
+it is triggered by danger and negativity :
+cussing
+repeated input
+too much requests
+need to add : damage : body, friends, property, * time(cerabellum time out)
+
+DPermitter : checks for the chobit name or lv 2 name before sending
+a request to the other Dclasses.
+sexy classes would require lv2 name
+conjuratis :
+change pass : oldPass new password newPassword change lv1 name :
+pass your name is newName change lv2 name : pass you are newName
+
+DRules : scheduled continuoes sync actions
+contains sleep summon triggered by time
+
+DSayer : says stuff
+say x # times or say x
+
+chobit : see class

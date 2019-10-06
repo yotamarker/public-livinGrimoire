@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class DCalculatorV1 extends AbsCmdReq implements Neuronable {
 	private StrCalculatorV2 strCalculatorV2 = new StrCalculatorV2();
 	private String Result = "";
+	private final String[] ops = { "+", "-", "/", "*" };
 	@Override
 	public void output(Neuron noiron) {
 		// TODO Auto-generated method stub
@@ -22,7 +23,13 @@ public class DCalculatorV1 extends AbsCmdReq implements Neuronable {
 	@Override
 	public void input(String ear, String skin, String eye) {
 		// TODO Auto-generated method stub
-		Result = strCalculatorV2.calcExp(ear);
+		for (String c : ops) {
+			if (ear.contains(c)) {
+				Result = strCalculatorV2.calcExp(ear);
+				return;
+			}
+		}
+
 	}
 
 }

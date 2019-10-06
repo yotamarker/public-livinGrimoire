@@ -21,6 +21,9 @@ public class Chobit {
 	protected DCFilter dcFilter = new DCFilter(); // used for the filter func
 	protected Person activePerson = new Person();
 	protected PrimoCera primoCera = new PrimoCera();
+	// added :
+	protected Kokoro kokoro = new Kokoro(); // soul
+	protected Person master = new Person();
     public Chobit() {
 		super();
 		noiron = new Neuron();
@@ -29,6 +32,7 @@ public class Chobit {
 		// add a skill here, only 1 line needed !!!
 		dClassesLv1.add(new Detective(fusion));
 		dClassesLv1.add(new DJirachi());
+
 		dClassesLv1.add(new DHungry());
 		dClassesLv1.add(dPermitter);
 		dClassesLv1.add(new DRules((new APSleep(24)), inner));
@@ -38,6 +42,8 @@ public class Chobit {
 		dClassesLv2.add(new DSayer());
 		dClassesLv3.add(dAlarmer);
 		dClassesLv3.add(new DDirtyTalker());
+		// dClassesLv3.add(new DIMommyGf(kokoro, this.master));
+		dClassesLv3.add(new DIJirachi(master, kokoro));
     }
 
 	protected String doIt2(String ear, String skin, String eye) {

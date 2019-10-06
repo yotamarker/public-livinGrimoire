@@ -1,4 +1,4 @@
-package chobit;
+package com.yotamarker.lgkotlin1;
 public class Permission {
     /*
      * uses two names as lv1,2 permission levels

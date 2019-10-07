@@ -1,4 +1,4 @@
-package com.yotamarker.lgkotlin1;
+package chobit;
 
 public class DISkill extends AbsCmdReq {
 	protected Boolean sentAlg = false; // accessed by sub cls

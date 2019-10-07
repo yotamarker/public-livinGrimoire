@@ -1,4 +1,4 @@
-package com.yotamarker.lgkotlin1;
+package chobit;
 
 public class DIJirachi extends Bijuu {
 	// a set of skills to make the user happy and grant his wishes

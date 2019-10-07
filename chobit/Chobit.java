@@ -18,7 +18,6 @@ public class Chobit {
 	protected Neuron noiron;
 	// sleep vars :
 	protected InnerClass inner;
-	protected DCFilter dcFilter = new DCFilter(); // used for the filter func
 	protected Person activePerson = new Person();
 	protected PrimoCera primoCera = new PrimoCera();
 	// added :
@@ -46,7 +45,7 @@ public class Chobit {
 		dClassesLv3.add(new DIJirachi(master, kokoro));
     }
 
-	protected String doIt2(String ear, String skin, String eye) {
+	public String doIt(String ear, String skin, String eye) {
 		for (AbsCmdReq dCls : dClassesLv1) {
 			inOut(dCls, ear, skin, eye);
 		}
@@ -64,10 +63,7 @@ public class Chobit {
 			}
 		}
 		fusion.setAlgQueue(noiron);
-		DCStrPair<String> result = new DCStrPair<String>();
-		result = fusion.act(ear, skin, eye);
-		this.emot = fusion.getEmot();
-		return itemFilter(result);
+		return fusion.act(ear, skin, eye);
     }
 
     public String getEmot() {
@@ -117,57 +113,6 @@ public class Chobit {
             return sleep();
         }
     }
-
-	protected String itemFilter(DCStrPair<String> pair) {
-		if (!pair.key.equals(dcFilter.prevKey)) {
-			// fold prev key(item) with switch case :
-			// tie bike, put phone in place...
-			// dcFilter.ignoreCounter = 3; // longer tick for longer action
-		}
-		// fold on key change;
-		String result = "";
-		// ter(item) cases
-		switch (pair.key) {
-		case "itemLess":
-			result = pair.value;
-			break;
-		case "nyaa":
-			if (!activePerson.getActive()) {
-				// send SMS if target guy is not actively available/responding
-			} else {
-				result = pair.value + " nyaa";
-			}
-			dcFilter.imutable = true; // constant action (no need to try other movements)
-			// * dcFilter.ignoreCounter = 3; // longer tick for longer action
-		default:
-			break;
-		}
-		return result;
-	}
-
-	public String doIt(String ear, String skin, String eye) {
-		if (dcFilter.danger.contains(ear) || dcFilter.danger.contains(eye)) {
-			return doIt2(ear, skin, eye);
-		}
-		if (dcFilter.ignoreCounter > 0) {
-			dcFilter.ignoreCounter--;
-		} else if (dcFilter.imutable) {
-			return doIt2(ear, skin, eye);
-		} else if (eye.contains(dcFilter.pair.toString())) {
-			primoCera.saveAction(dcFilter.pair.toString(), dcFilter.actioNum);
-			// savekeyvalnum (successful actual action chosen)
-		} else {
-			dcFilter.actioNum++;
-			if (dcFilter.actioNum > primoCera.getFinalActionCode()) {
-				dcFilter.actioNum = 0;
-			}
-			primoCera.saveAction(dcFilter.pair.toString(), dcFilter.actioNum);
-			// save key++,num
-			// the action did not result in the needed imidiate outcome, use a different
-			// action next time
-		}
-		return doIt2(ear, skin, eye);
-	}
 	protected String translateIn() {
 		return "";
 	}

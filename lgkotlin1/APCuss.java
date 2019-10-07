@@ -1,4 +1,4 @@
-package com.yotamarker.lgkotlin1;
+package chobit;
 
 // a simple cuss action
 public class APCuss extends AbsAlgPart {

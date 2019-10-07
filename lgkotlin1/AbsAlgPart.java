@@ -1,4 +1,4 @@
-package com.yotamarker.lgkotlin1;
+package chobit;
 public abstract class AbsAlgPart {
 	// one part of an algorithm, it is a basic simple action or sub goal
 	public abstract String action(String ear, String skin, String eye); // return action string

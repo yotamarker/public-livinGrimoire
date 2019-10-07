@@ -1,9 +1,9 @@
-package com.yotamarker.lgkotlin1;
+package chobit;
 
 public class Chobit2 extends Chobit {
 	@Override
-	protected String doIt2(String ear, String skin, String eye) {
+	public String doIt(String ear, String skin, String eye) {
 		// TODO Auto-generated method stub
-		return super.doIt2(ear, skin, eye);
+		return super.doIt(ear, skin, eye);
 	}
 }

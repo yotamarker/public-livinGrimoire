@@ -1,4 +1,4 @@
-package com.yotamarker.lgkotlin1;
+package chobit;
 
 /* it speaks something x times
  * a most basic skill.
@@ -52,6 +52,6 @@ public class APSay extends AbsAlgPart {
 	public Boolean itemize() {
 		// TODO add logic
 		// at home
-		return false;
+		return true;
 	}
 }

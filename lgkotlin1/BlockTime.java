@@ -1,4 +1,4 @@
-package com.yotamarker.lgkotlin1;
+package chobit;
 
 /*becomes false for 5 minutes from the setBlock time
  * */

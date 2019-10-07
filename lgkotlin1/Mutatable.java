@@ -1,4 +1,4 @@
-package com.yotamarker.lgkotlin1;
+package chobit;
 public interface Mutatable {
     public AbsAlgPart mutation();
 }

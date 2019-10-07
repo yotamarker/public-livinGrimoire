@@ -1,4 +1,4 @@
-package com.yotamarker.lgkotlin1;
+package chobit;
 
 /* an easy way to add an action to any exact input
  * */

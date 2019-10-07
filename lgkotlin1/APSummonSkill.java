@@ -1,4 +1,4 @@
-package com.yotamarker.lgkotlin1;
+package chobit;
 /*a temp skill not vital really
  * it simply marks that an item has been equiped
  * it is a copy paste of the APSay skill

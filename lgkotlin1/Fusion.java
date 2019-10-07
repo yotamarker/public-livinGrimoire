@@ -1,4 +1,4 @@
-package com.yotamarker.lgkotlin1;
+package chobit;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -21,14 +21,13 @@ public class Fusion {
     // private Cerabellum mainCera = new Cerabellum();
     // private Cerabellum dangerCera = new Cerabellum();
 	private String[] goalsToTrack = { "", "" }; // dangerCera, mainCera
-	private Cerabellum requipCera = new Cerabellum();
 	// cerabellums :
 	private Cerabellum dangerCera = new Cerabellum();
 	// requip cera
 	private FusionCera fusionCera;
 	private Cerabellum mainCera = new Cerabellum();
 	// home cera
-	Cerabellum[] cera = new Cerabellum[4];
+	Cerabellum[] cera = new Cerabellum[3];
 	// end cerabellums
 
 	public Fusion(Hashtable<String, Integer> algDurations) {
@@ -37,9 +36,8 @@ public class Fusion {
 		// fusionCera = (Cerabellum) (new FusionCera(algQueue));
 		fusionCera = new FusionCera(algQueue);
 		cera[0] = dangerCera;
-		cera[1] = requipCera; //requip
-		cera[2] = fusionCera;
-		cera[3] = mainCera;
+		cera[1] = fusionCera;
+		cera[2] = mainCera;
 		// cera = { dangerCera, fusionCera, mainCera };
 	}
 
@@ -75,7 +73,6 @@ public class Fusion {
         }
 		if (!mainCera.isActive() && !algQueue.isEmpty()) {
 			mainCera.setAlgorithm(algQueue.poll());
-			dExplorer.requip(requipCera, mainCera); // requip
 			goalsToTrack[1] = mainCera.alg.getGoal();
 			goalTrack(goalsToTrack[1]);
         }
@@ -93,19 +90,12 @@ public class Fusion {
         return reqOverload;
     }
 
-	public DCStrPair<String> act(String ear, String skin, String eye) {
-		DCStrPair<String> result = new DCStrPair<String>();
-		result.key = "itemLess";
-		result.value = "";
-		// String axnStr = "";
+	public String act(String ear, String skin, String eye) {
+		String result = "";
         for (int i = 0; i < cera.length; i++) {
 			if (cera[i].isActive()) {
-				// dExplorer.mutate(null, cera[i],
-				// dExplorer.gameShark.pegasus.get(cera[i].getEmot()).summonMutation(input,
-				// cera[i].getFailType()));
-				result = dExplorer.gameShark.autoEngage(cera[i].getEmot(), cera[i].act(ear, skin, eye));
-				dExplorer.mutate(cera[i],
-						dExplorer.gameShark.finalMutation(cera[i].getEmot(), ear, skin, eye, cera[i].getFailType()));
+				result = cera[i].act(ear, skin, eye);
+				dExplorer.mutate(cera[i], cera[i].getFailType());
 				cera[i].advanceInAlg();
                 this.emot = cera[i].getEmot();
 				if (i > 1) {

@@ -1,4 +1,4 @@
-package com.yotamarker.lgkotlin1;
+package chobit;
 
 import java.util.ArrayList;
 
@@ -19,7 +19,7 @@ public class APImprintMaster extends AbsAlgPart {
 	public APImprintMaster(Person master) {
 		// default c'tor
 		super();
-		form.add("ntmyawwynb");
+		form.add("nice to meet you, and what would your name be");
 		form.add("are you my master");
 		form.add("I will input your name");
 		form.add("what is your skill");
@@ -46,7 +46,7 @@ public class APImprintMaster extends AbsAlgPart {
 		case 0:
 			result = form.get(index);
 			curResult = result;
-			if (result.contains("what") || result.contains("which is") || result.contains("ntmyawwynb") || result.contains("please")
+			if (result.contains("what") || result.contains("which is") || result.contains("please")
 					|| result.contains("are you")) {
 				mode = 2;
 				if (form.get(index).contains("are you")) {
@@ -58,7 +58,7 @@ public class APImprintMaster extends AbsAlgPart {
 			}
 			break;
 		case 2:
-			if (!ear.isEmpty() && !form.contains(ear)) {
+			if (!ear.isEmpty()) {
 				mode = 3;
 				input = ear;
 			}

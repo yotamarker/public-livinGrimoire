@@ -1,3 +1,4 @@
+package chobit;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -92,7 +93,7 @@ public class Fusion {
         return reqOverload;
     }
 
-	public DCStrPair<String> act(String input) {
+	public DCStrPair<String> act(String ear, String skin, String eye) {
 		DCStrPair<String> result = new DCStrPair<String>();
 		result.key = "itemLess";
 		result.value = "";
@@ -102,9 +103,9 @@ public class Fusion {
 				// dExplorer.mutate(null, cera[i],
 				// dExplorer.gameShark.pegasus.get(cera[i].getEmot()).summonMutation(input,
 				// cera[i].getFailType()));
-				result = dExplorer.gameShark.autoEngage(cera[i].getEmot(), cera[i].act(input));
+				result = dExplorer.gameShark.autoEngage(cera[i].getEmot(), cera[i].act(ear, skin, eye));
 				dExplorer.mutate(cera[i],
-						dExplorer.gameShark.finalMutation(cera[i].getEmot(), input, cera[i].getFailType()));
+						dExplorer.gameShark.finalMutation(cera[i].getEmot(), ear, skin, eye, cera[i].getFailType()));
 				cera[i].advanceInAlg();
                 this.emot = cera[i].getEmot();
 				if (i > 1) {

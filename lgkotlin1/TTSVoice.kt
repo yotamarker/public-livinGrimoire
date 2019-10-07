@@ -569,7 +569,7 @@ class TTSVoice(private val context:Context){
                 mediaPlayer.start()
 
             }
-            "ntmyawwynb" -> {
+            "nice to meet you, and what would your name be" -> {
 
                 mediaPlayer = MediaPlayer.create(context, R.raw.ntmyawwynb)
 

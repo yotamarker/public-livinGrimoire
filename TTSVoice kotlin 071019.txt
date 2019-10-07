@@ -569,6 +569,69 @@ class TTSVoice(private val context:Context){
                 mediaPlayer.start()
 
             }
+            "nice to meet you, and what would your name be" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.ntmyawwynb)
+
+                mediaPlayer.start()
+
+            }
+            "are you my master" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.are_you_my_master)
+
+                mediaPlayer.start()
+
+            }
+            "I will input your name" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.i_will_input_your_name)
+
+                mediaPlayer.start()
+
+            }
+            "what is your skill" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.wiys)
+
+                mediaPlayer.start()
+
+            }
+            "what is your profession" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.what_is_your_profession)
+
+                mediaPlayer.start()
+
+            }
+            "what is your phone number" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.phone_number)
+
+                mediaPlayer.start()
+
+            }
+            "what is your email address" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.what_is_your_email_adress)
+
+                mediaPlayer.start()
+
+            }
+            "soul spark engaged" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.soul_spark_engaged)
+
+                mediaPlayer.start()
+
+            }
+            "which is your favorite jutsu" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.wiyfj)
+
+                mediaPlayer.start()
+
+            }
             else -> {TTSBeefUp(inStr)}
         }
     }
@@ -688,7 +751,9 @@ class TTSVoice(private val context:Context){
                     // case it is actually a number
                     if (isNumeric(string) && string.length < 13)
                     {
-                        numStrtoWordsWrapper(string)
+                        if (string[0] == '0'){string.forEach { c->char2digit(c) }}
+                        else{numStrtoWordsWrapper(string)}
+
                         // replace with counter super fun here
                     }
                     else if (isTime(string)) {
@@ -714,7 +779,7 @@ class TTSVoice(private val context:Context){
                         TTS = true
                     }// case it is actually a Time
             }
-            if(TTS){break}
+            if(TTS){voiceArrayList.clear();break}
         }
         if (TTS)
         {

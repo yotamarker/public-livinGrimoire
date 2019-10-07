@@ -1,4 +1,4 @@
-package chobit;
+package com.yotamarker.lgkotlin1;
 
 import java.util.ArrayList;
 
@@ -58,9 +58,9 @@ public class APImprintMaster extends AbsAlgPart {
 			}
 			break;
 		case 2:
-			if (!ear.isEmpty()) {
-				mode = 3;
-				input = ear;
+			if (!ear.isEmpty() ) {
+				if(!form.contains(ear)){mode = 3;
+					input = ear;}
 			}
 
 			break;

@@ -1,4 +1,4 @@
-package chobit;
+package com.yotamarker.lgkotlin1;
 
 public class Chi extends AbsAlgPart {
 	/*
@@ -10,7 +10,7 @@ public class Chi extends AbsAlgPart {
 	public String ofSkill;
 	public AbsAlgPart aPart;
 
-	public Chi(chobit.Kokoro kokoro, String ofSkill, AbsAlgPart aPart) {
+	public Chi(Kokoro kokoro, String ofSkill, AbsAlgPart aPart) {
 		super();
 		this.kokoro = kokoro;
 		this.ofSkill = ofSkill;

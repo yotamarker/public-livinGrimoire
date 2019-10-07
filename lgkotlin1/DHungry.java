@@ -1,4 +1,4 @@
-package chobit;
+package com.yotamarker.lgkotlin1;
 import java.util.ArrayList;
 
 public class DHungry extends AbsCmdReq implements Neuronable {
@@ -37,7 +37,7 @@ public class DHungry extends AbsCmdReq implements Neuronable {
 		}
 		if (powerLv < threshHold) {
 			threshHold = ((powerLv / 10) - 1) * 10;
-			AbsAlgPart itte = new APSay(1, "I am hungry power level at" + threshHold + " percent");
+			AbsAlgPart itte = new APSay(1, "power" + threshHold);
 			String representation = "hungry";
 			ArrayList<AbsAlgPart> algParts1 = new ArrayList<>();
 			algParts1.add(itte);

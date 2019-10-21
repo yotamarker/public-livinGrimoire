@@ -1,0 +1,1051 @@
+about the programmer that created the living grimoire : Moti Barski, Battle programmer.
+
+I moti barski do not allow anyone and or anybody and or any organization to
+receive monetary profit from this living grimoire unless writtenly approved by me personally.
+you can use this for research.
+
+name of the software : living grimoire : LG for short
+what it is : an A.G.I platform.
+
+intro :
+
+how could coders have been coding this way for so long ?
+they get some lame project, and they gotta start all over again building from scratch :
+
+menues, the basics, rethink the algorithms and how to fit them into the small and big picture.
+no matter how many projects you finished, with each project you would have to start over.
+
+over time you would remember the main thinking patterns for solving puzzles BUT !,
+codes and mini algorithms, there is no way to remember all of that.
+you try to keep up to date with the latest codes and walkthroughs to no avail as 
+they expire you forget them and have to search for them again.
+with doing the above you waste so much time that by the time you finish, the codes 
+you learnt are obsolete, in other words you are chasing rainbows.
+
+like a carpet being pulled from under you, you gotta now readdapt your algs and codes
+all over again to the new project.
+
+even with design patterns many coders find that they need to adapt to them rather the other
+way.
+
+here it is different, it is truely amazing !
+
+with this new way, battle programming, you are in a 7 star hotel in the buffet
+and all you have to do is pick the skills you want and need for your project.
+
+then assemble said skills with just one line of code per skill.
+next, you can enjoy a nice anime or bike ride, cause your project is done.
+
+**********************************************************************************************
+
+
+method of operation overview: the LG can absorb skills and use them
+
+what is a skill ?
+a skill cosists of 2 factors : a summoner and actions.
+
+summoner (referred to as a Dclass (a class whos name starts with D)):
+input passing through a DClass can trigger the summoning of an algorithm
+with actual time OR ear, eye, and other types of input as a string.
+
+what is an algorithm ? a combination of alg parts
+
+what is an alg part ? 
+an alg part is an action. an alg part class name starts with AP.
+at each think cycle said action does one thing.
+
+example DSayer class :
+
+[code]
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import PKGsystemClasses.APSay;
+import PKGsystemClasses.AbsAlgPart;
+import PKGsystemClasses.Algorithm;
+import PKGsystemClasses.Neuron;
+import PKGsystemClasses.Neuronable;
+
+public class DSayer extends AbsCmdReq implements Neuronable {
+ private int times;
+ private String param;
+
+ public DSayer() {
+ super();
+ this.times = 1;
+ this.param = "";
+ }
+
+ public static String regexChecker(String theRegex, String str2Check) {
+ Pattern checkRegex = Pattern.compile(theRegex);
+ Matcher regexMatcher = checkRegex.matcher(str2Check);
+ while (regexMatcher.find()) {
+ if (regexMatcher.group().length() != 0) {
+ return regexMatcher.group().trim();
+ }
+ }
+ return "";
+ }
+
+ @Override
+ public void input(String command) {
+ int foo = 1;
+ String myString = regexChecker("(\\d+)(?= times)", command);
+ String toSay = regexChecker("(?<=say)(.*)(?=\\d)", command);
+ if (myString != "") {
+ foo = Integer.parseInt(myString);
+ } else {
+ toSay = regexChecker("(?<=say)(.*)", command);
+ }
+ this.param = toSay;
+ this.times = foo;
+ }
+
+ @Override
+ public void output(Neuron noiron) {
+ // TODO Auto-generated method stub
+ if (!param.isEmpty()) {
+ AbsAlgPart itte = new APSay(this.times, this.param);
+ String representation = "say " + param;
+ if (this.times > 1) {
+ representation += " " + this.times + " times";
+ }
+ ArrayList<AbsAlgPart> algParts1 = new ArrayList<>();
+ algParts1.add(itte);
+ Algorithm algorithm = new Algorithm("say", representation, algParts1);
+ noiron.algParts.add(algorithm);
+ }
+
+ }
+}
+[/code]
+
+example APclass :
+
+[code]
+
+/* it speaks something x times
+ * a most basic skill.
+ * also fun to make the chobit say what you want
+ * */
+public class APSay extends AbsAlgPart {
+    protected String param;
+    private int at;
+
+    public APSay(int at, String param) {
+        super();
+        if (at > 10) {
+            at = 10;
+        }
+        this.at = at;
+        this.param = param;
+    }
+
+    @Override
+    public String action(String input) {
+        // TODO Auto-generated method stub
+        String axnStr = "";
+        if (this.at > 0) {
+            if (!input.equalsIgnoreCase(param)) {
+                axnStr = param;
+                at--;
+            }
+        }
+        return axnStr;
+    }
+
+    @Override
+    public enumFail failure(String input) {
+        // TODO Auto-generated method stub
+        return enumFail.ok;
+    }
+
+    @Override
+    public Boolean completed() {
+        // TODO Auto-generated method stub
+        return at < 1;
+    }
+
+    @Override
+    public AbsAlgPart clone() {
+        // TODO Auto-generated method stub
+        return new APSay(this.at, this.param);
+    }
+
+ @Override
+ public Boolean itemize() {
+ // TODO add logic
+ // at home
+ return true;
+ }
+}
+
+
+[/code]
+
+the Dclass has to have : extends AbsCmdReq implements Neuronable
+in this case upon the input : say x y times
+it will generat an algorithm with one alg part (APSay) and send it to the noiron.
+
+the APclass extends AbsAlgPart. here it simply says x within each cycle.
+it also uses a custom marker I added (at) to remember how many times it happend
+so as to stop after y times.
+
+permission levels :
+after you've built your skill you need to place the Dclass into the Chobit class c'tor methode
+as such :
+[code]
+public Chobit() {
+		super();
+		noiron = new Neuron();
+		this.inner = new InnerClass(); // sleep var
+		DAlarmer dAlarmer = new DAlarmer();
+		// add a skill here, only 1 line needed !!!
+		dClassesLv1.add(new Detective(fusion));
+		dClassesLv1.add(new DJirachi());
+		dClassesLv1.add(new DIAutomatic(kokoro, master));
+		dClassesLv1.add(new DHungry());
+		dClassesLv1.add(dPermitter);
+		dClassesLv1.add(new DRules((new APSleep(24)), inner));
+		dClassesLv1.add(new DSpeller());
+		dClassesLv1.add(new DCalculatorV1());
+		dClassesLv1.add(dAlarmer);
+		dClassesLv2.add(new DSayer());
+		dClassesLv3.add(dAlarmer);
+		dClassesLv3.add(new DDirtyTalker());
+		// dClassesLv3.add(new DIMommyGf(kokoro, this.master));
+		dClassesLv3.add(new DIJirachi(master, kokoro));
+    }
+[/code]
+lv1 : will run anyways
+lv2 : requires lv1 permission : chobit name + input, for example :
+chii say hi.
+lv3 requires lv2 permission : chobit lv2 name + input, for example :
+liron kiss me.
+skills that engage by time triggers are defind as automatic if they are lv1 or higher
+
+[code]
+package chobit;
+public abstract class AbsCmdReq implements Neuronable {
+	// handle the input per Dclass (a class whose name starts with D)
+	public abstract void input(String ear, String skin, String eye);
+
+	public Boolean auto() {
+		// does this skill also engage by time triggers ? is it also a level > 1 type of
+		// skill ? if yes
+		// override me and return true;
+		return false;
+	}
+}
+[/code]
+
+you simply add them as any other lv1 or 2 skill and they are automatically added to the auto skill list
+in addition. this way they can be accessed by the user and by time to engage, but still restrict access to
+any other person who wants to use the skill.
+
+the DAlarmer is an example of such a skill. only the user can set an alarm, and the alarm is triggered by time
+but no one else can set an alarm.
+
+ 
+
+the lv2 name will be known only to the owner, while her lv1 name is her public
+name used by friends and owner.
+
+of course don't forget to declare the Dclass variable within the chobit class.
+
+unique features:
+
+female titan : fusion of algorithms :
+
+the LG remembers how long an alg run time is. and so short enough algs can pause
+a running much longer alg, run themselfs, then resume the big alg(time wize).
+you can add custom logic to this if needed via the :
+fuze(){} in the Fusion class.
+
+armored titan : ability to mutate an alg part.
+
+refer to the APMoan0 1 and 2 classes as an exampled implementation of this.
+said moan classes dont do much they simply output a moan string.
+
+APMoan0 sends an enumFail.fail (action function)if no input is received x number of times :
+in other words the user isn't enjoying this moan set.
+
+and so the mutation causes the AP to be replaced by a newly generated AP from here :
+
+public AbsAlgPart mutation() {
+      // TODO Auto-generated method stub
+      APMoan0 mutant = new APMoan1();
+      int x = rand.nextInt(moanList.size() + 1);
+      switch (x) {
+          case 1:
+              mutant = new APMoan1();
+              break;
+          case 2:
+              mutant = new APMoan2();
+              break;
+          default:
+              break;
+      }
+      return (AbsAlgPart) mutant;
+  }
+
+every AP has this method.
+
+finally the mutate func of DExplorer determines what to do
+according to the type of the AP the fail enum and the overall amount of times
+said AP mutated. so as to not get stuck eventually the alg is rendered inActive :
+
+[code]
+if (failureCounter > 1) {
+                        cera.setActive(false);
+                    }
+[/code]
+
+megata titan : dormant algorithms and its revival.
+refer to DAlarmer and APCldAlarm for an example of an alarm clock using
+this ability.
+each Mcode or item has an equip algorithm (get the item, or declare it is equiped for
+virtual items or do nothing)
+
+an AP class as such uses a cloudian object and should be named with APCldSomething.
+
+*******************************************************************************************
+
+extras :
+
+the emot function of the chobit class links the AP running to an emotion
+so this should be linked to graphics.
+
+refer to classes javadoc for more info.
+
+ideally the A.G.I shoulld be running offline, so preffer local device databases
+over online ones, to keep the A.G.I "enjoyable".
+
+***************************************************************************************
+
+examples of skills that need to be added :
+
+auto programming : given task, outputs code project
+
+titam level skill (war hammer titan): go home : when on stand by (finished doing stuff) and 
+outside, go home but 1st collect items used. fix or upgrade part of item.
+
+add vision input compatibility : visual data -> to string, add eye field to Dclasses
+and handle at AP classes. this fields can carry touch and other data strings.
+
+limitless options really.
+
+**************************************************************************************************
+
+currently available conjurations :
+
+copyrights moti barski
+
+AP classes : extend the AbsAlgPart
+those classes encapsulate the actual action or skill
+APCuss : will cuss using the same word while the cause of the cuss is detected
+
+APDirtyTalk : dirty talks with the user
+conjuratis : "ok next" finishes the AP
+c'tor : APDirtyTalk(Hashtable<String, String> hashtable)
+gets a dirty talk DB as a dictionary. *that must start with "start"
+further dev recommended : output filter : I U we they convert to U I and so on
+advanced ver will learn new scripts, using vision and other techniques
+
+APMoan : this is the moaning stage that comes after the dirty talk forplay AP in the algorithm.
+a rather primitive moan system with preset moans :
+moan0 to 2 = default moans, IMoan1 to 3 = moans when doll moved
+thank you moan : finisher groan
+private void playMoan(String input) {
+is responsible for working the moan * could do this async
+
+APSay : say x, y times
+
+APSleep0  : sleeps : activates the private void sleep of the chobit class
+
+APSleep : simulates sleep, until wake time or special wake input was inputed
+*such input must undergo translation (noise = "wake up")and an if code line in the action function.
+
+APSpell : can activate without permission(chobit name or hidden name)
+such as telling times
+
+D classes : extends the AbsCmdReq
+
+this classes summon the AP classes using conjuratis(regex)
+
+DDirtyTalker  : dirty talk *
+replace * with fuck
+or program more options instead of *
+
+Detective : this is a special DClass it doesn't use conjuratis
+it is triggered by danger and negativity :
+cussing
+repeated input
+too much requests
+need to add : damage : body, friends, property, * time(cerabellum time out)
+
+DPermitter : checks for the chobit name or lv 2 name before sending
+a request to the other Dclasses.
+sexy classes would require lv2 name
+conjuratis :
+change pass : oldPass new password newPassword change lv1 name :
+pass your name is newName change lv2 name : pass you are newName
+
+DRules : scheduled continuoes sync actions
+contains sleep summon triggered by time
+
+DSayer : says stuff
+say x # times or say x
+
+chobit : see class
+
+soul skills :
+
+https://www.yotamarker.com/t230-diskill-consciousness-equiped-skills-examplified-with-the-user-imprint-skill
+
+**************************************************************************************************
+classes :
+
+https://github.com/yotamarker/public-livinGrimoire
+
+****************************************************************************************************
+****************************************************************************************************
+
+consciousness equiped skills examplified with the user imprint skill
+
+this type of skill require the mendatory classes to exist in the project:
+1 Bijuu : a container for a list of DISkills
+2 Chi : an adaptor for AP classes which enables it to use the soul class
+3 DISkill : a skill to be contained by a Bijuu class and generate conscious algorithms
+(of Chi parts).
+4 kokoro : the AGIs soul, all data passes through it and it can do stuff as written in its
+class comments.
+
+Bijuu
+
+[code]package chobit;
+
+import java.util.ArrayList;
+
+public class Bijuu extends AbsCmdReq {
+ /*
+ * a container cls for a list of DIskills
+ */
+ protected ArrayList<DISkill> dSkills = new ArrayList<>();
+ private Kokoro kokoro;
+ final int constTolerance = 3;
+ private int tolerance = constTolerance;
+ private Boolean enabled = true;
+ private Boolean fastBreak = true;
+ protected Person person;
+
+ public Bijuu(Person master, Kokoro kokoro, DISkill... skills) {
+ super();
+ this.kokoro = kokoro;
+ this.person = person;
+ for (DISkill i : skills) {
+ dSkills.add(i);
+ }
+ }
+
+ public void modeFlip() {
+ // pain = *repetition/ actual high level pain
+ // sets weather the Bijuu is active or not
+ tolerance -= kokoro.getPain(this.getClass().getSimpleName());
+ if (tolerance < 1) {
+ this.enabled = !this.enabled;
+ }
+ }
+
+ @Override
+ public void input(String ear, String skin, String eye) {
+ if (enabled) {
+ // if Bijuu enabled
+ for (DISkill dISkill : dSkills) {
+ dISkill.input(ear, skin, eye);
+ if (dISkill.getSentAlg()) {
+ /*
+ * found an alg ! exit the loop ! I dont need another alg !!
+ */
+ dISkill.setOutput(true);
+ // hey, DIskill, remind me you have an alg waiting for pickup
+ fastBreak = false;
+ // dont skip alg pick up stage.
+ break;
+ }
+ }
+ }
+ else {
+ reenable(ear, skin, eye); // maybe I should be revived
+ }
+ }
+
+ @Override
+ public void output(Neuron noiron) {
+ // TODO Auto-generated method stub
+ if (!fastBreak) {
+ // if alg waiting for pick up
+ fastBreak = true; // reset
+ for (DISkill dISkill : dSkills) {
+ if (dISkill.getOutput()) {
+ // found the alg
+ dISkill.output(noiron);
+ // OK done, bye
+ break;
+ }
+ }
+ }
+ }
+
+ public void reenable(String ear, String skin, String eye) {
+ if (ear.contains("pain") || skin.contains("pain")) {
+ tolerance -= 1;
+ if (tolerance < 1) {
+ this.enabled = true;
+ }
+ }
+ }
+}
+[/code]
+
+Chi :
+
+[code]package com.yotamarker.lgkotlin1;
+
+public class Chi extends AbsAlgPart {
+ /*
+ * an adaptor pattern to the alg part, it also has the kokoro consiousness
+ * object to be aware throughout the program of what is happening all action
+ * data goes through this soul.
+ */
+ public Kokoro kokoro;
+ public String ofSkill;
+ public AbsAlgPart aPart;
+
+ public Chi(Kokoro kokoro, String ofSkill, AbsAlgPart aPart) {
+ super();
+ this.kokoro = kokoro;
+ this.ofSkill = ofSkill;
+ this.aPart = aPart;
+ }
+
+ public String actualAction(String ear, String skin, String eye) {
+ return aPart.action(ear, skin, eye);
+ }
+ @Override
+ public String action(String ear, String skin, String eye) {
+ kokoro.in(this);
+ String result = actualAction(ear, skin, eye);
+ kokoro.out(completed(), failure(""));
+ return result;
+ }
+
+ @Override
+ public Boolean itemize() {
+ // TODO Auto-generated method stub
+ return aPart.itemize();
+ }
+
+ @Override
+ public enumFail failure(String input) {
+ // TODO Auto-generated method stub
+ return aPart.failure(input);
+ }
+
+ @Override
+ public Boolean completed() {
+ // TODO Auto-generated method stub
+ return aPart.completed();
+ }
+
+ @Override
+ public AbsAlgPart clone() {
+ // TODO Auto-generated method stub
+ return new Chi(kokoro, this.ofSkill, aPart.clone());
+ }
+
+}
+[/code]
+
+DISkill
+
+[code]package chobit;
+
+public class DISkill extends AbsCmdReq {
+ protected Boolean sentAlg = false; // accessed by sub cls
+ private Boolean output = false; // accessed by the DISkill container a Bijuu cls
+ // String ofSkill;
+ protected Kokoro kokoro; // accessed by sub cls
+
+ public void setSentAlg(Boolean sentAlg) {
+ this.sentAlg = sentAlg;
+ }
+ // in sub cls : person ?
+ public DISkill(Kokoro kokoro) {
+ super();
+ // this.ofSkill = ofSkill;
+ this.kokoro = kokoro;
+ }
+ @Override
+ public void output(Neuron noiron) {
+ // set sentAlg = true if an alg is to be sent
+
+ }
+
+
+ @Override
+ public void input(String ear, String skin, String eye) {
+ // TODO Auto-generated method stub
+
+ }
+
+ public Boolean getOutput() {
+ Boolean result = this.output;
+ this.output = false;
+ return result;
+ }
+
+ public void setOutput(Boolean output) {
+ this.output = output;
+ }
+
+ public Boolean getSentAlg() {
+ Boolean result = this.sentAlg;
+ this.sentAlg = false;
+ return result;
+ }
+}
+[/code]
+
+Kokoro :
+
+[code]package chobit;
+
+import java.util.Hashtable;
+
+/* all action data goes through here
+ * detects negatives such as : repetition, pain on various levels and failures
+ * serves as a database for memories, convos and alg generations
+ * can trigger revenge algs
+ * checks for % of difference in input for exploration type algs
+ * */
+public class Kokoro {
+ Hashtable<String, Integer> pain = new Hashtable<>();
+
+ public int getPain(String BijuuName) {
+ return pain.getOrDefault(BijuuName, 0);
+ }
+
+ public void in(Chi chi) {
+ }
+ public void out(Boolean isCompleted, enumFail failure) {
+ }
+}
+[/code]
+
+and the new upgraded Chobit class, with the kokoro field added : 
+
+[code]package chobit;
+
+import java.util.ArrayList;
+import java.util.Hashtable;
+
+public class Chobit {
+ protected String emot = ""; // emotion
+ protected ArrayList<AbsCmdReq> dClassesLv1 = new ArrayList<>();
+ protected ArrayList<AbsCmdReq> dClassesLv2 = new ArrayList<>();
+ protected ArrayList<AbsCmdReq> dClassesLv3 = new ArrayList<>();
+ // algorithms fusion (polymarization)
+ protected Hashtable<String, Integer> AlgDurations = new Hashtable<>();
+ protected Fusion fusion = new Fusion(AlgDurations);
+ // region essential DClasses
+ protected Permission permission = Permission.newInstance("xxx", "chii", "liron");
+ protected DPermitter dPermitter = new DPermitter(permission);
+ // endregion
+ protected Neuron noiron;
+ // sleep vars :
+ protected InnerClass inner;
+ protected Person activePerson = new Person();
+ protected PrimoCera primoCera = new PrimoCera();
+ // added :
+ protected Kokoro kokoro = new Kokoro(); // soul
+ protected Person master = new Person();
+    public Chobit() {
+ super();
+ noiron = new Neuron();
+ this.inner = new InnerClass(); // sleep var
+ DAlarmer dAlarmer = new DAlarmer();
+ // add a skill here, only 1 line needed !!!
+ dClassesLv1.add(new Detective(fusion));
+ dClassesLv1.add(new DJirachi());
+
+ dClassesLv1.add(new DHungry());
+ dClassesLv1.add(dPermitter);
+ dClassesLv1.add(new DRules((new APSleep(24)), inner));
+ dClassesLv1.add(new DSpeller());
+ dClassesLv1.add(new DCalculatorV1());
+ dClassesLv1.add(dAlarmer);
+ dClassesLv2.add(new DSayer());
+ dClassesLv3.add(dAlarmer);
+ dClassesLv3.add(new DDirtyTalker());
+ // dClassesLv3.add(new DIMommyGf(kokoro, this.master));
+ dClassesLv3.add(new DIJirachi(master, kokoro));
+    }
+
+ public String doIt(String ear, String skin, String eye) {
+ for (AbsCmdReq dCls : dClassesLv1) {
+ inOut(dCls, ear, skin, eye);
+ }
+ if (dPermitter.getPermissionLevel() > 0) {
+ // works with friends
+ for (AbsCmdReq dCls : dClassesLv2) {
+ inOut(dCls, ear, skin, eye);
+
+ }
+ }
+ if (dPermitter.getPermissionLevel() > 1) {
+ // only works with owner
+ for (AbsCmdReq dCls : dClassesLv3) {
+ inOut(dCls, ear, skin, eye);
+ }
+ }
+ fusion.setAlgQueue(noiron);
+ return fusion.act(ear, skin, eye);
+    }
+
+    public String getEmot() {
+ // emot (emotion for display)
+        String x1 = emot;
+        switch (this.emot) {
+            case "APCuss ":
+                x1 = "angry";
+                break;
+            case "APDirtyTalk":
+                x1 = "grinny";
+                break;
+            case "APMoan":
+                x1 = "horny";
+                break;
+            case "APSay":
+                x1 = "speaking";
+                break;
+            case "APSleep0":
+                x1 = "dreaming";
+                break;
+            case "APSleep":
+                x1 = "asleep";
+                break;
+            case "APSpell":
+                x1 = "blank";
+                break;
+            default:
+                break;
+        }
+        emot = "";
+        return x1;
+    }
+
+ protected String sleep() {
+ // data save load should go here and run while chobit is sleeping
+        return "haha I can sleep !";
+    }
+
+ protected void inOut(AbsCmdReq dClass, String ear, String skin, String eye) {
+ dClass.input(ear, skin, eye); // new
+        dClass.output(noiron);
+    }
+
+    protected class InnerClass {
+        public String nemure() {
+            return sleep();
+        }
+    }
+ protected String translateIn() {
+ return "";
+ }
+
+ protected String translateOut() {
+ return "";
+ }
+}
+[/code]
+
+and also the Person class added to the Chobit class :
+
+[code]package chobit;
+
+public class Person {
+ private String name = "";
+ private Boolean active = true;
+ private String phone = "";
+ private String skill = "";
+ private String profession = "";
+ private String jutsu = "";
+ // location
+ private String email = "";
+ private String id = "";
+ public String getName() {
+ return name;
+ }
+ public void setName(String name) {
+ this.name = name;
+ }
+ public Boolean getActive() {
+ return active;
+ }
+ public void setActive(Boolean active) {
+ this.active = active;
+ }
+ public String getPhone() {
+ return phone;
+ }
+ public void setPhone(String phone) {
+ this.phone = phone;
+ }
+
+ public String getSkill() {
+ return skill;
+ }
+
+ public void setSkill(String skill) {
+ this.skill = skill;
+ }
+
+ public String getProfession() {
+ return profession;
+ }
+
+ public void setProfession(String profession) {
+ this.profession = profession;
+ }
+
+ public String getJutsu() {
+ return jutsu;
+ }
+
+ public void setJutsu(String jutsu) {
+ this.jutsu = jutsu;
+ }
+
+ public String getEmail() {
+ return email;
+ }
+
+ public void setEmail(String email) {
+ this.email = email;
+ }
+
+ public String getId() {
+ return id;
+ }
+
+ public void setId(String id) {
+ this.id = id;
+ }
+}
+[/code]
+
+:alrt:
+
+this classes names start with DI
+
+the action part : APImprintMaster :
+
+[code]package com.yotamarker.lgkotlin1;
+
+import java.util.ArrayList;
+
+public class APImprintMaster extends AbsAlgPart {
+ // todo : handle inputs regexes
+ /*
+ * asks master for vital info, to fill in master object fields like name and
+ * phone number
+ */
+ private ArrayList<String> form = new ArrayList<>();
+ private int mode = 0;
+ private int index = 0;
+ private String input = "";
+ private Boolean isCompleted = false;
+ private String curResult = "";
+ private Person master;
+
+ public APImprintMaster(Person master) {
+ // default c'tor
+ super();
+ form.add("ntmyawwynb");
+ form.add("are you my master");
+ form.add("I will input your name");
+ form.add("what is your skill");
+ form.add("what is your profession");
+ form.add("what is your phone number");
+ form.add("what is your email address");
+ form.add("which is your favorite jutsu");
+ form.add("soul spark engaged");
+ this.master = master;
+ }
+
+ public APImprintMaster(Person master, String... strs) {
+ // alternative c'tor
+ for (String i : strs) {
+ form.add(i);
+ }
+ this.master = master;
+ }
+
+ @Override
+ public String action(String ear, String skin, String eye) {
+ String result = "";
+ switch (mode) {
+ case 0:
+ result = form.get(index);
+ curResult = result;
+ if (result.contains("what") || result.contains("which is") || result.contains("ntmyawwynb") || result.contains("please")
+ || result.contains("are you")) {
+ mode = 2;
+ if (form.get(index).contains("are you")) {
+ mode = 4;
+ }
+ }
+ else {
+ index++;
+ }
+ break;
+ case 2:
+ if (!ear.isEmpty() && !form.contains(ear)) {
+ mode = 3;
+ input = ear;
+ }
+
+ break;
+ case 3:
+ result = input + " yes";
+ mode = 4;
+ break;
+ case 4:
+ if (ear.contains("yes")) {
+ mode = 0;
+ imprint();
+ index++;
+ }
+ if (ear.contains("no")) {
+ mode = 0;
+ }
+ break;
+ default:
+ break;
+ }
+ if (index == form.size()) {
+ isCompleted = true;
+ index--;
+ }
+ return result;
+ }
+
+ public void imprint() {
+ switch (curResult) {
+ case "nice to meet you, and what would your name be":
+ master.setName(input);
+ break;
+ case "what is your skill":
+ master.setSkill(input);
+ break;
+ case "what is your profession":
+ master.setProfession(input);
+ break;
+ case "what is your phone number":
+ master.setPhone(input);
+ break;
+ case "what is your email address":
+ master.setEmail(input);
+ break;
+ case "which is your favorite jutsu":
+ master.setJutsu(input);
+ break;
+ default:
+ break;
+ }
+ }
+
+ @Override
+ public Boolean itemize() {
+ // TODO Auto-generated method stub
+ return false;
+ }
+
+ @Override
+ public enumFail failure(String input) {
+ // TODO Auto-generated method stub
+ return enumFail.ok;
+ }
+
+ @Override
+ public Boolean completed() {
+ // TODO Auto-generated method stub
+ return isCompleted;
+ }
+
+ @Override
+ public AbsAlgPart clone() {
+ // ***might glich, clone person ?
+ return new APImprintMaster(this.master);
+ }
+
+}
+[/code]
+
+DIMommyGF class extends DISkill:
+
+[code]package chobit;
+
+import java.util.ArrayList;
+
+public class DIMommyGf extends DISkill {
+ public Person master;
+ private Boolean exeAlg;
+
+ public DIMommyGf(Kokoro kokoro, Person owner) {
+ super(kokoro);
+ this.master = owner;
+ // TODO Auto-generated constructor stub
+ }
+
+ @Override
+ public void input(String ear, String skin, String eye) {
+ if (ear.contains("imprint master")) {
+ this.exeAlg = true;
+ this.setSentAlg(true);
+ }
+ }
+
+ @Override
+ public void output(Neuron noiron) {
+ // TODO Auto-generated method stub
+
+ if (this.exeAlg) {
+ AbsAlgPart itte = new Chi(this.kokoro, this.getClass().getSimpleName(), new APImprintMaster(this.master));
+ String representation = "imprintmaster";
+ ArrayList<AbsAlgPart> algParts1 = new ArrayList<>();
+ algParts1.add(itte);
+ Algorithm algorithm = new Algorithm("imprintmaster", representation, algParts1);
+ noiron.algParts.add(algorithm);
+ exeAlg = false;
+ }
+ }
+}
+[/code]
+
+DIJirachi class :
+
+[code]package chobit;
+
+public class DIJirachi extends Bijuu {
+ // a set of skills to make the user happy and grant his wishes
+ public DIJirachi(Person master, Kokoro kokoro) {
+ super(master, kokoro, new DIMommyGf(kokoro, master));
+
+ }
+
+}[/code]
+
+:joker:

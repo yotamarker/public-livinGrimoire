@@ -139,6 +139,9 @@ public class PlayGround {
 		return df.format(cal.getTime());
 	}
 
+	public int getFutureHour(int startHour, int addedHours) {
+		return (startHour + addedHours) % 25;
+	}
 	public String getFutureFromXInYMin(int x, String y) {
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");

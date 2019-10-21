@@ -6,7 +6,7 @@ public class Person {
 	private String phone = "";
 	private String skill = "";
 	private String profession = "";
-	private String jutsu = "";
+	private String jutsu = "hadouken";
 	// location
 	private String email = "";
 	private String id = "";

@@ -1,3 +1,4 @@
+package chobit;
 import java.util.ArrayList;
 
 /*creates algorithms with alg parts that can become dormant
@@ -14,7 +15,6 @@ public class DAlarmer extends AbsCmdReq implements Neuronable {
 
 	@Override
 	public void output(Neuron noiron) {
-		// TODO Auto-generated method stub
 		if (summon) {
 			// AbsAlgPart itte = new APCldAlarm(cloudian, jikan);
 			AbsAlgPart itte = new APCldAlarm(cloudian, jikan);
@@ -37,14 +37,18 @@ public class DAlarmer extends AbsCmdReq implements Neuronable {
 	}
 
 	@Override
-	public void input(String command) {
-		// TODO Auto-generated method stub
-		this.ear = command;
-		jikan = regexUtil.regexChecker("\\d+:\\d+", command);
-		if (command.contains("wake me at") && !jikan.isEmpty()) {
+	public void input(String ear, String skin, String eye) {
+		this.ear = ear;
+		jikan = regexUtil.regexChecker("\\d+:\\d+", ear);
+		if (eye.contains("wake me at") && !jikan.isEmpty()) {
 			summon = true;
-			representation = command;
+			representation = ear;
 		}
 	}
 
+	@Override
+	public Boolean auto() {
+		// this skill can be triggered by time
+		return true;
+	}
 }

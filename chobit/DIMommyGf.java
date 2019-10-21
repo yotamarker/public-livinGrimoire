@@ -34,4 +34,10 @@ public class DIMommyGf extends DISkill {
 			exeAlg = false;
 		}
 	}
+
+	@Override
+	public Boolean auto() {
+		// TODO Auto-generated method stub
+		return true;
+	}
 }

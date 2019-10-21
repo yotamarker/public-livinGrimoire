@@ -1,3 +1,4 @@
+package chobit;
 
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class Detective extends AbsCmdReq implements Neuronable {
         this.prevMimi = "";
         this.imBusy = "chill";
         this.requestRepeated = "fineeeeeeeeeeeeeeeeeeeeeee";
-        this.cry = "hadouken";
+        this.cry = "buhi";
         this.cussCounter = 0;
         cusses.add("shit");
         cusses.add("fuck");
@@ -49,7 +50,7 @@ public class Detective extends AbsCmdReq implements Neuronable {
     }
 
     @Override
-    public void input(String ear) {
+	public void input(String ear, String skin, String eye) {
         // TODO Auto-generated method stub
         this.mimi = ear;
         if ((this.mimi.equals(this.prevMimi)  || this.cusses.contains(this.mimi)) && !this.mimi.isEmpty()) {

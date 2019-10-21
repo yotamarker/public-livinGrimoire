@@ -22,7 +22,7 @@ public class Detective extends AbsCmdReq implements Neuronable {
         this.prevMimi = "";
         this.imBusy = "chill";
         this.requestRepeated = "fineeeeeeeeeeeeeeeeeeeeeee";
-        this.cry = "hadouken";
+		this.cry = "buhi";
         this.cussCounter = 0;
         cusses.add("shit");
         cusses.add("fuck");

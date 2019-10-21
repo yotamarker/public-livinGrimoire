@@ -152,6 +152,7 @@ public class Fusion {
 				time1 = AlgDurations.get(g1);
 				if (time1 < algRunTime) {
 					fusionCera.setAlgorithm(alg1);
+					algQueue.remove(alg1);
 					fusionCera.setAbort(time1);
 					goalTrackReset(g1);
 					break;

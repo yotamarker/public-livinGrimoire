@@ -15,7 +15,6 @@ public class DAlarmer extends AbsCmdReq implements Neuronable {
 
 	@Override
 	public void output(Neuron noiron) {
-		// TODO Auto-generated method stub
 		if (summon) {
 			// AbsAlgPart itte = new APCldAlarm(cloudian, jikan);
 			AbsAlgPart itte = new APCldAlarm(cloudian, jikan);
@@ -39,7 +38,6 @@ public class DAlarmer extends AbsCmdReq implements Neuronable {
 
 	@Override
 	public void input(String ear, String skin, String eye) {
-		// TODO Auto-generated method stub
 		this.ear = ear;
 		jikan = regexUtil.regexChecker("\\d+:\\d+", ear);
 		if (eye.contains("wake me at") && !jikan.isEmpty()) {
@@ -48,4 +46,9 @@ public class DAlarmer extends AbsCmdReq implements Neuronable {
 		}
 	}
 
+	@Override
+	public Boolean auto() {
+		// this skill can be triggered by time
+		return true;
+	}
 }

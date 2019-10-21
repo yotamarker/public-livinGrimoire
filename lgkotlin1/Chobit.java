@@ -5,9 +5,10 @@ import java.util.Hashtable;
 
 public class Chobit {
 	protected String emot = ""; // emotion
-	protected ArrayList<AbsCmdReq> dClassesLv1 = new ArrayList<>();
-	protected ArrayList<AbsCmdReq> dClassesLv2 = new ArrayList<>();
-	protected ArrayList<AbsCmdReq> dClassesLv3 = new ArrayList<>();
+	protected ArrayList<AbsCmdReq> dClassesLv1 = new ArrayList<>();// can engage with anyone
+	protected ArrayList<AbsCmdReq> dClassesLv2 = new ArrayList<>();// can engage with friends and work related
+	protected ArrayList<AbsCmdReq> dClassesLv3 = new ArrayList<>();// can engage only by user
+	protected ArrayList<AbsCmdReq> dClassesAuto = new ArrayList<>();// automatically added and engaged by time
 	// algorithms fusion (polymarization)
 	protected Hashtable<String, Integer> AlgDurations = new Hashtable<>();
 	protected Fusion fusion = new Fusion(AlgDurations);
@@ -23,29 +24,45 @@ public class Chobit {
 	// added :
 	protected Kokoro kokoro = new Kokoro(); // soul
 	protected Person master = new Person();
+	protected String lastOutput = "";
     public Chobit() {
 		super();
 		noiron = new Neuron();
 		this.inner = new InnerClass(); // sleep var
-		DAlarmer dAlarmer = new DAlarmer();
 		// add a skill here, only 1 line needed !!!
 		dClassesLv1.add(new Detective(fusion));
 		dClassesLv1.add(new DJirachi());
-
+		dClassesLv1.add(new DIAutomatic(kokoro, master));
 		dClassesLv1.add(new DHungry());
 		dClassesLv1.add(dPermitter);
 		dClassesLv1.add(new DRules((new APSleep(24)), inner));
 		dClassesLv1.add(new DSpeller());
 		dClassesLv1.add(new DCalculatorV1());
-		dClassesLv1.add(dAlarmer);
 		dClassesLv2.add(new DSayer());
-		dClassesLv3.add(dAlarmer);
+		dClassesLv3.add(new DAlarmer());
 		dClassesLv3.add(new DDirtyTalker());
-		// dClassesLv3.add(new DIMommyGf(kokoro, this.master));
 		dClassesLv3.add(new DIJirachi(master, kokoro));
+		formAutoClassesList();
     }
 
+	protected void formAutoClassesList() {
+		// adds automatic skills so they can be engaged by time
+		for (AbsCmdReq dCls : dClassesLv2) {
+			if (dCls.auto()) {
+				dClassesAuto.add(dCls);
+			}
+		}
+		for (AbsCmdReq dCls : dClassesLv3) {
+			if (dCls.auto()) {
+				dClassesAuto.add(dCls);
+			}
+		}
+	}
 	public String doIt(String ear, String skin, String eye) {
+		ear = translateIn(ear);
+		for (AbsCmdReq dCls : dClassesAuto) {
+			inOut(dCls, "", skin, eye);
+		}
 		for (AbsCmdReq dCls : dClassesLv1) {
 			inOut(dCls, ear, skin, eye);
 		}
@@ -63,7 +80,7 @@ public class Chobit {
 			}
 		}
 		fusion.setAlgQueue(noiron);
-		return fusion.act(ear, skin, eye);
+		return translateOut(fusion.act(ear, skin, eye));
     }
 
     public String getEmot() {
@@ -113,11 +130,20 @@ public class Chobit {
             return sleep();
         }
     }
-	protected String translateIn() {
-		return "";
+
+	protected String translateIn(String earIn) {
+		// makes sure the chobit doesn't feedback on her own output
+		if (earIn.equals(lastOutput)) {
+			return "";
+		}
+		return earIn;
 	}
 
-	protected String translateOut() {
-		return "";
+	protected String translateOut(String outResult) {
+		// save last output served
+		if (!outResult.isEmpty()) {
+			lastOutput = outResult;
+		}
+		return outResult;
 	}
 }

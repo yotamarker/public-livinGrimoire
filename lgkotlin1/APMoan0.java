@@ -1,4 +1,4 @@
-package chobit;
+package com.yotamarker.lgkotlin1;
 
 
 import java.util.ArrayList;
@@ -74,6 +74,12 @@ public class APMoan0 extends AbsAlgPart implements Mutatable {
 	public Boolean itemize() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public int getMutationLimit() {
+		// TODO Auto-generated method stub
+		return 1;
 	}
 
 }

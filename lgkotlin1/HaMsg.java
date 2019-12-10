@@ -1,4 +1,4 @@
-package chobit;
+package com.yotamarker.lgkotlin1;
 
 public class HaMsg {
 	public String hideMsg(String msg, String Str1) {

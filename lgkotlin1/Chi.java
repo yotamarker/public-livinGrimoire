@@ -1,6 +1,6 @@
 package com.yotamarker.lgkotlin1;
 
-public class Chi extends AbsAlgPart {
+public class Chi extends AbsAlgPart implements Mutatable {
 	/*
 	 * an adaptor pattern to the alg part, it also has the kokoro consiousness
 	 * object to be aware throughout the program of what is happening all action
@@ -50,6 +50,18 @@ public class Chi extends AbsAlgPart {
 	public AbsAlgPart clone() {
 		// TODO Auto-generated method stub
 		return new Chi(kokoro, this.ofSkill, aPart.clone());
+	}
+	@Override
+	public int getMutationLimit() {
+		// TODO Auto-generated method stub
+		return aPart.getMutationLimit();
+	}
+
+	@Override
+	public AbsAlgPart mutation() {
+		// TODO Auto-generated method stub
+		Mutatable mutant = (Mutatable) aPart;
+		return new Chi(kokoro, this.ofSkill, mutant.mutation());
 	}
 
 }

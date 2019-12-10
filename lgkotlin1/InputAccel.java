@@ -1,4 +1,4 @@
-package chobit;
+package com.yotamarker.lgkotlin1;
 
 public class InputAccel implements Runnable {
 	// AbsCmdReq dClass, String ear, String skin, String eye

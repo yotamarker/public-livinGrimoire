@@ -1,4 +1,4 @@
-package chobit;
+package com.yotamarker.lgkotlin1;
 
 /*a trigger for reviving a dormant algorithm
  * there should be a cloudian per APCld (alg part cloudian user)

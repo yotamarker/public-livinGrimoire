@@ -22,7 +22,8 @@ import java.util.*
 class MainActivity : AppCompatActivity() , TextToSpeech.OnInitListener{
     private var tts: TextToSpeech? = null
     var chii = Chobit()
-    var spoke = false
+    var toggleTic = false
+    //var spoke = false
     var mbTTS = TTSVoice(this)
     private val mBatInfoReceiver = object : BroadcastReceiver() {
         override fun onReceive(ctxt: Context, intent: Intent) {
@@ -50,22 +51,46 @@ class MainActivity : AppCompatActivity() , TextToSpeech.OnInitListener{
         tts = TextToSpeech(this, this)
         supportActionBar?.hide()
         this.registerReceiver(this.mBatInfoReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        var count = 0
+        val t = object:Thread() {
+            public override fun run() {
+                while ((!isInterrupted()))
+                {
+                    try
+                    {
+                        Thread.sleep(4000)
+                        runOnUiThread(object:Runnable {
+                            public override fun run() {
+                                if (toggleTic){
+                                    count++
+                                    mbTTS.voiceIt(count.toString())}
+                            }
+                        })
+                    }
+                    catch (e:InterruptedException) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+        }
+        t.start()
+        imageView2.setOnLongClickListener {
+
+            toggleTic = !toggleTic
+            if (toggleTic){imageView2.setImageResource(R.drawable.brainpic)}
+            else{imageView2.setImageResource(R.drawable.yggdrasil)}
+            true
+        }
     }
     fun clrText(view: View){
         editText.setText("")
     }
     fun engage(view: View){
-        //speakOut()
-        if (spoke){editText.setText("");spoke = false}
-        val str1 = editText.text.toString()
-        var resultStr = chii.doIt(str1,"","")
-        editText.setText(resultStr)
+        var resultStr = chii.doIt(editText.text.toString(),"","")
+        editText.setText("")
         mbTTS.voiceIt(resultStr)
         if (mbTTS.TTS){speakOut(resultStr)}
-        if (!resultStr.isEmpty()){spoke = true}
         face(chii.getEmot())
-        //editText.setText("")
-        //voiceIt(resultStr)
     }
     override fun onInit(status: Int) {
 

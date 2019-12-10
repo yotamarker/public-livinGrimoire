@@ -1,4 +1,4 @@
-package chobit;
+package com.yotamarker.lgkotlin1;
 
 
 public class Cerabellum {
@@ -71,6 +71,9 @@ public class Cerabellum {
         return axnStr;
     }
 
+	public int getMutationLimitOfActiveAlgPart() {
+		return alg.getAlgParts().get(at).getMutationLimit();
+	}
     public enumFail getFailType() {
         return alg.getAlgParts().get(at).failure("");
     }

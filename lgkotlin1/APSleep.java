@@ -1,4 +1,4 @@
-package chobit;
+package com.yotamarker.lgkotlin1;
 
 /* doesn't actually does anything
  * she simply sleeps

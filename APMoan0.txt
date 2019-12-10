@@ -1,3 +1,4 @@
+package chobit;
 
 
 import java.util.ArrayList;
@@ -31,21 +32,21 @@ public class APMoan0 extends AbsAlgPart implements Mutatable {
     }
 
     @Override
-    public String action(String input) {
-        if (!input.equals("")) {
+	public String action(String ear, String skin, String eye) {
+		if (!ear.equals("")) {
             noInputCounter = 0;
         }
-        if (input.contains("thank you")) {
+		if (ear.contains("thank you")) {
             isComplete = true;
             return "fuck you very much";
         }
-        if (input.equals("")) {
+		if (ear.equals("")) {
             noInputCounter++;
             if (noInputCounter > failed) {
                 failure = enumFail.fail;
             }
         } //
-        else if (interactions.contains(input)) {
+		else if (interactions.contains(ear)) {
             return moans.get(rand.nextInt(moans.size()));
         }
         return groans.get(rand.nextInt(groans.size()));
@@ -73,6 +74,12 @@ public class APMoan0 extends AbsAlgPart implements Mutatable {
 	public Boolean itemize() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public int getMutationLimit() {
+		// TODO Auto-generated method stub
+		return 1;
 	}
 
 }

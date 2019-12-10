@@ -1,4 +1,4 @@
-package chobit;
+package com.yotamarker.lgkotlin1;
 import java.util.ArrayList;
 
 /*creates algorithms with alg parts that can become dormant

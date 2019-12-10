@@ -1,4 +1,4 @@
-package chobit;
+package com.yotamarker.lgkotlin1;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -40,7 +40,7 @@ public class Chobit {
 		dClassesLv1.add(new DCalculatorV1());
 		dClassesLv2.add(new DSayer());
 		dClassesLv3.add(new DAlarmer());
-		dClassesLv3.add(new DDirtyTalker());
+		dClassesLv3.add(new DIDirty(kokoro));
 		dClassesLv3.add(new DIJirachi(master, kokoro));
 		formAutoClassesList();
     }

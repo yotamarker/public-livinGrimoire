@@ -12,6 +12,7 @@ public class Bijuu extends AbsCmdReq {
 	private int tolerance = constTolerance;
 	private Boolean enabled = true;
 	private Boolean fastBreak = true;
+	protected Boolean isAutomatic = false;
 	protected Person person;
 
 	public Bijuu(Person master, Kokoro kokoro, DISkill... skills) {
@@ -20,6 +21,12 @@ public class Bijuu extends AbsCmdReq {
 		this.person = person;
 		for (DISkill i : skills) {
 			dSkills.add(i);
+		}
+		for (DISkill i : skills) {
+			if (i.auto()) {
+				isAutomatic = true;
+				break;
+			}
 		}
 	}
 
@@ -79,5 +86,11 @@ public class Bijuu extends AbsCmdReq {
 				this.enabled = true;
 			}
 		}
+	}
+
+	@Override
+	public Boolean auto() {
+		// TODO Auto-generated method stub
+		return isAutomatic;
 	}
 }

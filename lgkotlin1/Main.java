@@ -1,4 +1,4 @@
-package chobit;
+package com.yotamarker.lgkotlin1;
 public class Main {
 
 	public static void main(String[] args) {

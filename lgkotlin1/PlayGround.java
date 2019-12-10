@@ -1,4 +1,4 @@
-package chobit;
+package com.yotamarker.lgkotlin1;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

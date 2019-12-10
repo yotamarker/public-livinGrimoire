@@ -1,4 +1,4 @@
-package chobit;
+package com.yotamarker.lgkotlin1;
 
 /* it speaks something x times
  * a most basic skill.

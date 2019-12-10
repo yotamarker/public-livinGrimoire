@@ -6,4 +6,11 @@ public abstract class AbsAlgPart {
     public abstract enumFail failure(String input); // failure type
     public abstract Boolean completed(); // has finished ?
     public abstract AbsAlgPart clone();
+	public int getMutationLimit() {
+		/*
+		 * override this to the number of mutations a mutation series can perform, so at
+		 * least to 1 if you want mutations enabled.
+		 */
+		return 0;
+	}
 }

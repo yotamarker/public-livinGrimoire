@@ -625,9 +625,30 @@ class TTSVoice(private val context:Context){
                 mediaPlayer.start()
 
             }
+            "i missed you" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.i_missed_you)
+
+                mediaPlayer.start()
+
+            }
             "which is your favorite jutsu" -> {
 
                 mediaPlayer = MediaPlayer.create(context, R.raw.wiyfj)
+
+                mediaPlayer.start()
+
+            }
+            "cum toilet" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.cum_toilet)
+
+                mediaPlayer.start()
+
+            }
+            "no you may not fuck me" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.no_you_maynot_fuckme)
 
                 mediaPlayer.start()
 

@@ -20,21 +20,16 @@ public class DExplorer extends AbsCmdReq implements Neuronable {
 
 	public void mutate(Cerabellum cera, enumFail failure) {
         String AP = cera.getEmot();
-        // group
-        AP = GroupAP(AP);
+		/*
+		 * group relies on a naming convention each class in a mutation series must have
+		 * the same class name concated with a number : APMoan1, APMoan2, APMaon3 ...
+		 */
+		AP = AP.replaceAll("\\d+", "");
         // give up ? :
         if (prevAP.contains(AP) && !failure.toString().equals(enumFail.ok.toString())) {
             failureCounter++;
-            switch (AP) {
-                case "APSay":
-                    break;
-                case "APMoan":
-                    if (failureCounter > 1) {
-                        cera.setActive(false);
-                    }
-                    break;
-                default:
-                    break;
+			if (failureCounter > cera.getMutationLimitOfActiveAlgPart()) {
+				cera.setActive(false);
             }
         }
         else {
@@ -54,13 +49,5 @@ public class DExplorer extends AbsCmdReq implements Neuronable {
             default:
                 break;
         }
-    }
-
-    private String GroupAP(String aP) {
-        String result = "";
-        if (aP.contains("APMoan")) {
-            result = "APMoan";
-        }
-        return result;
     }
 }

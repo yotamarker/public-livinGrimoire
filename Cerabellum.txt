@@ -1,3 +1,4 @@
+package chobit;
 
 
 public class Cerabellum {
@@ -50,13 +51,14 @@ public class Cerabellum {
     public void setActive(boolean isActive) {
         this.isActive = isActive;
     }
-    public String act(String input) {
+
+	public String act(String ear, String skin, String eye) {
         String axnStr = "";
         if (!isActive) {
             return axnStr;
         }
         if (at < fin) {
-            axnStr = alg.getAlgParts().get(at).action(input);
+			axnStr = alg.getAlgParts().get(at).action(ear, skin, eye);
             this.emot = alg.getAlgParts().get(at).getClass().getSimpleName();
             if (alg.getAlgParts().get(at).completed()) {
 				incrementAt = true;
@@ -69,6 +71,9 @@ public class Cerabellum {
         return axnStr;
     }
 
+	public int getMutationLimitOfActiveAlgPart() {
+		return alg.getAlgParts().get(at).getMutationLimit();
+	}
     public enumFail getFailType() {
         return alg.getAlgParts().get(at).failure("");
     }

@@ -1,4 +1,4 @@
-package chobit;
+package com.yotamarker.lgkotlin1;
 
 
 public class APMoan1 extends APMoan0 {

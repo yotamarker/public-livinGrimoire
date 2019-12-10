@@ -1,4 +1,4 @@
-package chobit;
+package com.yotamarker.lgkotlin1;
 import java.util.ArrayList;
 
 // a step by step plan to achieve a goal

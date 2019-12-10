@@ -1,4 +1,4 @@
-package chobit;
+package com.yotamarker.lgkotlin1;
 
 public class APBark extends AbsAlgPart {
 	// bark x times

@@ -1,4 +1,4 @@
-package chobit;
+package com.yotamarker.lgkotlin1;
 import java.util.PriorityQueue;
 
 public class FusionCera extends Cerabellum {

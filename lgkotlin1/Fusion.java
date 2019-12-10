@@ -1,4 +1,4 @@
-package chobit;
+package com.yotamarker.lgkotlin1;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;

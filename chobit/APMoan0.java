@@ -76,4 +76,10 @@ public class APMoan0 extends AbsAlgPart implements Mutatable {
 		return false;
 	}
 
+	@Override
+	public int getMutationLimit() {
+		// TODO Auto-generated method stub
+		return 1;
+	}
+
 }

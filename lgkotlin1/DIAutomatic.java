@@ -1,4 +1,4 @@
-package chobit;
+package com.yotamarker.lgkotlin1;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +21,8 @@ public class DIAutomatic extends DISkill {
 		super(kokoro);
 		this.master = master;
 		Arrays.fill(algMode, 0);
-		algTime[0] = playGround.getHoursAsInt();
+		//algTime[0] = playGround.getHoursAsInt();
+		algTime[0] = 15;
 	}
 
 	@Override

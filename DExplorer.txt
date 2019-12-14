@@ -30,6 +30,7 @@ public class DExplorer extends AbsCmdReq implements Neuronable {
             failureCounter++;
 			if (failureCounter > cera.getMutationLimitOfActiveAlgPart()) {
 				cera.setActive(false);
+				// this.failureCounter = 0;
             }
         }
         else {

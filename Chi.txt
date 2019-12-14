@@ -14,7 +14,7 @@ public class Chi extends AbsAlgPart implements Mutatable {
 		super();
 		this.kokoro = kokoro;
 		this.ofSkill = ofSkill;
-		this.aPart = aPart;
+		this.aPart = kokoro.grimoireMemento.load(aPart);
 	}
 
 	public String actualAction(String ear, String skin, String eye) {
@@ -59,9 +59,15 @@ public class Chi extends AbsAlgPart implements Mutatable {
 
 	@Override
 	public AbsAlgPart mutation() {
-		// TODO Auto-generated method stub
 		Mutatable mutant = (Mutatable) aPart;
-		return new Chi(kokoro, this.ofSkill, mutant.mutation());
+		AbsAlgPart tempAP = mutant.mutation();
+		kokoro.grimoireMemento.reqquipMutation(tempAP.getClass().getSimpleName());
+		return new Chi(kokoro, this.ofSkill, tempAP);
 	}
 
+	@Override
+	public String myName() {
+		// TODO Auto-generated method stub
+		return aPart.myName();
+	}
 }

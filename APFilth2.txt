@@ -76,7 +76,7 @@ public class APFilth2 extends AbsAlgPart implements Mutatable {
 	@Override
 	public AbsAlgPart clone() {
 		// TODO Auto-generated method stub
-		return new APFilth1();
+		return new APFilth2();
 	}
 
 	@Override

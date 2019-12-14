@@ -13,4 +13,8 @@ public abstract class AbsAlgPart {
 		 */
 		return 0;
 	}
+
+	public String myName() {
+		return this.getClass().getSimpleName();
+	}
 }

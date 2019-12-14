@@ -10,7 +10,7 @@ import java.util.Hashtable;
  * */
 public class Kokoro {
 	Hashtable<String, Integer> pain = new Hashtable<>();
-
+	public GrimoireMemento grimoireMemento = new GrimoireMemento();
 	public int getPain(String BijuuName) {
 		return pain.getOrDefault(BijuuName, 0);
 	}

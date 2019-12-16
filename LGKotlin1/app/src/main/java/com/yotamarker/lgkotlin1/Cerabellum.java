@@ -35,7 +35,7 @@ public class Cerabellum {
             this.at = 0;
             this.fin = algorithm.getSize();
             this.isActive = true;
-            this.emot = alg.getAlgParts().get(at).getClass().getSimpleName(); // updated line
+			this.emot = alg.getAlgParts().get(at).myName(); // updated line
             return false;
         }
         return true;
@@ -59,7 +59,7 @@ public class Cerabellum {
         }
         if (at < fin) {
 			axnStr = alg.getAlgParts().get(at).action(ear, skin, eye);
-            this.emot = alg.getAlgParts().get(at).getClass().getSimpleName();
+			this.emot = alg.getAlgParts().get(at).myName();
             if (alg.getAlgParts().get(at).completed()) {
 				incrementAt = true;
 				// at++;

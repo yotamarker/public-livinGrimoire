@@ -1,0 +1,6 @@
+Public Class EyeClasifire
+    Dim lv1 As List(Of String)
+    Public lv2, lv3 As String
+    Dim connectable As Boolean
+
+End Class

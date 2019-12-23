@@ -22,26 +22,53 @@ public class Chobit {
 	protected Person activePerson = new Person();
 	protected PrimoCera primoCera = new PrimoCera();
 	// added :
-	protected Kokoro kokoro = new Kokoro(); // soul
+	protected Kokoro kokoro; // soul
 	protected Person master = new Person();
 	protected String lastOutput = "";
-    public Chobit() {
+
+	public Chobit(AbsDictionaryDB absDictionaryDB) {
 		super();
+		this.kokoro = new Kokoro(absDictionaryDB);
 		noiron = new Neuron();
 		this.inner = new InnerClass(); // sleep var
 		// add a skill here, only 1 line needed !!!
 		dClassesLv1.add(new Detective(fusion));
-		dClassesLv1.add(new DJirachi());
-		dClassesLv1.add(new DIAutomatic(kokoro, master));
-		dClassesLv1.add(new DHungry());
+		// dClassesLv1.add(new DJirachi());
+		// dClassesLv1.add(new DIAutomatic(kokoro, master));
+		// dClassesLv1.add(new DIBedTime(kokoro));
+		// dClassesLv1.add(new DHungry());
+		// dClassesLv1.add(new DIBurper(kokoro));
 		dClassesLv1.add(dPermitter);
 		dClassesLv1.add(new DRules((new APSleep(24)), inner));
-		dClassesLv1.add(new DSpeller());
-		dClassesLv1.add(new DCalculatorV1());
+		// dClassesLv1.add(new DSpeller());
+		// dClassesLv1.add(new DCalculatorV1());
 		dClassesLv2.add(new DSayer());
-		dClassesLv3.add(new DAlarmer());
-		dClassesLv3.add(new DDirtyTalker());
-		dClassesLv3.add(new DIJirachi(master, kokoro));
+		// dClassesLv3.add(new DAlarmer());
+		dClassesLv3.add(new DIDirty(kokoro));
+		// dClassesLv3.add(new DIJirachi(master, kokoro));
+		formAutoClassesList();
+	}
+
+	public Chobit() {
+		super();
+		this.kokoro = new Kokoro(new AbsDictionaryDBShadow());
+		noiron = new Neuron();
+		this.inner = new InnerClass(); // sleep var
+		// add a skill here, only 1 line needed !!!
+		dClassesLv1.add(new Detective(fusion));
+		// dClassesLv1.add(new DJirachi());
+		// dClassesLv1.add(new DIAutomatic(kokoro, master));
+		// dClassesLv1.add(new DIBedTime(kokoro));
+		// dClassesLv1.add(new DHungry());
+		// dClassesLv1.add(new DIBurper(kokoro));
+		dClassesLv1.add(dPermitter);
+		dClassesLv1.add(new DRules((new APSleep(24)), inner));
+		// dClassesLv1.add(new DSpeller());
+		// dClassesLv1.add(new DCalculatorV1());
+		dClassesLv2.add(new DSayer());
+		// dClassesLv3.add(new DAlarmer());
+		dClassesLv3.add(new DIDirty(kokoro));
+		// dClassesLv3.add(new DIJirachi(master, kokoro));
 		formAutoClassesList();
     }
 

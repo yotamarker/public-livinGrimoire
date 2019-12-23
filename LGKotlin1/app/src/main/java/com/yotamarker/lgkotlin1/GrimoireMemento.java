@@ -5,10 +5,11 @@ import java.util.Hashtable;
 public class GrimoireMemento {
 	private Hashtable<String, String> rootToAPNumDic = new Hashtable<>();
 	private Hashtable<String, AbsAlgPart> APNumToObjDic = new Hashtable<>();
+	private AbsDictionaryDB absDictionaryDB;
 
-	public GrimoireMemento() {
+	public GrimoireMemento(AbsDictionaryDB absDictionaryDB) {
 		super();
-		// load DB to rootToAPNumDic
+		this.absDictionaryDB = absDictionaryDB;
 	}
 
 	public AbsAlgPart load(AbsAlgPart obj) {
@@ -17,6 +18,13 @@ public class GrimoireMemento {
 		 */
 		String objName = obj.getClass().getSimpleName();
 		String objRoot = objName.replaceAll("\\d+", "");
+		// if not in active DB try adding from external DB
+		if (!rootToAPNumDic.containsKey(objRoot)) {
+			String temp = this.absDictionaryDB.load(objRoot);
+			if (this.absDictionaryDB.getExistsInDB()) {
+				rootToAPNumDic.put(objRoot, temp);
+			}
+		}
 		if (!rootToAPNumDic.containsKey(objRoot)) {
 			rootToAPNumDic.put(objRoot, objName);
 			return obj;
@@ -38,7 +46,7 @@ public class GrimoireMemento {
 	public void reqquipMutation(String mutationAPName) {
 		// save mutation
 		rootToAPNumDic.put(mutationAPName.replaceAll("\\d+", ""), mutationAPName);
-		// save to DB
+		this.absDictionaryDB.save(mutationAPName.replaceAll("\\d+", ""), mutationAPName);
 	}
 
 	private void loadMutations(AbsAlgPart obj, String objName, String objRoot) {

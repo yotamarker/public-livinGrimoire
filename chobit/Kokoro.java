@@ -10,7 +10,13 @@ import java.util.Hashtable;
  * */
 public class Kokoro {
 	Hashtable<String, Integer> pain = new Hashtable<>();
-	public GrimoireMemento grimoireMemento = new GrimoireMemento();
+	public GrimoireMemento grimoireMemento;
+
+	public Kokoro(AbsDictionaryDB absDictionaryDB) {
+		super();
+		this.grimoireMemento = new GrimoireMemento(absDictionaryDB);
+	}
+
 	public int getPain(String BijuuName) {
 		return pain.getOrDefault(BijuuName, 0);
 	}

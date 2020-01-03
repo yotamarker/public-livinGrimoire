@@ -15,7 +15,7 @@
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="49dp" android:layout_marginEnd="49dp"
             app:layout_constraintEnd_toEndOf="parent" android:layout_marginBottom="47dp"
-            app:layout_constraintBottom_toTopOf="@+id/editText"/>
+            app:layout_constraintBottom_toTopOf="@+id/editText" android:onClick="engagePicBox"/>
     <ImageView
             android:layout_width="323dp"
             android:layout_height="65dp" app:srcCompat="@drawable/yggdrasil"

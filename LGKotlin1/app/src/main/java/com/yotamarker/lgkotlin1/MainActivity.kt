@@ -13,6 +13,7 @@ import android.text.TextUtils.substring
 import android.util.Log
 import android.view.View
 import android.view.Window
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.view.*
@@ -88,6 +89,15 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Accelerom
     }
     fun clrText(view: View){
         editText.setText("")
+    }
+    fun engagePicBox(view: View){
+        val mgr = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        mgr.hideSoftInputFromWindow(editText.windowToken,0)
+        var resultStr = chii!!.doIt(editText.text.toString(),"","")
+        editText.setText("")
+        mbTTS.voiceIt(resultStr)
+        if (mbTTS.TTS){speakOut(resultStr)}
+        face(chii!!.getEmot())
     }
     fun engage(view: View){
         var resultStr = chii!!.doIt(editText.text.toString(),"","")

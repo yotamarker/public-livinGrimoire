@@ -1,4 +1,6 @@
 package com.yotamarker.lgkotlin1;
+
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,4 +16,17 @@ public class RegexUtil {
         }
         return "";
     }
+
+	public ArrayList<String> regexChecker2(String theRegex, String str2Check) {
+		// return a list of all matches
+		ArrayList<String> list = new ArrayList<String>();
+		Pattern checkRegex = Pattern.compile(theRegex);
+		Matcher regexMatcher = checkRegex.matcher(str2Check);
+		while (regexMatcher.find()) {
+			if (regexMatcher.group().length() != 0) {
+				list.add(regexMatcher.group().trim());
+			}
+		}
+		return list;
+	}
 }

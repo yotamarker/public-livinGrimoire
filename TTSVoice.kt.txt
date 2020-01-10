@@ -548,13 +548,6 @@ class TTSVoice(private val context:Context){
                 mediaPlayer.start()
 
             }
-            "user fighto" -> {
-
-                mediaPlayer = MediaPlayer.create(context, R.raw.user_fighto)
-
-                mediaPlayer.start()
-
-            }
             "yes your majesty" -> {
 
                 mediaPlayer = MediaPlayer.create(context, R.raw.yes_your_majesty)
@@ -625,9 +618,37 @@ class TTSVoice(private val context:Context){
                 mediaPlayer.start()
 
             }
+            "i missed you" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.i_missed_you)
+
+                mediaPlayer.start()
+
+            }
             "which is your favorite jutsu" -> {
 
                 mediaPlayer = MediaPlayer.create(context, R.raw.wiyfj)
+
+                mediaPlayer.start()
+
+            }
+            "cum toilet" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.cum_toilet)
+
+                mediaPlayer.start()
+
+            }
+            "no you may not fuck me" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.no_you_maynot_fuckme)
+
+                mediaPlayer.start()
+
+            }
+            "go in potty" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.go_in_potty)
 
                 mediaPlayer.start()
 
@@ -1677,7 +1698,7 @@ class TTSVoice(private val context:Context){
             "saturday" -> {
                 mediaPlayer = MediaPlayer.create(context, R.raw.saturday)
             }
-            "january" ->
+            "January" ->
                 mediaPlayer = MediaPlayer.create(context, R.raw.jan)
             "February" ->
                 mediaPlayer = MediaPlayer.create(context, R.raw.feb)

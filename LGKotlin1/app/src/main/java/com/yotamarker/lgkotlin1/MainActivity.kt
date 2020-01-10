@@ -20,14 +20,32 @@ import kotlinx.android.synthetic.main.activity_main.view.*
 import java.nio.file.Files.size
 import java.util.*
 import kotlin.math.absoluteValue
+import android.support.v4.os.HandlerCompat.postDelayed
+import android.R.string.no
+import android.R.attr.name
+import android.support.v4.app.SupportActivity
+import android.support.v4.app.SupportActivity.ExtraData
+import android.support.v4.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import android.os.Handler
+import android.view.KeyEvent
+import android.R.string.no
+import android.R.attr.name
+import android.support.v4.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+
+
 
 
 class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, AccelerometerListener{
+    // global vars
     private var tts: TextToSpeech? = null
+    val kanjiClock = KanjiClock()
     var chii:Chobit? = null
     var toggleTic = false
     var gyroX = 0.0f; var gyroY = 0.0f;var gyroCounter = 0;var gyroGate = JikanMon()
     //var spoke = false
+    val nightRider = NightRider()
     var mbTTS = TTSVoice(this)
     private val mBatInfoReceiver = object : BroadcastReceiver() {
         override fun onReceive(ctxt: Context, intent: Intent) {
@@ -52,59 +70,49 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Accelerom
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val handler = Handler()
+
+        val run = object : Runnable {
+            override fun run() {
+                Log.i("hadouken", "A second passed by")
+                var s1 = "";
+                s1 = kanjiClock.timeInKanji()
+                textView.setText(s1)
+                s1 = nightRider.getDisplay()
+                textView2.setText(s1)
+                handler.postDelayed(this, 1000)
+            }
+        }
+
+        handler.post(run)
+
         chii = Chobit(SharedPrefDB(this))
         tts = TextToSpeech(this, this)
         supportActionBar?.hide()
         this.registerReceiver(this.mBatInfoReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         var count = 0
-        val t = object:Thread() {
-            public override fun run() {
-                while ((!isInterrupted()))
-                {
-                    try
-                    {
-                        Thread.sleep(4000)
-                        runOnUiThread(object:Runnable {
-                            public override fun run() {
-                                if (toggleTic){
-                                    count++
-                                    mbTTS.voiceIt(count.toString())}
-                            }
-                        })
-                    }
-                    catch (e:InterruptedException) {
-                        e.printStackTrace()
-                    }
-                }
+        editText.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
+            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                engageChobit()
+                return@OnKeyListener true
             }
-        }
-        t.start()
-        imageView2.setOnLongClickListener {
-
-            toggleTic = !toggleTic
-            if (toggleTic){imageView2.setImageResource(R.drawable.brainpic)}
-            else{imageView2.setImageResource(R.drawable.yggdrasil)}
-            true
-        }
+            false
+        })
+    }
+    fun engage(view: View){
+        engageChobit()
     }
     fun clrText(view: View){
         editText.setText("")
     }
-    fun engagePicBox(view: View){
+    fun engageChobit(){
         val mgr = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         mgr.hideSoftInputFromWindow(editText.windowToken,0)
         var resultStr = chii!!.doIt(editText.text.toString(),"","")
         editText.setText("")
         mbTTS.voiceIt(resultStr)
         if (mbTTS.TTS){speakOut(resultStr)}
-        face(chii!!.getEmot())
-    }
-    fun engage(view: View){
-        var resultStr = chii!!.doIt(editText.text.toString(),"","")
-        editText.setText("")
-        mbTTS.voiceIt(resultStr)
-        if (mbTTS.TTS){speakOut(resultStr)}
-        face(chii!!.getEmot())
+        //face(chii!!.getEmot())
     }
     override fun onInit(status: Int) {
 
@@ -125,13 +133,6 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Accelerom
     }
     private fun speakOut(leftOver:String) {
         tts!!.speak(leftOver, TextToSpeech.QUEUE_FLUSH, null,"")
-    }
-    private fun face(face:String) {
-        when (face) {
-            "speaking" -> imageView.setImageResource(R.drawable.sugoikibun)
-
-            else -> {imageView.setImageResource(R.drawable.waa)}
-        }
     }
     public override fun onDestroy() {
         // Shutdown TTS
@@ -160,7 +161,6 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Accelerom
             editText.setText("")
             mbTTS.voiceIt(resultStr)
             if (mbTTS.TTS){speakOut(resultStr)}
-            face(chii!!.getEmot())
              }
         else{}
         gyroX=x;gyroY=y;

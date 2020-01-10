@@ -159,7 +159,7 @@ public class PlayGround {
 		String dMonth = "";
 		switch (month1) {
 		case 1:
-			dMonth = "january";
+			dMonth = "January";
 			break;
 		case 2:
 			dMonth = "February";

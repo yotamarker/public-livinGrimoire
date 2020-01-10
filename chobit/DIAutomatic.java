@@ -27,6 +27,7 @@ public class DIAutomatic extends DISkill {
 	@Override
 	public void input(String ear, String skin, String eye) {
 		int hour = playGround.getHoursAsInt();
+		;
 		for (int i = 0; i < algMode.length; i++) {
 			if (algMode[i] == 0) {
 				if (algTime[i] == hour) {

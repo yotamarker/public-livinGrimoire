@@ -1698,7 +1698,7 @@ class TTSVoice(private val context:Context){
             "saturday" -> {
                 mediaPlayer = MediaPlayer.create(context, R.raw.saturday)
             }
-            "january" ->
+            "January" ->
                 mediaPlayer = MediaPlayer.create(context, R.raw.jan)
             "February" ->
                 mediaPlayer = MediaPlayer.create(context, R.raw.feb)

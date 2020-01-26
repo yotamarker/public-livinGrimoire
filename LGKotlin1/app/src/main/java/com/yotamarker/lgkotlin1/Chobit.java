@@ -42,6 +42,7 @@ public class Chobit {
 		dClassesLv1.add(new DRules((new APSleep(24)), inner));
 		dClassesLv1.add(new DIJoker(kokoro));
 		dClassesLv1.add(new DSpeller());
+		dClassesLv1.add(new DISoulV2(kokoro));
 		// dClassesLv1.add(new DCalculatorV1());
 		dClassesLv2.add(new DSayer());
 		// dClassesLv3.add(new DAlarmer());
@@ -66,6 +67,7 @@ public class Chobit {
 		dClassesLv1.add(new DRules((new APSleep(24)), inner));
 		dClassesLv1.add(new DIJoker(kokoro));
 		dClassesLv1.add(new DSpeller());
+		dClassesLv1.add(new DISoulV2(kokoro));
 		// dClassesLv1.add(new DCalculatorV1());
 		dClassesLv2.add(new DSayer());
 		// dClassesLv3.add(new DAlarmer());

@@ -301,4 +301,10 @@ public class PlayGround {
 		}
 		return dday;
 	}
+
+	public String timeInXMinutes(int x) {
+		Calendar now = Calendar.getInstance();
+		now.add(Calendar.MINUTE, x);
+		return now.get(Calendar.HOUR_OF_DAY) + ":" + now.get(Calendar.MINUTE);
+	}
 }

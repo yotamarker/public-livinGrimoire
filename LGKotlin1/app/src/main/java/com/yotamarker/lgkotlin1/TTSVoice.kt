@@ -653,6 +653,48 @@ class TTSVoice(private val context:Context){
                 mediaPlayer.start()
 
             }
+            "chiisad" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.chii_sad)
+
+                mediaPlayer.start()
+
+            }
+            "chiiangry" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.chii_angry)
+
+                mediaPlayer.start()
+
+            }
+            "chiicurious" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.chii_curious)
+
+                mediaPlayer.start()
+
+            }
+            "chiiexcited" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.chii_excited)
+
+                mediaPlayer.start()
+
+            }
+            "chiihappy" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.chii_happy)
+
+                mediaPlayer.start()
+
+            }
+            "chiinormal" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.chii_normal)
+
+                mediaPlayer.start()
+
+            }
             else -> {TTSBeefUp(inStr)}
         }
     }

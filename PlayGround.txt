@@ -1,4 +1,4 @@
-package com.yotamarker.lgkotlin1;
+package chobit;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -300,5 +300,11 @@ public class PlayGround {
 			break;
 		}
 		return dday;
+	}
+
+	public String timeInXMinutes(int x) {
+		Calendar now = Calendar.getInstance();
+		now.add(Calendar.MINUTE, x);
+		return now.get(Calendar.HOUR_OF_DAY) + ":" + now.get(Calendar.MINUTE);
 	}
 }

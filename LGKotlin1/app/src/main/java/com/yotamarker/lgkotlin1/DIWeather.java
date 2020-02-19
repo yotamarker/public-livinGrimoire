@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class DIWeather extends DISkill {
 	// tells the weather
+	private Boolean where = false;
 	public DIWeather(Kokoro kokoro) {
 		super(kokoro);
 	}
@@ -15,6 +16,7 @@ public class DIWeather extends DISkill {
 			String city = test.substring(test.lastIndexOf(" ") + 1);// v2 use gps
 			Weather.updateWeather(city); // weather ready to go.
 		}
+		else if (ear.contains("where am i")) {where = true;}
 	}
 
 	@Override
@@ -22,6 +24,7 @@ public class DIWeather extends DISkill {
 		if (Weather.getHasBeenUpdated()) {
 			noiron.algParts.add(verbatimGorithm());
 		}
+		else if(where){where=false;noiron.algParts.add(placeStater());}
 	}
 
 	private Algorithm verbatimGorithm() {
@@ -31,6 +34,15 @@ public class DIWeather extends DISkill {
 		ArrayList<AbsAlgPart> algParts1 = new ArrayList<>();
 		algParts1.add(itte);
 		Algorithm algorithm = new Algorithm("weather", representation, algParts1);
+		return algorithm;
+	}
+	private Algorithm placeStater() {
+		// returns a simple algorithm for saying sent parameter
+		AbsAlgPart itte = new APVerbatim("we are at",Tokoro.placeName);
+		String representation = "atplace";
+		ArrayList<AbsAlgPart> algParts1 = new ArrayList<>();
+		algParts1.add(itte);
+		Algorithm algorithm = new Algorithm("atplace", representation, algParts1);
 		return algorithm;
 	}
 }

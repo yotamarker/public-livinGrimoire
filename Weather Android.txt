@@ -33,7 +33,7 @@ public class Weather {
 			default:
 //default statement sequence
 		}
-		return  new Coordinates(32.0809, 34.7806); // replace with GPS
+		return  new Coordinates(Tokoro.lat, Tokoro.lon); // replace with GPS
 	}
 	public static ArrayList<String> getWeatherList() {
 		// returns vital weather info

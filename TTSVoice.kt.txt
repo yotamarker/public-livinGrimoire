@@ -653,6 +653,55 @@ class TTSVoice(private val context:Context){
                 mediaPlayer.start()
 
             }
+            "chiisad" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.chii_sad)
+
+                mediaPlayer.start()
+
+            }
+            "chiiangry" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.chii_angry)
+
+                mediaPlayer.start()
+
+            }
+            "chiicurious" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.chii_curious)
+
+                mediaPlayer.start()
+
+            }
+            "chiiexcited" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.chii_excited)
+
+                mediaPlayer.start()
+
+            }
+            "chiihappy" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.chii_happy)
+
+                mediaPlayer.start()
+
+            }
+            "chiinormal" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.chii_normal)
+
+                mediaPlayer.start()
+
+            }
+            "dollars" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.dollars)
+
+                mediaPlayer.start()
+
+            }
             else -> {TTSBeefUp(inStr)}
         }
     }
@@ -665,6 +714,24 @@ class TTSVoice(private val context:Context){
         {
             // add single words here
             when (string) {
+                "dollars" ->
+                    // code block
+                    voiceArrayList.add(string)
+                "dollar" ->
+                    // code block
+                    voiceArrayList.add(string)
+                "euros" ->
+                    // code block
+                    voiceArrayList.add(string)
+                "euro" ->
+                    // code block
+                    voiceArrayList.add(string)
+                "shekels" ->
+                    // code block
+                    voiceArrayList.add(string)
+                "shekel" ->
+                    // code block
+                    voiceArrayList.add(string)
                 "hi" ->
                     // code block
                     voiceArrayList.add(string)
@@ -1784,6 +1851,24 @@ class TTSVoice(private val context:Context){
                 mediaPlayer = MediaPlayer.create(context, R.raw.thirtyth_of)
             "thirtyfirst_of" ->
                 mediaPlayer = MediaPlayer.create(context, R.raw.thirtyfirst_of)
+            "dollars" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.dollars)
+            }
+            "dollar" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.dollar)
+            }
+            "shekels" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.shekels)
+            }
+            "shekel" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.shekel)
+            }
+            "euros" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.euros)
+            }
+            "euro" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.euro)
+            }
             else -> {
             }
         }

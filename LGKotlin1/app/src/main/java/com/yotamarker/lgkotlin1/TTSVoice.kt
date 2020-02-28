@@ -695,6 +695,13 @@ class TTSVoice(private val context:Context){
                 mediaPlayer.start()
 
             }
+            "dollars" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.dollars)
+
+                mediaPlayer.start()
+
+            }
             else -> {TTSBeefUp(inStr)}
         }
     }
@@ -707,6 +714,24 @@ class TTSVoice(private val context:Context){
         {
             // add single words here
             when (string) {
+                "dollars" ->
+                    // code block
+                    voiceArrayList.add(string)
+                "dollar" ->
+                    // code block
+                    voiceArrayList.add(string)
+                "euros" ->
+                    // code block
+                    voiceArrayList.add(string)
+                "euro" ->
+                    // code block
+                    voiceArrayList.add(string)
+                "shekels" ->
+                    // code block
+                    voiceArrayList.add(string)
+                "shekel" ->
+                    // code block
+                    voiceArrayList.add(string)
                 "hi" ->
                     // code block
                     voiceArrayList.add(string)
@@ -1826,6 +1851,24 @@ class TTSVoice(private val context:Context){
                 mediaPlayer = MediaPlayer.create(context, R.raw.thirtyth_of)
             "thirtyfirst_of" ->
                 mediaPlayer = MediaPlayer.create(context, R.raw.thirtyfirst_of)
+            "dollars" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.dollars)
+            }
+            "dollar" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.dollar)
+            }
+            "shekels" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.shekels)
+            }
+            "shekel" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.shekel)
+            }
+            "euros" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.euros)
+            }
+            "euro" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.euro)
+            }
             else -> {
             }
         }

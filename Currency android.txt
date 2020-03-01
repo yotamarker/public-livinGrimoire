@@ -24,7 +24,6 @@ public class Currency {
         DownloadTask task = new DownloadTask();
         String s1 = "https://api.exchangeratesapi.io/latest";
         task.execute(s1);
-        hasBeenUpdated = true;
     }
 
     public static Double exchangeRate(String coin) {
@@ -88,6 +87,7 @@ public class Currency {
                 Currency.shekel = ils;
                 Double usd = new Double(rates.getString("USD").replace(",",""));
                 Currency.dollar = usd;
+                hasBeenUpdated = true;
             } catch (Exception e) {
                 e.printStackTrace();
             }

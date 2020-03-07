@@ -141,9 +141,20 @@ public class DICurrency extends DISkill {
 		}
 	}
 
+	private String floatTrimmer(String str1) {
+		String tempStr = str1.substring(str1.length() - 1);
+		if (!str1.contains(".")) {
+			return str1;
+		}
+		if (tempStr.equals("0") || tempStr.equals(".")) {
+			return floatTrimmer(str1.substring(0, str1.length() - 1));
+		}
+		return str1;
+	}
 	private Algorithm verbatimGorithm(String append) {
 		// returns a simple algorithm for saying sent parameter
 		String s1 = String.format("%.02f", this.sum);
+		s1 = floatTrimmer(s1);
 		AbsAlgPart itte = new APVerbatim(s1 + " " + append);
 		String representation = "currency";
 		ArrayList<AbsAlgPart> algParts1 = new ArrayList<>();

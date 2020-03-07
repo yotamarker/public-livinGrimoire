@@ -1,5 +1,6 @@
 package com.yotamarker.lgkotlin1
 
+import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -31,10 +32,15 @@ import android.os.Handler
 import android.view.KeyEvent
 import android.R.string.no
 import android.R.attr.name
+import android.content.pm.PackageManager
 import android.support.v4.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-
-
+import android.location.*
+import android.support.annotation.NonNull
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
+import android.view.WindowManager
+import java.io.IOException
 
 
 class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, AccelerometerListener{
@@ -44,6 +50,8 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Accelerom
     var chii:Chobit? = null
     var toggleTic = false
     var gyroX = 0.0f; var gyroY = 0.0f;var gyroCounter = 0;var gyroGate = JikanMon()
+    var locationManager: LocationManager? = null //GPS beefup
+    var locationListener: LocationListener? =null //GPS beefup
     //var spoke = false
     val nightRider = NightRider()
     var mbTTS = TTSVoice(this)
@@ -53,7 +61,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Accelerom
             val b8TRiStr = chii!!.doIt("","$level charge","")
             mbTTS.voiceIt(b8TRiStr)
             //voiceIt(b8TRiStr)
-            if (b8TRiStr != ""){editText.setText(b8TRiStr)}
+            //if (b8TRiStr != ""){editText.setText(b8TRiStr)}
             //editText.setText(chii.doIt("","$level charge",""))
             //txtBox.setText("$level% $b8TRcounter")
             val status: Int = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
@@ -66,10 +74,46 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Accelerom
             //txtBox.setText("$usbCharge")
         }
     }
+    fun placeToString() {
+        //GPS beefup
+        // convert gps coordinates into place name
+        var returnString = ""
+        val gcdLocale = Geocoder(this, Locale.ENGLISH) //new Geocoder(this, Locale.ENGLISH)
+        var localeAdd:List<Address>? = null
+        try
+        {
 
+            localeAdd = gcdLocale.getFromLocation(Tokoro.lat, Tokoro.lon, 1)
+        }
+        catch (e: IOException) {
+            e.printStackTrace()
+        }
+        //if localeAdd is null (false) get out of the function (method)
+        assert(localeAdd != null)
+        if (localeAdd!!.size > 0)
+        {
+            val myAdd = localeAdd.get(0).getAddressLine(0)
+            returnString = myAdd
+        }
+        Tokoro.placeName = returnString
+    }
+    override
+    fun onRequestPermissionsResult(requestCode:Int, @NonNull permissions:Array<String>, @NonNull grantResults:IntArray) {
+        //GPS beefup
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+        {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) === PackageManager.PERMISSION_GRANTED)
+            {
+                locationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10, 1.1f, locationListener)
+            }
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);//disables screen timeout
+        // getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // reenable screen timeout
         val handler = Handler()
 
         val run = object : Runnable {
@@ -98,6 +142,39 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Accelerom
             }
             false
         })
+        //GPS beefup :
+        locationManager = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        locationListener = object:LocationListener {
+            override
+            fun onLocationChanged(location: Location) {
+                try {
+                    Log.i("Location", "latcpp: " + location.getLatitude() + "lon: " + location.getLongitude()) // modify hya
+                    Tokoro.lat = location.getLatitude();Tokoro.lon = location.getLongitude()
+                    placeToString()
+                } catch (e: Exception) {
+                }
+
+
+            }
+            override
+            fun onStatusChanged(s:String, i:Int, bundle:Bundle) {
+            }
+            override
+            fun onProviderEnabled(s:String) {
+            }
+            override
+            fun onProviderDisabled(s:String) {
+            }
+        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !== PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(this, arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION), 1)
+        }
+        else
+        {
+            locationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10, 1f, locationListener)
+        }
+        //GPS beefup on create end point
     }
     fun engage(view: View){
         engageChobit()

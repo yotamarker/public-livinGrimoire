@@ -39,6 +39,7 @@ import android.location.*
 import android.support.annotation.NonNull
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.view.WindowManager
 import java.io.IOException
 
 
@@ -111,6 +112,8 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Accelerom
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);//disables screen timeout
+        // getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // reenable screen timeout
         val handler = Handler()
 
         val run = object : Runnable {

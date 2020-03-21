@@ -1,0 +1,96 @@
+package com.yotamarker.lgkotlin1;
+
+import android.os.AsyncTask;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+
+public class Covid19 {
+
+    private static String infected = "unknown";
+    private static Boolean hasBeenUpdated = false;
+
+    public static void updateStatistics() {
+         DownloadTask task = new DownloadTask();
+         String s1 = "https://www.worldometers.info/coronavirus/";
+         task.execute(s1);
+    }
+
+    public static ArrayList<String> getCovidStats() {
+        // returns vital weather info
+        ArrayList<String> result = new ArrayList<String>();
+        result.add("yes your majesty");
+        //String numz = "0123456789";
+        String tempInfected = infected;
+        tempInfected = tempInfected.replace(",","");
+//        result.add("infected");
+//        result.add("infected 2");
+//        result.add("infected 3");
+//        result.add("infected 4");
+        result.add(tempInfected);
+        result.add("estimately");
+        result.add("infected");
+//        result.add("infected");
+//        result.add("infected");
+//        result.add("infected");
+        //result.add("infected");
+        hasBeenUpdated = false;
+        return result;
+    }
+
+    public static Boolean getHasBeenUpdated() {
+        return hasBeenUpdated;
+    }
+     public static class DownloadTask extends AsyncTask<String,Void,String> {
+
+     @Override
+     protected String doInBackground(String... urls) {
+     String result = "";
+     URL url;
+     HttpURLConnection urlConnection = null;
+
+     try {
+
+     url = new URL(urls[0]);
+     urlConnection = (HttpURLConnection) url.openConnection();
+     InputStream in = urlConnection.getInputStream();
+     InputStreamReader reader = new InputStreamReader(in);
+     int data = reader.read();
+
+     while (data != -1) {
+     char current = (char) data;
+     result += current;
+     data = reader.read();
+     if(result.contains("<h1>Deaths:</h1>")){break;}
+     }
+     return result;
+
+     } catch (Exception e) {
+     e.printStackTrace();
+     return null;
+     }
+     }
+
+     @Override
+     protected void onPostExecute(String s) {
+     super.onPostExecute(s);
+
+     try {
+         RegexUtil regexUtil = new RegexUtil();
+         infected = regexUtil.regexChecker(
+                 "(?<=<h1>Coronavirus Cases:</h1> <div class=\\\"maincounter-number\\\"> <span style=\\\"color:#aaa\\\">)(.*)(?=</span>)",
+                 s);
+     hasBeenUpdated = true;
+     //Log.i("maalot",temp);
+     } catch (Exception e) {
+     e.printStackTrace();
+     }
+
+     }
+     }
+}

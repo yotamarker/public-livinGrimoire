@@ -11,7 +11,9 @@ import java.util.Hashtable;
 public class Kokoro {
 	Hashtable<String, Integer> pain = new Hashtable<>();
 	public GrimoireMemento grimoireMemento;
-
+	public Hashtable<String, String> toHeart = new Hashtable<>();
+	public Hashtable<String, String> fromHeart = new Hashtable<>();
+	public Boolean standBy = false;
 	public Kokoro(AbsDictionaryDB absDictionaryDB) {
 		super();
 		this.grimoireMemento = new GrimoireMemento(absDictionaryDB);

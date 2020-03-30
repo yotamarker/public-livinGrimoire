@@ -25,6 +25,8 @@ public class Chobit {
 	protected Kokoro kokoro; // soul
 	protected Person master = new Person();
 	protected String lastOutput = "";
+	// standBy phase 260320
+	protected TimeGate timeGate = new TimeGate();
 
 	public Chobit(AbsDictionaryDB absDictionaryDB) {
 		super();
@@ -59,7 +61,9 @@ public class Chobit {
 		dClassesLv1.add(new Detective(fusion));
 		dClassesLv1.add(new DIJoker(kokoro));
 		dClassesLv1.add(new DIWeather(kokoro));
+		dClassesLv1.add(new DICorona(kokoro));
 		dClassesLv1.add(new DICurrency(kokoro));
+		dClassesLv1.add(new DSpeller());
 		// dClassesLv1.add(new DJirachi());
 		// dClassesLv1.add(new DIAutomatic(kokoro, master));
 		// dClassesLv1.add(new DIBedTime(kokoro));
@@ -73,6 +77,7 @@ public class Chobit {
 		dClassesLv2.add(new DSayer());
 		// dClassesLv3.add(new DAlarmer());
 		dClassesLv3.add(new DIDirty(kokoro));
+		dClassesLv3.add(new DIHomer(kokoro));
 		// dClassesLv3.add(new DIJirachi(master, kokoro));
 		formAutoClassesList();
     }
@@ -175,6 +180,17 @@ public class Chobit {
 		// save last output served
 		if (!outResult.isEmpty()) {
 			lastOutput = outResult;
+			this.timeGate.close();
+			this.kokoro.standBy = false;
+		}
+		// standBy :
+		else {
+			if (!this.timeGate.isClosed()) {
+			this.kokoro.standBy = true;
+			this.timeGate.close();
+		} else {
+			this.kokoro.standBy = false;
+			}
 		}
 		return outResult;
 	}

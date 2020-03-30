@@ -702,6 +702,48 @@ class TTSVoice(private val context:Context){
                 mediaPlayer.start()
 
             }
+            "i am" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.i_am)
+
+                mediaPlayer.start()
+
+            }
+            "the living grimoire" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.the_living_grimoire)
+
+                mediaPlayer.start()
+
+            }
+            "i was created by" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.i_was_created_by)
+
+                mediaPlayer.start()
+
+            }
+            "ainzbuff" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.ainzbuff)
+
+                mediaPlayer.start()
+
+            }
+            "i wanna go home" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.iwannagohome)
+
+                mediaPlayer.start()
+
+            }
+            "take me home" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.takemehome)
+
+                mediaPlayer.start()
+
+            }
             else -> {TTSBeefUp(inStr)}
         }
     }
@@ -834,6 +876,8 @@ class TTSVoice(private val context:Context){
                 "thirtyth_of" ->
                     voiceArrayList.add(string)
                 "thirtyfirst_of" ->
+                    voiceArrayList.add(string)
+                "kilometer" ->
                     voiceArrayList.add(string)
                 else ->
                     // case it is actually a number
@@ -1868,6 +1912,9 @@ class TTSVoice(private val context:Context){
             }
             "euro" -> {
                 mediaPlayer = MediaPlayer.create(context, R.raw.euro)
+            }
+            "kilometer" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.kilometer)
             }
             else -> {
             }

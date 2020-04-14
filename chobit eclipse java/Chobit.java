@@ -36,6 +36,7 @@ public class Chobit {
 		// add a skill here, only 1 line needed !!!
 		dClassesLv1.add(new Detective(fusion));
 		dClassesLv1.add(new DIJoker(kokoro));
+		dClassesLv1.add(new DIGamer(kokoro));// 050420
 		// dClassesLv1.add(new DJirachi());
 		// dClassesLv1.add(new DIAutomatic(kokoro, master));
 		// dClassesLv1.add(new DIBedTime(kokoro));
@@ -64,6 +65,8 @@ public class Chobit {
 		dClassesLv1.add(new DICorona(kokoro));
 		dClassesLv1.add(new DICurrency(kokoro));
 		dClassesLv1.add(new DSpeller());
+		// dClassesLv1.add(new DIGamer(kokoro));// 050420
+		dClassesLv1.add(new DIBukubukuchagama(kokoro));// 130420
 		// dClassesLv1.add(new DJirachi());
 		// dClassesLv1.add(new DIAutomatic(kokoro, master));
 		// dClassesLv1.add(new DIBedTime(kokoro));

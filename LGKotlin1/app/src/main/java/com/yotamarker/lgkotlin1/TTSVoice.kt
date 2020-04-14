@@ -744,6 +744,20 @@ class TTSVoice(private val context:Context){
                 mediaPlayer.start()
 
             }
+            "alarm set" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.almset)
+
+                mediaPlayer.start()
+
+            }
+            "oniichan alarm" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.almsmn)
+
+                mediaPlayer.start()
+
+            }
             else -> {TTSBeefUp(inStr)}
         }
     }

@@ -788,6 +788,9 @@ class TTSVoice(private val context:Context){
                 "shekel" ->
                     // code block
                     voiceArrayList.add(string)
+                "kilogram" ->
+                    // code block
+                    voiceArrayList.add(string)
                 "hi" ->
                     // code block
                     voiceArrayList.add(string)
@@ -1920,6 +1923,9 @@ class TTSVoice(private val context:Context){
             }
             "shekel" -> {
                 mediaPlayer = MediaPlayer.create(context, R.raw.shekel)
+            }
+            "kilogram" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.kilogram)
             }
             "euros" -> {
                 mediaPlayer = MediaPlayer.create(context, R.raw.euros)

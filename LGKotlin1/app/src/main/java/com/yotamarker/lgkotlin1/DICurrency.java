@@ -8,21 +8,51 @@ public class DICurrency extends DISkill {
     private RegexUtil regexUtil = new RegexUtil();
     private String[] cases = { "shekel to dollar", "shekel to euro", "dollar to euro", "dollar to shekel",
             "euro to dollar", "euro to shekel" };
+    private String[] offLineCases = { "kg to shekel", "shekel to kg"};
     public DICurrency(Kokoro kokoro) {
         super(kokoro);
     }
 
     @Override
     public void input(String ear, String skin, String eye) {
-        for (int i = 0; i < cases.length; i++) {
-            if (ear.contains(cases[i])) {
-                conversionCase(cases[i]);
-                Currency.updateCurrency();
-                sum = Double.parseDouble(regexUtil.regexChecker("[-+]?[0-9]*\\.?[0-9]*", ear));
+        if(ear.contains("to")){
+            Boolean online = true;
+            for (int i = 0; i < offLineCases.length; i++) {
+                if (ear.contains(offLineCases[i])) {
+                    offLineConversionCase(offLineCases[i]);
+                    sum = Double.parseDouble(regexUtil.regexChecker("[-+]?[0-9]*\\.?[0-9]*", ear));
+                    online = false;
+                    break;
+                }
+            }
+            if(online){
+                for (int i = 0; i < cases.length; i++) {
+                    if (ear.contains(cases[i])) {
+                        conversionCase(cases[i]);
+                        Currency.updateCurrency();
+                        sum = Double.parseDouble(regexUtil.regexChecker("[-+]?[0-9]*\\.?[0-9]*", ear));
+                        break;
+                    }
+                }
             }
         }
     }
-
+    private Boolean offLineConversionCase(String trigger) {
+        Boolean result = false;
+        switch (trigger) {
+            case "kg to shekel":
+                result = true;
+                this.mode = 7;
+                break;
+            case "shekel to kg":
+                result = true;
+                this.mode = 8;
+                break;
+            default:
+                break;
+        }
+        return result;
+    }
     private Boolean conversionCase(String trigger) {
         Boolean result = false;
         switch (trigger) {
@@ -136,6 +166,27 @@ public class DICurrency extends DISkill {
                     sum = 0.0;
                 }
                 break;
+            case 7:
+                    mode = 0;
+                    sum = sum / .0041;
+                    sum = sum / 10; // div agorot to shekel 10 agorot = 1 shekel
+                    String appendCurrency = "shekels";
+                    if (sum == 1) {
+                        appendCurrency = "shekel";
+                    }
+                    noiron.algParts.add(verbatimGorithm(appendCurrency));
+                    sum = 0.0;
+                break;
+            case 8:
+                mode = 0;
+                sum = sum * .0041;
+                sum = sum * 10; // div agorot to shekel 10 agorot = 1 shekel
+                String appendCurrency2 = " kilogram";
+                String s1 = String.format("%.03f", this.sum);
+                s1 = floatTrimmer(s1);
+                noiron.algParts.add(verbatimGorithm(new APVerbatim(s1 + appendCurrency2)));
+                sum = 0.0;
+                break;
             default:
                 break;
         }
@@ -160,6 +211,14 @@ public class DICurrency extends DISkill {
         ArrayList<AbsAlgPart> algParts1 = new ArrayList<>();
         algParts1.add(itte);
         Algorithm algorithm = new Algorithm("currency", representation, algParts1);
+        return algorithm;
+    }
+    private Algorithm verbatimGorithm(AbsAlgPart itte) {
+        // returns a simple algorithm for saying sent parameter
+        String representation = "bukubukuchagama";
+        ArrayList<AbsAlgPart> algParts1 = new ArrayList<>();
+        algParts1.add(itte);
+        Algorithm algorithm = new Algorithm("bukubukuchagama", representation, algParts1);
         return algorithm;
     }
 }

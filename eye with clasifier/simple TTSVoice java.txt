@@ -1,0 +1,42 @@
+package com.yotamarker.eyeresearch;
+
+import android.content.Context;
+import android.media.MediaPlayer;
+
+public class TTSVoice {
+    MediaPlayer mediaPlayer;
+    Context contextl;
+    public TTSVoice(Context context) {
+        this.contextl = context;
+    }
+    public void speak(String text){
+        switch(text) {
+            case "red" :
+                mediaPlayer = MediaPlayer.create(this.contextl, R.raw.red);
+                mediaPlayer.start();
+                break;
+            case "blue" :
+                mediaPlayer = MediaPlayer.create(this.contextl, R.raw.blue);
+                mediaPlayer.start();
+                break;
+            case "green" :
+                mediaPlayer = MediaPlayer.create(this.contextl, R.raw.green);
+                mediaPlayer.start();
+                break;
+            case "black" :
+                mediaPlayer = MediaPlayer.create(this.contextl, R.raw.black);
+                mediaPlayer.start();
+                break;
+            case "orange" :
+                mediaPlayer = MediaPlayer.create(this.contextl, R.raw.orange);
+                mediaPlayer.start();
+                break;
+            case "white" :
+                mediaPlayer = MediaPlayer.create(this.contextl, R.raw.white);
+                mediaPlayer.start();
+                break;
+            default :
+
+        }
+    }
+}

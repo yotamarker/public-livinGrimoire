@@ -1,0 +1,46 @@
+public static Bitmap scaleDown(Bitmap realImage, float maxImageSize,
+        boolean filter) {
+    float ratio = Math.min(
+            (float) maxImageSize / realImage.getWidth(),
+            (float) maxImageSize / realImage.getHeight());
+    int width = Math.round((float) ratio * realImage.getWidth());
+    int height = Math.round((float) ratio * realImage.getHeight());
+
+    Bitmap newBitmap = Bitmap.createScaledBitmap(realImage, width,
+            height, filter);
+    return newBitmap;
+}
+
+ you want to prevent up scaling, just add 
+if (ratio >= 1.0){ return realImage;} just before newBitmap object initialisation
+
+
+
+************************************************8
+
+/// <summary>
+/// Graphics support for resizing images
+/// </summary>
+public static class Graphics
+{
+    public static Bitmap ScaleDownBitmap(Bitmap originalImage, float maxImageSize, bool filter)
+    {
+        float ratio = Math.Min((float)maxImageSize / originalImage.Width, (float)maxImageSize / originalImage.Height);
+        int width = (int)Math.Round(ratio * (float)originalImage.Width);
+        int height =(int) Math.Round(ratio * (float)originalImage.Height);
+
+        Bitmap newBitmap = Bitmap.CreateScaledBitmap(originalImage, width, height, filter);
+        return newBitmap;
+    }
+
+    public static Bitmap ScaleBitmap(Bitmap originalImage, int wantedWidth, int wantedHeight)
+    {
+        Bitmap output = Bitmap.CreateBitmap(wantedWidth, wantedHeight, Bitmap.Config.Argb8888);
+        Canvas canvas = new Canvas(output);
+        Matrix m = new Matrix();
+        m.SetScale((float)wantedWidth / originalImage.Width, (float)wantedHeight / originalImage.Height);
+        canvas.DrawBitmap(originalImage, m, new Paint());
+        return output;
+    }
+
+}

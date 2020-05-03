@@ -1,0 +1,178 @@
+package com.yotamarker.eyeresearch;
+
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.support.constraint.solver.widgets.Rectangle;
+
+public class AEye {
+    public int outlinePixel = 30; // limit how dark an outline pixel is
+    private double clusterPercent = 0.05;// fatness of outline of shapes (sand blast out)
+    private int minObjectSize = 40; // how small an objext detected can be
+    private int x; // coordinates of grid area to work on
+    private int y;
+    private AEyeClassifier eyeObj = new AEyeClassifier();
+    private boolean[] shiberArray = new boolean[] { false, false, false, false, false, false, false, false, false };
+    private int shiberCounter = 0; // active shiber
+    public void setXY(int x1, int y1) {
+        // change
+        x = x1;
+        y = y1;
+    }
+    private void setXY(int n) {
+        y = (n + 3)/3;
+        x = ((n % 3) + 1);
+    }
+    public void setMinObjectSize(int newVal) {
+        // set minimum detectable item size
+        if ((newVal >= 13)) {
+            minObjectSize = newVal;
+        }
+
+    }
+
+    public boolean overlappingRectangles(Rectangle R1, Rectangle R2) {
+        // check if 2 rectangles overlap
+        if (((R1.x > (R2.x + R2.width)) || ((R1.x + R1.width) < R2.x))) {
+            return false;
+        }
+
+        if (((R1.y > (R2.y + R2.height)) || ((R1.y + R1.height) < R2.y))) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public void setClusterPercent(double newVal) {
+        if (((newVal <= 1) && (newVal >= 0))) {
+            clusterPercent = newVal;
+        }
+
+    }
+    public Boolean is_pixel_dark_at(int xPos, int Ypos, Bitmap image, int DarkPixel) {
+        int color = image.getPixel(x, y);
+        int r= Color.red(color);;
+        int g= Color.green(color);;
+        int b=Color.blue(color);;
+        if (((r < DarkPixel)
+                && ((g < DarkPixel)
+                && (b < DarkPixel)))) {
+            return true;
+        }
+        else {
+            return false;
+        }
+
+    }
+    @Deprecated
+    public Boolean isOutLine(int xPos, int Ypos, Bitmap image, int bias) {
+        Boolean result = false;
+        byte change = 0;
+        if (((xPos > 0)
+                && ((xPos
+                < (image.getWidth() - 1))
+                && ((Ypos > 0)
+                && (Ypos
+                < (image.getHeight() - 1)))))) {
+            int color4;
+            int color5;
+            int color8;
+            color8 = image.getPixel(xPos, (Ypos + 1));
+            color4 = image.getPixel((xPos - 1), Ypos);
+            color5 = image.getPixel(xPos, Ypos);
+            if ((((Color.red(color5))
+                    > ((Color.red(color4)) - bias))
+                    && ((Color.red(color5))
+                    < ((Color.red(color4)) + bias)))) {
+                change++;
+            }
+
+            if ((((Color.green(color5))
+                    > ((Color.green(color4)) - bias))
+                    && ((Color.green(color5))
+                    < ((Color.green(color4)) + bias)))) {
+                change++;
+            }
+
+            if ((((Color.blue(color5))
+                    > ((Color.blue(color4)) - bias))
+                    && ((Color.blue(color5))
+                    < ((Color.blue(color4)) + bias)))) {
+                change++;
+            }
+
+            if ((((Color.red(color5))
+                    > ((Color.red(color8)) - bias))
+                    && ((Color.red(color5))
+                    < ((Color.red(color8)) + bias)))) {
+                change++;
+            }
+
+            if ((((Color.green(color5))
+                    > ((Color.green(color8)) - bias))
+                    && ((Color.green(color5))
+                    < ((Color.green(color8)) + bias)))) {
+                change++;
+            }
+
+            if ((((Color.blue(color5))
+                    > ((Color.blue(color8)) - bias))
+                    && ((Color.blue(color5))
+                    < ((Color.blue(color8)) + bias)))) {
+                change++;
+            }
+
+        }
+
+        if ((change == 6)) {
+            result = true;
+        }
+
+        return result;
+    }
+    public Bitmap mark_dark_pixel(int x, int y, Bitmap bmp1, byte marker) {
+        /* marker : size of marking around marked pixel (will show as colored square)
+        x,y : pixels location
+        * */
+        for (int i = 0; (i <= marker); i++) {
+            for (int j = 0; (j <= marker); j++) {
+                try {
+                    bmp1.setPixel((x + j), (y + i),Color.GREEN);
+                }
+                catch (Exception ex) {
+                }
+
+            }
+
+        }
+
+        return bmp1;
+    }
+    public char getPixelColor(int pixel) {
+        //  r= red, g = green, b = blue
+        int r = Color.red(pixel);
+        int g = Color.green(pixel);
+        int b = Color.blue(pixel);
+        char colorchar;
+        if((r>245)&&(g>245)&&(b>245)){return 'w';}//white
+        //if(){}
+        if((r<60)&&(g<60)&&(b<60)){return 'k';}// kuro in japanese
+        if((r>g)&&(g>b)&&(g<100)){return 'r';}//red
+        if((r>g)&&(g>b)&&(g>200)){return 'y';}//yellow
+        if((r>g)&&(g>b)&&((g<200)&&(g>100))){return 'o';}//orange
+        if(bigTosmall(g,r,b)||bigTosmall(g,b,r)){return 'g';}//green
+        if(bigTosmall(b,g,r)){return 'b';}//blue
+        if(bigTosmall(b,r,g)||((r>b)&&(g<20))){return 'v';}//violet
+
+        return 'u';//undifiend
+    }
+    public Boolean bigTosmall(int ... a)
+    {
+        for (int i = 0; i < a.length - 1; i++) {
+            if (!(a[i] > a[i + 1])) {
+                return false;
+            }
+        }
+        return true;
+    }
+}

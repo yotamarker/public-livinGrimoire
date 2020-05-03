@@ -1,0 +1,4 @@
+var mbTTS = TTSVoice(this)
+
+mbTTS.voiceIt(resultStr)
+if (mbTTS.TTS){speakOut(resultStr)}

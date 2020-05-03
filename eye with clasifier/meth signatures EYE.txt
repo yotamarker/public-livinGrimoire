@@ -1,0 +1,62 @@
+vars :
+
+
+Public outlinePixel As Integer = 30 ' limit how dark an outline pixel is
+        Private clusterPercent As Double = 0.05 ' fatness of outline of shapes
+        Private minObjectSize As Integer = 40 ' how small an objext detected can be
+        Private x As Integer ' coordinates of grid area to work on
+        Private y As Integer
+        Private eyeObj As EyeClasifire = New EyeClasifire()
+
+        ' eye grid
+        Private shiberArray() As Boolean = New Boolean() {False, False, False, False, False, False, False, False, False}
+        ' part in eye grid to process
+        Private shiberCounter As Integer = 0
+
+methodes :
+
+Public Sub setXY(ByVal x1 As Integer, ByVal y1 As Integer)
+Private Sub setXY(ByVal n As Integer)
+Public Sub shiberVision(ByVal bmp As Bitmap, ByRef ImageList As List(Of Rectangle), ByRef ec1 As EyeClasifire)
+            ' detect image objects in active eye grid area
+Public Sub setMinObjectSize(ByVal newVal As Integer)
+Public Shared Function overlappingRectangles(ByVal R1 As Rectangle, ByVal R2 As Rectangle) As Boolean
+
+Public Sub setClusterPercent(ByVal newVal As Double)
+Public Shared Function is_pixel_dark_at(ByVal xPos As Integer, ByVal Ypos As Integer, ByVal image As Bitmap, ByVal DarkPixel As Integer) As Boolean
+Public Shared Function isOutLine(ByVal xPos As Integer, ByVal Ypos As Integer, ByVal image As Bitmap, ByVal bias As Integer) As Boolean
+Public Shared Function mark_dark_pixel(ByVal x As Integer, ByVal y As Integer, ByVal bmp1 As Bitmap, ByVal marker As Byte)
+Public Shared Function mark_dark_pixel_white(ByVal x As Integer, ByVal y As Integer, ByVal bmp1 As Bitmap, ByVal marker As Byte)
+Public Shared Function mark_dark_pixel_black(ByVal x As Integer, ByVal y As Integer, ByVal bmp1 As Bitmap, ByVal marker As Byte)
+Public Shared Function getPixelColor(ByVal r As Integer, ByVal g As Integer, ByVal b As Integer) As Char
+Public Shared Function mark_dark_pixelRED(ByVal x As Integer, ByVal y As Integer, ByVal bmp1 As Bitmap, ByVal marker As Byte)
+Public Shared Function mark_dark_pixelBlue(ByVal x As Integer, ByVal y As Integer, ByVal bmp1 As Bitmap, ByVal marker As Byte)
+Public Function shiberActivator(ByRef bmp1 As Bitmap) As String
+            ' activate grid areas where motion was detected and detect motion
+Public Shared Function DirectionGetterX(ByRef bmp1 As Bitmap) As String
+Public Shared Function DirectionGetterY(ByRef bmp1 As Bitmap) As String
+Public Shared Function graphicContour(ByVal bmp As Bitmap, ByVal xmin As Integer, ByVal xmax As Integer, ByVal ymin As Integer, ByVal ymax As Integer) As Bitmap
+Public Shared Function graphicContourBlack(ByVal bmp As Bitmap, ByVal xmin As Integer, ByVal xmax As Integer, ByVal ymin As Integer, ByVal ymax As Integer) As Bitmap
+Public Shared Function graphicContourBlue(ByVal bmp As Bitmap, ByVal xmin As Integer, ByVal xmax As Integer, ByVal ymin As Integer, ByVal ymax As Integer) As Bitmap
+Public Shared Function graphicContourRed(ByVal bmp As Bitmap, ByVal xmin As Integer, ByVal xmax As Integer, ByVal ymin As Integer, ByVal ymax As Integer) As Bitmap
+depracated : 
+'Private Sub tracer(ByVal bmp1 As Bitmap, ByVal w1 As Integer, ByVal h1 As Integer, ByVal x As Integer, ByVal y As Integer)
+Public Shared Sub maxer(ByVal a As Integer, ByRef b As Integer)
+Public Shared Sub miner(ByVal a As Integer, ByRef b As Integer)
+Public Sub PopulateEyeData(ByVal bmp As Bitmap, ByRef ImageList As List(Of Rectangle))
+Private Function markObjects(ByVal bmp As Bitmap, ByVal objectList As List(Of Rectangle)) As Bitmap
+Private Function markPixelMatrix(ByVal bmp As Bitmap, ByVal objectList As Object) As Bitmap
+Public Sub shiber(ByVal bmp As Bitmap, ByRef ImageList As List(Of Rectangle), ByRef ec1 As EyeClasifire) 'lv2,3 analysis for biggest object only
+Public Sub PopulateEyeData2(ByVal bmp As Bitmap, ByRef ImageList As List(Of Rectangle)) 'lv2,3 analysis for biggest object only
+Public Shared Sub simpleImagesDetecter(ByVal bmp As Bitmap, ByRef ImageList As List(Of Rectangle))
+Public Shared Sub ImagesDetecter(ByVal bmp As Bitmap, ByRef ImageList As List(Of Rectangle))
+Public Shared Sub ImagesDetecterLv2(ByVal bmp As Bitmap, ByRef ImageList As List(Of Rectangle), ByRef rec1 As Rectangle)
+Public Shared Function DirectionGetter(ByRef bmp1 As Bitmap) As String
+
+
+
+
+
+
+
+

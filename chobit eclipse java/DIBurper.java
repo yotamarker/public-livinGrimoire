@@ -7,7 +7,10 @@ public class DIBurper extends DISkill {
 	ArrayList<Integer> minutesToBurp = new ArrayList<Integer>();
 	private PlayGround playGround = new PlayGround();
 	private Random randomGenerator = new Random();
+	private String burpArr[] = { "burp1", "burp2", "burp3" };
 	private Boolean algToGo = false;
+	private int lastBurpMinute = 70;
+
 	public DIBurper(Kokoro kokoro) {
 		super(kokoro);
 		minutesToBurp.clear();
@@ -33,7 +36,8 @@ public class DIBurper extends DISkill {
 				}
 			}
 		} else {
-			if (minutesToBurp.contains(minutes)) {
+			if (minutesToBurp.contains(minutes) && (lastBurpMinute != minutes)) {
+				lastBurpMinute = minutes;
 				algToGo = true;
 				this.setSentAlg(true);
 			}
@@ -44,18 +48,21 @@ public class DIBurper extends DISkill {
 	public void output(Neuron noiron) {
 		if (algToGo) {
 			algToGo = false;
+
 			noiron.algParts.add(burp());
 		}
 	}
 
 	private Algorithm burp() {
-		AbsAlgPart itte = new Chi(this.kokoro, this.getClass().getSimpleName(), new APSay(1, "burp"));
+		int x2 = randomGenerator.nextInt(3);
+		AbsAlgPart itte = new APSay(1, this.burpArr[x2]);
 		String representation = "burp";
 		ArrayList<AbsAlgPart> algParts1 = new ArrayList<>();
 		algParts1.add(itte);
 		Algorithm algorithm = new Algorithm("burp", representation, algParts1);
 		return algorithm;
 	}
+
 	@Override
 	public Boolean auto() {
 		// TODO Auto-generated method stub

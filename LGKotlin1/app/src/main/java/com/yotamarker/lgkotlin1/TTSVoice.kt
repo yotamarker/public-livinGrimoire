@@ -758,6 +758,27 @@ class TTSVoice(private val context:Context){
                 mediaPlayer.start()
 
             }
+            "burp1" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.burp1)
+
+                mediaPlayer.start()
+
+            }
+            "burp2" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.burp2)
+
+                mediaPlayer.start()
+
+            }
+            "burp3" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.burp3)
+
+                mediaPlayer.start()
+
+            }
             else -> {TTSBeefUp(inStr)}
         }
     }

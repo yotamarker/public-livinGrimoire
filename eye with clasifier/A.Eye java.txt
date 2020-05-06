@@ -146,8 +146,49 @@ public class AEye {
             }
 
         }
-
         return bmp1;
+    }
+    public Bitmap mark_dark_pixel(int x, int y, Bitmap bmp1, byte marker, int colorDotEnum) {
+        /* marker : size of marking around marked pixel (will show as colored square)
+        x,y : pixels location
+        colorDotEnum : example : Color.Green
+        * */
+        for (int i = 0; (i <= marker); i++) {
+            for (int j = 0; (j <= marker); j++) {
+                try {
+                    bmp1.setPixel((x + j), (y + i),colorDotEnum);
+                }
+                catch (Exception ex) {
+                }
+
+            }
+
+        }
+        return bmp1;
+    }
+    public Bitmap mark_dark_pixel_white(int x, int y, Bitmap bmp1, byte marker) {
+        /* marker : size of marking around marked pixel (will show as colored square)
+        x,y : pixels location
+        * */
+        return mark_dark_pixel(x,y,bmp1 ,(byte)marker,  Color.WHITE);
+    }
+    public Bitmap mark_dark_pixel_black(int x, int y, Bitmap bmp1, byte marker) {
+        /* marker : size of marking around marked pixel (will show as colored square)
+        x,y : pixels location
+        * */
+        return mark_dark_pixel(x,y,bmp1 ,(byte)marker,  Color.BLACK);
+    }
+    public Bitmap mark_dark_pixel_red(int x, int y, Bitmap bmp1, byte marker) {
+        /* marker : size of marking around marked pixel (will show as colored square)
+        x,y : pixels location
+        * */
+        return mark_dark_pixel(x,y,bmp1 ,(byte)marker,  Color.RED);
+    }
+    public Bitmap mark_dark_pixel_blue(int x, int y, Bitmap bmp1, byte marker) {
+        /* marker : size of marking around marked pixel (will show as colored square)
+        x,y : pixels location
+        * */
+        return mark_dark_pixel(x,y,bmp1 ,(byte)marker,  Color.BLUE);
     }
     public char getPixelColor(int pixel) {
         //  r= red, g = green, b = blue
@@ -194,5 +235,26 @@ public class AEye {
             default :
         }
         return  "";
+    }
+    public static int miner(int... a) {
+        //returns array minimum
+        int minimum = a[0];
+        for (int i = 1; i < a.length; i++) {
+            if (a[i] < minimum) {
+                minimum = a[i];
+            }
+        }
+        return minimum;
+    }
+
+    public static int maxer(int... a) {
+        // returns array maximum
+        int maximum = a[0];
+        for (int i = 1; i < a.length; i++) {
+            if (a[i] > maximum) {
+                maximum = a[i];
+            }
+        }
+        return maximum;
     }
 }

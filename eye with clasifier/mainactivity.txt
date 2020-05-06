@@ -185,10 +185,10 @@ public class MainActivity extends AppCompatActivity {
                 //Toast.makeText(this, Color.red(bmRotated.getPixel(10,10)) +"", Toast.LENGTH_LONG).show();
                 //test area
                 AEye aEye = new AEye();
-                String testPixel1 = aEye.getPixelColor(bmRotated.getPixel(10,10)) +"";
+                String testPixel1 = aEye.getPixelColorV2(bmRotated.getPixel(10,10)) +"";
                 Toast.makeText(this, testPixel1, Toast.LENGTH_LONG).show();
                 ttsVoice.speak(aEye.colorChartoString(testPixel1));
-                Bitmap bmpTest = aEye.mark_dark_pixel_blue(10,10,bmRotated, (byte) 50);
+                Bitmap bmpTest = aEye.mark_dark_pixel(10,10,bmRotated, (byte) 50);
                 imgPicture.setImageBitmap(bmpTest);
                 //imgPicture.setImageBitmap(bmRotated);
             } catch (Exception e) {

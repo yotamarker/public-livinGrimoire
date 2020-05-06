@@ -195,7 +195,6 @@ public class AEye {
         int r = Color.red(pixel);
         int g = Color.green(pixel);
         int b = Color.blue(pixel);
-        char colorchar;
         if((r>245)&&(g>245)&&(b>245)){return 'w';}//white
         //if(){}
         if((r<60)&&(g<60)&&(b<60)){return 'k';}// kuro in japanese
@@ -207,6 +206,35 @@ public class AEye {
         if(bigTosmall(b,r,g)||((r>b)&&(g<20))){return 'v';}//violet
 
         return 'u';//undifiend
+    }
+    public char getPixelColorV2(int pixel) {
+        //  r= red, g = green, b = blue
+        int r = Color.red(pixel);
+        int g = Color.green(pixel);
+        int b = Color.blue(pixel);
+        //black or white
+        if(bigTosmall(r+6,g,r-6)&&bigTosmall(r+6,b,r-6)){if(miner(100,r,g,b)==100){return 'w';}else if(maxer(100,r,g,b)==100){return 'k';}}
+        if(maxer(65,r,g,b)==65){return 'k';}
+        if(bigTosmall(g,r,b)||bigTosmall(g,b,r)){return 'g';}//green
+        if(bigTosmall(b+6,g,b-6)&&(maxer(r,g,b)==r)){return 'r';}//red
+        if(bigTosmall(g+6,r,g-6)&&bigTosmall(r+6,g,b)){return  'y';}//yellow
+        if(bigTosmall(r,g,b)){return  'o';}//orange
+        if(bigTosmall(b+6,g,b-6)&&(bigTosmall(b+6,g,r))){return 'a';}//azure
+        if(bigTosmall(b,g,r)||bigTosmall(b,r,g)){return  'b';}//blue
+        if(bigTosmall(b+6,r,b-6)&&bigTosmall(r+6,b,g+50)){return 'v';}//violet
+        if(bigTosmall(r,b,g)){return 'p';}//pink
+        return 'w';//white
+    }
+    public char getPixelColorBlackOrWhite(int pixel) {
+        //rapid ver for checking if the pixel black
+        //  r= red, g = green, b = blue
+        int r = Color.red(pixel);
+        int g = Color.green(pixel);
+        int b = Color.blue(pixel);
+        //black or white
+        if(bigTosmall(r+6,g,r-6)&&bigTosmall(r+6,b,r-6)){if(maxer(100,r,g,b)==100){return 'k';}}
+        if(maxer(65,r,g,b)==65){return 'k';}
+        return 'w';//white
     }
     public Boolean bigTosmall(int ... a)
             // return true if input nums decend in value
@@ -232,6 +260,14 @@ public class AEye {
                 return "white";
             case "o" :
                 return "orange";
+            case "p" :
+                return "pink";
+            case "a" :
+                return "azure";
+            case "v" :
+                return "violet";
+            case "y" :
+                return "yellow";
             default :
         }
         return  "";

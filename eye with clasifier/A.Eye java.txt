@@ -190,6 +190,22 @@ public class AEye {
         * */
         return mark_dark_pixel(x,y,bmp1 ,(byte)marker,  Color.BLUE);
     }
+    public Bitmap graphicContour(Bitmap bmp , int xmin, int xmax , int ymin , int ymax,int colorOfMarking){
+        /*
+        marks a squar inside the bitmap 
+        summon example graphicContour(bmp1,10,900,20,300,COLOR.BLUE)
+        * */
+        for (int i = xmin; i < xmax; i++) {
+            bmp = mark_dark_pixel(i,ymin,bmp, (byte) 1,colorOfMarking);
+            bmp = mark_dark_pixel(i,ymax,bmp, (byte) 1,colorOfMarking);
+        }
+        for (int i = ymin; i < ymax; i++) {
+            //((xmin, i, bmp, 1)
+            bmp = mark_dark_pixel(xmin,i,bmp, (byte) 1,colorOfMarking);
+            bmp = mark_dark_pixel(xmax,i,bmp, (byte) 1,colorOfMarking);
+        }
+        return  bmp;
+    }
     public char getPixelColor(int pixel) {
         //  r= red, g = green, b = blue
         int r = Color.red(pixel);

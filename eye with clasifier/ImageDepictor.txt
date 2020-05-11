@@ -1,0 +1,24 @@
+package com.yotamarker.eyeresearch;
+
+import android.graphics.Bitmap;
+
+public class ImageDepictor {
+    private Bitmap bmp = null;
+    private String depiction = "";
+
+    public Bitmap getBmp() {
+        return bmp;
+    }
+
+    public void setBmp(Bitmap bmp) {
+        this.bmp = bmp;
+    }
+
+    public String getDepiction() {
+        return depiction;
+    }
+
+    public void setDepiction(String depiction) {
+        this.depiction = depiction;
+    }
+}

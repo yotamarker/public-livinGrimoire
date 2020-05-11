@@ -4,6 +4,9 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.support.constraint.solver.widgets.Rectangle;
+import android.util.Log;
+
+import java.util.Arrays;
 
 public class AEye {
     public int outlinePixel = 30; // limit how dark an outline pixel is
@@ -14,6 +17,26 @@ public class AEye {
     private AEyeClassifier eyeObj = new AEyeClassifier();
     private boolean[] shiberArray = new boolean[] { false, false, false, false, false, false, false, false, false };
     private int shiberCounter = 0; // active shiber
+    //direction recognition global variables :
+    private Boolean[][] imageA = new Boolean[13][13];
+    private int changePrevMax =-1;
+    private int changePrevMin =9001;
+    private int changePrevMaxY =-1;
+    private int changePrevMinY =9001;
+    private String resulTemp ="";
+    //movement after being static :
+    private int ppm =0;
+    private int ppmin = 0;
+    private int ppmY =0;
+    private int ppminY = 0;
+    public ImageDepictor imageDepictor = new ImageDepictor();
+    // end direction recognition global variables
+    public AEye() {
+        for (int i = 0; i < imageA.length; i++){
+            Arrays.fill(imageA[i], false);
+        }
+    }
+
     public void setXY(int x1, int y1) {
         // change
         x = x1;
@@ -65,7 +88,6 @@ public class AEye {
         }
 
     }
-    @Deprecated
     public Boolean isOutLine(int xPos, int Ypos, Bitmap image, int bias) {
         Boolean result = false;
         byte change = 0;
@@ -241,16 +263,16 @@ public class AEye {
         if(bigTosmall(r,b,g)){return 'p';}//pink
         return 'w';//white
     }
-    public char getPixelColorBlackOrWhite(int pixel) {
+    public Boolean isBlackPixel(int pixel) {
         //rapid ver for checking if the pixel black
         //  r= red, g = green, b = blue
         int r = Color.red(pixel);
         int g = Color.green(pixel);
         int b = Color.blue(pixel);
         //black or white
-        if(bigTosmall(r+6,g,r-6)&&bigTosmall(r+6,b,r-6)){if(maxer(100,r,g,b)==100){return 'k';}}
-        if(maxer(65,r,g,b)==65){return 'k';}
-        return 'w';//white
+        if(bigTosmall(r+6,g,r-6)&&bigTosmall(r+6,b,r-6)){if(maxer(100,r,g,b)==100){return true;}}
+        if(maxer(65,r,g,b)==65){return true;}
+        return false;//white
     }
     public Boolean bigTosmall(int ... a)
             // return true if input nums decend in value
@@ -284,6 +306,8 @@ public class AEye {
                 return "violet";
             case "y" :
                 return "yellow";
+            case "c" :
+                return "brown";//chiiro
             default :
         }
         return  "";
@@ -308,5 +332,81 @@ public class AEye {
             }
         }
         return maximum;
+    }
+    public ImageDepictor directionGetter(Bitmap bmp1)
+    {
+        ImageDepictor imageDepictor = new ImageDepictor();
+        Boolean refreshImageA = false;
+        Boolean exploded = resulTemp.contains("explosion");
+        Boolean imploded = resulTemp.contains("implosion");
+        resulTemp="";
+        Boolean[][] imageB = new Boolean[13][13];
+        for (int i = 0; i < imageB.length; i++){
+            Arrays.fill(imageB[i], false);
+        }
+        int changeCurMax = -1;
+        int changeCurMin =9001;
+        int changeCurMaxY = -1;
+        int changeCurMinY =9001;
+        //preloop vars :
+        int jumpX = bmp1.getWidth()/14;
+        int jumpY = bmp1.getHeight()/14;
+        Boolean outlinePxl = false;
+        for (int i = 1; i <= 13; ++i) {
+            for (int j = 1; j <= 13; ++j) {
+                //Boolean outlinePxl = isOutLine(j*jumpX,i*jumpY,bmp1,20);
+                int pixel = bmp1.getPixel(j*jumpX,i*jumpY);
+                outlinePxl = isBlackPixel(pixel);
+                if(outlinePxl){bmp1=mark_dark_pixel_red(j*jumpX,i*jumpY,bmp1,(byte)30);imageB[j-1][i-1]=true;}
+                if(imageB[j-1][i-1]^imageA[j-1][i-1]){
+                    changeCurMin=miner(j,changeCurMin);changeCurMax=maxer(j,changeCurMax);
+                    changeCurMinY=miner(i,changeCurMinY);changeCurMaxY=maxer(i,changeCurMaxY);
+                }
+//                if(!(outlinePxl)){bmp1=mark_dark_pixel_red(j*jumpX,i*jumpY,bmp1,(byte)10);imageB[j][i]=true;
+//                if(!imageA[j][i]){changeCurMin=miner(j,changeCurMin);changeCurMax=maxer(j,changeCurMax);
+//                    changeCurMinY=miner(j,changeCurMinY);changeCurMaxY=maxer(j,changeCurMaxY);
+//                }
+//                }
+            }
+        }
+        Log.i("test", "shiiiiiiiiiiiiiiiit");
+        //mark movement area :
+        bmp1=mark_dark_pixel(changePrevMin*jumpX,6*jumpY,bmp1,(byte)50);
+        bmp1=mark_dark_pixel(changePrevMax*jumpX,6*jumpY,bmp1,(byte)50);
+        bmp1=mark_dark_pixel_blue(changeCurMax*jumpX,5*jumpY,bmp1,(byte)50);
+        bmp1=mark_dark_pixel_blue(changeCurMin*jumpX,5*jumpY,bmp1,(byte)50);
+        imageDepictor.setBmp(bmp1);
+        //imageDepictor.setBmp(graphicContour(bmp1,(changeCurMin+1)*jumpX,(changeCurMax+1)*jumpX,(changeCurMinY+1)*jumpY,(changeCurMaxY+1)*jumpY,Color.BLUE));
+        if(imploded){
+            if(changeCurMax-changePrevMax>changePrevMax-changeCurMin){resulTemp ="right";}
+            else{resulTemp="left";}
+            bmp1=mark_dark_pixel_black(changePrevMin*jumpX,6*jumpY,bmp1,(byte)50);
+            bmp1=mark_dark_pixel_black(changePrevMax*jumpX,6*jumpY,bmp1,(byte)50);
+        }else{
+        if(changeCurMax>changePrevMax){resulTemp+="right";}
+        if(changeCurMin<changePrevMin){resulTemp+="left";}
+        if(resulTemp.equals("rightleft")){resulTemp="explosion";}
+        if(changeCurMax<changePrevMax&&changeCurMin>changePrevMin){resulTemp="implosion";}
+        if(exploded&&changeCurMax<=changePrevMax&&changeCurMin>=changePrevMin){resulTemp="implosion";}
+
+        if(!exploded&&changeCurMax==changePrevMax&&changeCurMin==changePrevMin){resulTemp="blink";}
+        if(resulTemp.isEmpty()){resulTemp="static";}}
+
+            for (int i = 1; i <= 13; ++i) {
+                for (int j = 1; j <= 13; ++j) {
+                    imageA[j-1][i-1]=imageB[j-1][i-1];
+                }
+        }
+        changePrevMax = changeCurMax;
+        changePrevMin=changeCurMin;
+        changePrevMaxY = changeCurMax;
+        changePrevMinY=changeCurMin;
+        if(resulTemp.equals("implosion")){
+            changePrevMax = changeCurMin + (changeCurMax-changeCurMin)/2;
+            changePrevMin=changePrevMax;
+
+        }
+        imageDepictor.setDepiction(resulTemp);
+        return imageDepictor;
     }
 }

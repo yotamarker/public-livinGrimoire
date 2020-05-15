@@ -12,11 +12,7 @@ public class AEye {
     public int outlinePixel = 30; // limit how dark an outline pixel is
     private double clusterPercent = 0.05;// fatness of outline of shapes (sand blast out)
     private int minObjectSize = 40; // how small an objext detected can be
-    private int x; // coordinates of grid area to work on
-    private int y;
     private AEyeClassifier eyeObj = new AEyeClassifier();
-    private boolean[] shiberArray = new boolean[] { false, false, false, false, false, false, false, false, false };
-    private int shiberCounter = 0; // active shiber
     //direction recognition global variables :
     private Boolean[][] imageA = new Boolean[13][13];
     private int changePrevMax =-1;
@@ -37,15 +33,6 @@ public class AEye {
         }
     }
 
-    public void setXY(int x1, int y1) {
-        // change
-        x = x1;
-        y = y1;
-    }
-    private void setXY(int n) {
-        y = (n + 3)/3;
-        x = ((n % 3) + 1);
-    }
     public void setMinObjectSize(int newVal) {
         // set minimum detectable item size
         if ((newVal >= 13)) {
@@ -70,21 +57,6 @@ public class AEye {
     public void setClusterPercent(double newVal) {
         if (((newVal <= 1) && (newVal >= 0))) {
             clusterPercent = newVal;
-        }
-
-    }
-    public Boolean is_pixel_dark_at(int xPos, int Ypos, Bitmap image, int DarkPixel) {
-        int color = image.getPixel(x, y);
-        int r= Color.red(color);;
-        int g= Color.green(color);;
-        int b=Color.blue(color);;
-        if (((r < DarkPixel)
-                && ((g < DarkPixel)
-                && (b < DarkPixel)))) {
-            return true;
-        }
-        else {
-            return false;
         }
 
     }
@@ -233,31 +205,14 @@ public class AEye {
         int r = Color.red(pixel);
         int g = Color.green(pixel);
         int b = Color.blue(pixel);
-        if((r>245)&&(g>245)&&(b>245)){return 'w';}//white
-        //if(){}
-        if((r<60)&&(g<60)&&(b<60)){return 'k';}// kuro in japanese
-        if((r>g)&&(g>b)&&(g<100)){return 'r';}//red
-        if((r>g)&&(g>b)&&(g>200)){return 'y';}//yellow
-        if((r>g)&&(g>b)&&((g<200)&&(g>100))){return 'o';}//orange
-        if(bigTosmall(g,r,b)||bigTosmall(g,b,r)){return 'g';}//green
-        if(bigTosmall(b,g,r)){return 'b';}//blue
-        if(bigTosmall(b,r,g)||((r>b)&&(g<20))){return 'v';}//violet
-
-        return 'u';//undifiend
-    }
-    public char getPixelColorV2(int pixel) {
-        //  r= red, g = green, b = blue
-        int r = Color.red(pixel);
-        int g = Color.green(pixel);
-        int b = Color.blue(pixel);
         //black or white
         if(bigTosmall(r+6,g,r-6)&&bigTosmall(r+6,b,r-6)){if(miner(100,r,g,b)==100){return 'w';}else if(maxer(100,r,g,b)==100){return 'k';}}
         if(maxer(65,r,g,b)==65){return 'k';}
+        if(bigTosmall(b+10,g,b-10)&&(bigTosmall(b+10,g,r))){return 'a';}//azure
         if(bigTosmall(g,r,b)||bigTosmall(g,b,r)){return 'g';}//green
-        if(bigTosmall(b+6,g,b-6)&&(maxer(r,g,b)==r)){return 'r';}//red
-        if(bigTosmall(g+6,r,g-6)&&bigTosmall(r+6,g,b)){return  'y';}//yellow
-        if(bigTosmall(r,g,b)){return  'o';}//orange
-        if(bigTosmall(b+6,g,b-6)&&(bigTosmall(b+6,g,r))){return 'a';}//azure
+        if(bigTosmall(b+10,g,b-10)&&(maxer(r,g,b)==r)){return 'r';}//red
+        if(bigTosmall(g+10,r,g-10)&&bigTosmall(r+10,g,b)){return  'y';}//yellow
+        if(bigTosmall(r,g,b)){if(g<128){return 'c';};return  'o';}//brown or orange
         if(bigTosmall(b,g,r)||bigTosmall(b,r,g)){return  'b';}//blue
         if(bigTosmall(b+6,r,b-6)&&bigTosmall(r+6,b,g+50)){return 'v';}//violet
         if(bigTosmall(r,b,g)){return 'p';}//pink

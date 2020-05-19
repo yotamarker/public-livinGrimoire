@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.support.constraint.solver.widgets.Rectangle;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class AEye {
@@ -363,5 +364,12 @@ public class AEye {
         }
         imageDepictor.setDepiction(resulTemp);
         return imageDepictor;
+    }
+    public Bitmap markObjects(Bitmap bitmap, int color, ArrayList<Rectangle> rectangles) {
+        // marks rectangle list on bitmap
+        for (Rectangle rectangle : rectangles) {
+            bitmap = graphicContour(bitmap,rectangle.x,rectangle.x + rectangle.width,rectangle.y,rectangle.y + rectangle.height,color);
+        }
+        return bitmap;
     }
 }

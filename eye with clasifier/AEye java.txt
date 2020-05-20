@@ -1,7 +1,14 @@
 package com.yotamarker.eyeresearch;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.support.constraint.solver.widgets.Rectangle;
 import android.util.Log;
@@ -371,5 +378,18 @@ public class AEye {
             bitmap = graphicContour(bitmap,rectangle.x,rectangle.x + rectangle.width,rectangle.y,rectangle.y + rectangle.height,color);
         }
         return bitmap;
+    }
+    public Bitmap writeOnDrawable(Bitmap bmp, String text){
+
+
+        Paint paint = new Paint();
+        //paint.setStyle(Style.FILL);
+        paint.setColor(Color.BLACK);
+        paint.setTextSize(200);
+
+        Canvas canvas = new Canvas(bmp);
+        canvas.drawText(text, 0, bmp.getHeight()/2, paint);
+
+        return bmp;
     }
 }

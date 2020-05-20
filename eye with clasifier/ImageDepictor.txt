@@ -3,6 +3,7 @@ package com.yotamarker.eyeresearch;
 import android.graphics.Bitmap;
 
 public class ImageDepictor {
+    // an image and its description, usually the image would contain markings
     private Bitmap bmp = null;
     private String depiction = "";
 

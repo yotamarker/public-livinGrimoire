@@ -36,6 +36,7 @@ public class AEye {
     public ImageDepictor imageDepictor = new ImageDepictor();
     // end direction recognition global variables
     public AEye() {
+        //c'tor
         for (int i = 0; i < imageA.length; i++){
             Arrays.fill(imageA[i], false);
         }
@@ -60,78 +61,6 @@ public class AEye {
         }
 
         return true;
-    }
-
-    public void setClusterPercent(double newVal) {
-        if (((newVal <= 1) && (newVal >= 0))) {
-            clusterPercent = newVal;
-        }
-
-    }
-    public Boolean isOutLine(int xPos, int Ypos, Bitmap image, int bias) {
-        Boolean result = false;
-        byte change = 0;
-        if (((xPos > 0)
-                && ((xPos
-                < (image.getWidth() - 1))
-                && ((Ypos > 0)
-                && (Ypos
-                < (image.getHeight() - 1)))))) {
-            int color4;
-            int color5;
-            int color8;
-            color8 = image.getPixel(xPos, (Ypos + 1));
-            color4 = image.getPixel((xPos - 1), Ypos);
-            color5 = image.getPixel(xPos, Ypos);
-            if ((((Color.red(color5))
-                    > ((Color.red(color4)) - bias))
-                    && ((Color.red(color5))
-                    < ((Color.red(color4)) + bias)))) {
-                change++;
-            }
-
-            if ((((Color.green(color5))
-                    > ((Color.green(color4)) - bias))
-                    && ((Color.green(color5))
-                    < ((Color.green(color4)) + bias)))) {
-                change++;
-            }
-
-            if ((((Color.blue(color5))
-                    > ((Color.blue(color4)) - bias))
-                    && ((Color.blue(color5))
-                    < ((Color.blue(color4)) + bias)))) {
-                change++;
-            }
-
-            if ((((Color.red(color5))
-                    > ((Color.red(color8)) - bias))
-                    && ((Color.red(color5))
-                    < ((Color.red(color8)) + bias)))) {
-                change++;
-            }
-
-            if ((((Color.green(color5))
-                    > ((Color.green(color8)) - bias))
-                    && ((Color.green(color5))
-                    < ((Color.green(color8)) + bias)))) {
-                change++;
-            }
-
-            if ((((Color.blue(color5))
-                    > ((Color.blue(color8)) - bias))
-                    && ((Color.blue(color5))
-                    < ((Color.blue(color8)) + bias)))) {
-                change++;
-            }
-
-        }
-
-        if ((change == 6)) {
-            result = true;
-        }
-
-        return result;
     }
     public Bitmap mark_dark_pixel(int x, int y, Bitmap bmp1, byte marker) {
         /* marker : size of marking around marked pixel (will show as colored square)
@@ -297,6 +226,8 @@ public class AEye {
         return maximum;
     }
     public ImageDepictor directionGetter(Bitmap bmp1)
+            /* returns the direction of the latest physical movement
+            * */
     {
         ImageDepictor imageDepictor = new ImageDepictor();
         Boolean refreshImageA = false;
@@ -379,17 +310,17 @@ public class AEye {
         }
         return bitmap;
     }
-    public Bitmap writeOnDrawable(Bitmap bmp, String text){
-
-
+    public Bitmap writeOnDrawable(Bitmap bmp, String text, int colorDotEnum,int textSize,Point point){
+        /*
+        adds caption to a bitmap image
+        example of summon : writeOnDrawable(bmp,"hadouken",Color.Black,200,new Point (0,bmRotated.getHeight()/2));
+        * */
         Paint paint = new Paint();
-        //paint.setStyle(Style.FILL);
-        paint.setColor(Color.BLACK);
-        paint.setTextSize(200);
-
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(colorDotEnum);
+        paint.setTextSize(textSize);
         Canvas canvas = new Canvas(bmp);
-        canvas.drawText(text, 0, bmp.getHeight()/2, paint);
-
+        canvas.drawText(text, point.x, point.y, paint);
         return bmp;
     }
 }

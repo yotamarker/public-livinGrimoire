@@ -323,4 +323,193 @@ public class AEye {
         canvas.drawText(text, point.x, point.y, paint);
         return bmp;
     }
+    public ArrayList<Rectangle> detectObjects(Bitmap bmp){
+        /* returns list of objects rectangled locations on the bitmap
+        * */
+        int upperLid = 0;
+        int lowerLid =0;
+        int peaLeft=0;
+        int minY = bmp.getHeight()+1;int maxY = 0;int minX = 0;
+        ArrayList<Rectangle> allObjects = new ArrayList<Rectangle>();//*global
+        Boolean topLid = true;
+        Boolean isWhiteLine = true;
+        //bmp = graphicContour(bmp,0,bmp.getWidth(),0,bmp.getHeight(),Color.WHITE);
+        for (int i = 2; i < bmp.getHeight()-2; i++) {
+            isWhiteLine=true;
+            for (int j = 0; j < bmp.getWidth()-2; j++) {
+                Boolean blackPxl = isBlackPixel(bmp.getPixel(j,i));
+                if(blackPxl){isWhiteLine=false;break;}
+            }
+            if(!isWhiteLine&&topLid){upperLid=i;topLid=!topLid;}
+            else if(isWhiteLine&&!topLid){lowerLid=i;topLid=!topLid;
+            Boolean leftLid = true;
+            Boolean whitePillar = true;
+                for (int iB = 10; iB < bmp.getWidth()-10; iB++) {
+                    whitePillar=true;
+                    for (int jB = upperLid; jB < lowerLid; jB++) {
+                        Boolean isBlkPxl = isBlackPixel(bmp.getPixel(iB,jB));
+                        if(isBlkPxl){whitePillar=false;break;}
+                    }
+                    if(!whitePillar&&leftLid){peaLeft = iB;leftLid=!leftLid;}
+                    else if(whitePillar&&!leftLid){int h = lowerLid-upperLid;int w = iB-peaLeft;
+                    if(h>20&&w>20){allObjects.add(new RectangleCtor(peaLeft,upperLid,iB,lowerLid));upperLid=0;lowerLid=0;peaLeft=0;}
+                    }
+                }
+            }
+
+        }
+        return allObjects;
+    }
+    public Bitmap detectObjects2(Bitmap bmp){
+        /* returns list of objects rectangled locations on the bitmap
+         * */
+        Bitmap result = bmp;
+        int upperLid = 0;
+        int lowerLid =0;
+        int peaLeft=0;
+        int minY = bmp.getHeight()+1;int maxY = 0;int minX = 0;
+        ArrayList<Rectangle> allObjects = new ArrayList<Rectangle>();//*global
+        Boolean topLid = true;
+        Boolean isWhiteLine = true;
+        //bmp = graphicContour(bmp,0,bmp.getWidth(),0,bmp.getHeight(),Color.WHITE);
+        for (int i = 2; i < bmp.getHeight()-2; i++) {
+            isWhiteLine = true;
+            for (int j = 0; j < bmp.getWidth() - 2; j++) {
+                Boolean blackPxl = isBlackPixel(bmp.getPixel(j, i));
+                if (blackPxl) {
+                    isWhiteLine = false;
+                    break;
+                }
+            }
+            if (!isWhiteLine && topLid) {
+                upperLid = i;
+                topLid = !topLid;
+                for (int jm = 1; jm < bmp.getWidth() - 10; jm++) {
+                    result.setPixel(jm, upperLid + 1, Color.GREEN);
+                    result.setPixel(jm, upperLid + 2, Color.GREEN);
+                    result.setPixel(jm, upperLid + 3, Color.GREEN);
+                    result.setPixel(jm, upperLid + 4, Color.GREEN);
+                }
+            } else if (isWhiteLine && !topLid && i - upperLid > 200) {
+                lowerLid = i;
+                topLid = !topLid;
+                for (int jm = 1; jm < bmp.getWidth() - 10; jm++) {
+                    result.setPixel(jm, lowerLid + 1, Color.RED);
+                    result.setPixel(jm, lowerLid + 2, Color.RED);
+                    result.setPixel(jm, lowerLid + 3, Color.RED);
+                    result.setPixel(jm, lowerLid + 4, Color.RED);
+                }
+
+            Boolean leftLid = true;
+            Boolean whitePillar = true;
+
+            for (int iB = 10; iB < bmp.getWidth() - 100; iB++) {
+                int wtest = bmp.getWidth() - 99;
+                if (iB == wtest) {
+                    whitePillar = true;
+                }
+                whitePillar = true;
+                int ul = upperLid;
+                int ll = lowerLid;
+                for (int jB = ul; jB < ll; jB++) {
+                    Boolean isBlkPxl = isBlackPixel(bmp.getPixel(iB, jB));
+                    if (isBlkPxl) {
+                        whitePillar = false;
+                        break;
+                    }
+                }
+                if (!whitePillar && leftLid) {
+                    peaLeft = iB;
+                    leftLid = !leftLid;
+                    result = graphicContour(result, peaLeft, peaLeft + 4, upperLid + 5, lowerLid - 5, Color.BLUE);
+                } else if (whitePillar && !leftLid) {
+                    int h = lowerLid - upperLid;
+                    int w = iB - peaLeft;
+                    if (w > 20) {
+                        graphicContour(result, iB, iB + 4, upperLid + 5, lowerLid - 5, Color.YELLOW);
+                        leftLid = !leftLid;
+                        allObjects.add(new RectangleCtor(peaLeft, upperLid, iB, lowerLid));
+                        //upperLid=0;lowerLid=0;
+                        //peaLeft=0;
+                    }
+                }
+            }
+        }//test
+            }
+        return result;
+    }
+    public Bitmap detectObjectsV3(Bitmap bmp){
+        /* returns list of objects rectangled locations on the bitmap
+         * */
+        Bitmap result = bmp;
+        int upperLid = 0;
+        int lowerLid =0;
+        int peaLeft=0;
+        ArrayList<Rectangle> allObjects = new ArrayList<Rectangle>();//*global
+        Boolean topLid = true;
+        Boolean isWhiteLine = true;
+        //bmp = graphicContour(bmp,0,bmp.getWidth(),0,bmp.getHeight(),Color.WHITE);
+        int i = 2;
+        while(i < bmp.getHeight()-2){
+            isWhiteLine = true;
+            for (int j = 0; j < bmp.getWidth() - 2; j++) {
+                Boolean blackPxl = isBlackPixel(bmp.getPixel(j, i));
+                if (blackPxl) {
+                    isWhiteLine = false;
+                    break;
+                }
+            }
+            if (!isWhiteLine && topLid) {
+                upperLid = i;
+                topLid = !topLid;
+                i+=199;
+                result = lineMarker(result,upperLid,4,Color.GREEN);
+            } else if (isWhiteLine && !topLid ) {
+                lowerLid = i;
+                topLid = !topLid;
+                result = lineMarker(result,lowerLid,4,Color.RED);
+                Boolean leftLid = true;
+                Boolean whitePillar = true;
+                int iB = 10;
+                while (iB < bmp.getWidth() - 100){
+                    int wtest = bmp.getWidth() - 99;
+                    if (iB == wtest) {
+                        whitePillar = true;
+                    }
+                    whitePillar = true;
+                    for (int jB = upperLid; jB < lowerLid; jB++) {
+                        // loop b
+                        Boolean isBlkPxl = isBlackPixel(bmp.getPixel(iB, jB));
+                        if (isBlkPxl) {
+                            whitePillar = false;
+                            break;
+                        }
+                    }
+                    if (!whitePillar && leftLid) {
+                        peaLeft = iB;
+                        leftLid = !leftLid;
+                        iB+=20;
+                        result = graphicContour(result, peaLeft, peaLeft + 4, upperLid + 5, lowerLid - 5, Color.BLUE);
+                    } else if (whitePillar && !leftLid) {
+                        int h = lowerLid - upperLid;
+                        int w = iB - peaLeft;
+                        graphicContour(result, iB, iB + 4, upperLid + 5, lowerLid - 5, Color.YELLOW);
+                        leftLid = !leftLid;
+                        allObjects.add(new RectangleCtor(peaLeft, upperLid, iB, lowerLid));
+                    }
+                    iB++;
+                }
+            }
+            i++;
+        }//end main loop
+        return result;
+    }
+    private Bitmap lineMarker(Bitmap bmp, int y, int thicness,int color) {
+        for (int jm = 1; jm < bmp.getWidth() - 10; jm++) {
+            for (int i = 0; i <thicness ; i++) {
+                bmp.setPixel(jm, y + i, color);
+            }
+        }
+        return bmp;
+    }
 }

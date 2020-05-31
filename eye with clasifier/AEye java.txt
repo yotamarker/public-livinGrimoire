@@ -15,6 +15,8 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class AEye {
     public int outlinePixel = 30; // limit how dark an outline pixel is
@@ -35,6 +37,9 @@ public class AEye {
     private int ppminY = 0;
     public ImageDepictor imageDepictor = new ImageDepictor();
     // end direction recognition global variables
+    public ArrayList<Rectangle> allObjectsTest = new ArrayList<Rectangle>();//*global//dijktra test
+    //public ArrayList<String> visited = new ArrayList<String>();
+    Set<String> visited = new HashSet<>();
     public AEye() {
         //c'tor
         for (int i = 0; i < imageA.length; i++){
@@ -167,7 +172,7 @@ public class AEye {
         return false;//white
     }
     public Boolean bigTosmall(int ... a)
-            // return true if input nums decend in value
+    // return true if input nums decend in value
     {
         for (int i = 0; i < a.length - 1; i++) {
             if (!(a[i] > a[i + 1])) {
@@ -226,8 +231,8 @@ public class AEye {
         return maximum;
     }
     public ImageDepictor directionGetter(Bitmap bmp1)
-            /* returns the direction of the latest physical movement
-            * */
+        /* returns the direction of the latest physical movement
+         * */
     {
         ImageDepictor imageDepictor = new ImageDepictor();
         Boolean refreshImageA = false;
@@ -277,19 +282,19 @@ public class AEye {
             bmp1=mark_dark_pixel_black(changePrevMin*jumpX,6*jumpY,bmp1,(byte)50);
             bmp1=mark_dark_pixel_black(changePrevMax*jumpX,6*jumpY,bmp1,(byte)50);
         }else{
-        if(changeCurMax>changePrevMax){resulTemp+="right";}
-        if(changeCurMin<changePrevMin){resulTemp+="left";}
-        if(resulTemp.equals("rightleft")){resulTemp="explosion";}
-        if(changeCurMax<changePrevMax&&changeCurMin>changePrevMin){resulTemp="implosion";}
-        if(exploded&&changeCurMax<=changePrevMax&&changeCurMin>=changePrevMin){resulTemp="implosion";}
+            if(changeCurMax>changePrevMax){resulTemp+="right";}
+            if(changeCurMin<changePrevMin){resulTemp+="left";}
+            if(resulTemp.equals("rightleft")){resulTemp="explosion";}
+            if(changeCurMax<changePrevMax&&changeCurMin>changePrevMin){resulTemp="implosion";}
+            if(exploded&&changeCurMax<=changePrevMax&&changeCurMin>=changePrevMin){resulTemp="implosion";}
 
-        if(!exploded&&changeCurMax==changePrevMax&&changeCurMin==changePrevMin){resulTemp="blink";}
-        if(resulTemp.isEmpty()){resulTemp="static";}}
+            if(!exploded&&changeCurMax==changePrevMax&&changeCurMin==changePrevMin){resulTemp="blink";}
+            if(resulTemp.isEmpty()){resulTemp="static";}}
 
-            for (int i = 1; i <= 13; ++i) {
-                for (int j = 1; j <= 13; ++j) {
-                    imageA[j-1][i-1]=imageB[j-1][i-1];
-                }
+        for (int i = 1; i <= 13; ++i) {
+            for (int j = 1; j <= 13; ++j) {
+                imageA[j-1][i-1]=imageB[j-1][i-1];
+            }
         }
         changePrevMax = changeCurMax;
         changePrevMin=changeCurMin;
@@ -325,7 +330,7 @@ public class AEye {
     }
     public ArrayList<Rectangle> detectObjects(Bitmap bmp){
         /* returns list of objects rectangled locations on the bitmap
-        * */
+         * */
         int upperLid = 0;
         int lowerLid =0;
         int peaLeft=0;
@@ -342,8 +347,8 @@ public class AEye {
             }
             if(!isWhiteLine&&topLid){upperLid=i;topLid=!topLid;}
             else if(isWhiteLine&&!topLid){lowerLid=i;topLid=!topLid;
-            Boolean leftLid = true;
-            Boolean whitePillar = true;
+                Boolean leftLid = true;
+                Boolean whitePillar = true;
                 for (int iB = 10; iB < bmp.getWidth()-10; iB++) {
                     whitePillar=true;
                     for (int jB = upperLid; jB < lowerLid; jB++) {
@@ -352,7 +357,7 @@ public class AEye {
                     }
                     if(!whitePillar&&leftLid){peaLeft = iB;leftLid=!leftLid;}
                     else if(whitePillar&&!leftLid){int h = lowerLid-upperLid;int w = iB-peaLeft;
-                    if(h>20&&w>20){allObjects.add(new RectangleCtor(peaLeft,upperLid,iB,lowerLid));upperLid=0;lowerLid=0;peaLeft=0;}
+                        if(h>20&&w>20){allObjects.add(new RectangleCtor(peaLeft,upperLid,iB,lowerLid));upperLid=0;lowerLid=0;peaLeft=0;}
                     }
                 }
             }
@@ -400,42 +405,42 @@ public class AEye {
                     result.setPixel(jm, lowerLid + 4, Color.RED);
                 }
 
-            Boolean leftLid = true;
-            Boolean whitePillar = true;
+                Boolean leftLid = true;
+                Boolean whitePillar = true;
 
-            for (int iB = 10; iB < bmp.getWidth() - 100; iB++) {
-                int wtest = bmp.getWidth() - 99;
-                if (iB == wtest) {
+                for (int iB = 10; iB < bmp.getWidth() - 100; iB++) {
+                    int wtest = bmp.getWidth() - 99;
+                    if (iB == wtest) {
+                        whitePillar = true;
+                    }
                     whitePillar = true;
-                }
-                whitePillar = true;
-                int ul = upperLid;
-                int ll = lowerLid;
-                for (int jB = ul; jB < ll; jB++) {
-                    Boolean isBlkPxl = isBlackPixel(bmp.getPixel(iB, jB));
-                    if (isBlkPxl) {
-                        whitePillar = false;
-                        break;
+                    int ul = upperLid;
+                    int ll = lowerLid;
+                    for (int jB = ul; jB < ll; jB++) {
+                        Boolean isBlkPxl = isBlackPixel(bmp.getPixel(iB, jB));
+                        if (isBlkPxl) {
+                            whitePillar = false;
+                            break;
+                        }
                     }
-                }
-                if (!whitePillar && leftLid) {
-                    peaLeft = iB;
-                    leftLid = !leftLid;
-                    result = graphicContour(result, peaLeft, peaLeft + 4, upperLid + 5, lowerLid - 5, Color.BLUE);
-                } else if (whitePillar && !leftLid) {
-                    int h = lowerLid - upperLid;
-                    int w = iB - peaLeft;
-                    if (w > 20) {
-                        graphicContour(result, iB, iB + 4, upperLid + 5, lowerLid - 5, Color.YELLOW);
+                    if (!whitePillar && leftLid) {
+                        peaLeft = iB;
                         leftLid = !leftLid;
-                        allObjects.add(new RectangleCtor(peaLeft, upperLid, iB, lowerLid));
-                        //upperLid=0;lowerLid=0;
-                        //peaLeft=0;
+                        result = graphicContour(result, peaLeft, peaLeft + 4, upperLid + 5, lowerLid - 5, Color.BLUE);
+                    } else if (whitePillar && !leftLid) {
+                        int h = lowerLid - upperLid;
+                        int w = iB - peaLeft;
+                        if (w > 20) {
+                            graphicContour(result, iB, iB + 4, upperLid + 5, lowerLid - 5, Color.YELLOW);
+                            leftLid = !leftLid;
+                            allObjects.add(new RectangleCtor(peaLeft, upperLid, iB, lowerLid));
+                            //upperLid=0;lowerLid=0;
+                            //peaLeft=0;
+                        }
                     }
                 }
-            }
-        }//test
-            }
+            }//test
+        }
         return result;
     }
     public Bitmap detectObjectsV3(Bitmap bmp){
@@ -488,7 +493,7 @@ public class AEye {
                     if (!whitePillar && leftLid) {
                         peaLeft = iB;
                         leftLid = !leftLid;
-                        iB+=20;
+                        iB+=50;
                         result = graphicContour(result, peaLeft, peaLeft + 4, upperLid + 5, lowerLid - 5, Color.BLUE);
                     } else if (whitePillar && !leftLid) {
                         int h = lowerLid - upperLid;
@@ -511,5 +516,104 @@ public class AEye {
             }
         }
         return bmp;
+    }
+    public Bitmap detectObjectsV4(Bitmap bmp){
+
+        //dijkstra
+        /* returns list of objects rectangled locations on the bitmap
+         * */
+        Bitmap result = bmp;
+        int upperLid = 0;
+        int lowerLid =0;
+        int peaLeft=0;
+        ArrayList<Rectangle> allObjects = new ArrayList<Rectangle>();//*global
+        Boolean topLid = true;
+        Boolean isWhiteLine = true;
+        //bmp = graphicContour(bmp,0,bmp.getWidth(),0,bmp.getHeight(),Color.WHITE);
+        allObjectsTest = new ArrayList<Rectangle>();//*global//dijktra test
+        visited = new HashSet<>();
+        int i = 2;
+        while(i < bmp.getHeight()-2){
+            isWhiteLine = true;
+            for (int j = 0; j < bmp.getWidth() - 2; j++) {
+                Boolean blackPxl = isBlackPixel(bmp.getPixel(j, i));
+                if (blackPxl) {
+                    isWhiteLine = false;
+                    break;
+                }
+            }
+            if (!isWhiteLine && topLid) {
+                upperLid = i;
+                topLid = !topLid;
+                i+=199;
+                result = lineMarker(result,upperLid,4,Color.GREEN);
+            } else if (isWhiteLine && !topLid ) {
+                lowerLid = i;
+                topLid = !topLid;
+                result = lineMarker(result,lowerLid,4,Color.RED);
+                RectangleCtor bounds = new RectangleCtor(1,upperLid,bmp.getWidth()-10,lowerLid);
+                visited = new HashSet<>();
+                for (int iB = upperLid; iB < lowerLid ; iB++) {
+                    for (int jB = 10; jB < bmp.getWidth(); jB++) {
+                        Boolean blackPxl2 = isBlackPixel(bmp.getPixel(jB, iB));
+                        if(blackPxl2){
+                            allObjectsTest.add(new RectangleCtor(jB,iB,jB,iB));
+                            starDuskBreaker(jB,iB,bmp,new RectangleCtor(10,upperLid,bmp.getWidth(),lowerLid),0);}
+                    }
+                }
+            }
+            i++;
+            //mark recs
+        }//end main loop
+        for (Rectangle rec : allObjectsTest)
+        {
+            if(rec.height>10&&rec.width>10){
+                for (int j = rec.x; j <miner(bmp.getWidth(),rec.x+2*rec.width) ; j++) {
+                    boolean whiteC = true;
+                    for (int k = rec.y; k < rec.y+rec.height; k++) {
+                        Boolean blackPxl3 = isBlackPixel(bmp.getPixel(j, k));
+                        if (blackPxl3) {
+                            whiteC = false;
+                            break;
+                        }
+                    }
+                    if(whiteC){result = graphicContour(result,rec.x,j,rec.y,rec.y+rec.height,Color.YELLOW);break;}
+                }
+            }
+            //result = graphicContour(result,rec.x,rec.x + rec.width,rec.y,rec.y+rec.height,Color.BLUE);
+        }
+        return result;
+    }
+    public void dijk(int x,int y,Bitmap bmp,Rectangle bounds){
+        if(visited.contains(x+"_"+y)){return;}
+        visited.add(x+"_"+y);
+        Boolean blackPxl = isBlackPixel(bmp.getPixel(x, y));
+        if(blackPxl){
+            Rectangle r2 = allObjectsTest.get(allObjectsTest.size()-1);
+            r2.setBounds(miner(x,r2.x),miner(y,r2.y),maxer(r2.width,x-r2.x),maxer(r2.height,y-r2.y));
+            allObjectsTest.set(allObjectsTest.size()-1,r2);
+            if(bounds.contains(x,y+1)){dijk(x,y+1,bmp,bounds);}
+            if(bounds.contains(x,y-1)){dijk(x,y-1,bmp,bounds);}
+            if(bounds.contains(x+1,y)){dijk(x+1,y,bmp,bounds);}
+            if(bounds.contains(x-1,y)){dijk(x-1,y,bmp,bounds);}
+        }
+    }
+    public void starDuskBreaker(int x,int y,Bitmap bmp,Rectangle bounds,int whiteCounter){
+        if(visited.contains(x+"_"+y)){return;}
+        visited.add(x+"_"+y);
+        Boolean blackPxl = isBlackPixel(bmp.getPixel(x, y));
+        int counter = whiteCounter;
+        if(whiteCounter<30){
+            if(blackPxl){
+                counter = 0;
+                Rectangle r2 = allObjectsTest.get(allObjectsTest.size()-1);
+                r2.setBounds(miner(x,r2.x),miner(y,r2.y),maxer(r2.width,x-r2.x),maxer(r2.height,y-r2.y));
+                allObjectsTest.set(allObjectsTest.size()-1,r2);
+            }else{counter++;}
+            if(bounds.contains(x,y+1)){starDuskBreaker(x,y+1,bmp,bounds,counter);}
+            if(bounds.contains(x,y-1)){starDuskBreaker(x,y-1,bmp,bounds,counter);}
+            if(bounds.contains(x+1,y)){starDuskBreaker(x+1,y,bmp,bounds,counter);}
+            if(bounds.contains(x-1,y)){starDuskBreaker(x-1,y,bmp,bounds,counter);}
+        }
     }
 }

@@ -616,4 +616,95 @@ public class AEye {
             if(bounds.contains(x-1,y)){starDuskBreaker(x-1,y,bmp,bounds,counter);}
         }
     }
+    public void starDuskBreakerPerfectWarrior(int x,int y,Bitmap bmp,Rectangle bounds,int whiteCounter){
+        //Boolean passedThrough = p1.x<x&&p1.y<y;
+        if(visited.contains(x+"_"+y)||visited.size()>Integer.MAX_VALUE){return;}
+        visited.add(x+"_"+y);
+        Boolean blackPxl = isBlackPixel(bmp.getPixel(x, y));
+        int counter = whiteCounter;
+        if(whiteCounter<30){
+            if(blackPxl){
+                counter = 0;
+                Rectangle r2 = allObjectsTest.get(allObjectsTest.size()-1);
+                r2.setBounds(miner(x,r2.x),miner(y,r2.y),maxer(r2.width,x-r2.x),maxer(r2.height,y-r2.y));
+                allObjectsTest.set(allObjectsTest.size()-1,r2);
+            }else{counter++;}
+            if(bounds.contains(x,y+1)){starDuskBreakerPerfectWarrior(x,y+1,bmp,bounds,counter);}
+            if(bounds.contains(x,y-1)){starDuskBreakerPerfectWarrior(x,y-1,bmp,bounds,counter);}
+            if(bounds.contains(x+1,y)){starDuskBreakerPerfectWarrior(x+1,y,bmp,bounds,counter);}
+            if(bounds.contains(x-1,y)){starDuskBreakerPerfectWarrior(x-1,y,bmp,bounds,counter);}
+        }
+    }
+    public Bitmap detectObjectsV5(Bitmap bmp){
+
+        //dijkstra
+        /* returns list of objects rectangled locations on the bitmap
+         * */
+        Bitmap result = bmp;
+        int upperLid = 0;
+        int lowerLid =0;
+        int peaLeft=0;
+        ArrayList<Rectangle> allObjects = new ArrayList<Rectangle>();//*global
+        Boolean topLid = true;
+        Boolean isWhiteLine = true;
+        //bmp = graphicContour(bmp,0,bmp.getWidth(),0,bmp.getHeight(),Color.WHITE);
+        allObjectsTest = new ArrayList<Rectangle>();//*global//dijktra test
+        visited = new HashSet<>();
+        int i = 2;
+        while(i < bmp.getHeight()-2){
+            isWhiteLine = true;
+            for (int j = 0; j < bmp.getWidth() - 2; j++) {
+                Boolean blackPxl = isBlackPixel(bmp.getPixel(j, i));
+                if (blackPxl) {
+                    isWhiteLine = false;
+                    break;
+                }
+            }
+            if (!isWhiteLine && topLid) {
+                upperLid = i;
+                topLid = !topLid;
+                i+=199;
+                visited.clear();
+                result = lineMarker(result,upperLid,4,Color.GREEN);
+            } else if (isWhiteLine && !topLid ) {
+                lowerLid = i;
+                topLid = !topLid;
+                result = lineMarker(result, lowerLid, 4, Color.RED);
+                RectangleCtor bounds = new RectangleCtor(1, upperLid, bmp.getWidth() - 10, lowerLid);
+                visited = new HashSet<>();
+                //TODO size conditional here
+                if(lowerLid-upperLid<500){
+                for (int iB = upperLid; iB < lowerLid; iB++) {
+                    for (int jB = 10; jB < bmp.getWidth(); jB++) {
+                        Boolean blackPxl2 = isBlackPixel(bmp.getPixel(jB, iB));
+                        if (blackPxl2) {
+                            allObjectsTest.add(new RectangleCtor(jB, iB, jB, iB));
+                            starDuskBreakerPerfectWarrior(jB, iB, bmp, new RectangleCtor(10, upperLid, bmp.getWidth(), lowerLid), 0);
+                        }
+                    }
+                }
+            }
+            }
+            i++;
+            //mark recs
+        }//end main loop
+        for (Rectangle rec : allObjectsTest)
+        {
+            if(rec.height>10&&rec.width>10){
+                for (int j = rec.x; j <miner(bmp.getWidth(),rec.x+2*rec.width) ; j++) {
+                    boolean whiteC = true;
+                    for (int k = rec.y; k < rec.y+rec.height; k++) {
+                        Boolean blackPxl3 = isBlackPixel(bmp.getPixel(j, k));
+                        if (blackPxl3) {
+                            whiteC = false;
+                            break;
+                        }
+                    }
+                    if(whiteC){result = graphicContour(result,rec.x,j,rec.y,rec.y+rec.height,Color.YELLOW);break;}
+                }
+            }
+            //result = graphicContour(result,rec.x,rec.x + rec.width,rec.y,rec.y+rec.height,Color.BLUE);
+        }
+        return result;
+    }
 }

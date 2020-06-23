@@ -1,0 +1,690 @@
+package com.yotamarker.eyeresearch;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.drawable.BitmapDrawable;
+import android.media.MediaPlayer;
+import android.support.constraint.solver.widgets.Rectangle;
+import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+public class AEye {
+    private int minObjectSize = 40; // how small an objext detected can be
+    private AEyeClassifier eyeObj = new AEyeClassifier();
+    private final int midShiber =1;
+    //direction recognition global variables :
+    private Boolean[][] imageA = new Boolean[13][13];
+    private int changePrevMax =-1;
+    private int changePrevMin =9001;
+    private int changePrevMaxY =-1;
+    private int changePrevMinY =9001;
+    private String resulTemp ="";
+    //movement after being static :
+    private int ppm =0;
+    private int ppmin = 0;
+    private int ppmY =0;
+    private int ppminY = 0;
+    public ImageDepictor imageDepictor = new ImageDepictor();
+    // end direction recognition global variables
+    public ArrayList<Rectangle> allObjectsTest = new ArrayList<Rectangle>();//*global//dijktra test
+    //public ArrayList<String> visited = new ArrayList<String>();
+    private Set<String> visited = new HashSet<>();
+    public AEye() {
+        //c'tor
+        for (int i = 0; i < imageA.length; i++){
+            Arrays.fill(imageA[i], false);
+        }
+    }
+
+    public void setMinObjectSize(int newVal) {
+        // set minimum detectable item size
+        if ((newVal >= 13)) {
+            minObjectSize = newVal;
+        }
+
+    }
+
+    public boolean overlappingRectangles(Rectangle R1, Rectangle R2) {
+        // check if 2 rectangles overlap
+        if (((R1.x > (R2.x + R2.width)) || ((R1.x + R1.width) < R2.x))) {
+            return false;
+        }
+
+        if (((R1.y > (R2.y + R2.height)) || ((R1.y + R1.height) < R2.y))) {
+            return false;
+        }
+
+        return true;
+    }
+    public Bitmap mark_dark_pixel(int x, int y, Bitmap bmp1, byte marker) {
+        /* marker : size of marking around marked pixel (will show as colored square)
+        x,y : pixels location
+        * */
+        for (int i = 0; (i <= marker); i++) {
+            for (int j = 0; (j <= marker); j++) {
+                try {
+                    bmp1.setPixel((x + j), (y + i),Color.GREEN);
+                }
+                catch (Exception ex) {
+                }
+
+            }
+
+        }
+        return bmp1;
+    }
+    public Bitmap mark_dark_pixel(int x, int y, Bitmap bmp1, byte marker, int colorDotEnum) {
+        /* marker : size of marking around marked pixel (will show as colored square)
+        x,y : pixels location
+        colorDotEnum : example : Color.Green
+        * */
+        for (int i = 0; (i <= marker); i++) {
+            for (int j = 0; (j <= marker); j++) {
+                try {
+                    bmp1.setPixel((x + j), (y + i),colorDotEnum);
+                }
+                catch (Exception ex) {
+                }
+
+            }
+
+        }
+        return bmp1;
+    }
+    public Bitmap mark_dark_pixel_white(int x, int y, Bitmap bmp1, byte marker) {
+        /* marker : size of marking around marked pixel (will show as colored square)
+        x,y : pixels location
+        * */
+        return mark_dark_pixel(x,y,bmp1 ,(byte)marker,  Color.WHITE);
+    }
+    public Bitmap mark_dark_pixel_black(int x, int y, Bitmap bmp1, byte marker) {
+        /* marker : size of marking around marked pixel (will show as colored square)
+        x,y : pixels location
+        * */
+        return mark_dark_pixel(x,y,bmp1 ,(byte)marker,  Color.BLACK);
+    }
+    public Bitmap mark_dark_pixel_red(int x, int y, Bitmap bmp1, byte marker) {
+        /* marker : size of marking around marked pixel (will show as colored square)
+        x,y : pixels location
+        * */
+        return mark_dark_pixel(x,y,bmp1 ,(byte)marker,  Color.RED);
+    }
+    public Bitmap mark_dark_pixel_blue(int x, int y, Bitmap bmp1, byte marker) {
+        /* marker : size of marking around marked pixel (will show as colored square)
+        x,y : pixels location
+        * */
+        return mark_dark_pixel(x,y,bmp1 ,(byte)marker,  Color.BLUE);
+    }
+    public Bitmap graphicContour(Bitmap bmp , int xmin, int xmax , int ymin , int ymax,int colorOfMarking){
+        /*
+        marks a squar inside the bitmap
+        summon example graphicContour(bmp1,10,900,20,300,COLOR.BLUE)
+        * */
+        for (int i = xmin; i < xmax; i++) {
+            bmp = mark_dark_pixel(i,ymin,bmp, (byte) 1,colorOfMarking);
+            bmp = mark_dark_pixel(i,ymax,bmp, (byte) 1,colorOfMarking);
+        }
+        for (int i = ymin; i < ymax; i++) {
+            //((xmin, i, bmp, 1)
+            bmp = mark_dark_pixel(xmin,i,bmp, (byte) 1,colorOfMarking);
+            bmp = mark_dark_pixel(xmax,i,bmp, (byte) 1,colorOfMarking);
+        }
+        return  bmp;
+    }
+    public char getPixelColor(int pixel) {
+        //  r= red, g = green, b = blue
+        int r = Color.red(pixel);
+        int g = Color.green(pixel);
+        int b = Color.blue(pixel);
+        //black or white
+        if(bigTosmall(r+6,g,r-6)&&bigTosmall(r+6,b,r-6)){if(miner(100,r,g,b)==100){return 'w';}else if(maxer(100,r,g,b)==100){return 'k';}}
+        if(maxer(65,r,g,b)==65){return 'k';}
+        if(bigTosmall(b+10,g,b-10)&&(bigTosmall(b+10,g,r))){return 'a';}//azure
+        if(bigTosmall(g,r,b)||bigTosmall(g,b,r)){return 'g';}//green
+        if(bigTosmall(b+10,g,b-10)&&(maxer(r,g,b)==r)){return 'r';}//red
+        if(bigTosmall(g+10,r,g-10)&&bigTosmall(r+10,g,b)){return  'y';}//yellow
+        if(bigTosmall(r,g,b)){if(g<128){return 'c';};return  'o';}//brown or orange
+        if(bigTosmall(b,g,r)||bigTosmall(b,r,g)){return  'b';}//blue
+        if(bigTosmall(b+6,r,b-6)&&bigTosmall(r+6,b,g+50)){return 'v';}//violet
+        if(bigTosmall(r,b,g)){return 'p';}//pink
+        return 'w';//white
+    }
+    public Boolean isBlackPixel(int pixel) {
+        //rapid ver for checking if the pixel black
+        //  r= red, g = green, b = blue
+        int r = Color.red(pixel);
+        int g = Color.green(pixel);
+        int b = Color.blue(pixel);
+        //black or white
+        if(bigTosmall(r+6,g,r-6)&&bigTosmall(r+6,b,r-6)){if(maxer(100,r,g,b)==100){return true;}}
+        if(maxer(65,r,g,b)==65){return true;}
+        return false;//white
+    }
+    public Boolean bigTosmall(int ... a)
+    // return true if input nums decend in value
+    {
+        for (int i = 0; i < a.length - 1; i++) {
+            if (!(a[i] > a[i + 1])) {
+                return false;
+            }
+        }
+        return true;
+    }
+    public String colorChartoString(String ch){
+        switch(ch) {
+            case "r" :
+                return "red";
+            case "g" :
+                return "green";
+            case "b" :
+                return "blue";
+            case "k" :
+                return "black";
+            case "w" :
+                return "white";
+            case "o" :
+                return "orange";
+            case "p" :
+                return "pink";
+            case "a" :
+                return "azure";
+            case "v" :
+                return "violet";
+            case "y" :
+                return "yellow";
+            case "c" :
+                return "brown";//chiiro
+            default :
+        }
+        return  "";
+    }
+    public static int miner(int... a) {
+        //returns array minimum
+        int minimum = a[0];
+        for (int i = 1; i < a.length; i++) {
+            if (a[i] < minimum) {
+                minimum = a[i];
+            }
+        }
+        return minimum;
+    }
+
+    public static int maxer(int... a) {
+        // returns array maximum
+        int maximum = a[0];
+        for (int i = 1; i < a.length; i++) {
+            if (a[i] > maximum) {
+                maximum = a[i];
+            }
+        }
+        return maximum;
+    }
+    public ImageDepictor directionGetter(Bitmap bmp1)
+        /* returns the direction of the latest physical movement
+         * TODO add y axis
+         * */
+    {
+        ImageDepictor imageDepictor = new ImageDepictor();
+        Boolean refreshImageA = false;
+        Boolean exploded = resulTemp.contains("explosion");
+        Boolean imploded = resulTemp.contains("implosion");
+        resulTemp="";
+        Boolean[][] imageB = new Boolean[13][13];
+        for (int i = 0; i < imageB.length; i++){
+            Arrays.fill(imageB[i], false);
+        }
+        int changeCurMax = -1;
+        int changeCurMin =9001;
+        int changeCurMaxY = -1;
+        int changeCurMinY =9001;
+        //preloop vars :
+        int jumpX = bmp1.getWidth()/14;
+        int jumpY = bmp1.getHeight()/14;
+        Boolean outlinePxl = false;
+        for (int i = 1; i <= 13; ++i) {
+            for (int j = 1; j <= 13; ++j) {
+                //Boolean outlinePxl = isOutLine(j*jumpX,i*jumpY,bmp1,20);
+                int pixel = bmp1.getPixel(j*jumpX,i*jumpY);
+                outlinePxl = isBlackPixel(pixel);
+                if(outlinePxl){bmp1=mark_dark_pixel_red(j*jumpX,i*jumpY,bmp1,(byte)30);imageB[j-1][i-1]=true;}
+                if(imageB[j-1][i-1]^imageA[j-1][i-1]){
+                    changeCurMin=miner(j,changeCurMin);changeCurMax=maxer(j,changeCurMax);
+                    changeCurMinY=miner(i,changeCurMinY);changeCurMaxY=maxer(i,changeCurMaxY);
+                }
+//                if(!(outlinePxl)){bmp1=mark_dark_pixel_red(j*jumpX,i*jumpY,bmp1,(byte)10);imageB[j][i]=true;
+//                if(!imageA[j][i]){changeCurMin=miner(j,changeCurMin);changeCurMax=maxer(j,changeCurMax);
+//                    changeCurMinY=miner(j,changeCurMinY);changeCurMaxY=maxer(j,changeCurMaxY);
+//                }
+//                }
+            }
+        }
+        Log.i("test", "shiiiiiiiiiiiiiiiit");
+        //mark movement area :
+        bmp1=mark_dark_pixel(changePrevMin*jumpX,6*jumpY,bmp1,(byte)50);
+        bmp1=mark_dark_pixel(changePrevMax*jumpX,6*jumpY,bmp1,(byte)50);
+        bmp1=mark_dark_pixel_blue(changeCurMax*jumpX,5*jumpY,bmp1,(byte)50);
+        bmp1=mark_dark_pixel_blue(changeCurMin*jumpX,5*jumpY,bmp1,(byte)50);
+        imageDepictor.setBmp(bmp1);
+        //imageDepictor.setBmp(graphicContour(bmp1,(changeCurMin+1)*jumpX,(changeCurMax+1)*jumpX,(changeCurMinY+1)*jumpY,(changeCurMaxY+1)*jumpY,Color.BLUE));
+        if(imploded){
+            if(changeCurMax-changePrevMax>changePrevMax-changeCurMin){resulTemp ="right";}
+            else{resulTemp="left";}
+            bmp1=mark_dark_pixel_black(changePrevMin*jumpX,6*jumpY,bmp1,(byte)50);
+            bmp1=mark_dark_pixel_black(changePrevMax*jumpX,6*jumpY,bmp1,(byte)50);
+        }else{
+            if(changeCurMax>changePrevMax){resulTemp+="right";}
+            if(changeCurMin<changePrevMin){resulTemp+="left";}
+            if(resulTemp.equals("rightleft")){resulTemp="explosion";}
+            if(changeCurMax<changePrevMax&&changeCurMin>changePrevMin){resulTemp="implosion";}
+            if(exploded&&changeCurMax<=changePrevMax&&changeCurMin>=changePrevMin){resulTemp="implosion";}
+
+            if(!exploded&&changeCurMax==changePrevMax&&changeCurMin==changePrevMin){resulTemp="blink";}
+            if(resulTemp.isEmpty()){resulTemp="static";}}
+
+        for (int i = 1; i <= 13; ++i) {
+            for (int j = 1; j <= 13; ++j) {
+                imageA[j-1][i-1]=imageB[j-1][i-1];
+            }
+        }
+        changePrevMax = changeCurMax;
+        changePrevMin=changeCurMin;
+        changePrevMaxY = changeCurMax;
+        changePrevMinY=changeCurMin;
+        if(resulTemp.equals("implosion")){
+            changePrevMax = changeCurMin + (changeCurMax-changeCurMin)/2;
+            changePrevMin=changePrevMax;
+
+        }
+        imageDepictor.setDepiction(resulTemp);
+        return imageDepictor;
+    }
+    public Bitmap markObjects(Bitmap bitmap, int color, ArrayList<Rectangle> rectangles) {
+        // marks rectangle list on bitmap
+        for (Rectangle rectangle : rectangles) {
+            bitmap = graphicContour(bitmap,rectangle.x,rectangle.x + rectangle.width,rectangle.y,rectangle.y + rectangle.height,color);
+        }
+        return bitmap;
+    }
+    public Bitmap writeOnDrawable(Bitmap bmp, String text, int colorDotEnum,int textSize,Point point){
+        /*
+        adds caption to a bitmap image
+        example of summon : writeOnDrawable(bmp,"hadouken",Color.Black,200,new Point (0,bmRotated.getHeight()/2));
+        * */
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(colorDotEnum);
+        paint.setTextSize(textSize);
+        Canvas canvas = new Canvas(bmp);
+        canvas.drawText(text, point.x, point.y, paint);
+        return bmp;
+    }
+    private Bitmap lineMarker(Bitmap bmp, int y, int thicness,int color) {
+        for (int jm = 1; jm < bmp.getWidth() - 10; jm++) {
+            for (int i = 0; i <thicness ; i++) {
+                bmp.setPixel(jm, y + i, color);
+            }
+        }
+        return bmp;
+    }
+    private void starDuskBreakerPerfectWarrior(int x,int y,Bitmap bmp,Rectangle bounds,int whiteCounter){
+        if(visited.contains(x+"_"+y)||visited.size()>Integer.MAX_VALUE){return;}
+        visited.add(x+"_"+y);
+        Boolean blackPxl = isBlackPixel(bmp.getPixel(x, y));
+        int counter = whiteCounter;
+        if(whiteCounter<30){
+            if(blackPxl){
+                counter = 0;
+                Rectangle r2 = allObjectsTest.get(allObjectsTest.size()-1);
+                r2.setBounds(miner(x,r2.x),miner(y,r2.y),maxer(r2.width,x-r2.x),maxer(r2.height,y-r2.y));
+                allObjectsTest.set(allObjectsTest.size()-1,r2);
+            }else{counter++;}
+            if(bounds.contains(x,y+1)){starDuskBreakerPerfectWarrior(x,y+1,bmp,bounds,counter);}
+            if(bounds.contains(x,y-1)){starDuskBreakerPerfectWarrior(x,y-1,bmp,bounds,counter);}
+            if(bounds.contains(x+1,y)){starDuskBreakerPerfectWarrior(x+1,y,bmp,bounds,counter);}
+            if(bounds.contains(x-1,y)){starDuskBreakerPerfectWarrior(x-1,y,bmp,bounds,counter);}
+        }
+    }
+    public Bitmap detectObjectsOnMiddle(Bitmap bmp){
+        /* returns list of objects rectangled locations on the bitmap in the middle part of the picture
+        instead of going through the whole picture : 0 to bmp.height and 0 ro bmp.weight
+         * */
+        Bitmap result = bmp;
+        int upperLid = 0;
+        int lowerLid =0;
+        int peaLeft=0;
+        ArrayList<Rectangle> allObjects = new ArrayList<Rectangle>();//*global
+        Boolean topLid = true;
+        Boolean isWhiteLine = true;
+        //bmp = graphicContour(bmp,0,bmp.getWidth(),0,bmp.getHeight(),Color.WHITE);
+        allObjectsTest = new ArrayList<Rectangle>();//*global//dijktra test
+        visited = new HashSet<>();
+        int i = midShiber * bmp.getHeight() / 3;
+        while(i < (2*midShiber) * bmp.getHeight() / 3){
+            isWhiteLine = true; //level A image processing
+            for (int j = midShiber * bmp.getWidth() / 3; j < (2*midShiber) * bmp.getWidth() / 3; j++) {
+                Boolean blackPxl = isBlackPixel(bmp.getPixel(j, i));
+                if (blackPxl) {
+                    isWhiteLine = false;
+                    break;
+                }
+            }
+            if (!isWhiteLine && topLid) {
+                upperLid = i;
+                topLid = !topLid;
+                i+=199;
+                visited.clear();
+                result = lineMarker(result,upperLid,4,Color.GREEN);
+            } else if (isWhiteLine && !topLid ) {
+                lowerLid = i;
+                topLid = !topLid;
+                result = lineMarker(result, lowerLid, 4, Color.RED);
+                RectangleCtor bounds = new RectangleCtor(1, upperLid, bmp.getWidth() - 10, lowerLid);
+                visited = new HashSet<>();
+                //TODO size conditional here
+                if(lowerLid-upperLid<500){
+                    //level B image processing after determining an A region (i=upper and lower lids)
+                    for (int iB = upperLid; iB < lowerLid; iB++) {
+                        int counterFin = midShiber * bmp.getWidth() / 3;
+                        while(counterFin < (midShiber*2) * bmp.getWidth() / 3){
+                            Boolean blackPxl2 = isBlackPixel(bmp.getPixel(counterFin, iB));
+                            if (blackPxl2) {
+                                allObjectsTest.add(new RectangleCtor(counterFin, iB, counterFin, iB));
+                                starDuskBreakerPerfectWarrior(counterFin, iB, bmp, new RectangleCtor(10, upperLid, bmp.getWidth(), lowerLid), 0);
+                            }
+                            counterFin+=1;
+                        }
+                    }
+                }
+            }
+            i++;
+            //mark recs
+        }//end main loop
+        for (Rectangle rec : allObjectsTest)
+        {
+            if(rec.height>10&&rec.width>10){
+                for (int j = rec.x; j <miner(bmp.getWidth(),rec.x+2*rec.width) ; j++) {
+                    boolean whiteC = true;
+                    for (int k = rec.y; k < rec.y+rec.height; k++) {
+                        Boolean blackPxl3 = isBlackPixel(bmp.getPixel(j, k));
+                        if (blackPxl3) {
+                            whiteC = false;
+                            break;
+                        }
+                    }
+                    if(whiteC){result = graphicContour(result,rec.x,j,rec.y,rec.y+rec.height,Color.YELLOW);break;}
+                }
+            }
+        }
+        return result;
+    }
+    public Bitmap scale608h608w(Bitmap bmp){
+        return Bitmap.createScaledBitmap(bmp, 1000, 1000, true);
+    }
+    public Bitmap scaledObjectDetection608(Bitmap bmp){
+        /* returns list of objects rectangled locations on the bitmap in the middle part of the picture
+        instead of going through the whole picture : 0 to bmp.height and 0 ro bmp.weight
+         * */
+        int ratioHeight = bmp.getHeight()/608;
+        bmp = scale608h608w(bmp);
+        int minObjHeight = 500/ratioHeight;
+        int minObjHeightJump = 150/ratioHeight;
+        Bitmap result = bmp;
+        int upperLid = 0;
+        int lowerLid =0;
+        int peaLeft=0;
+        ArrayList<Rectangle> allObjects = new ArrayList<Rectangle>();//*global
+        Boolean topLid = true;
+        Boolean isWhiteLine = true;
+        //bmp = graphicContour(bmp,0,bmp.getWidth(),0,bmp.getHeight(),Color.WHITE);
+        allObjectsTest = new ArrayList<Rectangle>();//*global//dijktra test
+        visited = new HashSet<>();
+        int i = midShiber * bmp.getHeight() / 3;
+        while(i < (2*midShiber) * bmp.getHeight() / 3){
+            isWhiteLine = true; //level A image processing
+            for (int j = midShiber * bmp.getWidth() / 3; j < (2*midShiber) * bmp.getWidth() / 3; j++) {
+                Boolean blackPxl = isBlackPixel(bmp.getPixel(j, i));
+                if (blackPxl) {
+                    isWhiteLine = false;
+                    break;
+                }
+            }
+            if (!isWhiteLine && topLid) {
+                upperLid = i;
+                topLid = !topLid;
+                i+=minObjHeightJump;
+                visited.clear();
+                result = lineMarker(result,upperLid,4,Color.GREEN);
+            } else if (isWhiteLine && !topLid ) {
+                lowerLid = i;
+                topLid = !topLid;
+                result = lineMarker(result, lowerLid, 4, Color.RED);
+                RectangleCtor bounds = new RectangleCtor(1, upperLid, bmp.getWidth() - 10, lowerLid);
+                visited = new HashSet<>();
+                //TODO size conditional here
+                if(lowerLid-upperLid<minObjHeight){
+                    //level B image processing after determining an A region (i=upper and lower lids)
+                    for (int iB = upperLid; iB < lowerLid; iB++) {
+                        int counterFin = midShiber * bmp.getWidth() / 3;
+                        while(counterFin < (midShiber*2) * bmp.getWidth() / 3){
+                            Boolean blackPxl2 = isBlackPixel(bmp.getPixel(counterFin, iB));
+                            if (blackPxl2) {
+                                allObjectsTest.add(new RectangleCtor(counterFin, iB, counterFin, iB));
+                                starDuskBreakerScaled608(counterFin, iB, bmp, new RectangleCtor(10, upperLid, bmp.getWidth(), lowerLid), 0);
+                            }
+                            counterFin+=1;
+                        }
+                    }
+                }
+            }
+            i++;
+            //mark recs
+        }//end main loop
+        for (Rectangle rec : allObjectsTest)
+        {
+            if(rec.height>10&&rec.width>10){
+                for (int j = rec.x; j <miner(bmp.getWidth(),rec.x+2*rec.width) ; j++) {
+                    boolean whiteC = true;
+                    for (int k = rec.y; k < rec.y+rec.height; k++) {
+                        Boolean blackPxl3 = isBlackPixel(bmp.getPixel(j, k));
+                        if (blackPxl3) {
+                            whiteC = false;
+                            break;
+                        }
+                    }
+                    if(whiteC){result = graphicContour(result,rec.x,j,rec.y,rec.y+rec.height,Color.YELLOW);break;}
+                }
+            }
+        }
+        return result;
+    }
+    private void starDuskBreakerScaled608(int x,int y,Bitmap bmp,Rectangle bounds,int whiteCounter){
+        if(visited.contains(x+"_"+y)||visited.size()>Integer.MAX_VALUE){return;}
+        visited.add(x+"_"+y);
+        Boolean blackPxl = isBlackPixel(bmp.getPixel(x, y));
+        int counter = whiteCounter;
+        if(whiteCounter<2){
+            if(blackPxl){
+                counter = 0;
+                Rectangle r2 = allObjectsTest.get(allObjectsTest.size()-1);
+                r2.setBounds(miner(x,r2.x),miner(y,r2.y),maxer(r2.width,x-r2.x),maxer(r2.height,y-r2.y));
+                allObjectsTest.set(allObjectsTest.size()-1,r2);
+            }else{counter++;}
+            if(bounds.contains(x,y+1)){starDuskBreakerPerfectWarrior(x,y+1,bmp,bounds,counter);}
+            if(bounds.contains(x,y-1)){starDuskBreakerPerfectWarrior(x,y-1,bmp,bounds,counter);}
+            if(bounds.contains(x+1,y)){starDuskBreakerPerfectWarrior(x+1,y,bmp,bounds,counter);}
+            if(bounds.contains(x-1,y)){starDuskBreakerPerfectWarrior(x-1,y,bmp,bounds,counter);}
+        }
+    }
+    // test
+    //test
+    public Bitmap markRed(Bitmap bmp){
+        for (int i = 0; i < bmp.getHeight()-10; i++) {
+            for (int j = 0; j < bmp.getWidth(); j++) {
+                int pxl = bmp.getPixel(j,i);
+                if(isredPixel(pxl)){bmp=mark_dark_pixel(j,i,bmp,(byte)1);}
+            }
+        }
+        return  bmp;
+    }
+    public Boolean isredPixel(int pixel) {
+        //rapid ver for checking if the pixel black
+        //  r= red, g = green, b = blue
+        int r = Color.red(pixel);
+        int g = Color.green(pixel)+10;
+        int b = Color.blue(pixel);
+        //black or white
+
+        return r>100&&r>=g&&g>=20+b;//red
+    }
+    public Boolean activeCube(Bitmap bmp,int x, int y){
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if(isredPixel(bmp.getPixel(10*x+j,10*y+i))){return  true;}
+            }
+        }
+        return  false;
+    }
+    public Bitmap cubix(Bitmap bmp){
+        Boolean[][] arr = new Boolean[100][100];
+        for (int i = 0; i < arr.length-1; i++) {
+            Arrays.fill(arr[i], false);
+        }
+        bmp = scale608h608w(bmp);
+        for (int i = 1; i < 90; i++) {
+            for (int j = 1; j < 90; j++) {
+                if(activeCube(bmp,j,i)){bmp=graphicContour(bmp,10*j,10*j+10,10*i,10*i+10,Color.YELLOW);}
+            }
+        }
+        return bmp;
+    }
+    public ArrayList<Rectangle> allObjectsCubix = new ArrayList<Rectangle>();//*global//dijktra test
+    //public ArrayList<String> visited = new ArrayList<String>();
+    private Set<String> visitedCubix = new HashSet<>();
+    private void STB(Boolean[][] arr,int x , int y){
+        if(visitedCubix.contains(x+"_"+y)||visitedCubix.size()>Integer.MAX_VALUE){return;}
+        visitedCubix.add(x+"_"+y);
+        Boolean blackPxl = arr[y][x];
+            if(blackPxl){
+                Rectangle r2 = allObjectsCubix.get(allObjectsCubix.size()-1);
+                r2.setBounds(miner(x,r2.x),miner(y,r2.y),maxer(r2.width,x-r2.x),maxer(r2.height,y-r2.y));
+                allObjectsCubix.set(allObjectsCubix.size()-1,r2);
+                RectangleCtor bounds = new RectangleCtor(0,0,arr.length-2,arr[0].length-2);
+                if(bounds.contains(x,y+1)){STB(arr,x,y+1);}
+                if(bounds.contains(x,y-1)){STB(arr,x,y-1);}
+                if(bounds.contains(x+1,y)){STB(arr,x+1,y);}
+                if(bounds.contains(x-1,y)){STB(arr,x-1,y);}
+            }
+    }
+    public Bitmap cubix2(Bitmap bmp){
+        Boolean[][] arr = new Boolean[100][100];
+        for (int i = 0; i < arr.length-1; i++) {
+            Arrays.fill(arr[i], false);
+        }
+        bmp = scale608h608w(bmp);
+        visited.clear();
+        allObjectsCubix=new ArrayList<Rectangle>();
+        for (int i = 1; i < 90; i++) {
+            for (int j = 1; j < 90; j++) {
+                if(activeCube(bmp,j,i)){arr[i][j]=true; }
+            }
+        }
+        for (int i = 1; i < 90; i++) {
+            for (int j = 1; j < 90; j++) {
+                if(arr[i][j]&&!visitedCubix.contains(j+"_"+i)){
+                    allObjectsCubix.add(new RectangleCtor(j,i,j+1,i+1));
+                    STB(arr,j,i); }
+            }
+        }
+        //allObjectsCubix.add(new RectangleCtor(j,i,j+1,i+1));STB(arr,j,i);
+        for (int i = 1; i < 90; i++) {
+            for (int j = 1; j < 90; j++) {
+                if(arr[i][j]){
+                    bmp=graphicContour(bmp,10*j,10*j+10,10*i,10*i+10,Color.GREEN);
+                }
+            }}
+        for (Rectangle rec : allObjectsCubix)
+        {
+            bmp=graphicContour(bmp,rec.x*10,rec.x*10+10*rec.width,10*rec.y,10*rec.y+10*rec.height,Color.YELLOW);
+        }
+
+        return bmp;
+    }
+    public Bitmap cubix3(Bitmap bmp){
+        Boolean[][] arr = new Boolean[100][100];
+        for (int i = 0; i < arr.length-1; i++) {
+            Arrays.fill(arr[i], false);
+        }
+        bmp = scale608h608w(bmp);
+        visited.clear();
+        allObjectsCubix=new ArrayList<Rectangle>();
+        for (int i = 1; i < 90; i++) {
+            for (int j = 1; j < 90; j++) {
+                if(activeCube(bmp,j,i)){arr[i][j]=true; }
+            }
+        }
+        for (int i = 1; i < 90; i++) {
+            for (int j = 1; j < 90; j++) {
+                if (arr[i][j]) {
+                    Rectangle r1 = new RectangleCtor(j, i, j + 1, i + 1);
+                    Boolean fused = false;
+                    for (int k = 0; k < allObjectsCubix.size()-1; k++) {
+                        Rectangle r2 = allObjectsCubix.get(k);
+                        if(overlappingRectangles(allObjectsCubix.get(k),r1)){fused=true;
+                            int minx = miner(r1.x,r2.x);
+                            int miny = miner(r1.y,r2.y);
+                            int maxx = maxer(r1.x+r1.width,r2.x+r2.width);
+                            int maxy = maxer(r1.y+r1.height,r2.y+r2.height);
+                            allObjectsCubix.set(k,new RectangleCtor(minx,miny,maxx,maxy));
+                            break;
+                        }
+                    }
+                    if(!fused){allObjectsCubix.add(r1);}
+                }
+            }
+        }
+        ArrayList<Rectangle> cubesFin = new ArrayList<Rectangle>();
+        for (Rectangle r1 : allObjectsCubix)
+        {
+            Boolean fused = false;
+            for (int k = 0; k < cubesFin.size()-1; k++) {
+                Rectangle r2 = cubesFin.get(k);
+                if(overlappingRectangles(r1,r2)){fused=true;
+                    int minx = miner(r1.x,r2.x);
+                    int miny = miner(r1.y,r2.y);
+                    int maxx = maxer(r1.x+r1.width,r2.x+r2.width);
+                    int maxy = maxer(r1.y+r1.height,r2.y+r2.height);
+                    cubesFin.set(k,new RectangleCtor(minx,miny,maxx,maxy));
+                    break;
+                }
+            }
+            if(!fused){cubesFin.add(r1);}
+        }
+
+        //allObjectsCubix.add(new RectangleCtor(j,i,j+1,i+1));STB(arr,j,i);
+        for (int i = 1; i < 90; i++) {
+            for (int j = 1; j < 90; j++) {
+                if(arr[i][j]){
+                    bmp=graphicContour(bmp,10*j,10*j+10,10*i,10*i+10,Color.GREEN);
+                }
+            }}
+        for (Rectangle rec : allObjectsCubix)
+        {
+            bmp=graphicContour(bmp,rec.x*10,rec.x*10+10*rec.width,10*rec.y,10*rec.y+10*rec.height,Color.YELLOW);
+        }
+        for (Rectangle rec : cubesFin)
+        {
+            bmp=graphicContour(bmp,rec.x*10,rec.x*10+10*rec.width,10*rec.y,10*rec.y+10*rec.height,Color.BLUE);
+        }
+        return bmp;
+    }
+}

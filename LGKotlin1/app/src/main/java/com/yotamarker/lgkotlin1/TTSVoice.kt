@@ -845,6 +845,8 @@ class TTSVoice(private val context:Context){
                     voiceArrayList.add(string)
                 "June" ->
                     voiceArrayList.add(string)
+                "July" ->
+                    voiceArrayList.add(string)
                 "August" ->
                     voiceArrayList.add(string)
                 "October" ->

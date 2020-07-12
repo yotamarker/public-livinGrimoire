@@ -7,7 +7,7 @@ public class DICurrency extends DISkill {
     private double sum = 0.0;
     private RegexUtil regexUtil = new RegexUtil();
     private String[] cases = { "shekel to dollar", "shekel to euro", "dollar to euro", "dollar to shekel",
-            "euro to dollar", "euro to shekel" };
+            "euro to dollar", "euro to shekel" , "d to s", "days to seconds", "s to d", "seconds to days"};
     private String[] offLineCases = { "kg to shekel", "shekel to kg"};
     public DICurrency(Kokoro kokoro) {
         super(kokoro);
@@ -79,6 +79,16 @@ public class DICurrency extends DISkill {
             case "euro to shekel":
                 result = true;
                 this.mode = 6;
+                break;
+            case "d to s":
+            case "days to seconds":
+                result = true;
+                this.mode = 9;
+                break;
+            case "s to d":
+            case "seconds to days":
+                result = true;
+                this.mode = 10;
                 break;
             default:
                 break;
@@ -187,6 +197,18 @@ public class DICurrency extends DISkill {
                 noiron.algParts.add(verbatimGorithm(new APVerbatim(s1 + appendCurrency2)));
                 sum = 0.0;
                 break;
+            case 9:
+                mode = 0;
+                sum = sum * 3600 * 24;
+                noiron.algParts.add(verbatimGorithmPlain("seconds"));
+                sum = 0.0;
+                break;
+            case 10:
+                mode = 0;
+                sum = sum / 3600 / 24;
+                noiron.algParts.add(verbatimGorithmPlain("days"));
+                sum = 0.0;
+                break;
             default:
                 break;
         }
@@ -219,6 +241,18 @@ public class DICurrency extends DISkill {
         ArrayList<AbsAlgPart> algParts1 = new ArrayList<>();
         algParts1.add(itte);
         Algorithm algorithm = new Algorithm("bukubukuchagama", representation, algParts1);
+        return algorithm;
+    }
+    private Algorithm verbatimGorithmPlain(String append) {
+        // returns a simple algorithm for saying sent parameter
+        // handles integer sums
+        String s1 = String.format("%.01f", this.sum);
+        s1 = floatTrimmer(s1);
+        AbsAlgPart itte = new APVerbatim(s1 + " " + append);
+        String representation = "currency";
+        ArrayList<AbsAlgPart> algParts1 = new ArrayList<>();
+        algParts1.add(itte);
+        Algorithm algorithm = new Algorithm("currency", representation, algParts1);
         return algorithm;
     }
 }

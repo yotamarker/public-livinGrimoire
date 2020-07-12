@@ -54,24 +54,28 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Accelerom
     var locationListener: LocationListener? =null //GPS beefup
     //var spoke = false
     val nightRider = NightRider()
+    val b8TriTimeGate = TimeGate()
     var mbTTS = TTSVoice(this)
     private val mBatInfoReceiver = object : BroadcastReceiver() {
         override fun onReceive(ctxt: Context, intent: Intent) {
-            val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
-            val b8TRiStr = chii!!.doIt("","$level charge","")
-            mbTTS.voiceIt(b8TRiStr)
-            //voiceIt(b8TRiStr)
-            //if (b8TRiStr != ""){editText.setText(b8TRiStr)}
-            //editText.setText(chii.doIt("","$level charge",""))
-            //txtBox.setText("$level% $b8TRcounter")
-            val status: Int = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
-            val isCharging: Boolean = status == BatteryManager.BATTERY_STATUS_CHARGING
-                    || status == BatteryManager.BATTERY_STATUS_FULL
+            if (!b8TriTimeGate.isClosed) {
+                b8TriTimeGate.close(5)
+                val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
+                val b8TRiStr = chii!!.doIt("", "$level charge", "")
+                mbTTS.voiceIt(b8TRiStr)
+                //voiceIt(b8TRiStr)
+                //if (b8TRiStr != ""){editText.setText(b8TRiStr)}
+                //editText.setText(chii.doIt("","$level charge",""))
+                //txtBox.setText("$level% $b8TRcounter")
+                val status: Int = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
+                val isCharging: Boolean = status == BatteryManager.BATTERY_STATUS_CHARGING
+                        || status == BatteryManager.BATTERY_STATUS_FULL
 
-            val chargePlug: Int = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1)
-            val usbCharge: Boolean = chargePlug == BatteryManager.BATTERY_PLUGGED_USB
-            val acCharge: Boolean = chargePlug == BatteryManager.BATTERY_PLUGGED_AC
-            //txtBox.setText("$usbCharge")
+                val chargePlug: Int = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1)
+                val usbCharge: Boolean = chargePlug == BatteryManager.BATTERY_PLUGGED_USB
+                val acCharge: Boolean = chargePlug == BatteryManager.BATTERY_PLUGGED_AC
+                //txtBox.setText("$usbCharge")
+            }
         }
     }
     fun placeToString() {
@@ -129,7 +133,8 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Accelerom
         }
 
         handler.post(run)
-
+        b8TriTimeGate.setPause(5)
+        b8TriTimeGate.close(5)
         chii = Chobit(SharedPrefDB(this))
         tts = TextToSpeech(this, this)
         supportActionBar?.hide()

@@ -54,6 +54,7 @@ public class Chobit {
 		// dClassesLv3.add(new DAlarmer());
 		dClassesLv3.add(new DIDirty(kokoro));
 		dClassesLv3.add(new DIHomer(kokoro));
+		dClassesLv3.add(new DILifeFueler(kokoro));
 		// dClassesLv3.add(new DIJirachi(master, kokoro));
 		formAutoClassesList();
 	}

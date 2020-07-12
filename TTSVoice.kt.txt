@@ -779,6 +779,41 @@ class TTSVoice(private val context:Context){
                 mediaPlayer.start()
 
             }
+            "sentimenta" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.sentimenta)
+
+                mediaPlayer.start()
+
+            }
+            "sentimentb" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.sentimentb)
+
+                mediaPlayer.start()
+
+            }
+            "sentimentc" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.sentimentc)
+
+                mediaPlayer.start()
+
+            }
+            "sentimentd" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.sentimentd)
+
+                mediaPlayer.start()
+
+            }
+            "sentimente" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.sentimente)
+
+                mediaPlayer.start()
+
+            }
             else -> {TTSBeefUp(inStr)}
         }
     }
@@ -918,6 +953,10 @@ class TTSVoice(private val context:Context){
                 "thirtyfirst_of" ->
                     voiceArrayList.add(string)
                 "kilometer" ->
+                    voiceArrayList.add(string)
+                "days" ->
+                    voiceArrayList.add(string)
+                "seconds" ->
                     voiceArrayList.add(string)
                 else ->
                     // case it is actually a number
@@ -1958,6 +1997,12 @@ class TTSVoice(private val context:Context){
             }
             "kilometer" -> {
                 mediaPlayer = MediaPlayer.create(context, R.raw.kilometer)
+            }
+            "days" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.days)
+            }
+            "seconds" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.seconds)
             }
             else -> {
             }

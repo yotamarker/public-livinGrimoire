@@ -9,7 +9,17 @@ import java.util.Hashtable;
  * checks for % of difference in input for exploration type algs
  * */
 public class Kokoro {
-	Hashtable<String, Integer> pain = new Hashtable<>();
+    private String emot = "";
+
+    public String getEmot() {
+        return emot;
+    }
+
+    public void setEmot(String emot) {
+        this.emot = emot;
+    }
+
+    Hashtable<String, Integer> pain = new Hashtable<>();
 	public GrimoireMemento grimoireMemento;
 	public Hashtable<String, String> toHeart = new Hashtable<>();
 	public Hashtable<String, String> fromHeart = new Hashtable<>();

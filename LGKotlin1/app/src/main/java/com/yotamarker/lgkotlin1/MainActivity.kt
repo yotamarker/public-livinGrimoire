@@ -44,6 +44,11 @@ import java.io.IOException
 
 
 class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, AccelerometerListener{
+    // nightrider display emot
+    val nightRider2 = NightRider();
+    val nightRider3 = NightRider()
+    val nightRider4 = NightRider()
+    //end nightrider beefup region
     // global vars
     private var tts: TextToSpeech? = null
     val kanjiClock = KanjiClock()
@@ -118,6 +123,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Accelerom
         setContentView(R.layout.activity_main)
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);//disables screen timeout
         // getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // reenable screen timeout
+        nightRider2.setMode(2);nightRider3.setMode(3);nightRider4.setMode(4)
         val handler = Handler()
 
         val run = object : Runnable {
@@ -126,7 +132,13 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Accelerom
                 var s1 = "";
                 s1 = kanjiClock.timeInKanji()
                 textView.setText(s1)
-                s1 = nightRider.getDisplay()
+                when (chii!!.getSoulEmotion()) {
+                    "2" -> s1 = nightRider2.getDisplay()
+                    "3" -> s1 = nightRider3.getDisplay()
+                    "4" -> s1 = nightRider4.getDisplay()
+                    else -> {s1 = nightRider.getDisplay()
+                    }
+                }
                 textView2.setText(s1)
                 handler.postDelayed(this, 1000)
             }
@@ -243,7 +255,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Accelerom
             editText.setText("")
             mbTTS.voiceIt(resultStr)
             if (mbTTS.TTS){speakOut(resultStr)}
-             }
+        }
         else{}
         gyroX=x;gyroY=y;
     }

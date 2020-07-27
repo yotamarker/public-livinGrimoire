@@ -19,7 +19,15 @@ class NightRider {
         }
         this.mode = mode
     }
-
+    fun setMode(mode: String) {
+        when (mode) {
+            "2" -> setMode(2)
+            "3" -> setMode(3)
+            "4" -> setMode(4)
+            else -> {
+            }
+        }
+    }
     fun getDisplay(): String {
         var result = ""
         when (mode) {

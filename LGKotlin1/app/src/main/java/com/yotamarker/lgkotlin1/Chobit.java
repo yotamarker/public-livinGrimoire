@@ -42,6 +42,7 @@ public class Chobit {
 		dClassesLv1.add(dPermitter);
 		dClassesLv1.add(new DRules((new APSleep(24)), inner));
 		dClassesLv1.add(new DIJoker(kokoro));
+        dClassesLv1.add(new DILively(kokoro));
 		dClassesLv1.add(new DIBurper(kokoro));
 		dClassesLv1.add(new DIWeather(kokoro));
 		dClassesLv1.add(new DICurrency(kokoro));
@@ -121,7 +122,7 @@ public class Chobit {
 		fusion.setAlgQueue(noiron);
 		return translateOut(fusion.act(ear, skin, eye));
 	}
-
+	public String getSoulEmotion(){return kokoro.getEmot();}
 	public String getEmot() {
 		// emot (emotion for display)
 		String x1 = emot;

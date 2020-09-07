@@ -46,7 +46,7 @@ public class DSpeller extends AbsCmdReq implements Neuronable {
             case "current minutes":
             case "current hour":
             case "which day is it":
-            case "greet":
+            case "hadouken":
                 active = true;
                 this.param = ear;
                 break;

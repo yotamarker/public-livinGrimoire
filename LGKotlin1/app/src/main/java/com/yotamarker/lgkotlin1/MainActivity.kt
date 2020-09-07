@@ -296,7 +296,8 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Accelerom
         //tell the intent that we want to speak freely
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
         //tell the intent that we want to use the default language
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault())
+        //intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault())// hebrew
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US")
         //show the user a text to explain what we want.
         intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak to phone")
         if (hasAudioPermission)
@@ -323,7 +324,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Accelerom
                 //get array list of all our result (can be 1, can be 5)
                 val result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
                 val myAdapter = LangAdapter(this.applicationContext, result)
-                editText.setText(result.get(0).trim().toLowerCase().substring(1,result.get(0).trim().length) + "")
+                editText.setText(result.get(0).trim().toLowerCase().substring(0,result.get(0).trim().length) + "")
                 engageChobit()
                 //StaticString.str =result.get(0).trim().toLowerCase().substring(1,result.get(0).trim().length) + ""
                 //Toast.makeText(this.applicationContext, result.get(0).trim().toLowerCase().substring(1, result.get(0).trim().length) + "", Toast.LENGTH_SHORT).show()

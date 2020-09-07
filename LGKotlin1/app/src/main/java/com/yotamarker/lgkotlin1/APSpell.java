@@ -4,7 +4,7 @@ package com.yotamarker.lgkotlin1;
  * */
 public class APSpell extends AbsAlgPart {
     PlayGround playGround = new PlayGround();
-    String[] morningGreet = { "good morning", "hi", "hadouken", "]" };
+    String[] morningGreet = { "good morning", "hi", "shouryuken", "]" };
     private String param = "";
     private Boolean isCompleted = false;
     public APSpell(String param) {
@@ -51,8 +51,9 @@ public class APSpell extends AbsAlgPart {
             case "which day is it":
                 axnStr = playGround.getDayOfDWeek();
                 break;
-            case "greet":
-                axnStr = greet();
+            case "hadouken":
+                //axnStr = greet();
+                axnStr = "shouryuken";
                 break;
             default:
                 break;

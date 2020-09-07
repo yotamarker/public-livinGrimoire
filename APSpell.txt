@@ -1,9 +1,10 @@
+package com.yotamarker.lgkotlin1;
 
 /* an easy way to add an action to any exact input
  * */
 public class APSpell extends AbsAlgPart {
     PlayGround playGround = new PlayGround();
-    String[] morningGreet = { "good morning", "hi", "hadouken", "]" };
+    String[] morningGreet = { "good morning", "hi", "shouryuken", "]" };
     private String param = "";
     private Boolean isCompleted = false;
     public APSpell(String param) {
@@ -26,7 +27,7 @@ public class APSpell extends AbsAlgPart {
     }
 
     @Override
-    public String action(String input) {
+	public String action(String ear, String skin, String eye) {
         String axnStr = "";
         switch (this.param) {
             case "what is the time":
@@ -50,8 +51,9 @@ public class APSpell extends AbsAlgPart {
             case "which day is it":
                 axnStr = playGround.getDayOfDWeek();
                 break;
-            case "greet":
-                axnStr = greet();
+            case "hadouken":
+                //axnStr = greet();
+                axnStr = "shouryuken";
                 break;
             default:
                 break;

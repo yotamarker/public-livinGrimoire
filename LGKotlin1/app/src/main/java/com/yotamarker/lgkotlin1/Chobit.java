@@ -13,7 +13,7 @@ public class Chobit {
 	protected Hashtable<String, Integer> AlgDurations = new Hashtable<>();
 	protected Fusion fusion = new Fusion(AlgDurations);
 	// region essential DClasses
-	protected Permission permission = Permission.newInstance("xxx", "chii", "liron");
+	protected Permission permission = Permission.newInstance("xxx", "sweetie", "honey");
 	protected DPermitter dPermitter = new DPermitter(permission);
 	// endregion
 	protected Neuron noiron;
@@ -42,6 +42,8 @@ public class Chobit {
 		dClassesLv1.add(dPermitter);
 		dClassesLv1.add(new DRules((new APSleep(24)), inner));
 		dClassesLv1.add(new DIJoker(kokoro));
+		dClassesLv1.add(new DISitter(kokoro));
+		dClassesLv1.add(new DIEliza(kokoro));
         dClassesLv1.add(new DILively(kokoro));
 		dClassesLv1.add(new DIBurper(kokoro));
 		dClassesLv1.add(new DIWeather(kokoro));

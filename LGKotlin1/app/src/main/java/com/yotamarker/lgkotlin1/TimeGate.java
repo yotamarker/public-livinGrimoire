@@ -14,6 +14,9 @@ public class TimeGate {
     }
     public TimeGate() {
     }
+    public void openGate() {
+        openedGate = new Date();
+    }
     public Boolean isClosed() {
         return !openedGate.before(new Date());
     }

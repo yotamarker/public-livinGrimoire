@@ -1,49 +1,35 @@
 package com.yotamarker.lgkotlin1
 
 import android.Manifest
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.media.MediaPlayer
-import android.os.BatteryManager
-import android.support.v7.app.AppCompatActivity
-import android.os.Bundle
-import android.speech.tts.TextToSpeech
-import android.text.TextUtils.substring
-import android.util.Log
-import android.view.View
-import android.view.Window
-import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main.view.*
-import java.nio.file.Files.size
-import java.util.*
-import kotlin.math.absoluteValue
-import android.support.v4.os.HandlerCompat.postDelayed
-import android.R.string.no
-import android.R.attr.name
-import android.support.v4.app.SupportActivity
-import android.support.v4.app.SupportActivity.ExtraData
-import android.support.v4.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import android.os.Handler
-import android.view.KeyEvent
-import android.R.string.no
-import android.R.attr.name
+import android.content.*
 import android.content.pm.PackageManager
-import android.support.v4.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.location.*
+import android.os.BatteryManager
+import android.os.Bundle
+import android.os.Handler
+import android.speech.RecognizerIntent
+import android.speech.tts.TextToSpeech
 import android.support.annotation.NonNull
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AppCompatActivity
+import android.util.Log
+import android.view.KeyEvent
+import android.view.View
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
+import kotlinx.android.synthetic.main.activity_main.*
 import java.io.IOException
+import java.util.*
 
 
 class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, AccelerometerListener{
+    //STT :
+    //private var context:Context?=null
+    private var hasAudioPermission = false
+    private val REQUEST_CODE = 1
+    private val RECOGNITION_RESULT = 2
     // nightrider display emot
     val nightRider2 = NightRider();
     val nightRider3 = NightRider()
@@ -112,6 +98,9 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Accelerom
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
         {
+            //STT
+            if(requestCode==1){
+            hasAudioPermission = true}
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) === PackageManager.PERMISSION_GRANTED)
             {
                 locationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10, 1.1f, locationListener)
@@ -123,6 +112,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Accelerom
         setContentView(R.layout.activity_main)
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);//disables screen timeout
         // getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // reenable screen timeout
+        askPermission()
         nightRider2.setMode(2);nightRider3.setMode(3);nightRider4.setMode(4)
         val handler = Handler()
 
@@ -194,7 +184,8 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Accelerom
         //GPS beefup on create end point
     }
     fun engage(view: View){
-        engageChobit()
+        runSpeechRecognition()
+        //engageChobit()
     }
     fun clrText(view: View){
         editText.setText("")
@@ -274,6 +265,71 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Accelerom
             //Start Accelerometer Listening
             AccelerometerManager.stopListening()
             Toast.makeText(this, "onStop Accelerometer Stopped", Toast.LENGTH_SHORT).show()
+        }
+    }
+    //STT :
+    private fun askPermission() {
+        //create a list of permissions
+        var listPerm = ArrayList<String>()
+        //var listPerm:List<String> = ArrayList() // contains the recog results per talk
+        //get permission status for audio record
+        val audioPerm = ContextCompat.checkSelfPermission(this.applicationContext, Manifest.permission.RECORD_AUDIO)
+        //check if the record audio permission is granted
+        if (audioPerm != PackageManager.PERMISSION_GRANTED)
+        {
+            listPerm.add(Manifest.permission.RECORD_AUDIO)
+        }
+        else
+        {
+            hasAudioPermission = true
+        }
+        //check if our list is not empty, and ask permission for it's items.
+        if (!listPerm.isEmpty())
+        {
+            //ask permission by requests.
+            ActivityCompat.requestPermissions(this, listPerm.toArray(arrayOfNulls<String>(listPerm.size)), REQUEST_CODE)
+        }
+    }
+    private fun runSpeechRecognition() {
+        //handle the speech recognition intent
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+        //tell the intent that we want to speak freely
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+        //tell the intent that we want to use the default language
+        //intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault())// hebrew
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US")
+        //show the user a text to explain what we want.
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak to phone")
+        if (hasAudioPermission)
+        {
+            try
+            {
+                startActivityForResult(intent, RECOGNITION_RESULT)
+            }
+            catch (e: ActivityNotFoundException) {
+                Toast.makeText(this.applicationContext, "ERROR", Toast.LENGTH_SHORT).show()
+            }
+            catch (e:Exception) {
+                Log.e("WTF", "runSpeechRecognition: " + e.message)
+            }
+        }
+    }
+
+    protected override fun onActivityResult(requestCode:Int, resultCode:Int, data:Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            //in case the request code is 2 - recognition intent
+            RECOGNITION_RESULT -> if (resultCode == RESULT_OK && data != null)
+            {
+                //get array list of all our result (can be 1, can be 5)
+                val result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                val myAdapter = LangAdapter(this.applicationContext, result)
+                editText.setText(result.get(0).trim().toLowerCase().substring(0,result.get(0).trim().length) + "")
+                engageChobit()
+                //StaticString.str =result.get(0).trim().toLowerCase().substring(1,result.get(0).trim().length) + ""
+                //Toast.makeText(this.applicationContext, result.get(0).trim().toLowerCase().substring(1, result.get(0).trim().length) + "", Toast.LENGTH_SHORT).show()
+            }
+            else -> Toast.makeText(this.applicationContext, "the programmer is not so bright", Toast.LENGTH_SHORT).show()
         }
     }
 }

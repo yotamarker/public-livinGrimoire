@@ -307,4 +307,12 @@ public class PlayGround {
 		now.add(Calendar.MINUTE, x);
 		return now.get(Calendar.HOUR_OF_DAY) + ":" + now.get(Calendar.MINUTE);
 	}
+
+	public Boolean isDayTime() {
+		int hour = getHoursAsInt();
+		if (hour > 5 && hour < 19) {
+			return true;
+		}
+		return false;
+	}
 }

@@ -814,6 +814,62 @@ class TTSVoice(private val context:Context){
                 mediaPlayer.start()
 
             }
+            "ok little one" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.oklittleone)
+
+                mediaPlayer.start()
+
+            }
+            "no you may not" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.noyoumaynot)
+
+                mediaPlayer.start()
+
+            }
+            "it is passed your curfew baby" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.itispastyourcurfewbaby)
+
+                mediaPlayer.start()
+
+            }
+            "it is passed your curfew baby" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.itispastyourcurfewbaby)
+
+                mediaPlayer.start()
+
+            }
+            "go humpies in your diapy" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.gohumpiesinyourdiapy)
+
+                mediaPlayer.start()
+
+            }
+            "you have a diaper dont you" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.youhaveadiaperdontyou)
+
+                mediaPlayer.start()
+
+            }
+            "yes you have to" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.yesyouhaveto)
+
+                mediaPlayer.start()
+
+            }
+            "then be a big boy and stop fussing" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.thenbeabigboy)
+
+                mediaPlayer.start()
+
+            }
             else -> {TTSBeefUp(inStr)}
         }
     }
@@ -883,6 +939,10 @@ class TTSVoice(private val context:Context){
                 "July" ->
                     voiceArrayList.add(string)
                 "August" ->
+                    voiceArrayList.add(string)
+                "September" ->
+                    voiceArrayList.add(string)
+                "March" ->
                     voiceArrayList.add(string)
                 "October" ->
                     voiceArrayList.add(string)

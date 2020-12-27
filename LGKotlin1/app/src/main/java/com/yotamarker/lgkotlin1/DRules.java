@@ -37,6 +37,7 @@ public class DRules extends AbsCmdReq implements Neuronable {
                 algParts1.add(this.apSleep);
                 Algorithm algorithm = new Algorithm("sleep", "going to sleep", algParts1);
                 noiron.algParts.add(algorithm);
+                todo = "";
                 break;
 
             default:
@@ -45,7 +46,7 @@ public class DRules extends AbsCmdReq implements Neuronable {
     }
 
     @Override
-	public void input(String ear, String skin, String eye) {
+    public void input(String ear, String skin, String eye) {
         // TODO Auto-generated method stub
         int h = playGround.getHoursAsInt();
         int m = playGround.getMinutesAsInt();

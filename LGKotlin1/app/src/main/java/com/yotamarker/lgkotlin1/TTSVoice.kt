@@ -870,6 +870,34 @@ class TTSVoice(private val context:Context){
                 mediaPlayer.start()
 
             }
+            "good morning" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.goodmorning)
+
+                mediaPlayer.start()
+
+            }
+            "good afternoon" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.goodafternoon)
+
+                mediaPlayer.start()
+
+            }
+            "good evening" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.goodevening)
+
+                mediaPlayer.start()
+
+            }
+            "good night" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.goodnight)
+
+                mediaPlayer.start()
+
+            }
             else -> {TTSBeefUp(inStr)}
         }
     }

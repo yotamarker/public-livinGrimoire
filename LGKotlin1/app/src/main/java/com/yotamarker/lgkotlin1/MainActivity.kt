@@ -100,7 +100,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Accelerom
         {
             //STT
             if(requestCode==1){
-            hasAudioPermission = true}
+                hasAudioPermission = true}
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) === PackageManager.PERMISSION_GRANTED)
             {
                 locationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10, 1.1f, locationListener)

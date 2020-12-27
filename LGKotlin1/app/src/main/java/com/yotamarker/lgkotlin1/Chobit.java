@@ -42,7 +42,6 @@ public class Chobit {
 		dClassesLv1.add(dPermitter);
 		dClassesLv1.add(new DRules((new APSleep(24)), inner));
 		dClassesLv1.add(new DIJoker(kokoro));
-		dClassesLv1.add(new DISitter(kokoro));
 		dClassesLv1.add(new DIEliza(kokoro));
         dClassesLv1.add(new DILively(kokoro));
 		dClassesLv1.add(new DIBurper(kokoro));
@@ -52,12 +51,15 @@ public class Chobit {
 		dClassesLv1.add(new DSpeller());
 		dClassesLv1.add(new DISoulV2(kokoro));
 		dClassesLv1.add(new DIBukubukuchagama(kokoro));
+		dClassesLv1.add(new DIAlerter(kokoro));
+		dClassesLv1.add(new DiTglrAdapter(kokoro,"mommy",new TheSitterV2(kokoro, "mommy")));
 		// dClassesLv1.add(new DCalculatorV1());
 		dClassesLv2.add(new DSayer());
 		// dClassesLv3.add(new DAlarmer());
 		dClassesLv3.add(new DIDirty(kokoro));
 		dClassesLv3.add(new DIHomer(kokoro));
 		dClassesLv3.add(new DILifeFueler(kokoro));
+		dClassesLv3.add(new DiTglrSkill(kokoro, "mommy"));
 		// dClassesLv3.add(new DIJirachi(master, kokoro));
 		formAutoClassesList();
 	}

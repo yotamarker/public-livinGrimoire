@@ -16,6 +16,13 @@ public class PlayGround {
 		return strDate;
 	}
 
+	public int getMonthAsInt() {
+		return Calendar.getInstance().get(Calendar.MONTH);
+	}
+
+	public int getDayAsInt() {
+		return Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+	}
 	public String getMinutes() {
 		// SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//
 		// dd/MM/yyyy
@@ -314,5 +321,52 @@ public class PlayGround {
 			return true;
 		}
 		return false;
+	}
+
+	public String partOfDay() {
+		int hour = getHoursAsInt();
+		if (smallToBig(5, hour, 12)) {
+			return "morning";
+		}
+		if (smallToBig(11, hour, 17)) {
+			return "afternoon";
+		}
+		if (smallToBig(16, hour, 21)) {
+			return "evening";
+		}
+		return "night";
+	}
+
+	public Boolean smallToBig(int... a)
+	// return true if input nums decend in value
+	{
+		for (int i = 0; i < a.length - 1; i++) {
+			if (!(a[i] < a[i + 1])) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public String getTomorrow() {
+		Date now = new Date();
+		Calendar c = Calendar.getInstance();
+		c.setTime(now);
+		int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+		if (dayOfWeek == 7) {
+			return "sunday";
+		}
+		return convertToDay(dayOfWeek + 1);
+	}
+
+	public String getYesterday() {
+		Date now = new Date();
+		Calendar c = Calendar.getInstance();
+		c.setTime(now);
+		int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+		if (dayOfWeek == 1) {
+			return "saturday";
+		}
+		return convertToDay(dayOfWeek - 1);
 	}
 }

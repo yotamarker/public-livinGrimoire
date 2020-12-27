@@ -2,7 +2,7 @@ package com.yotamarker.lgkotlin1;
 
 public class Person {
 	private String name = "";
-	private Boolean active = true;
+	private Boolean active = false;
 	private String phone = "";
 	private String skill = "";
 	private String profession = "";
@@ -67,5 +67,17 @@ public class Person {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public void deleteFriend() {
+		name = "";
+		active = false;
+		phone = "";
+		skill = "";
+		profession = "";
+		jutsu = "hadouken";
+		// location
+		email = "";
+		id = "";
 	}
 }

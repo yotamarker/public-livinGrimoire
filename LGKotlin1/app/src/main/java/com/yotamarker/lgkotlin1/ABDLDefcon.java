@@ -34,7 +34,7 @@ public class ABDLDefcon extends AbsDefconV2 {
                 case "fuck":
                     tempAlg = diSkillUtil.verbatimGorithm(new APVerbatim("use the word play", "bad boy you are grounded"));
                     return naughtyWord;
-                case "shit":
+                case "shit": case"sheet":
                     tempAlg = diSkillUtil.verbatimGorithm(new APVerbatim("use the word poo", "bad boy you are grounded"));
                     return naughtyWord;
                 case "fufu":

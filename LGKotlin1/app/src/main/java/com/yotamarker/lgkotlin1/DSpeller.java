@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class DSpeller extends AbsCmdReq implements Neuronable {
     private String param = "";
     private Boolean active;
+    private  DISkillUtils diSkillUtil = new DISkillUtils();
     @Override
     public void output(Neuron noiron) {
         switch (this.param) {
@@ -22,6 +23,18 @@ public class DSpeller extends AbsCmdReq implements Neuronable {
                 param = "";
                 PlayGround playGround = new PlayGround();
                 noiron.algParts.add(verbatimGorithm(new APVerbatim("good " + playGround.partOfDay())));
+                return;
+            case "god mode":
+                param = "";
+                noiron.algParts.add(verbatimGorithm(new APVerbatim("ainzbuff")));
+                return;
+            case "hadouken":
+                param = "";
+                noiron.algParts.add(diSkillUtil.verbatimGorithm("spell",new APVerbatim("hadouken")));
+                return;
+            case "shouryuken":
+                param = "";
+                noiron.algParts.add(diSkillUtil.verbatimGorithm("spell",new APVerbatim("shouryuken")));
                 return;
             default:
                 break;
@@ -58,6 +71,15 @@ public class DSpeller extends AbsCmdReq implements Neuronable {
                 break;
             case "who made you":
                 this.param = "creator";
+                break;
+            case "god mode":
+                this.param = "god mode";
+                break;
+            case "hadouken": case"hadoken":
+                this.param = "shouryuken";
+                break;
+            case "shouryuken": case"shoryuken":
+                this.param = "hadouken";
                 break;
             default:
                 active = false;

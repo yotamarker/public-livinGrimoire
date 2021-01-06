@@ -25,8 +25,76 @@ class TTSVoice(private val context:Context){
                 mediaPlayer = MediaPlayer.create(context, R.raw.shouryukenredo)
                 mediaPlayer.start()
             }
+            "i love you too" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.iloveutoo)
+                mediaPlayer.start()
+            }
+            "of course kido" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.of_course_kido)
+                mediaPlayer.start()
+            }
+            "would it make you feel better if i let you hump your pull ups against my butt and you can pretend you are a man" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.wouldntitmakeyoufeelbetter)
+                mediaPlayer.start()
+            }
+            "yes and she will be potty trained before you" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.yes_and_she_will_be_potty_trained_before_you)
+                mediaPlayer.start()
+            }
+            "all i see is a diaper brat" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.alliseeisadiaperbrat)
+                mediaPlayer.start()
+            }
+            "you are a bedwetting boy" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.youareabedwettingboy)
+                mediaPlayer.start()
+            }
+            "you have a little peepee" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.youhavealittlepp)
+                mediaPlayer.start()
+            }
+            "you are just a baby" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.youarejustababy)
+                mediaPlayer.start()
+            }
+            "binky in mouth now" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.binkyinmouthnow)
+                mediaPlayer.start()
+            }
+            "prayer1" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.prayer1)
+                mediaPlayer.start()
+            }
+            "bad boy interupting" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.bad_boy_interupting)
+                mediaPlayer.start()
+            }
+            "go stand in the corner for 10 minutes" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.go_stand_in_the_corner)
+                mediaPlayer.start()
+            }
+            "bad boy you are grounded" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.badboyyouaregrounded)
+                mediaPlayer.start()
+            }
+            "brush your teeth" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.brushyourteeth)
+                mediaPlayer.start()
+            }
+            "use the word play" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.usethewordplay)
+                mediaPlayer.start()
+            }
+            "use the word poo" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.usethewordpoo)
+                mediaPlayer.start()
+            }
             "user fighto" -> {
                 mediaPlayer = MediaPlayer.create(context, R.raw.user_fighto)
+                mediaPlayer.start()
+            }
+            "chistart2" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.chistart2)
                 mediaPlayer.start()
             }
             "hi" -> {

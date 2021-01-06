@@ -36,7 +36,9 @@ public class InstaConvo {
             activeContext = "";
         }
         if (!ear.isEmpty()) {
-            return pairs.getOrDefault(activeContext + ear, "");
+            String tempest = pairs.getOrDefault(activeContext + ear, "");
+            if(tempest.isEmpty()){tempest = pairs.getOrDefault(ear, "");}
+            return tempest;
         }
         return "";
     }

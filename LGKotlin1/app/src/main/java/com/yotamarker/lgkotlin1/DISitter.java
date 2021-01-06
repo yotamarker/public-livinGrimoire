@@ -65,7 +65,7 @@ public class DISitter extends DISkill {
                 outAlg = 2;
             }
         }
-        if ((ear.contains("can") || ear.contains("may")) && ear.contains("fuck you")) {
+        if ((ear.contains("can") || ear.contains("may")) && ear.contains("do you")) {
             algMode = 101;
             timeGate.close(2);
             outAlg = 101;

@@ -39,6 +39,14 @@ public class Alerter {
     private int msgLim = 4;
 
     private String translateTimes(String ear) {
+        // patch to ready input
+        String dotless = regexUtil
+                .regexChecker("(([0-9]|[0-1][0-9]|[2][0-3])([0-5][0-9])$)|(^([0-9]|[1][0-9]|[2][0-3])$)", ear);
+        if (!dotless.isEmpty()) {
+            String dotless2 = dotless.substring(0, dotless.length() - 2) + ":"
+                    + dotless.substring(dotless.length() - 2);
+            return ear.replace(dotless, dotless2);
+        }
         if (!ear.contains("on the clock")) {
             return ear;
         }

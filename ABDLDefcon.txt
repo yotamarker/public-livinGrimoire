@@ -22,6 +22,7 @@ public class ABDLDefcon extends AbsDefconV2 {
         naughtyWords.add("cunt");
         naughtyWords.add("fuck");
         naughtyWords.add("damn");
+        naughtyWords.add("sheet");
         naughtyWords.add("bastard");
     }
 
@@ -34,7 +35,10 @@ public class ABDLDefcon extends AbsDefconV2 {
                 case "fuck":
                     tempAlg = diSkillUtil.verbatimGorithm(new APVerbatim("use the word play", "bad boy you are grounded"));
                     return naughtyWord;
-                case "shit": case"sheet":
+                case "shit":
+                    tempAlg = diSkillUtil.verbatimGorithm(new APVerbatim("use the word poo", "bad boy you are grounded"));
+                    return naughtyWord;
+                case"sheet":
                     tempAlg = diSkillUtil.verbatimGorithm(new APVerbatim("use the word poo", "bad boy you are grounded"));
                     return naughtyWord;
                 case "fufu":

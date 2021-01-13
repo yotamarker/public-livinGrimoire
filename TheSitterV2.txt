@@ -68,7 +68,7 @@ public class TheSitterV2 extends TheSkill {
                     sent1 = "05:00";
                     return;
                 case "01:00":
-                    outputAlg = diSkillUtil.verbatimGorithm(new APVerbatim("filthx1"));// masturbatin
+                    outputAlg = diSkillUtil.verbatimGorithm(new APVerbatim("filthy"));// masturbatin
                     sent1 = "01:00";
                     algMode = 1;// context
                     tGSitter.open(50);

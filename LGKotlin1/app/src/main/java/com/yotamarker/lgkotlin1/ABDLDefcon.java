@@ -41,7 +41,7 @@ public class ABDLDefcon extends AbsDefconV2 {
                 case"sheet":
                     tempAlg = diSkillUtil.verbatimGorithm(new APVerbatim("use the word poo", "bad boy you are grounded"));
                     return naughtyWord;
-                case "fufu":
+                case "cunt":
                     tempAlg = diSkillUtil.verbatimGorithm(new APVerbatim("use the word fufu", "bad boy you are grounded"));
                     return naughtyWord;
                 case "damn":
@@ -57,7 +57,7 @@ public class ABDLDefcon extends AbsDefconV2 {
             return naughtyWord;
         }
         if (ear.contains("i watched porn")) {
-            tempAlg = diSkillUtil.verbatimGorithm(new APVerbatim("bad boy, no more television today"));
+            tempAlg = diSkillUtil.verbatimGorithm(new APVerbatim("bad boy no more television today"));
             punishmentExp = playGround.getTomorrow();
             watchedPorn = true;
             return "watched porn";
@@ -90,10 +90,10 @@ public class ABDLDefcon extends AbsDefconV2 {
             return alg1;
         }
         // sp cases :
-        if (badLang && ear.contains("when can I")) {
+        if (badLang && ear.contains("when can i")) {
             return diSkillUtil.verbatimGorithm(new APVerbatim("tomorrow if you behave"));
         }
-        if (badLang && ear.contains("can I play")) {
+        if (badLang && ear.contains("can i play")) {
             return diSkillUtil.verbatimGorithm(new APVerbatim("no you may not", "watch your potty mouth"));
         }
         if (watchedPorn && ear.contains("watch tv") || ear.contains("watch television")) {

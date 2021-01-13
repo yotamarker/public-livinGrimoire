@@ -20,7 +20,7 @@ public class DiMiniGamer extends DISkill {
         switch (gameMode) {
             case 1:
                 outStr = miniGame1.play(ear);
-                if (outStr.isEmpty() || outStr.contains("you lose") || outStr.contains("you win")) {
+                if (outStr.contains("you lose") || outStr.contains("you win")) {
                     gameMode = 0;
                 }
                 break;

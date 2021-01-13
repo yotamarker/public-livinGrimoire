@@ -11,9 +11,9 @@ public class MiniGame1 {
     public void init() {
         n = getRandomInt(limit);
         zeroTimeGate.open(5);
-        int min = 0;
-        int limit = 1000;
-        int max = limit;
+        min = 0;
+        limit = 1000;
+        max = limit;
     }
 
     public int getRandomInt(int max) {

@@ -25,6 +25,98 @@ class TTSVoice(private val context:Context){
                 mediaPlayer = MediaPlayer.create(context, R.raw.shouryukenredo)
                 mediaPlayer.start()
             }
+            "pet me" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.petme)
+                mediaPlayer.start()
+            }
+            "filthy" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.filth)
+                mediaPlayer.start()
+            }
+            "no you may not" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.noyoumaynot)
+                mediaPlayer.start()
+            }
+            "to nurse and protect" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.tonurseandprotect)
+                mediaPlayer.start()
+            }
+            "use the word gosh" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.usethewordgosh)
+                mediaPlayer.start()
+            }
+            "watch your potty mouth" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.watchyourpottymouth)
+                mediaPlayer.start()
+            }
+            "tomorrow if you behave" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.tomorrowifyoubehave)
+                mediaPlayer.start()
+            }
+            "use the word mean" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.usethewordmean)
+                mediaPlayer.start()
+            }
+            "use the word fufu" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.usethewordfufu)
+                mediaPlayer.start()
+            }
+            "bad boy no more television today" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.badboynomoretelevisiontoday)
+                mediaPlayer.start()
+            }
+            "and only kid shows" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.andonlykidshows)
+                mediaPlayer.start()
+            }
+            "tomorrow if you behave" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.tomorrowifyoubehave)
+                mediaPlayer.start()
+            }
+            "and dont you forget it" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.anddontyouforgetit)
+                mediaPlayer.start()
+            }
+            "prrr10" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.prrr10)
+                mediaPlayer.start()
+            }
+            "prrr11" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.prrr11)
+                mediaPlayer.start()
+            }
+            "prrr12" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.prrr12)
+                mediaPlayer.start()
+            }
+            "prrr20" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.prrr20)
+                mediaPlayer.start()
+            }
+            "prrr21" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.prrr21)
+                mediaPlayer.start()
+            }
+            "prrr22" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.prrr22)
+                mediaPlayer.start()
+            }
+            "meow0" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.meow0)
+                mediaPlayer.start()
+            }
+            "meow2" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.meow2)
+                mediaPlayer.start()
+            }
+            "meow1" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.meow1)
+                mediaPlayer.start()
+            }
+            "you are welcome" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.youarewelcome)
+                mediaPlayer.start()
+            }
             "i love you too" -> {
                 mediaPlayer = MediaPlayer.create(context, R.raw.iloveutoo)
                 mediaPlayer.start()

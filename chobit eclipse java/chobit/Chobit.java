@@ -1,4 +1,4 @@
-package com.yotamarker.lgkotlin1;
+package chobit;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -13,7 +13,7 @@ public class Chobit {
 	protected Hashtable<String, Integer> AlgDurations = new Hashtable<>();
 	protected Fusion fusion = new Fusion(AlgDurations);
 	// region essential DClasses
-	protected Permission permission = Permission.newInstance("xxx", "sweetie", "honey");
+	protected Permission permission = Permission.newInstance("xxx", "chii", "liron");
 	protected DPermitter dPermitter = new DPermitter(permission);
 	// endregion
 	protected Neuron noiron;
@@ -27,6 +27,7 @@ public class Chobit {
 	protected String lastOutput = "";
 	// standBy phase 260320
 	protected TimeGate timeGate = new TimeGate();
+
 	public Chobit(AbsDictionaryDB absDictionaryDB) {
 		super();
 		this.kokoro = new Kokoro(absDictionaryDB);
@@ -34,6 +35,8 @@ public class Chobit {
 		this.inner = new InnerClass(); // sleep var
 		// add a skill here, only 1 line needed !!!
 		dClassesLv1.add(new Detective(fusion));
+		dClassesLv1.add(new DIJoker(kokoro));
+		dClassesLv1.add(new DIGamer(kokoro));// 050420
 		// dClassesLv1.add(new DJirachi());
 		// dClassesLv1.add(new DIAutomatic(kokoro, master));
 		// dClassesLv1.add(new DIBedTime(kokoro));
@@ -41,28 +44,12 @@ public class Chobit {
 		// dClassesLv1.add(new DIBurper(kokoro));
 		dClassesLv1.add(dPermitter);
 		dClassesLv1.add(new DRules((new APSleep(24)), inner));
-		dClassesLv1.add(new DIJoker(kokoro));
-		dClassesLv1.add(new DIEliza(kokoro));
-        dClassesLv1.add(new DILively(kokoro));
-		dClassesLv1.add(new DIBurper(kokoro));
-		dClassesLv1.add(new DIWeather(kokoro));
-		dClassesLv1.add(new DICurrency(kokoro));
-		dClassesLv1.add(new DIGamer(kokoro));
-		dClassesLv1.add(new DSpeller());
-		dClassesLv1.add(new DISoulV2(kokoro));
-		dClassesLv1.add(new DIBukubukuchagama(kokoro));
-		dClassesLv1.add(new DIAlerter(kokoro));
-		dClassesLv1.add(new DiTglrAdapter(kokoro,"mommy",new TheSitterV2(kokoro, "mommy")));
-		dClassesLv1.add(new DiMiniGamer(kokoro));
-		dClassesLv1.add(new ThePet(kokoro));
-		dClassesLv1.add(new DiMemoryGame(kokoro));
+		// dClassesLv1.add(new DSpeller());
 		// dClassesLv1.add(new DCalculatorV1());
 		dClassesLv2.add(new DSayer());
 		// dClassesLv3.add(new DAlarmer());
 		dClassesLv3.add(new DIDirty(kokoro));
-		dClassesLv3.add(new DIHomer(kokoro));
-		dClassesLv3.add(new DILifeFueler(kokoro));
-		dClassesLv3.add(new DiTglrSkill(kokoro, "mommy"));
+		// dClassesLv3.add(new DISitter(kokoro));
 		// dClassesLv3.add(new DIJirachi(master, kokoro));
 		formAutoClassesList();
 	}
@@ -74,6 +61,18 @@ public class Chobit {
 		this.inner = new InnerClass(); // sleep var
 		// add a skill here, only 1 line needed !!!
 		dClassesLv1.add(new Detective(fusion));
+		dClassesLv1.add(new DIJoker(kokoro));
+		dClassesLv1.add(new DIWeather(kokoro));
+		dClassesLv1.add(new DICorona(kokoro));
+		dClassesLv1.add(new DICurrency(kokoro));
+		dClassesLv1.add(new DIContacter(kokoro));
+		dClassesLv1.add(new DSpeller());
+		// dClassesLv1.add(new DIGamer(kokoro));// 050420
+		dClassesLv1.add(new DIBukubukuchagama(kokoro));// 130420
+		dClassesLv1.add(new DIAlerter(kokoro));
+		// dClassesLv1.add(new DiVictim(kokoro));
+
+		dClassesLv1.add(new DiTglrAdapter(kokoro, "assault", new DiVictim(kokoro)));
 		// dClassesLv1.add(new DJirachi());
 		// dClassesLv1.add(new DIAutomatic(kokoro, master));
 		// dClassesLv1.add(new DIBedTime(kokoro));
@@ -81,16 +80,22 @@ public class Chobit {
 		// dClassesLv1.add(new DIBurper(kokoro));
 		dClassesLv1.add(dPermitter);
 		dClassesLv1.add(new DRules((new APSleep(24)), inner));
-		dClassesLv1.add(new DIJoker(kokoro));
-		dClassesLv1.add(new DSpeller());
 		dClassesLv1.add(new DISoulV2(kokoro));
+		dClassesLv1.add(new TheSitter(kokoro, "mommy"));
+		dClassesLv1.add(new ThePet(kokoro));
+		// dClassesLv1.add(new DSpeller());
 		// dClassesLv1.add(new DCalculatorV1());
 		dClassesLv2.add(new DSayer());
 		// dClassesLv3.add(new DAlarmer());
 		dClassesLv3.add(new DIDirty(kokoro));
+		dClassesLv3.add(new DIHomer(kokoro));
+		dClassesLv3.add(new DILifeFueler(kokoro));
+		dClassesLv3.add(new DiTglrMommy(kokoro));
+		// dClassesLv3.add(new DISitter(kokoro));
+		dClassesLv3.add(new DiTglrSkill(kokoro, "assault"));
 		// dClassesLv3.add(new DIJirachi(master, kokoro));
 		formAutoClassesList();
-	}
+    }
 
 	protected void formAutoClassesList() {
 		// adds automatic skills so they can be engaged by time
@@ -128,55 +133,55 @@ public class Chobit {
 		}
 		fusion.setAlgQueue(noiron);
 		return translateOut(fusion.act(ear, skin, eye));
-	}
-	public String getSoulEmotion(){return kokoro.getEmot();}
-	public String getEmot() {
+    }
+
+    public String getEmot() {
 		// emot (emotion for display)
-		String x1 = emot;
-		switch (this.emot) {
-			case "APCuss ":
-				x1 = "angry";
-				break;
-			case "APDirtyTalk":
-				x1 = "grinny";
-				break;
-			case "APMoan":
-				x1 = "horny";
-				break;
-			case "APSay":
-				x1 = "speaking";
-				break;
-			case "APSleep0":
-				x1 = "dreaming";
-				break;
-			case "APSleep":
-				x1 = "asleep";
-				break;
-			case "APSpell":
-				x1 = "blank";
-				break;
-			default:
-				break;
-		}
-		emot = "";
-		return x1;
-	}
+        String x1 = emot;
+        switch (this.emot) {
+            case "APCuss ":
+                x1 = "angry";
+                break;
+            case "APDirtyTalk":
+                x1 = "grinny";
+                break;
+            case "APMoan":
+                x1 = "horny";
+                break;
+            case "APSay":
+                x1 = "speaking";
+                break;
+            case "APSleep0":
+                x1 = "dreaming";
+                break;
+            case "APSleep":
+                x1 = "asleep";
+                break;
+            case "APSpell":
+                x1 = "blank";
+                break;
+            default:
+                break;
+        }
+        emot = "";
+        return x1;
+    }
 
 	protected String sleep() {
 		// data save load should go here and run while chobit is sleeping
-		return "haha I can sleep !";
-	}
+        return "haha I can sleep !";
+    }
 
 	protected void inOut(AbsCmdReq dClass, String ear, String skin, String eye) {
 		dClass.input(ear, skin, eye); // new
-		dClass.output(noiron);
-	}
+        dClass.output(noiron);
+    }
 
-	protected class InnerClass {
-		public String nemure() {
-			return sleep();
-		}
-	}
+    protected class InnerClass {
+        public String nemure() {
+            return sleep();
+        }
+    }
 
 	protected String translateIn(String earIn) {
 		// makes sure the chobit doesn't feedback on her own output
@@ -196,10 +201,10 @@ public class Chobit {
 		// standBy :
 		else {
 			if (!this.timeGate.isClosed()) {
-				this.kokoro.standBy = true;
-				this.timeGate.close();
-			} else {
-				this.kokoro.standBy = false;
+			this.kokoro.standBy = true;
+			this.timeGate.close();
+		} else {
+			this.kokoro.standBy = false;
 			}
 		}
 		return outResult;

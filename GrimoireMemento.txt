@@ -1,4 +1,4 @@
-package chobit;
+package com.yotamarker.lgkotlin1;
 
 import java.util.Hashtable;
 
@@ -60,5 +60,12 @@ public class GrimoireMemento {
 			obj = mutant.mutation();
 		}
 		while (!end.equals(obj.getClass().getSimpleName()));
+	}
+	public String simpleLoad(String key){
+		return this.absDictionaryDB.load(key);
+	}
+	public void simpleSave(String key, String value){
+		if(key.startsWith("AP")||key.isEmpty()||value.isEmpty()){return;}
+		this.absDictionaryDB.save(key,value);
 	}
 }

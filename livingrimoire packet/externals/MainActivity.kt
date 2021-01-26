@@ -140,6 +140,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Accelerom
         chii = Chobit(SharedPrefDB(this))
         tts = TextToSpeech(this, this)
         supportActionBar?.hide()
+        mbTTS.voiceIt("chistart2")
         this.registerReceiver(this.mBatInfoReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         var count = 0
         editText.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->

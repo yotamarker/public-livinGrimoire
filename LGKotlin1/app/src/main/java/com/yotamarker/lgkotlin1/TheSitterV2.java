@@ -32,6 +32,8 @@ public class TheSitterV2 extends TheSkill {
         this.diSitter = new DISitter(kokoro);
         // insta convos set up
         instaConvo.loadBullet("i love you", "i love you too").loadBullet("i love you", "really", "of course kido");
+        instaConvo.loadBullet("i am bored", "lets make out").loadBullet("i am bored", "for real", "yes baby");
+        instaConvo.loadBullet("i am so bored", "want to kiss me").loadBullet("i am so bored", "yes", "i am so happy");
         instaConvo.loadBullet("what is your objective", "to nurse and protect");
         instaConvo.loadBullet("i feel down","would it make you feel better if i let you hump your pull ups against my butt and you can pretend you are a man");
         instaConvo.loadBullet("are you pregnant","yes and she will be potty trained before you");

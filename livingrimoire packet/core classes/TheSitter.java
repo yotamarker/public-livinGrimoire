@@ -2,7 +2,7 @@ package com.yotamarker.lgkotlin1;
 
 import java.util.ArrayList;
 
-public class TheSitterV2 extends TheSkill {
+public class TheSitter extends TheSkill {
     /*
      * prayer1 : Thank You, God, for Loving Me! The sun is setting, dear Father, and
      * it’s time to go to bed. Thank you, God, for loving me from my toesies to my
@@ -16,7 +16,7 @@ public class TheSitterV2 extends TheSkill {
     private int algMode = 0;
     private ZeroTimeGate tGSitter = new ZeroTimeGate(0);
     // end tick triggers
-    public TheSitterV2(Kokoro kokoro, String clsName) {
+    public TheSitter(Kokoro kokoro, String clsName) {
         super(kokoro, null, null, clsName);
         ArrayList<String> items = new ArrayList<String>();
         items.add("pacifier");
@@ -32,16 +32,7 @@ public class TheSitterV2 extends TheSkill {
         this.diSitter = new DISitter(kokoro);
         // insta convos set up
         instaConvo.loadBullet("i love you", "i love you too").loadBullet("i love you", "really", "of course kido");
-        instaConvo.loadBullet("i am bored", "lets make out").loadBullet("i am bored", "for real", "yes baby");
-        instaConvo.loadBullet("i am so bored", "want to kiss me").loadBullet("i am so bored", "yes", "i am so happy");
         instaConvo.loadBullet("what is your objective", "to nurse and protect");
-        instaConvo.loadBullet("i feel down","would it make you feel better if i let you hump your pull ups against my butt and you can pretend you are a man");
-        instaConvo.loadBullet("are you pregnant","yes and she will be potty trained before you");
-        instaConvo.loadBullet("i am a man","all i see is a diaper brat");
-        instaConvo.loadBullet("i am a grown up","you are a bedwetting boy");
-        instaConvo.loadBullet("you are naked","you have a little peepee");
-        instaConvo.loadBullet("i am jealous","you are just a baby");
-        instaConvo.loadBullet("i need underwear","binky in mouth now");
     }
 
     @Override
@@ -51,11 +42,13 @@ public class TheSitterV2 extends TheSkill {
         if (outputAlg != null) {
             return;
         }
+        if (this.friend.getActive()) {
             String ic1 = instaConvo.converse(ear.toLowerCase());
             if (!ic1.isEmpty()) {
                 outputAlg = diSkillUtil.verbatimGorithm(new APVerbatim(ic1));
                 return;
             }
+        }
     }
     @Override
     protected void trgExplore(String ear, String skin, String eye) {
@@ -70,7 +63,7 @@ public class TheSitterV2 extends TheSkill {
                     sent1 = "05:00";
                     return;
                 case "01:00":
-                    outputAlg = diSkillUtil.verbatimGorithm(new APVerbatim("filthy"));// masturbatin
+                    outputAlg = diSkillUtil.verbatimGorithm(new APVerbatim("filthx1"));// masturbatin
                     sent1 = "01:00";
                     algMode = 1;// context
                     tGSitter.open(50);
@@ -112,5 +105,4 @@ public class TheSitterV2 extends TheSkill {
         return true;
     }
 }
-
 

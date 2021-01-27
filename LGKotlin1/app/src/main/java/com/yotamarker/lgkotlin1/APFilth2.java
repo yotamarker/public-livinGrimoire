@@ -33,7 +33,7 @@ public class APFilth2 extends AbsAlgPart implements Mutatable {
 			countDown = MANUALLIM;
 			mode = false;
 			break;
-		case "ok":
+		case "ok":case "stop": case"okay": case "that will do": case "enough": case "thank you":
 			this.isCompleted = true;
 			return "i love you";// *finisher
 		case "continue":

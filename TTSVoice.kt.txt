@@ -13,6 +13,7 @@ class TTSVoice(private val context:Context){
         println("object was created")
     }
     fun voiceIt(inStr:String) {
+        TTS = false
         //add full phrases here
         var mediaPlayer: MediaPlayer
         when (inStr) {

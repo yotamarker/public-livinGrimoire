@@ -1,0 +1,273 @@
+right click java classes folder at left explorer window and add a new empty activity.
+
+activity_select_device.xml :
+
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SelectDeviceActivity">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/deviceList"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+SelectDeviceActivity:
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.os.Bundle;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+public class SelectDeviceActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_select_device);
+
+        // Instantiate RecyclerView
+        RecyclerView recyclerView = findViewById(R.id.deviceList);
+
+        List<Object> deviceList = new ArrayList<>();//list with displayed objects
+        
+
+        // Setting Up RecyclerView
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        ListAdapter listAdapter = new ListAdapter(this,deviceList);
+        recyclerView.setAdapter(listAdapter);
+
+
+    }
+}
+in the res, layout directory add a layout for the items in the recycler view :
+item_layout.xml :
+
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/textItem"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="409dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textItem" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+add 2 more java classes :
+
+public class DeviceInfoModel {
+
+    private String deviceName, deviceHardwareAddress;
+
+    public DeviceInfoModel(){}
+
+    public DeviceInfoModel(String deviceName, String deviceHardwareAddress){
+        this.deviceName = deviceName;
+        this.deviceHardwareAddress = deviceHardwareAddress;
+    }
+
+    public String getDeviceName(){return deviceName;}
+
+    public String getDeviceHardwareAddress(){return deviceHardwareAddress;}
+
+}
+
+ListAdapter :
+
+import android.content.Context;
+import android.content.Intent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
+
+public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private Context context;
+    private List<Object> deviceList;
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView textName;
+
+        public ViewHolder(View view){
+            super(view);
+            textName = view.findViewById(R.id.textItem);
+        }
+    }
+
+    public ListAdapter(Context context, List<Object> deviceList){
+        this.context = context;
+        this.deviceList = deviceList;
+    }
+
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_layout,parent,false);
+        ViewHolder viewHolder = new ViewHolder(view);
+        return viewHolder;
+    }
+
+    public void onBindViewHolder(RecyclerView.ViewHolder holder,int position){
+        // Get Device Name and Device Address
+        DeviceInfoModel deviceInfoModel = (DeviceInfoModel) deviceList.get(position);
+        String deviceName = deviceInfoModel.getDeviceName();
+        final String deviceAddress = deviceInfoModel.getDeviceHardwareAddress();
+
+        // Assign Device name to the list
+        ViewHolder itemHolder = (ViewHolder) holder;
+        itemHolder.textName.setText(deviceName);
+
+        // Return to Main Screen when a device is selected
+        // And pass device Address information to create connection
+        itemHolder.textName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, MainActivity.class);
+                intent.putExtra("deviceAddress",deviceAddress);
+                context.startActivity(intent);
+            }
+        });
+
+    }
+
+    public int getItemCount(){
+        int dataCount = deviceList.size();
+        return dataCount;
+    }
+
+}
+
+code to summon the activity with the recycler view (put this code in your MainActivity) :
+
+Intent intent = new Intent(MainActivity.this, SelectDeviceActivity.class);
+startActivity(intent);
+
+get selectet device chosen :
+deviceAddress = getIntent().getStringExtra("deviceAddress");
+if (deviceAddress != null){}//handle choiced result here
+
+#############################################################################
+add animation :
+
+recycler animation beef up :
+
+res, create anim folder, add :
+1 item_animation_fall_down.xml :
+
+XML:
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:duration="2000">
+
+
+
+    <translate
+
+        android:fromYDelta="-20%"
+
+        android:toYDelta="0"
+
+        android:interpolator="@android:anim/decelerate_interpolator"
+
+        />
+
+
+
+    <alpha
+
+        android:fromAlpha="0"
+
+        android:toAlpha="1"
+
+        android:interpolator="@android:anim/decelerate_interpolator"
+
+        />
+
+
+
+    <scale
+
+        android:fromXScale="105%"
+
+        android:fromYScale="105%"
+
+        android:toXScale="100%"
+
+        android:toYScale="100%"
+
+        android:pivotX="50%"
+
+        android:pivotY="50%"
+
+        android:interpolator="@android:anim/decelerate_interpolator"
+
+        />
+
+
+
+</set>
+
+android:duration="2000" is how long the animation runs
+
+and layout_animation_fall_down.xml :
+
+XML:
+<?xml version="1.0" encoding="utf-8"?>
+
+<layoutAnimation
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:animation="@anim/item_animation_fall_down"
+
+    android:delay="15%"
+
+    android:animationOrder="normal"
+
+    />
+
+bind the animation to the xml recycler widget like this view xml attribute :
+
+android:layoutAnimation="@anim/layout_animation_fall_down"

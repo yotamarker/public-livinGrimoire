@@ -22,22 +22,24 @@ public class APFilth1 extends AbsAlgPart implements Mutatable{
 			}
 		}
 		switch (ear) {
-		case "can i fuck you":
+		case "please": case "i beg you":
 			return "no you may not fuck me";
-		case "auto":
+		case "automatic":
 			countDown = AUTOLIM;
 			mode = true;
-			break;
+			return "bwahaha";
 		case "manual":
 			countDown = MANUALLIM;
 			mode = false;
-			break;
+			return "kiss";
+			//break;
 		case "ok": case "stop": case"okay": case "that will do": case "enough":case "thank you":
 			this.isCompleted = true;
 			return "i love you";// *finisher
 		case "continue":
 		case "again":
 			countDown = (!mode) ? MANUALLIM : AUTOLIM;
+			return "bwahaha";
 		default:
 			moanPause--;
 			if (moanPause < 1) {

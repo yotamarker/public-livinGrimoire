@@ -23,22 +23,24 @@ public class APFilth2 extends AbsAlgPart implements Mutatable {
 			}
 		}
 		switch (ear) {
-		case "can i fuck you":
-			return "no you may not fuck me";
-		case "auto":
-			countDown = AUTOLIM;
-			mode = true;
-			break;
-		case "manual":
-			countDown = MANUALLIM;
-			mode = false;
-			break;
+			case "please": case "i beg you":
+				return "no you may not fuck me";
+			case "automatic":
+				countDown = AUTOLIM;
+				mode = true;
+				return "bwahaha";
+			case "manual":
+				countDown = MANUALLIM;
+				mode = false;
+				return "kiss";
+			//break;
 		case "ok":case "stop": case"okay": case "that will do": case "enough": case "thank you":
 			this.isCompleted = true;
 			return "i love you";// *finisher
 		case "continue":
 		case "again":
 			countDown = (!mode) ? MANUALLIM : AUTOLIM;
+			return "bwahaha";
 		default:
 			moanPause--;
 			if (moanPause < 1) {
@@ -51,6 +53,7 @@ public class APFilth2 extends AbsAlgPart implements Mutatable {
 		// continue on gyro input
 		if (skin.contains("shake")) {
 			countDown = (mode) ? MANUALLIM : AUTOLIM;
+			return "chii";
 		}
 		return "";
 	}

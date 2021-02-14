@@ -49,7 +49,8 @@ public class Chobit {
 		dClassesLv1.add(new DICurrency(kokoro));
 		dClassesLv1.add(new DIGamer(kokoro));
 		dClassesLv1.add(new DSpeller());
-		dClassesLv1.add(new DISoulV2(kokoro));
+		dClassesLv1.add(new DiSoulV3(kokoro));
+		dClassesLv1.add(new DiPrefer(kokoro));
 		dClassesLv1.add(new DIBukubukuchagama(kokoro));
 		dClassesLv1.add(new DIAlerter(kokoro));
 		dClassesLv1.add(new DiTglrAdapter(kokoro,"mommy",new TheSitterV2(kokoro, "mommy")));

@@ -1,0 +1,26 @@
+package chobit;
+
+public class TestAbsorber extends DISkill {
+	private DiSoulV3 diSoulV3;
+	private AlgAbsorber algAbsorber;
+
+	public TestAbsorber(Kokoro kokoro) {
+		super(kokoro);
+		// TODO Auto-generated constructor stub
+		diSoulV3 = new DiSoulV3(kokoro);
+		algAbsorber = new AlgAbsorber(diSoulV3);
+	}
+
+	@Override
+	public void input(String ear, String skin, String eye) {
+		algAbsorber.absorbAlg(ear, skin, eye);
+	}
+
+	@Override
+	public void output(Neuron noiron) {
+		if (!(algAbsorber.getAlgorithm() == null)) {
+			noiron.algParts.add(algAbsorber.getAlgorithm());
+			algAbsorber.resetAlgorithm();
+		}
+	}
+}

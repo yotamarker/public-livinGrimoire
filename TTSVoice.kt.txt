@@ -1059,6 +1059,27 @@ class TTSVoice(private val context:Context){
                 mediaPlayer.start()
 
             }
+            "i am high performance" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.iamhighperformance)
+
+                mediaPlayer.start()
+
+            }
+            "well i am high performance" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.welliamhighperformance)
+
+                mediaPlayer.start()
+
+            }
+            "i love when you simp for me" -> {
+
+                mediaPlayer = MediaPlayer.create(context, R.raw.ilovewhenyousimpforme)
+
+                mediaPlayer.start()
+
+            }
             else -> {TTSBeefUp(inStr)}
         }
     }

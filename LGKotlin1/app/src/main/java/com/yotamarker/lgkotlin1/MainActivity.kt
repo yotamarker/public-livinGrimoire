@@ -46,26 +46,33 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Accelerom
     //var spoke = false
     val nightRider = NightRider()
     val b8TriTimeGate = TimeGate()
+    var prevBatState = false;
     var mbTTS = TTSVoice(this)
+    private fun batterySkin(str:String){
+                        var resultStr = chii!!.doIt("",str,"")
+                editText.setText("")
+                mbTTS.voiceIt(resultStr)
+                if (mbTTS.TTS){speakOut(resultStr)}
+    }
     private val mBatInfoReceiver = object : BroadcastReceiver() {
         override fun onReceive(ctxt: Context, intent: Intent) {
+            val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
+            val status: Int = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
+            val isCharging: Boolean = status == BatteryManager.BATTERY_STATUS_CHARGING
+                    || status == BatteryManager.BATTERY_STATUS_FULL
+            val chargePlug: Int = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1)
+            val usbCharge: Boolean = chargePlug == BatteryManager.BATTERY_PLUGGED_USB
+            val acCharge: Boolean = chargePlug == BatteryManager.BATTERY_PLUGGED_AC
+            val charging = usbCharge || acCharge;
+            if(prevBatState xor charging){
+                prevBatState=charging;
+                if(usbCharge){batterySkin("slow");return;}
+                if(acCharge){batterySkin("fast");return;}
+                batterySkin("unplugged")
+            }
             if (!b8TriTimeGate.isClosed) {
                 b8TriTimeGate.close(5)
-                val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
-                val b8TRiStr = chii!!.doIt("", "$level charge", "")
-                mbTTS.voiceIt(b8TRiStr)
-                //voiceIt(b8TRiStr)
-                //if (b8TRiStr != ""){editText.setText(b8TRiStr)}
-                //editText.setText(chii.doIt("","$level charge",""))
-                //txtBox.setText("$level% $b8TRcounter")
-                val status: Int = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
-                val isCharging: Boolean = status == BatteryManager.BATTERY_STATUS_CHARGING
-                        || status == BatteryManager.BATTERY_STATUS_FULL
-
-                val chargePlug: Int = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1)
-                val usbCharge: Boolean = chargePlug == BatteryManager.BATTERY_PLUGGED_USB
-                val acCharge: Boolean = chargePlug == BatteryManager.BATTERY_PLUGGED_AC
-                //txtBox.setText("$usbCharge")
+                batterySkin("$level charge")
             }
         }
     }
@@ -130,6 +137,10 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Accelerom
                     }
                 }
                 textView2.setText(s1)
+//                var resultStr = chii!!.doIt("","","")
+//                editText.setText("")
+//                mbTTS.voiceIt(resultStr)
+//                if (mbTTS.TTS){speakOut(resultStr)}
                 handler.postDelayed(this, 1000)
             }
         }

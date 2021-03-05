@@ -58,6 +58,7 @@ public class Chobit {
 		dClassesLv1.add(new ThePet(kokoro));
 		dClassesLv1.add(new DiMemoryGame(kokoro));
 		dClassesLv1.add(new DiSaladSuggestor(kokoro));
+		dClassesLv1.add(new DiB8Tri(kokoro));
 		// dClassesLv1.add(new DCalculatorV1());
 		//dClassesLv2.add(new DSayer());
 		dClassesLv2.add(new DiSayer(kokoro));

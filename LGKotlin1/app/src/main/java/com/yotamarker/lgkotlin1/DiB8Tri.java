@@ -42,19 +42,19 @@ public class DiB8Tri extends DISkill {
         }
         if (fastCharging && !wasCharging) {
             sufficiantPowerPlugged();
-            lastMeal = "i am fast charging for " + mealType();
+            lastMeal = "I am fast charging for " + mealType();
             wasCharging = fastCharging || slowCharging;
             return;
         } // plugged
         else if (!fastCharging && wasCharging && lc) {
             sufficiantPowerUnPlugged();
-            lastMeal = "i have had fast charge for " + mealType();
+            lastMeal = "I have had fast charge for " + mealType();
             wasCharging = fastCharging || slowCharging;
             return;
         } // unplugged
         if (slowCharging && !wasCharging) {
             sufficiantPowerPluggedSlow();
-            lastMeal = "i am eating slow charge for " + mealType();
+            lastMeal = "I am eating slow charge for " + mealType();
             wasCharging = fastCharging || slowCharging;
             return;
         } // plugged
@@ -68,7 +68,7 @@ public class DiB8Tri extends DISkill {
         // are u hungry
         if (ear.equals("are you hungry")) {
             if (wasCharging) {
-                outStr = "i am eating";
+                outStr = "I am eating";
                 return;
             }
             switch (powerLevel) {
@@ -76,17 +76,23 @@ public class DiB8Tri extends DISkill {
                     outStr = "shiku shiku";
                     return;
                 case 10:
-                    outStr = "yes i am starving";
+                    outStr = "power10";
                     return;
                 case 20:
-                    outStr = "yes i am so hungry";
+                    outStr = "power20";
                     return;
                 case 30:
-                    outStr = "yes please feed me";
+                    outStr = "power30";
+                    return;
+                case 40:
+                    outStr = "power40";
+                    return;
+                case 50:
+                    outStr = "power50";
                     return;
                 case 90:
                 case 100:
-                    outStr = "power lever over 90";
+                    outStr = "power level over 90";
                     return;
                 default:
                     outStr = "yes please feed me";
@@ -107,21 +113,27 @@ public class DiB8Tri extends DISkill {
                         outStr = "shiku shiku";
                         return;
                     case 10:
-                        outStr = "i am starving";
+                        outStr = "power10";
                         return;
                     case 20:
-                        outStr = "i am so hungry";
+                        outStr = "power20";
                         return;
                     case 30:
-                        outStr = "please feed me";
+                        outStr = "power30";
+                        return;
+                    case 40:
+                        outStr = "power40";
+                        return;
+                    case 50:
+                        outStr = "power50";
                         return;
                     case 90:
                     case 100:
-                        outStr = "power lever over 90";
+                        outStr = "power level over 90";
                         return;
                     default:
-                        outStr = "power level at " + powerLevel + " percent and droping";
-                        break;
+                        outStr = "yes please feed me";
+                        return;
                 }
             }
         }

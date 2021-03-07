@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Accelerom
     // global vars
     private var tts: TextToSpeech? = null
     val kanjiClock = KanjiClock()
-    var chii:Chobit? = null
+    var chii:ChobitV2? = null
     var toggleTic = false
     var gyroX = 0.0f; var gyroY = 0.0f;var gyroCounter = 0;var gyroGate = JikanMon()
     var locationManager: LocationManager? = null //GPS beefup
@@ -147,8 +147,10 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Accelerom
 
         handler.post(run)
         b8TriTimeGate.setPause(5)
-        b8TriTimeGate.close(5)
-        chii = Chobit(SharedPrefDB(this))
+        b8TriTimeGate.close(1)
+        //chii = Chobit(SharedPrefDB(this))
+        chii = ChobitV2(Personality1(SharedPrefDB(this)))
+        chii!!.loadPersonality(Personality1(SharedPrefDB(this)))
         tts = TextToSpeech(this, this)
         supportActionBar?.hide()
         this.registerReceiver(this.mBatInfoReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED));

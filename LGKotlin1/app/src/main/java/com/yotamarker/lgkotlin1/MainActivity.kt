@@ -48,6 +48,8 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Accelerom
     val b8TriTimeGate = TimeGate()
     var prevBatState = false;
     var mbTTS = TTSVoice(this)
+    var cerabellumV2:actionable?=null //TODO
+    var brain:Brain?=null
     private fun batterySkin(str:String){
                         var resultStr = chii!!.doIt("",str,"")
                 editText.setText("")
@@ -152,7 +154,11 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Accelerom
         chii = ChobitV2(Personality1(SharedPrefDB(this)))
         chii!!.loadPersonality(Personality1(SharedPrefDB(this)))
         tts = TextToSpeech(this, this)
+        cerabellumV2=CerabellumV2(this)//TODO
+        brain = Brain(cerabellumV2!!,chii!!)
         supportActionBar?.hide()
+        //mainActivityLayout.setBackgroundResource(R.drawable.roboowl2)//TODO
+        //mainActivityLayout.setBackgroundDrawable(ContextCompat.getDrawable(this,R.drawable.roboowl2))
         this.registerReceiver(this.mBatInfoReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         var count = 0
         editText.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
@@ -206,11 +212,24 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Accelerom
     fun engageChobit(){
         val mgr = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         mgr.hideSoftInputFromWindow(editText.windowToken,0)
-        var resultStr = chii!!.doIt(editText.text.toString(),"","")
+        //var resultStr = chii!!.doIt(editText.text.toString(),"","")
+        //TODO
+        brain!!.doIt(editText.text.toString(),"","")
+        //cerabellumV2!!.act(resultStr)
+        //face(chii!!.getEmot())
+    }
+    fun cerabellumSpeak(resultStr:String){
+        //TODO
         editText.setText("")
         mbTTS.voiceIt(resultStr)
         if (mbTTS.TTS){speakOut(resultStr)}
-        //face(chii!!.getEmot())
+    }
+    fun clearTxtBox(){editText.setText("")}
+    fun screenFlip1(){
+        mainActivityLayout.setBackgroundResource(R.drawable.roboowl2)
+    }
+    fun screenFlip2(){
+        mainActivityLayout.setBackgroundResource(R.drawable.chobit800)
     }
     override fun onInit(status: Int) {
 

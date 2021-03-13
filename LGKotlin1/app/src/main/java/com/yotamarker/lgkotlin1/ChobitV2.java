@@ -3,7 +3,7 @@ package com.yotamarker.lgkotlin1;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
-public class ChobitV2 {
+public class ChobitV2 implements thinkable{
     protected String emot = ""; // emotion
     protected ArrayList<AbsCmdReq> dClassesLv1;
     protected ArrayList<AbsCmdReq> dClassesLv2;// can engage with friends and work related
@@ -152,5 +152,10 @@ public void loadPersonality(Personality personality){
             }
         }
         return outResult;
+    }
+
+    @Override
+    public String think(String ear, String skin, String eye) {
+        return doIt(ear,skin,eye);
     }
 }

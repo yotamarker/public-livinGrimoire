@@ -20,7 +20,7 @@ public class CerabellumV2 implements actionable{
         /*
         * gets the chobit result string (chobit.doIt)
         * and converts it to an action*/
-        if(thought.isEmpty()){return;}
+        if(thought.isEmpty()){context.clearTxtBox();return;}
         String action = regexCmd(thought);
         //case, functions or variables from the mainactivity are engaged as needed
         //modify as needed

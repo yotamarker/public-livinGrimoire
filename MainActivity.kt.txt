@@ -155,7 +155,8 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener, Accelerom
         chii!!.loadPersonality(Personality1(SharedPrefDB(this)))
         tts = TextToSpeech(this, this)
         cerabellumV2=CerabellumV2(this)//TODO
-        brain = Brain(cerabellumV2!!,chii!!)
+        val translatorChobit:ChobitV2 = ChobitV2(PersonalityTranslator(SharedPrefDB(this)))
+        brain = Brain(cerabellumV2!!,chii!!,translatorChobit)
         supportActionBar?.hide()
         //mainActivityLayout.setBackgroundResource(R.drawable.roboowl2)//TODO
         //mainActivityLayout.setBackgroundDrawable(ContextCompat.getDrawable(this,R.drawable.roboowl2))

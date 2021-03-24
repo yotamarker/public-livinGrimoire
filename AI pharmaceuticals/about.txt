@@ -1,0 +1,18 @@
+so at this point you wonder why does the ChobitV2 class implements thinkable ?
+
+this is a beef up, which enables daisy chaining chobits using a Brain class.
+said brain class has input flow through a list of chobits(AGIs), and ending up in
+a cerabellum class which is responsible for executing codes in the real world, meaning
+speaking words, moving robotics, changing screen backgrounds, sending SMS and other such codes.
+
+this daisy chain process enables AI pharmaceuticals, as can be seen in the Brain class documentation :
+/*
+* chobit hierarchy and responsibilities within the Brain class, which is a
+* Chobit daisy chain.
+*
+* higher lv chobits : reality distortion on drug intake, and input
+* translations(such as languages) lower lv chobits : drug addictions, context
+* sensitive translation of outputs, and primitive behaviors. primitive
+* behaviors : algorithm,s that do not require items and are not dependant on
+* time or place
+*/

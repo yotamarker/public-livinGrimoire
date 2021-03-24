@@ -1,0 +1,74 @@
+import java.util.HashMap;
+
+public class DiResponder extends DISkill {
+	private DISkillUtils diSkillUtils = new DISkillUtils();
+	private HashMap<String, Responder> responses = new HashMap<String, Responder>();
+	private Responder defaultReplies;// c'tor with max replies
+	private Boolean loaded = true;
+	private Algorithm outAlg = null;
+	private MockResponderDB db = new MockResponderDB();
+	private String prevContext = "nothing";
+	public DiResponder(Kokoro kokoro) {
+		super(kokoro);
+		String defaults = db.load("defaults");
+		defaultReplies = new Responder(defaults, (byte) 20);
+	}
+
+	@Override
+	public void input(String ear, String skin, String eye) {
+		if (ear.isEmpty()) {
+			return;
+		}
+		if (ear.equals("hey") && loaded) {
+			outAlg = diSkillUtils.customizedVerbatimGorithm("translator", new APResponder(db, 0));// TODO add shyness
+			loaded = false;
+		}
+		// AP end indicators :
+		switch (ear) {
+		case "ok":
+		case "okay":
+		case "stop":
+		case "stop it":
+		case "shut up":
+		case "be quiet":
+		case "pain":
+			loaded = true;
+			prevContext = ear;
+			return;
+		}
+		if (skin.contains("pain")) {
+			loaded = true;
+			prevContext = ear;
+			return;
+		}
+		if (ear.contains("repeate")) {
+			String material = ear.replace("repeat", "");
+			defaultReplies.addReply(material);
+			db.save("defaults", defaultReplies.getRepresantaionStr());
+			outAlg = diSkillUtils.customizedVerbatimGorithm("translator", new APSay(1, "ok"));
+			return;
+		} // filter
+		if (ear.contains("tell me")) {
+			String material = ear.replace("tell me", "");
+			if (!responses.containsKey(prevContext)) {
+				String temp = db.load(prevContext);
+				responses.put(prevContext, new Responder(temp));
+			}
+			Responder r1 = responses.get(prevContext);
+			r1.addReply(material);
+			db.save(prevContext, r1.getRepresantaionStr());
+			outAlg = diSkillUtils.customizedVerbatimGorithm("translator", new APSay(1, "ok"));
+			return;
+		}
+		prevContext = ear;
+	}
+
+	@Override
+	public void output(Neuron noiron) {
+		if (!(outAlg == null)) {
+			noiron.algParts.add(outAlg);
+			outAlg = null;
+		}
+	}
+
+}

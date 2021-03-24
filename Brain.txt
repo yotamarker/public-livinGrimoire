@@ -38,7 +38,7 @@ public class Brain {
                 continue;
             }
             if (result.isEmpty()) {
-                result = chobit.think(ear, skin, eye);
+                chobit.think(ear, skin, eye);
             } else {
                 result = chobit.think(result, skin, eye);
             }

@@ -1,0 +1,104 @@
+package com.yotamarker.lgkotlin1;
+
+import java.util.HashMap;
+
+public class APResponder extends AbsAlgPart {
+    private HashMap<String, Responder> responses = new HashMap<String, Responder>();
+    private Responder defaultReplies;// c'tor with max replies
+    private int ender = 0;
+    private KeyValuePair lastResponse = new KeyValuePair("nothing", "chii");
+    private Kokoro kokoro;
+    private PlayGround pl = new PlayGround();
+    private int shyness = 0;
+
+    public APResponder(Kokoro kokoro, int shyness) {
+        super();
+        defaultReplies = new Responder(kokoro.grimoireMemento.simpleLoad("defaults"));
+        this.kokoro=kokoro;
+        this.shyness = shyness;
+    }
+
+    @Override
+    public String action(String ear, String skin, String eye) {
+        if (pl.getHoursAsInt() == 10) {
+            ender = 5;
+            return "i do not feel like talking now";
+        } // fail safe
+        // case for deleting lame replies :
+        if (ear.contains("lame") || ear.contains("bad reply")) {
+            if (responses.containsKey(lastResponse.getKey())) {
+                responses.get(lastResponse.getKey()).removeReply(lastResponse.getValue());
+                kokoro.grimoireMemento.simpleSave(lastResponse.getKey(), responses.get(lastResponse.getKey()).getRepresantaionStr());
+                return "got it";
+            }
+            if (lastResponse.getKey().equals("defaults")) {
+                defaultReplies.removeReply(lastResponse.getValue());
+                kokoro.grimoireMemento.simpleSave(lastResponse.getKey(), defaultReplies.getRepresantaionStr());
+                return "got it";
+            }
+        }
+        // enders (exit conditions)
+        switch (ear) {
+            case "ok":
+            case "okay":
+            case "stop":
+            case "stop it":
+            case "shut up":
+            case "be quiet":
+            case "pain":
+                ender = 5;
+                return "ok";
+        }
+        if (skin.contains("pain")) {
+            ender = 5;
+            return "shiku shiku";
+        }
+        String result = "";
+        // reply to nothing :
+        if (ear.isEmpty()) {
+            ender++;
+            result = defaultReplies.getResponse(shyness);
+            lastResponse = new KeyValuePair("defaults", result);
+            return result;
+        }
+        ender = 0;
+        if (responses.containsKey(ear)) {
+            result = responses.get(ear).getResponse(shyness);
+            lastResponse = new KeyValuePair(ear, result);
+            return result;
+        }
+        // TODO go to default response doesn't exist
+        String strTemp = kokoro.grimoireMemento.simpleLoad(ear);
+        if (strTemp.equals("null") || strTemp.isEmpty()) {
+            ender++;
+            result = defaultReplies.getResponse();
+            lastResponse = new KeyValuePair("defaults", result);
+            return result;
+        }
+        responses.put(ear, new Responder(strTemp));
+        result = responses.get(ear).getResponse(shyness);
+        lastResponse = new KeyValuePair(ear, result);
+        return result;
+    }
+
+    @Override
+    public Boolean itemize() {
+        return false;
+    }
+
+    @Override
+    public enumFail failure(String input) {
+        return enumFail.ok;
+    }
+
+    @Override
+    public Boolean completed() {
+        return ender > 4;
+    }
+
+    @Override
+    public AbsAlgPart clone() {
+        return new APResponder(kokoro, shyness);
+    }
+
+}

@@ -1,0 +1,11 @@
+init code snippet (from main activity)
+
+chii = ChobitV2(Personality1(SharedPrefDB(this)))
+chii!!.loadPersonality(Personality1(SharedPrefDB(this)))
+tts = TextToSpeech(this, this)
+cerabellumV2=CerabellumV2(this)//TODO
+val translatorChobit:ChobitV2 = ChobitV2(PersonalityTranslator(SharedPrefDB(this)))
+brain = Brain(cerabellumV2!!,chii!!,translatorChobit)
+
+the translation chobit modifies the output of the upper chobits, thus acting as a translator or
+output modifier inside the brain class which daisy chains chobits, preferably 2 or 3 chobits overall

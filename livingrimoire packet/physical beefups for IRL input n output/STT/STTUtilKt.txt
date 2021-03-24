@@ -1,0 +1,95 @@
+package com.yotamarker.lg200221
+
+import android.Manifest
+import android.app.Activity
+import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.speech.RecognizerIntent
+import android.util.Log
+import android.widget.Toast
+import androidx.annotation.NonNull
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityCompat.startActivityForResult
+import androidx.core.content.ContextCompat
+import java.util.*
+
+class STTUtilKt {
+    public var hasAudioPermission = false
+    private val REQUEST_CODE = 1
+    public val RECOGNITION_RESULT = 2
+    private var sttIn:String = ""
+    private var context: Context?=null
+    private var activity: Activity?=null
+
+    constructor(context: Context,activity: Activity) {
+        this.context=context
+        this.activity = activity
+    }
+public fun getSttIn():String{
+    var temp = this.sttIn;this.sttIn="";return temp;
+}
+
+    public fun runSpeechRecognition():Intent {
+        //handle the speech recognition intent
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+        //tell the intent that we want to speak freely
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+        //tell the intent that we want to use the default language
+        //intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault())// hebrew
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US")
+        //show the user a text to explain what we want.
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak to phone")
+        return intent
+    }
+    public  fun onActivityResult(requestCode:Int, resultCode:Int, data:Intent?) {
+        when (requestCode) {
+            //in case the request code is 2 - recognition intent
+            RECOGNITION_RESULT -> if (resultCode == AppCompatActivity.RESULT_OK && data != null)
+            {
+                //get array list of all our result (can be 1, can be 5)
+                val result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                val myAdapter = LangAdapter(context, result)
+                sttIn = result.get(0).trim().toLowerCase().substring(1,result.get(0).trim().length) + "";
+//                editText.setText(result.get(0).trim().toLowerCase().substring(1,result.get(0).trim().length) + "")
+//                engageChobit()
+                //StaticString.str =result.get(0).trim().toLowerCase().substring(1,result.get(0).trim().length) + ""
+                //Toast.makeText(this.applicationContext, result.get(0).trim().toLowerCase().substring(1, result.get(0).trim().length) + "", Toast.LENGTH_SHORT).show()
+            }
+            else -> Toast.makeText(context, "the programmer is not so bright", Toast.LENGTH_SHORT).show()
+        }
+    }
+    fun onRequestPermissionsResult(requestCode:Int, @NonNull permissions:Array<String>, @NonNull grantResults:IntArray) {
+        //GPS beefup
+        if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+        {
+            //STT
+            if(requestCode==1){
+                hasAudioPermission = true}
+        }
+    }
+    public fun askPermission() {
+        //create a list of permissions
+        var listPerm = ArrayList<String>()
+        //var listPerm:List<String> = ArrayList() // contains the recog results per talk
+        //get permission status for audio record
+        val audioPerm = ContextCompat.checkSelfPermission(context!!, Manifest.permission.RECORD_AUDIO)
+        //check if the record audio permission is granted
+        if (audioPerm != PackageManager.PERMISSION_GRANTED)
+        {
+            listPerm.add(Manifest.permission.RECORD_AUDIO)
+        }
+        else
+        {
+            hasAudioPermission = true
+        }
+        //check if our list is not empty, and ask permission for it's items.
+        if (!listPerm.isEmpty())
+        {
+            //ask permission by requests.
+            ActivityCompat.requestPermissions(activity!!, listPerm.toArray(arrayOfNulls<String>(listPerm.size)), REQUEST_CODE)
+        }
+    }
+}

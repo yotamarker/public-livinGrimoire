@@ -1,0 +1,28 @@
+class SoulTickerTest:Runnable {
+  private val handler:Handler
+  private val textView:TextView
+  private val playGround = PlayGround()
+  private val tickMilis = 1000
+  constructor(handler:Handler, textView:TextView) {
+    this.handler = handler
+    this.textView = textView
+  }
+  constructor(handler:Handler, textView:TextView, tickMilis:Int) {
+    this.handler = handler
+    this.textView = textView
+    this.tickMilis = tickMilis
+  }
+  fun turnOn() {
+    handler.post(this)
+  }
+  fun setTickMilis(tickMilis:Int) {
+    if (tickMilis < 0) {
+      return
+    }
+    this.tickMilis = tickMilis
+  }
+  public override fun run() {
+    textView.setText(playGround.getCurrentTimeStamp())
+    this.handler.postDelayed(this, tickMilis)
+  }
+}

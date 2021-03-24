@@ -30,4 +30,26 @@ public class DISkillUtils {
         Algorithm algorithm = new Algorithm(algMarker, representation, algParts1);
         return algorithm;
     }
+
+    public Algorithm customizedVerbatimGorithm(String algMarker, AbsAlgPart... itte) {
+        // the most stable and advanced algorithm builder
+        // returns a simple algorithm containing 1 alg part
+        String representation = "r_" + algMarker;
+        ArrayList<AbsAlgPart> algParts1 = new ArrayList<>();
+        for (int i = 0; i < itte.length; i++) {
+            algParts1.add(itte[i]);
+        }
+        Algorithm algorithm = new Algorithm(algMarker, representation, algParts1);
+        return algorithm;
+    }
+
+    public String strContainsList(String str1, ArrayList<String> items) {
+        // returns the 1st match between words in a string and values in a list.
+        for (String temp : items) {
+            if (str1.contains(temp)) {
+                return temp;
+            }
+        }
+        return "";
+    }
 }

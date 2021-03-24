@@ -1,0 +1,63 @@
+package com.yotamarker.lg200221
+
+import AccelerometerManager
+import android.content.Context
+
+class GyroUtil: AccelerometerListener{
+    var context: Context?=null
+    var gyroX = 0.0f; var gyroY = 0.0f;var gyroZ = 0.0f;
+    val gyroGate:JikanMon= JikanMon()
+    private var movement = ""
+
+    constructor(context: Context,) {
+        this.context=context
+    }
+
+    fun getMovementation():String{
+        val temp:String = movement;
+        movement="";
+        return temp;
+    }
+    override fun onAccelerationChanged(x:Float, y:Float, z:Float) {
+        var b=false
+        if((gyroX - x) > 2 && !gyroGate.isBlocked){
+            b=true
+            if(!movement.contains('x')){movement="#x"}
+        }
+        if((gyroY - y) > 2 && !gyroGate.isBlocked){
+            b=true
+            if(!movement.contains('y')){movement="#y"}
+        }
+        if((gyroZ - z) > 2 && !gyroGate.isBlocked){
+            b=true
+            if(!movement.contains('z')){movement="#z"}
+        }
+        if(b){gyroGate.block()}
+        gyroX=x;gyroY=y;gyroZ=z;
+    }
+    override fun onShake(force:Float) {
+        //Toast.makeText(this, "Motion detected", Toast.LENGTH_SHORT).show()
+    }
+    public fun onResume() {
+        if (AccelerometerManager!!.isSupported(this.context!!))
+        {
+            AccelerometerManager.startListening(this)
+        }
+    }
+    fun onStop() {
+        //Check device supported Accelerometer senssor or not
+        if (AccelerometerManager.isListening)
+        {
+            //Start Accelerometer Listening
+            AccelerometerManager.stopListening()
+            //Toast.makeText(this, "onStop Accelerometer Stopped", Toast.LENGTH_SHORT).show()
+        }
+    }
+    fun onDestroy() {
+        if (AccelerometerManager.isListening)
+        {
+            AccelerometerManager.stopListening()
+            //Toast.makeText(this, "onDestroy Accelerometer Stopped", Toast.LENGTH_SHORT).show()
+        }
+    }
+}

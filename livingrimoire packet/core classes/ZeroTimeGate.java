@@ -13,7 +13,7 @@ public class ZeroTimeGate {
         super();
         this.pause = minutes;
         try {
-            Thread.sleep(1000);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             // e.printStackTrace();

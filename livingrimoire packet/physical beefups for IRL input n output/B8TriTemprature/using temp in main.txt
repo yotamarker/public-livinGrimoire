@@ -1,0 +1,8 @@
+global var :
+val tempratureUtil = TempratureUtil();
+
+//in onCreate :
+this.registerReceiver(tempratureUtil.broadcastreceiver,tempratureUtil.intentfilter);
+
+//get temperature :
+tempratureUtil.b8TriTemp

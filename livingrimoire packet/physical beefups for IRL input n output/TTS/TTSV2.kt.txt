@@ -1,0 +1,25 @@
+package com.yotamarker.lg200221
+
+import android.speech.tts.TextToSpeech
+import android.util.Log
+import java.util.*
+
+class TTSV2(tts: TextToSpeech?) : TextToSpeech.OnInitListener{
+    //see Mouth class for documentation
+    private val tts:TextToSpeech? = tts
+    override fun onInit(status:Int) {
+        if (status == TextToSpeech.SUCCESS&&tts!=null) {
+            // set US English as language for tts
+            val result = tts!!.setLanguage(Locale.US)
+
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS","The Language specified is not supported!")
+            } else {
+                //buttonSpeak!!.isEnabled = true
+            }
+
+        } else {
+            Log.e("TTS", "Initilization Failed!")
+        }
+    }
+}

@@ -1,0 +1,8 @@
+package com.yotamarker.lg200221
+
+interface AccelerometerListener {
+
+    fun onAccelerationChanged(x: Float, y: Float, z: Float)
+
+    fun onShake(force: Float)
+}

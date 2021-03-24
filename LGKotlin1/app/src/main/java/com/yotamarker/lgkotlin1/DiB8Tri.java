@@ -95,7 +95,7 @@ public class DiB8Tri extends DISkill {
                     outStr = "power level over 90";
                     return;
                 default:
-                    outStr = "yes please feed me";
+                    outStr = "i am hungry please feed me";
                     return;
             }
         }
@@ -132,7 +132,7 @@ public class DiB8Tri extends DISkill {
                         outStr = "power level over 90";
                         return;
                     default:
-                        outStr = "yes please feed me";
+                        outStr = "please feed me";
                         return;
                 }
             }

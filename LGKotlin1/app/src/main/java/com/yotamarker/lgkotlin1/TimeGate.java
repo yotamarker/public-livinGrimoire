@@ -5,11 +5,16 @@ import java.util.Date;
 
 public class TimeGate {
     // a gate that only opens x minutes after it has been set
-    private int pause = 10; //minutes to keep gate closed
+    private int pause = 5; //minutes to keep gate closed
     private Date openedGate = addMinutesToJavaUtilDate(new Date(), pause);
 
     public TimeGate(int minutes) {
         super();
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         this.pause = minutes;
     }
     public TimeGate() {

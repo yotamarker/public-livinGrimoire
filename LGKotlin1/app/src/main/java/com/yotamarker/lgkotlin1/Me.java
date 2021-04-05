@@ -2,69 +2,59 @@ package com.yotamarker.lgkotlin1;
 
 import java.util.ArrayList;
 
-public class Me extends TheSkill {
+public class Me extends DiSkillV2 {
     public Permission permission;
     public Person person = new Person();
     private DISkillUtils diSkillUtil = new DISkillUtils();
-    private int outAlg = 0;
-    private Boolean wasMute = false;
-
-    public Me(Kokoro kokoro, AbsDefconV2 absDefCon, ArrayList<String> items) {
-        super(kokoro, absDefCon, items, "");
+    public Me(Kokoro kokoro, Permission permission) {
+        super(kokoro);
         this.permission = permission;
         this.person.setName(this.permission.getLv1Name());
-        this.person.setJutsu("hadouken");
+        this.person.setJutsu("pffft");
     }
 
     @Override
     public void input(String ear, String skin, String eye) {
-        if (ear.isEmpty()) {
-            wasMute = true;
-        } else {
-            wasMute = false;
-        }
-        String soulMsg = kokoro.toHeart.getOrDefault("Me", "");
-        kokoro.toHeart.put("Me", "");
-        if (soulMsg.contains("introduce")) {
-            outAlg = 1;
-
+        if (kokoro.standBy) {
+            String soulMsg = kokoro.toHeart.getOrDefault("Me", "");
+            kokoro.toHeart.put("Me", "");
+            switch (soulMsg) {
+                case "introduce":
+                    outAlg = algDispenser(0);
+                    break;
+                case "attention":
+                    outAlg = algDispenser(1);
+                case "general":
+                    outAlg = algDispenser(2);
+                default:
+                    if (soulMsg.isEmpty()) {
+                        outAlg = algDispenser(1);
+                    } else {
+                        outAlg = diSkillUtil.verbatimGorithm("r_me", new APVerbatim(soulMsg));
+                    }
+                    break;
+            }
         }
     }
 
-    @Override
-    public void output(Neuron noiron) {
-        switch (outAlg) {
+    private Algorithm algDispenser(int num) {
+        switch (num) {
+            case 0:
+                // introduce give details and befriend
+                ArrayList<String> list1 = new ArrayList<>();
+                list1.add("my name is " + this.person.getName());
+                list1.add(person.getJutsu() + " " + person.getJutsu());
+                list1.add("lets be friends");
+                return diSkillUtil.verbatimGorithm("r_me", new APVerbatim(list1));
             case 1:
-                if (wasMute) {
-                    ArrayList<String> list1 = new ArrayList<>();
-                    list1.add("my name is " + this.person.getName());
-                    list1.add(person.getJutsu() + " " + person.getJutsu());
-                    list1.add("lets be friends");
-                    noiron.algParts.add(diSkillUtil.verbatimGorithm(new APVerbatim(list1)));
-                    outAlg = 0;
-                }
-                break;
-
+                // general attention 1
+                return diSkillUtil.verbatimGorithm("r_me", new APVerbatim(person.getJutsu() + " " + person.getJutsu()));
+            case 2:
+                // seeking friend
+                return diSkillUtil.verbatimGorithm("r_me", new APVerbatim("my name is " + this.person.getName()));
             default:
                 break;
         }
-    }
-
-    @Override
-    protected void trgAction(String ear, String skin, String eye) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    protected void trgExplore(String ear, String skin, String eye) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    protected void trgPreserve(String ear, String skin, String eye) {
-        // TODO Auto-generated method stub
-
+        return null;
     }
 }

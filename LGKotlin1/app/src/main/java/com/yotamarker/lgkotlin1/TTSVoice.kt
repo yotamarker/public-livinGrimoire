@@ -30,6 +30,14 @@ class TTSVoice(private val context:Context){
                 mediaPlayer = MediaPlayer.create(context, R.raw.petme)
                 mediaPlayer.start()
             }
+            "scream" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.scream)
+                mediaPlayer.start()
+            }
+            "shout" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.s1)
+                mediaPlayer.start()
+            }
             "filthy" -> {
                 mediaPlayer = MediaPlayer.create(context, R.raw.filth)
                 mediaPlayer.start()
@@ -1228,6 +1236,8 @@ class TTSVoice(private val context:Context){
                     voiceArrayList.add(string)
                 "seconds" ->
                     voiceArrayList.add(string)
+                "pffft" ->
+                    voiceArrayList.add(string)
                 else ->
                     // case it is actually a number
                     if (isNumeric(string) && string.length < 13)
@@ -2273,6 +2283,9 @@ class TTSVoice(private val context:Context){
             }
             "seconds" -> {
                 mediaPlayer = MediaPlayer.create(context, R.raw.seconds)
+            }
+            "pffft" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.pffft)
             }
             else -> {
             }

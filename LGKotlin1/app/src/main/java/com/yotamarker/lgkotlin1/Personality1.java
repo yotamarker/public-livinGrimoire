@@ -30,7 +30,10 @@ public class Personality1 extends Personality{
         dClassesLv1.add(new DiSaladSuggestor(kokoro));
         dClassesLv1.add(new DiB8Tri(kokoro));
         dClassesLv1.add(new DiResponder(kokoro));
-        dClassesLv1.add(new DiMedicator(kokoro));
+        dClassesLv1.add(new Me(kokoro,permission));
+        dClassesLv1.add(new DiRapey(kokoro));
+        //dClassesLv1.add(new DiMedicator(kokoro));
+        //dClassesLv1.add(new DiVictim(kokoro));
         // dClassesLv1.add(new DCalculatorV1());
         //dClassesLv2.add(new DSayer());
         dClassesLv2.add(new DiSayer(kokoro));

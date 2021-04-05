@@ -39,19 +39,19 @@ public class ChobitV2 implements thinkable{
         dClassesLv3=personality.getdClassesLv3();
         formAutoClassesList();
     }
-public void loadPersonality(Personality personality){
-    this.AlgDurations=personality.getAlgDurations();
-    this.fusion=personality.getFusion();
-    this.kokoro = personality.getKokoro();
-    permission=personality.getPermission();
-    dPermitter=personality.getdPermitter();
-    noiron = new Neuron();
-    dClassesLv1=personality.getdClassesLv1();
-    dClassesLv2=personality.getdClassesLv2();
-    dClassesLv3=personality.getdClassesLv3();
-    dClassesAuto = new ArrayList<>();
-    formAutoClassesList();
-}
+    public void loadPersonality(Personality personality){
+        this.AlgDurations=personality.getAlgDurations();
+        this.fusion=personality.getFusion();
+        this.kokoro = personality.getKokoro();
+        permission=personality.getPermission();
+        dPermitter=personality.getdPermitter();
+        noiron = new Neuron();
+        dClassesLv1=personality.getdClassesLv1();
+        dClassesLv2=personality.getdClassesLv2();
+        dClassesLv3=personality.getdClassesLv3();
+        dClassesAuto = new ArrayList<>();
+        formAutoClassesList();
+    }
     protected void formAutoClassesList() {
         // adds automatic skills so they can be engaged by time
         for (AbsCmdReq dCls : dClassesLv2) {
@@ -158,4 +158,5 @@ public void loadPersonality(Personality personality){
     public String think(String ear, String skin, String eye) {
         return doIt(ear,skin,eye);
     }
+    public Boolean getStandby(){return  kokoro.standBy;}
 }

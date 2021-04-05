@@ -44,6 +44,7 @@ public class DiResponder extends DISkill {
         }
         if (ear.contains("repeat")) {
             String material = ear.replace("repeat", "");
+            if(ear.contains("shout")){material = "shout";}if(ear.contains("scream")){material = "scream";}
             defaultReplies.addReply(material);
             kokoro.grimoireMemento.simpleSave("defaults", defaultReplies.getRepresantaionStr());
             outAlg = diSkillUtils.customizedVerbatimGorithm("translator", new APSay(1, "ok"));
@@ -56,7 +57,7 @@ public class DiResponder extends DISkill {
                 responses.put(prevContext, new Responder(temp));
             }
             Responder r1 = responses.get(prevContext);
-            r1.addReply(material);
+            r1.addReply(material.trim());
             kokoro.grimoireMemento.simpleSave(prevContext, r1.getRepresantaionStr());
             outAlg = diSkillUtils.customizedVerbatimGorithm("translator", new APSay(1, "ok"));
             return;

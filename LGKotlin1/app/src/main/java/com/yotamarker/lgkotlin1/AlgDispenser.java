@@ -1,0 +1,64 @@
+package com.yotamarker.lgkotlin1;
+
+import java.util.ArrayList;
+import java.util.Random;
+
+public class AlgDispenser {
+    private CountDownGate cdg;
+    private CountDownGate cdg2;// bias or stubborness
+    private Random rand = new Random();
+    private ArrayList<Algorithm> algorithms = new ArrayList<Algorithm>();// algs that are called by input triggers
+    private Algorithm activeAlg = null;
+
+    public AlgDispenser(int countDown, Algorithm...alg) {
+        cdg = new CountDownGate(countDown);
+        cdg2 = new CountDownGate(0);
+        for (int i = 0; i < alg.length; i++) {
+            algorithms.add(alg[i]);
+        }
+    }
+
+    public AlgDispenser(Integer bias, int countDown, Algorithm... alg) {
+        // c'tor with bias to slow down alg morph
+        cdg = new CountDownGate(countDown);
+        cdg2 = new CountDownGate(bias);
+        for (int i = 0; i < alg.length; i++) {
+            algorithms.add(alg[i]);
+        }
+    }
+    public Algorithm dispenseAlg() {
+        if (cdg.countingDown()) {
+            if (!cdg2.countingDown()) {
+                morphAlg();
+                cdg2.reset();
+            }
+        }
+        cdg.reset();
+        return activeAlg;
+    }
+
+    public Algorithm dispenseAlg(Boolean b1) {
+        // b1 : alg summon trigger detected ?
+        if (!b1) {
+            idler();
+            return null;
+        }
+        if (cdg.countingDown()) {
+            if (!cdg2.countingDown()) {
+                morphAlg();
+                cdg2.reset();
+            }
+        }
+        cdg.reset();
+        return activeAlg;
+    }
+    public void morphAlg() {
+        int x = rand.nextInt(algorithms.size());
+        activeAlg = algorithms.get(x);
+    }
+
+    public void idler() {
+        cdg.countingDown();
+    }
+}
+

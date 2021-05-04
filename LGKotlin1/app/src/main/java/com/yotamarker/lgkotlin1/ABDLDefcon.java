@@ -13,7 +13,7 @@ public class ABDLDefcon extends AbsDefconV2 {
     private DISkillUtils diSkillUtil = new DISkillUtils();
     private Algorithm tempAlg = null;
     private String lastSin = "";
-
+    private AlgDispenser sheet;
     public ABDLDefcon(MCodes mCodes, Person friend) {
         super();
         this.mCodes = mCodes;
@@ -24,22 +24,22 @@ public class ABDLDefcon extends AbsDefconV2 {
         naughtyWords.add("damn");
         naughtyWords.add("sheet");
         naughtyWords.add("bastard");
+        Algorithm t1 = diSkillUtil.verbatimGorithm(new APVerbatim("use the word poo", "bad boy you are grounded"));
+        Algorithm t2 = diSkillUtil.verbatimGorithm(new APVerbatim("go on 5 minutes time out little one"));
+        sheet = new AlgDispenser(10,t1,t2,null);
     }
 
     private String checkForDefcons(String ear, String skin, String eye) {
         String naughtyWord = strContains(ear, this.naughtyWords);
+        Boolean sheetBoolean = naughtyWord.equals("sheet")||naughtyWord.equals("shit");
+        tempAlg = sheet.dispenseAlg(sheetBoolean);
+        if(sheetBoolean){return naughtyWord;}
         if (!naughtyWord.isEmpty()) {
             punishmentExp = playGround.getTomorrow();
             badLang = true;
             switch (naughtyWord) {
                 case "fuck":
                     tempAlg = diSkillUtil.verbatimGorithm(new APVerbatim("use the word play", "bad boy you are grounded"));
-                    return naughtyWord;
-                case "shit":
-                    tempAlg = diSkillUtil.verbatimGorithm(new APVerbatim("use the word poo", "bad boy you are grounded"));
-                    return naughtyWord;
-                case"sheet":
-                    tempAlg = diSkillUtil.verbatimGorithm(new APVerbatim("use the word poo", "bad boy you are grounded"));
                     return naughtyWord;
                 case "cunt":
                     tempAlg = diSkillUtil.verbatimGorithm(new APVerbatim("use the word fufu", "bad boy you are grounded"));

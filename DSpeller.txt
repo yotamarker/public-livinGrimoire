@@ -7,6 +7,7 @@ public class DSpeller extends AbsCmdReq implements Neuronable {
     private String param = "";
     private Boolean active;
     private  DISkillUtils diSkillUtil = new DISkillUtils();
+    private TrgM1 TrgM1 = new TrgM1();
     @Override
     public void output(Neuron noiron) {
         switch (this.param) {
@@ -22,7 +23,12 @@ public class DSpeller extends AbsCmdReq implements Neuronable {
             case "hello":
                 param = "";
                 PlayGround playGround = new PlayGround();
-                noiron.algParts.add(verbatimGorithm(new APVerbatim("good " + playGround.partOfDay())));
+                int temp = TrgM1.getMood();
+                if (temp == 0) {
+                    noiron.algParts.add(verbatimGorithm(new APVerbatim("good " + playGround.partOfDay())));
+                } else {
+                    noiron.algParts.add(verbatimGorithm(new APVerbatim("what ever")));
+                }
                 return;
             case "god mode":
                 param = "";
@@ -50,7 +56,7 @@ public class DSpeller extends AbsCmdReq implements Neuronable {
 
     @Override
     public void input(String ear, String skin, String eye) {
-        // TODO Auto-generated method stub
+        TrgM1.trigger(ear, skin, eye);
         switch (ear) {
             case "what is the time":
             case "what is the date":

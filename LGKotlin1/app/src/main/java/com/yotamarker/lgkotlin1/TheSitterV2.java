@@ -42,6 +42,7 @@ public class TheSitterV2 extends TheSkill {
         instaConvo.loadBullet("you are naked","you have a little peepee");
         instaConvo.loadBullet("i am jealous","you are just a baby");
         instaConvo.loadBullet("i need underwear","binky in mouth now");
+        instaConvo.loadBullet("do i have to wear diapers","yes");
     }
 
     @Override

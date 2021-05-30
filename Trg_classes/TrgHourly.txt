@@ -1,0 +1,21 @@
+public class TrgHourly extends AbsTrg {
+	private PlayGround pl = new PlayGround();
+	private int prevHour = 30;
+
+	@Override
+	public int trigger(Boolean trigger) {
+		if (!trigger) {
+			return 0;
+		}
+		int t = pl.getHoursAsInt();
+		if (t != prevHour) {
+			prevHour = t;
+			return 1;
+		}
+		return 0;
+	}
+	@Override
+	public void reset() {
+		prevHour = 30;
+	}
+}

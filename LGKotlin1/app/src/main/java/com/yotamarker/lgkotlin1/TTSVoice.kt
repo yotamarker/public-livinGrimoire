@@ -26,6 +26,10 @@ class TTSVoice(private val context:Context){
                 mediaPlayer = MediaPlayer.create(context, R.raw.shouryukenredo)
                 mediaPlayer.start()
             }
+            "pogchamp" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.pogchamp)
+                mediaPlayer.start()
+            }
             "pet me" -> {
                 mediaPlayer = MediaPlayer.create(context, R.raw.petme)
                 mediaPlayer.start()

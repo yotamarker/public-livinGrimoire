@@ -1,0 +1,38 @@
+import java.util.ArrayList;
+
+public class TrgTimeStamps extends AbsTrg {
+	/*
+	 * this trigger becomes active only at the time stamp times input regex
+	 * examples: "05:00", "19:05";
+	 */
+	private PlayGround pl = new PlayGround();
+	private ArrayList<String> times = new ArrayList<String>();
+	private String sent = "";
+
+	public TrgTimeStamps(String... trigerringTimeStamps) {
+		for (int i = 0; i < trigerringTimeStamps.length; i++) {
+			times.add(trigerringTimeStamps[i]);
+		}
+	}
+
+	@Override
+	public int trigger(Boolean trigger) {
+		if (!trigger) {
+			return 0;
+		}
+		String rightNow = pl.getCurrentTimeStamp();
+		if (!sent.equals(rightNow)) {
+			sent = "";
+			if (times.contains(rightNow)) {
+				sent = rightNow;
+				return 1;
+			}
+		}
+		return 0;
+	}
+
+	@Override
+	public void reset() {
+		sent = "";
+	}
+}

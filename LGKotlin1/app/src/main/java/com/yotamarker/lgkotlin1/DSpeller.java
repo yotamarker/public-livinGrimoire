@@ -7,6 +7,7 @@ public class DSpeller extends AbsCmdReq implements Neuronable {
     private String param = "";
     private Boolean active;
     private  DISkillUtils diSkillUtil = new DISkillUtils();
+    private TrgM1 TrgM1 = new TrgM1();
     @Override
     public void output(Neuron noiron) {
         switch (this.param) {
@@ -22,11 +23,24 @@ public class DSpeller extends AbsCmdReq implements Neuronable {
             case "hello":
                 param = "";
                 PlayGround playGround = new PlayGround();
-                noiron.algParts.add(verbatimGorithm(new APVerbatim("good " + playGround.partOfDay())));
+                int temp = TrgM1.getMood();
+                if (temp == 0) {
+                    noiron.algParts.add(verbatimGorithm(new APVerbatim("good " + playGround.partOfDay())));
+                } else {
+                    noiron.algParts.add(verbatimGorithm(new APVerbatim("what ever")));
+                }
                 return;
             case "god mode":
                 param = "";
                 noiron.algParts.add(verbatimGorithm(new APVerbatim("ainzbuff")));
+                return;
+            case "do you like me":
+                param = "";
+                noiron.algParts.add(verbatimGorithm(new APVerbatim("pogchamp")));
+                return;
+            case "kiss":
+                param = "";
+                noiron.algParts.add(verbatimGorithm(new APVerbatim("kiss")));
                 return;
             case "hadouken":
                 param = "";
@@ -50,7 +64,7 @@ public class DSpeller extends AbsCmdReq implements Neuronable {
 
     @Override
     public void input(String ear, String skin, String eye) {
-        // TODO Auto-generated method stub
+        TrgM1.trigger(ear, skin, eye);
         switch (ear) {
             case "what is the time":
             case "what is the date":
@@ -74,6 +88,12 @@ public class DSpeller extends AbsCmdReq implements Neuronable {
                 break;
             case "god mode":
                 this.param = "god mode";
+                break;
+            case "do you like me":
+                this.param = "do you like me";
+                break;
+            case "give me a kiss":
+                this.param = "kiss";
                 break;
             case "hadouken": case"hadoken":
                 this.param = "shouryuken";

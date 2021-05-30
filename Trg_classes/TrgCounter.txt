@@ -1,0 +1,59 @@
+package chobit;
+
+public class TrgCounter extends AbsTrg {
+	private CountDownGate cdg;
+	private Boolean Mode = false;
+	private int score = 0;
+
+	public TrgCounter(int tolerance, Boolean mode) {
+		super();
+		this.cdg = new CountDownGate(tolerance);
+		Mode = mode;
+	}
+
+	public TrgCounter(int tolerance) {
+		super();
+		this.cdg = new CountDownGate(tolerance);
+	}
+	@Override
+	public int trigger(Boolean trigger) {
+		if (!trigger) {
+			return 0;
+		}
+		if (!cdg.countingDown()) {
+			Mode = !Mode;
+			cdg.reset();
+			score++;
+			if (score > 10000) {
+				score = 0;
+			}
+		}
+		return Mode ? 1 : 0;
+	}
+
+	public int getScore() {
+		// what is your [] score
+		return score;
+	}
+
+	@Override
+	public void reset() {
+		// bad girl
+		Mode = false;
+		this.cdg = new CountDownGate(10);
+	}
+
+	public void reset2() {
+		// good girl
+		Mode = true;
+		this.cdg = new CountDownGate(10);
+	}
+	public void increaseBias() {
+		// take it
+		this.cdg = new CountDownGate(cdg.getLimit() + 10);
+	}
+
+	public int getMode() {
+		return Mode ? 1 : 0;
+	}
+}

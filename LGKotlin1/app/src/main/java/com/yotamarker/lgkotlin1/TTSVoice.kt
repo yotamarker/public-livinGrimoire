@@ -1242,6 +1242,16 @@ class TTSVoice(private val context:Context){
                     voiceArrayList.add(string)
                 "pffft" ->
                     voiceArrayList.add(string)
+                "chiinormal" ->
+                    voiceArrayList.add(string)
+                "chiihappy" ->
+                    voiceArrayList.add(string)
+                "chiiexcited" ->
+                    voiceArrayList.add(string)
+                "chiicurious" ->
+                    voiceArrayList.add(string)
+                "chiiangry" ->
+                    voiceArrayList.add(string)
                 else ->
                     // case it is actually a number
                     if (isNumeric(string) && string.length < 13)
@@ -2290,6 +2300,21 @@ class TTSVoice(private val context:Context){
             }
             "pffft" -> {
                 mediaPlayer = MediaPlayer.create(context, R.raw.pffft)
+            }
+            "chiinormal" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.chii_normal)
+            }
+            "chiihappy" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.chii_normal)
+            }
+            "chiiexcited" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.chii_normal)
+            }
+            "chiicurious" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.chii_normal)
+            }
+            "chiiangry" -> {
+                mediaPlayer = MediaPlayer.create(context, R.raw.chii_normal)
             }
             else -> {
             }

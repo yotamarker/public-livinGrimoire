@@ -43,6 +43,15 @@ public class DISkillUtils {
 		return algorithm;
 	}
 
+	public Algorithm simpleVerbatimAlgorithm(String algMarker, String... sayThis) {
+		// returns alg that says the word string (sayThis)
+		return customizedVerbatimGorithm(algMarker, new APVerbatim(sayThis));
+	}
+
+	public Algorithm simpleCloudiandVerbatimAlgorithm(CldBool cldBool, String algMarker, String... sayThis) {
+		// returns alg that says the word string (sayThis)
+		return customizedVerbatimGorithm(algMarker, new APCldVerbatim(cldBool, sayThis));
+	}
 	public String strContainsList(String str1, ArrayList<String> items) {
 		// returns the 1st match between words in a string and values in a list.
 		for (String temp : items) {

@@ -20,6 +20,13 @@ public class PlayGround {
 		return Calendar.getInstance().get(Calendar.MONTH);
 	}
 
+	public int getDayOfTheMonthAsInt() {
+		return Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+	}
+
+	public int getYearAsInt() {
+		return Calendar.getInstance().get(Calendar.YEAR);
+	}
 	public int getDayAsInt() {
 		return Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
 	}
@@ -337,6 +344,10 @@ public class PlayGround {
 		return "night";
 	}
 
+	public Boolean isNight() {
+		int hour = getHoursAsInt();
+		return smallToBig(20, hour, 6);
+	}
 	public Boolean smallToBig(int... a)
 	// return true if input nums decend in value
 	{
@@ -370,3 +381,4 @@ public class PlayGround {
 		return convertToDay(dayOfWeek - 1);
 	}
 }
+

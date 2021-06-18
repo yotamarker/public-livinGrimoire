@@ -19,7 +19,7 @@ public class Personality1 extends Personality{
         dClassesLv1.add(new DICurrency(kokoro));
         dClassesLv1.add(new DIGamer(kokoro));
         dClassesLv1.add(new DSpeller());
-        dClassesLv1.add(new DiSoulV3(kokoro));
+        //dClassesLv1.add(new DiSoulV3(kokoro));
         dClassesLv1.add(new DiPrefer(kokoro));
         dClassesLv1.add(new DIBukubukuchagama(kokoro));
         dClassesLv1.add(new DIAlerter(kokoro));
@@ -32,6 +32,8 @@ public class Personality1 extends Personality{
         dClassesLv1.add(new DiResponder(kokoro));
         dClassesLv1.add(new Me(kokoro,permission));
         dClassesLv1.add(new DiRapey(kokoro));
+        dClassesLv1.add(new Empathy(kokoro));
+        dClassesLv1.add(new DiParrot(kokoro));
         //dClassesLv1.add(new DiMedicator(kokoro));
         //dClassesLv1.add(new DiVictim(kokoro));
         // dClassesLv1.add(new DCalculatorV1());

@@ -34,6 +34,7 @@ public class Personality1 extends Personality{
         dClassesLv1.add(new DiRapey(kokoro));
         dClassesLv1.add(new Empathy(kokoro));
         dClassesLv1.add(new DiParrot(kokoro));
+        dClassesLv1.add(new DiGateBox(kokoro));
         //dClassesLv1.add(new DiMedicator(kokoro));
         //dClassesLv1.add(new DiVictim(kokoro));
         // dClassesLv1.add(new DCalculatorV1());

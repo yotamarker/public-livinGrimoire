@@ -1,4 +1,5 @@
 package com.yotamarker.lgkotlin1;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -149,6 +150,13 @@ public class PlayGround {
 	public String getFutureInXMin(int x) {
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.MINUTE, x);
+		SimpleDateFormat df = new SimpleDateFormat("HH:mm");
+		return df.format(cal.getTime());
+	}
+
+	public String getPastInXMin(int x) {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.MINUTE, -1 * x);
 		SimpleDateFormat df = new SimpleDateFormat("HH:mm");
 		return df.format(cal.getTime());
 	}
@@ -381,4 +389,5 @@ public class PlayGround {
 		return convertToDay(dayOfWeek - 1);
 	}
 }
+
 

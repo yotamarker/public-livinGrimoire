@@ -153,6 +153,13 @@ public class PlayGround {
 		return df.format(cal.getTime());
 	}
 
+	public String getPastInXMin(int x) {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.MINUTE, -1 * x);
+		SimpleDateFormat df = new SimpleDateFormat("HH:mm");
+		return df.format(cal.getTime());
+	}
+
 	public int getFutureHour(int startHour, int addedHours) {
 		return (startHour + addedHours) % 25;
 	}

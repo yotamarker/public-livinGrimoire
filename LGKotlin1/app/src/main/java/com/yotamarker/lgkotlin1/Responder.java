@@ -7,6 +7,9 @@ import java.util.Random;
 public class Responder {
     /*
      * manages reply lists
+     * example summon :
+     * Responder responder = new Responder("bye bye#i shall miss you#have a good day#i love you", (byte)4);
+     * example usage : responder.getResponse()
      */
     private byte maxReplies = 4;
     private ArrayList<String> replies = new ArrayList<String>();

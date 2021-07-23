@@ -7,7 +7,7 @@ public class Personality1 extends Personality{
         dClassesLv1.add(new Detective(fusion));
         // dClassesLv1.add(new DJirachi());
         // dClassesLv1.add(new DIAutomatic(kokoro, master));
-        // dClassesLv1.add(new DIBedTime(kokoro));
+         dClassesLv1.add(new DiBedTimeV2(kokoro));
         // dClassesLv1.add(new DHungry());
         // dClassesLv1.add(new DIBurper(kokoro));
         dClassesLv1.add(dPermitter);

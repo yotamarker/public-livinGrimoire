@@ -354,7 +354,7 @@ public class PlayGround {
 
 	public Boolean isNight() {
 		int hour = getHoursAsInt();
-		return smallToBig(20, hour, 6);
+		return hour>20||hour<6;
 	}
 	public Boolean smallToBig(int... a)
 	// return true if input nums decend in value

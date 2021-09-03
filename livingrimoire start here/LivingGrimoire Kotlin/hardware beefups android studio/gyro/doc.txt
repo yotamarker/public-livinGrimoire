@@ -1,0 +1,14 @@
+add permission :
+
+<uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+
+add interface (kt):
+interface AccelerometerListener {
+
+    fun onAccelerationChanged(x: Float, y: Float, z: Float)
+
+    fun onShake(force: Float)
+}
+####################################################
+add a class named AccelerometerManager.kt (kotlin)
+

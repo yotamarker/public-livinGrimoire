@@ -1,0 +1,1 @@
+https://codinginflow.com/tutorials/android/remove-the-actionbar#:~:text=If%20we%20want%20to%20remove,xml%20file.

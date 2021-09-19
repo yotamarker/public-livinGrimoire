@@ -13,5 +13,6 @@ public class Personality2 extends Personality {
 	public Personality2() {
         super();
 		getdClassesLv1().add(new DSayer());
+		getDClassesLv1().add(new DSpeller());
     }
 }

@@ -7,5 +7,7 @@ abstract public class AbsDictionaryDB {
 
     public abstract String load(String key);
 
-    public abstract Boolean getExistsInDB();
+    public Boolean getExistsInDB() {
+        return this.existsInDB;
+    }
 }

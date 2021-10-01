@@ -23,8 +23,4 @@ class SharedPrefDB(private val context: Context) : AbsDictionaryDB() {
         this.existsInDB = result != "null"
         return result!!
     }
-
-    override fun getExistsInDB(): Boolean? {
-        return existsInDB
-    }
 }

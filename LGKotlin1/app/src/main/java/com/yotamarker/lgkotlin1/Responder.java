@@ -11,7 +11,7 @@ public class Responder {
      * Responder responder = new Responder("bye bye#i shall miss you#have a good day#i love you", (byte)4);
      * example usage : responder.getResponse()
      */
-    private byte maxReplies = 4;
+    private int maxReplies = 4;
     private ArrayList<String> replies = new ArrayList<String>();
     private Random rand = new Random();
 
@@ -28,7 +28,7 @@ public class Responder {
     }
 
     // c'tor ver 2 : for default replies
-    public Responder(String material, byte maxreplies) {
+    public Responder(String material, int maxreplies) {
         this.maxReplies = maxreplies;
         if (material.equals("null") || material.isEmpty()) {
             replies.add("");
@@ -39,7 +39,7 @@ public class Responder {
             replies.add(arrOfStr[i]);
         }
     }
-    public byte getMaxReplies() {
+    public int getMaxReplies() {
         return maxReplies;
     }
 

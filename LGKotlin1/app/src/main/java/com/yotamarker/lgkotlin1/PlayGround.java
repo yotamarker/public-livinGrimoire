@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 // times and stuff
 public class PlayGround {
@@ -387,6 +388,26 @@ public class PlayGround {
 			return "saturday";
 		}
 		return convertToDay(dayOfWeek - 1);
+	}
+	public int getGMT() {
+		Calendar now = Calendar.getInstance();
+
+		// get current TimeZone using getTimeZone method of Calendar class
+		TimeZone timeZone = now.getTimeZone();
+
+		// display current TimeZone using getDisplayName() method of TimeZone class
+		int x = timeZone.getDefault().inDaylightTime(new Date()) ? 1 : 0;
+		return timeZone.getRawOffset() / 3600000 + x;
+	}
+
+	public String getLocal() {
+		Calendar now = Calendar.getInstance();
+
+		// get current TimeZone using getTimeZone method of Calendar class
+		TimeZone timeZone = now.getTimeZone();
+
+		// display current TimeZone using getDisplayName() method of TimeZone class
+		return "Current TimeZone is : " + timeZone.getDisplayName();
 	}
 }
 

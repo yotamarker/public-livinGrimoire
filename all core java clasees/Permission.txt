@@ -1,4 +1,4 @@
-package chobit;
+package LG_Core;
 public class Permission {
     /*
      * uses two names as lv1,2 permission levels
@@ -39,10 +39,12 @@ public class Permission {
         }
     }
 
-    public void setPassword(String oldPassword, String newPassword) {
-        if (this.password.equals(password)) {
+	public Boolean setPassword(String oldPassword, String newPassword) {
+		if (this.password.equals(oldPassword)) {
             this.password = newPassword;
+			return true;
         }
+		return false;
     }
 
     public Boolean setLv2Name(String password, String newName2) {

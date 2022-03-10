@@ -39,10 +39,12 @@ public class Permission {
         }
     }
 
-    public void setPassword(String oldPassword, String newPassword) {
-        if (this.password.equals(password)) {
+    public Boolean setPassword(String oldPassword, String newPassword) {
+        if (this.password.equals(oldPassword)) {
             this.password = newPassword;
+            return true;
         }
+        return false;
     }
 
     public Boolean setLv2Name(String password, String newName2) {
@@ -57,12 +59,12 @@ public class Permission {
         return lv1Name;
     }
 
-	public String getLv2Command(String command) {
-		// returns cmd without lv2 name
-		String result = command;
-		result = result.replace(this.lv2Name, "");
-		return result.trim();
-	}
+    public String getLv2Command(String command) {
+        // returns cmd without lv2 name
+        String result = command;
+        result = result.replace(this.lv2Name, "");
+        return result.trim();
+    }
     public Boolean setLv1Name(String password, String newName) {
         if (this.password.equals(password)) {
             this.lv1Name = newName;

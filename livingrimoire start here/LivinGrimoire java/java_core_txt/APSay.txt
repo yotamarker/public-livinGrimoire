@@ -17,11 +17,11 @@ public class APSay extends AbsAlgPart {
     }
 
     @Override
-    public String action(String input) {
+    public String action(String ear, String skin, String eye) {
         // TODO Auto-generated method stub
         String axnStr = "";
         if (this.at > 0) {
-            if (!input.equalsIgnoreCase(param)) {
+            if (!ear.equalsIgnoreCase(param)) {
                 axnStr = param;
                 at--;
             }

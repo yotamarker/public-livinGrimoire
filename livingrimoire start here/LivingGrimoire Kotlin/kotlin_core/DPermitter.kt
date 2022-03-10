@@ -10,7 +10,8 @@ class DPermitter(  /*
      * conjuratis : change pass : oldPass new password newPassword change lv1 name :
      * pass your name is newName change lv2 name : pass you are newName
      */
-        var permission: Permission) : AbsCmdReq() {
+    var permission: Permission
+) : AbsCmdReq() {
     var permissionLevel = 2
         private set
     private var relevantCase = 0
@@ -19,8 +20,8 @@ class DPermitter(  /*
         when (relevantCase) {
             1 -> requipSayAlg(noiron, permission.lv1Name)
             2 -> requipSayAlg(noiron, "got it")
-            3 -> requipSayAlg(noiron, "got it")
-            4 -> requipSayAlg(noiron, "got it")
+            3 -> requipSayAlg(noiron, "new nickname has been established")
+            4 -> requipSayAlg(noiron, "new password accepted")
             else -> {
             }
         }
@@ -40,15 +41,17 @@ class DPermitter(  /*
             relevantCase = 2
             return
         }
+
         password = regexer.regexChecker("(\\w+)(?= your name is)", ear)
         newName = regexer.regexChecker("(?<=your name is)(.*)", ear)
         if (permission.setLv1Name(password, newName)) {
             relevantCase = 3
             return
         }
-        password = regexer.regexChecker("(\\w+)(?= new password)", ear)
-        newName = regexer.regexChecker("(?<=new password)(.*)", ear)
-        if (permission.setLv1Name(password, newName)) {
+
+        val oldPass = regexer.regexChecker("(\\w+)(?= new password)", ear)
+        val newPass = regexer.regexChecker("(?<=new password)(.*)", ear)
+        if (permission.setPassword(oldPass, newPass)) {
             relevantCase = 4
             return
         }

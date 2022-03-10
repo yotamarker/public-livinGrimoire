@@ -13,7 +13,7 @@ the subclasses c'tor. see also Personality1 for example.*/
     protected var dClassesLv1 = ArrayList<AbsCmdReq>() // can engage with anyone
     protected var dClassesLv2 = ArrayList<AbsCmdReq>() // can engage with friends and work related
     protected var dClassesLv3 = ArrayList<AbsCmdReq>() // can engage only by user
-    var permission = Permission.newInstance("xxx", "sweetie", "honey")
+    var permission = Permission.newInstance("password", "sweetie", "honey")
         protected set
     protected var dPermitter = DPermitter(permission!!) //TODO
     var algDurations = Hashtable<String, Int>()

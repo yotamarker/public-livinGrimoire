@@ -1,6 +1,10 @@
 package com.yotamarker.lgkotlinfull.LGCore
 
-class Permission private constructor(private var password: String, var lv1Name: String, private var lv2Name: String) {
+class Permission private constructor(
+    private var password: String,
+    var lv1Name: String,
+    private var lv2Name: String
+) {
     private var permissionLevel = 0
     fun getPermissionLevel(): Int {
         val result = permissionLevel
@@ -19,10 +23,12 @@ class Permission private constructor(private var password: String, var lv1Name: 
         }
     }
 
-    fun setPassword(oldPassword: String?, newPassword: String) {
-        if (password == password) {
+    fun setPassword(oldPassword: String, newPassword: String): Boolean {
+        if (password == oldPassword) {
             password = newPassword
+            return true
         }
+        return false
     }
 
     fun setLv2Name(password: String, newName2: String): Boolean {

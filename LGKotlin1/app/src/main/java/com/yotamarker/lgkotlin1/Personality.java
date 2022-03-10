@@ -12,7 +12,7 @@ the subclasses c'tor. see also Personality1 for example.*/
     protected ArrayList<AbsCmdReq> dClassesLv1 = new ArrayList<>();// can engage with anyone
     protected ArrayList<AbsCmdReq> dClassesLv2 = new ArrayList<>();// can engage with friends and work related
     protected ArrayList<AbsCmdReq> dClassesLv3 = new ArrayList<>();// can engage only by user
-    protected Permission permission = Permission.newInstance("xxx", "sweetie", "honey");
+    protected Permission permission = Permission.newInstance("password", "sweetie", "honey");
     protected DPermitter dPermitter = new DPermitter(permission);//TODO
     protected Hashtable<String, Integer> AlgDurations = new Hashtable<>();
     protected Fusion fusion = new Fusion(AlgDurations);

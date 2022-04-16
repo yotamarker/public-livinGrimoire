@@ -1,0 +1,13 @@
+from abc import ABC, abstractmethod
+
+
+class AbsDictionaryDB(ABC):
+    @abstractmethod
+    def save(key: str, value: str):
+        '''save to DB'''
+        pass
+
+    @abstractmethod
+    def load(key: str) -> str:
+        '''set to return "null" as default if key not found !!!'''
+        pass

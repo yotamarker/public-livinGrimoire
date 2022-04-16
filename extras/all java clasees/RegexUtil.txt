@@ -1,4 +1,4 @@
-package com.yotamarker.lgkotlin1;
+package LG_Core;
 
 
 import java.awt.Point;

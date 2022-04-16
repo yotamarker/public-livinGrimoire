@@ -1,0 +1,5 @@
+''' Thinkable CLASS '''
+class Thinkable :
+    def think(self, ear: str, skin: str, eye: str) -> str:
+        """override me"""
+        return ""

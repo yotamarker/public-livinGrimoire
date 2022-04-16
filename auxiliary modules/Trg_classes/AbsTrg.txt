@@ -1,7 +1,0 @@
-public abstract class AbsTrg {
-	// sub classes names should start with Trg
-	public abstract int trigger(Boolean trigger);
-
-	// trigger reset, implement if needed
-	public abstract void reset();
-}

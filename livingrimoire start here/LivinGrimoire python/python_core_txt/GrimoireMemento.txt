@@ -1,0 +1,222 @@
+from __future__ import annotations
+from abc import ABC, abstractmethod
+from enum import Enum
+import re
+
+'''
+Failure types:
+- ok: no fail
+- requip: item should be added
+- cloudian: algorithm goes to stand by in its Dclass
+- fail: no input
+'''
+
+
+class enumFail(Enum):
+    fail = "fail"
+    requip = "requip"
+    dequip = "dequip"
+    cloudian = "cloudian"
+    ok = "ok"
+
+
+class Mutatable(ABC):
+    @abstractmethod
+    def action(self, ear: str, skin: str, eye: str) -> str:
+        """Returns action string"""
+        ...
+
+    @abstractmethod
+    def failure(self, input: str) -> enumFail:
+        """Failure type only mutatable may use enumFail.fail"""
+        pass
+
+    @abstractmethod
+    def completed(self) -> bool:
+        """Has finished ?"""
+        pass
+
+    @abstractmethod
+    def clone(self) -> Mutatable:
+        pass
+
+    def getMutationLimit(self) -> int:
+        return 0
+
+    @abstractmethod
+    def myName(self) -> str:
+        """Returns the class name"""
+        return self.__class__.__name__
+
+    @abstractmethod
+    def mutation(self) -> Mutatable:
+        self.clone()
+
+
+class AbsDictionaryDB(ABC):
+    @abstractmethod
+    def save(self, key: str, value: str):
+        '''Returns action string'''
+        pass
+
+    @abstractmethod
+    def load(self, key: str) -> str:
+        '''TODO set to return null as default if key not found !!!'''
+        pass
+
+
+'''!!! CHILD TEST CLASS TO REMOVE !!!'''
+
+
+class AbsDictionaryDBShadow(AbsDictionaryDB):
+    '''used as a fill in class if you want to test the chobit and havent built a DB class yet'''
+
+    # Override
+    def save(self, key: str, value: str):
+        pass
+
+    # Override
+    def load(self, key: str) -> str:
+        return "null"
+
+
+if __name__ == "__main__":
+    test = AbsDictionaryDBShadow()
+    print(test.load("hello"))
+
+'''!!! CHILD TEST CLASS TO REMOVE !!!'''
+
+
+class T1(Mutatable):
+    def mutation(self) -> Mutatable:
+        print("t1 mutating into t2")
+        return T2()
+
+    def clone(self) -> Mutatable:
+        print("t1 cloning another t1")
+        return T1()
+
+    # Override
+    def action(self, ear: str, skin: str, eye: str) -> str:
+        """Returns action string"""
+        ...
+
+    # Override
+    def failure(self, input: str) -> enumFail:
+        """Failure type only mutatable may use enumFail.fail"""
+        pass
+
+    # Override
+    def completed(self) -> bool:
+        """Has finished ?"""
+        pass
+
+    # Override
+    def myName(self) -> str:
+        """Returns the class name"""
+        return self.__class__.__name__
+
+
+'''!!! CHILD TEST CLASS TO REMOVE !!!'''
+
+
+class T2(Mutatable):
+    def mutation(self) -> Mutatable:
+        print("t2 mutating into t1")
+        return T1()
+
+    def clone(self) -> Mutatable:
+        print("t2 cloning another t2")
+        return T2()
+
+    # Override
+    def action(self, ear: str, skin: str, eye: str) -> str:
+        """Returns action string"""
+        ...
+
+    # Override
+    def failure(self, input: str) -> enumFail:
+        """Failure type only mutatable may use enumFail.fail"""
+        pass
+
+    # Override
+    def completed(self) -> bool:
+        """Has finished ?"""
+        pass
+
+    # Override
+    def myName(self) -> str:
+        """Returns the class name"""
+        return self.__class__.__name__
+
+
+class GrimoireMemento:
+    def __init__(self, absDictionaryDB: AbsDictionaryDB) -> None:
+        super().__init__()
+        self.rootToAPNumDic = {}  # string, string
+        self.APNumToObjDic = {}  # string, Mutatable
+        self.absDictionaryDB = absDictionaryDB
+
+    def load(self, obj: Mutatable) -> Mutatable:
+        '''load final mutation from memory of obj'''
+        objName = obj.__class__.__name__
+        objRoot = re.sub(r'\d+', '', objName)
+        # if not in active DB try adding from external DB
+        if not self.rootToAPNumDic.keys().__contains__(objRoot):
+            temp = self.absDictionaryDB.load(objRoot)
+            if temp != "null":
+                self.rootToAPNumDic[objRoot] = temp
+
+        if (not self.rootToAPNumDic.keys().__contains__(objRoot)):
+            self.rootToAPNumDic[objRoot] = objName
+            return obj
+
+        if (self.rootToAPNumDic[objRoot] == objName):
+            # the mutatable does not have mutations
+            return obj
+        else:
+            APNum = self.rootToAPNumDic[objRoot]
+            if (self.APNumToObjDic.keys().__contains__(APNum)):
+                return self.APNumToObjDic[APNum].clone()
+            else:
+                self.loadMutations(obj, objName, objRoot)
+                return self.APNumToObjDic[APNum].clone()
+
+    def reqquipMutation(self, mutationAPName: str):
+        '''save mutation'''
+        self.rootToAPNumDic[re.sub(r'\d+', '', mutationAPName)] = mutationAPName
+        self.absDictionaryDB.save(re.sub(r'\d+', '', mutationAPName), mutationAPName)
+
+    def loadMutations(self, obj: Mutatable, objName: str, objRoot: str):
+        '''
+        make sure all the AP mutation sets of obj are present
+        self assumes the last mutation mutates into the prime mutation
+        '''
+        mutant = obj
+        end = objName
+        while (True):
+            self.APNumToObjDic[obj.__class__.__name__] = obj.clone()
+            mutant = obj
+            obj = mutant.mutation()
+            if (end == obj.__class__.__name__):
+                break
+
+    def simpleLoad(self, key: str) -> str:
+        return self.absDictionaryDB.load(key)
+
+    def simpleSave(self, key: str, value: str):
+        if (key.startswith("AP") or key == "" or value == ""):
+            return
+        self.absDictionaryDB.save(key, value)
+
+
+if __name__ == "__main__":
+    # Classes creation
+    tempClassOne = AbsDictionaryDBShadow()
+    tempClassTwo = T1()
+
+    # Testing
+    mainTest = GrimoireMemento(tempClassOne)
+    mainTest.load(tempClassTwo)
+    mainTest.loadMutations(tempClassTwo, "T1", "T")
+    print(re.sub(r'\d+', '', '123hello 456world'))

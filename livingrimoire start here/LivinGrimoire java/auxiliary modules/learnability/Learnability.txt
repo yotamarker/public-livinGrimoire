@@ -1,0 +1,46 @@
+package pkg2;
+
+import java.util.ArrayList;
+
+public class Learnability {
+	/*
+	 * this class can facilitate checking if a goal manifested or if defcons
+	 * manifested. therefore as a boolean gate it can be used to trigger mutations
+	 * of Alg Parts or even used externally (within a skill) see also the ML search
+	 * algorithm
+	 */
+	private ArrayList<String> goals = new ArrayList<>();
+	private ArrayList<String> defcons = new ArrayList<>();
+	private TrgReplenishC trgReplenishC;
+	private Boolean algSent = false;
+
+	public Learnability(ArrayList<String> plus, ArrayList<String> minus, int stubborness) {
+		this.goals = plus;
+		this.defcons = minus;
+		this.trgReplenishC = new TrgReplenishC(stubborness);
+	}
+
+	public Boolean getAlgSent() {
+		return algSent;
+	}
+
+	public void setAlgSent(Boolean algSent) {
+		this.algSent = algSent;
+		if (!algSent) {
+			trgReplenishC.reset();
+		}
+	}
+
+	public Boolean mutateAlg(String input) {
+		if (goals.contains(input)) {
+			setAlgSent(false);
+		}
+		if (algSent) {
+			// ||time out once
+			if (defcons.contains(input)) {
+				return !trgReplenishC.trigger();
+			}
+		}
+		return false;
+	}
+}

@@ -1,0 +1,53 @@
+package pkg2;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Hashtable;
+import java.util.Set;
+
+public class Map {
+	private Hashtable<String, String> pointDescription = new Hashtable<>();
+	private Hashtable<String, String> descriptionPoints = new Hashtable<>();
+	private Point currentPosition = new Point();
+
+	public void reset() {
+		currentPosition.reset();
+	}
+
+	public void moveTo(String location) {
+	}
+
+	public void moveBy(int x, int y) {
+		this.currentPosition.moveBy(x, y);
+	}
+
+	public void write(String description) {
+		pointDescription.put(currentPosition.toString(), description);
+		descriptionPoints.put(description, currentPosition.toString());
+	}
+
+	public String read() {
+		return pointDescription.get(currentPosition.toString());
+	}
+
+	public String read(Point p1) {
+		// used for prediction
+		return pointDescription.get(p1.toString());
+	}
+
+	public String read(String description) {
+		// get places coordinate
+		return descriptionPoints.getOrDefault(description, "null");
+	}
+
+	public ArrayList<String> getRoute(String description) {
+		if (read(description).equals("null")) {
+			return null;
+		}
+		Set<String> set1 = pointDescription.keySet();
+		ArrayList<String> arr1 = new ArrayList<>(set1);
+		Collections.sort(arr1);
+		ArrayList<String> result = (ArrayList<String>) arr1.subList(0, arr1.lastIndexOf(description));
+		return result;
+	}
+}

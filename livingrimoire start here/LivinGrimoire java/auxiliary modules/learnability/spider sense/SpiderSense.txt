@@ -1,0 +1,46 @@
+package pkg2;
+
+public class SpiderSense {
+	/*
+	 * a flag event is an event that predicts the occurrence of a key event (goal or
+	 * defcon), key events are defined in the defcon detector
+	 */
+	private InputFilter inputFilter;
+	/*
+	 * the input filter only lets data relevant to key events (defcons) through it
+	 * can be status changes in weather, sentences that contain certain inputs, data
+	 * at a particular space of time for example
+	 */
+	private FilteredList<String> events;
+	private DefconDetector defconDetector; // these are the flag events
+	private RecentFiltedList<String> alertList; // these are the key events
+
+	public SpiderSense(NearInputFilter inputFilter, DefconDetector defconDetector,
+			RecentFiltedList<String> alertList, int eventsLimit) {
+		super();
+		this.events = new FilteredList<String>(eventsLimit);
+		this.inputFilter = inputFilter;
+		this.defconDetector = defconDetector;
+		this.alertList = alertList;
+	}
+
+	public Boolean Engage(String ear, String skin, String eye) {
+		if (alertList.list.contains(ear)) {
+			return true;
+		}
+		if (defconDetector.activeDefcon(ear, "", "")) {
+			alertList.eatList(events);
+		}
+		String str1 = inputFilter.filterInput(ear, "", "");
+		if (str1.isEmpty()) {
+			return false;
+		}
+		events.add(str1);
+
+		return false;
+	}
+
+	public void clearFlagEvents() {
+		this.alertList.list.clear();
+	}
+}

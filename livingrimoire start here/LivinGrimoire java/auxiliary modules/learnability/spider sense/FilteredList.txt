@@ -1,0 +1,31 @@
+import java.util.ArrayList;
+
+public class FilteredList<T> {
+    // limited sized array list without repeating elements
+    public ArrayList<T> list = new ArrayList<T>();;
+    protected int sizeLimit;
+
+    public FilteredList(int sizeLimit) {
+        super();
+        this.sizeLimit = sizeLimit - 1;
+    }
+
+    public boolean add(T e) {
+        if (this.list.contains(e)) {
+            return false;
+        }
+        Boolean result = this.list.size() > sizeLimit;
+        if (result) {
+            this.list.remove(0);
+        }
+        this.list.add(e);
+        return result;
+    }
+
+    public void eatList(FilteredList<T> l1) {
+        for (T object : l1.list) {
+            this.add(object);
+        }
+        l1.list.clear();
+    }
+}

@@ -1,0 +1,75 @@
+from __future__ import annotations
+from abc import ABC, abstractmethod
+from enum import Enum
+
+'''
+Failure types:
+- ok: no fail
+- requip: item should be added
+- cloudian: algorithm goes to stand by in its Dclass
+- fail: no input
+'''
+
+
+class enumFail(Enum):
+    fail = "fail"
+    requip = "requip"
+    dequip = "dequip"
+    cloudian = "cloudian"
+    ok = "ok"
+
+
+class Mutatable(ABC):
+    @abstractmethod
+    def action(self, ear: str, skin: str, eye: str) -> str:
+        """Returns action string"""
+        ...
+
+    @abstractmethod
+    def failure(self, input: str) -> enumFail:
+        """Failure type only mutatable may use enumFail.fail"""
+        pass
+
+    @abstractmethod
+    def completed(self) -> bool:
+        """Has finished ?"""
+        pass
+
+    @abstractmethod
+    def clone(self) -> Mutatable:
+        pass
+
+    def getMutationLimit(self) -> int:
+        return 0
+
+    def myName(self) -> str:
+        """Returns the class name"""
+        return self.__class__.__name__
+
+    def mutation(self) -> Mutatable:
+        self.clone()
+
+
+class t1(Mutatable, ABC):
+    def mutation(self) -> Mutatable:
+        print("t1 mutating into t2")
+        return t2()
+
+    def clone(self) -> Mutatable:
+        print("t1 cloning another t1")
+        return t1()
+
+
+class t2(Mutatable, ABC):
+    def mutation(self) -> Mutatable:
+        print("t2 mutating into t1")
+        return t1()
+
+    def clone(self) -> Mutatable:
+        print("t2 cloning another t2")
+        return t2()
+
+
+if __name__ == "__main__":
+    test = t1()
+    print("This should return None: " + str(test.mutation().clone().getMutationLimit()))

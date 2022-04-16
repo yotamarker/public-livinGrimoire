@@ -1,0 +1,26 @@
+package pkg2;
+
+public class TrgRnd extends TrGEV3 {
+	private RandomizerUtil randomizerUtil = new RandomizerUtil();
+	private int reps = 0;
+	private int maxReps;
+
+	public TrgRnd(int maxReps) {
+		super();
+		this.maxReps = maxReps;
+	}
+
+	@Override
+	public void reset() {
+		this.reps = randomizerUtil.rndZeroToNum(maxReps);
+	}
+
+	@Override
+	public Boolean trigger() {
+		if (reps > 0) {
+			reps--;
+			return true;
+		}
+		return false;
+	}
+}

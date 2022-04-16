@@ -1,0 +1,25 @@
+public class RecentFiltedList<T> extends FilteredList<T> {
+    // items that were recently removed(ignoredRemovedItems) will not be added
+    private FilteredList<T> removed;
+    private int ignoredRemovedItems;
+
+    public RecentFiltedList(int sizeLimit, int ignoredRecents) {
+        super(sizeLimit);
+        removed = new FilteredList<>(sizeLimit);
+        ignoredRecents = ignoredRecents;
+    }
+
+    @Override
+    public boolean add(T e) {
+        if (this.list.contains(e) || this.removed.list.contains(e)) {
+            return false;
+        }
+        Boolean result = this.list.size() > super.sizeLimit;
+        if (result) {
+            this.removed.add(this.list.get(0));
+            this.list.remove(0);
+        }
+        this.list.add(e);
+        return result;
+    }
+}

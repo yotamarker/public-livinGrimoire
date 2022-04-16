@@ -1,0 +1,96 @@
+''' --------------- ZEROTIMEGATE --------------- '''
+import time
+import datetime
+
+''' --------------- ZEROTIMEGATE --------------- '''
+import time
+import datetime
+from datetime import timedelta
+
+''' ZEROTIMEGATE CLASS '''
+
+
+class ZeroTimeGate:
+    # a gate that only opens x minutes after it has been set
+
+    def __init__(self, minutes) -> None:
+        self.pause: int = 5
+        self.openedGate: datetime.date = datetime.datetime.now()
+        self.checkPoint: datetime.date = datetime.datetime.now()
+
+        try:
+            self.pause = minutes
+            try:
+                time.sleep(0.1)
+            except Exception as e:
+                # TODO Auto-generated catch block
+                # e.printStackTrace()
+                pass
+        except:
+            pass
+
+    def isClosed(self) -> bool:
+        return (self.openedGate < datetime.datetime.now())
+
+    def isOpen(self) -> bool:
+        return (not (self.openedGate < datetime.datetime.now()))
+
+    def open(self, minutes: int):
+        now: datetime.date = datetime.datetime.now()
+        self.openedGate = now + timedelta(minutes=minutes)
+
+    def setPause(self, pause: int):
+        if 60 > pause > 0:
+            self.pause = pause
+
+    def resetCheckPoint(self):
+        self.checkPoint = datetime.datetime.now()
+
+    def getRunTimeTimeDifInSecondes(self) -> int:
+        # used to measure code snippets run time
+        now: datetime.date = datetime.datetime.now()
+        diff: datetime.timedelta = self.checkPoint - now
+        return diff.total_seconds()
+
+
+if __name__ == "__main__":
+    # Point testing
+    print(" TESTING POINT CLASS")
+    point = Point(3, 4)
+    print("This should return 3: " + str(point.x))
+
+    # RegexUtil testing
+    print("\n TESTING REGEXUTIL CLASS")
+    regex = RegexUtil()
+    print("The regexChecker method should return the word 'String': " + regex.regexChecker(r"(G*s)", r"Gotta Go Gym"))
+    print("The numberRegex method should return ?: " + regex.numberRegex(
+        "hello-789.998world"))
+    print("The timeStampRegex method should return ?: " + regex.timeStampRegex('the time is 4:35'))
+    print("The intRegex method should return ?: " + regex.intRegex('area51 is in nevada'))
+    print(regex.pointRegex('coordinate 6.6008').y)
+    print("The regexChecker2 method should return ?: ",
+          regex.regexChecker2(r"[-+]?[0-9]{1,13}", "1d2d3 23 apple banana 799"))  # err : should return entire list of matches
+    # see https://stackoverflow.com/questions/3640359/regular-expressions-search-in-list
+    print("The contactRegex method should return ?: " + regex.contactRegex('contact some person'))
+    print("The emailRegex method should return ?: " + regex.emailRegex('this is some cambodia@penom.pen test'))
+    print("The duplicateRegex method should return ?: " + regex.duplicateRegex('test hadoken hadoken'))
+    print(regex.uniqueWord('one two three three one'))
+    print("The afterWord method should return ?: " + regex.afterWord(r"sentence", r"A sentence with String"))
+    print("The phoneRegex1 method should return ?: " + regex.phoneRegex1('phone num 0556667766'))
+    print("The firstWord method should return ?: " + regex.firstWord(r"A sentence with String"))
+    print("strip numbers :")
+    print(regex.stripAwayNumbers("h3ll0"))
+
+    # ZeroTimeGate testing
+    print("\n TESTING ZEROTIMEGATE CLASS")
+    gate = ZeroTimeGate(1)
+    print("The isClosed method should return true: ", gate.isClosed())
+    print("The isOpen method should return false: ", gate.isOpen())
+    print(gate.openedGate)
+    gate.open(3)  # gate will stay opened for 3 minutes than close
+    print(gate.openedGate)
+    print("The isOpen method should return false: ", gate.isOpen())
+    print("ret true ", gate.isOpen())  # err
+    gate.checkPoint
+    print(gate.checkPoint)
+    print("time dif ?: ", gate.getRunTimeTimeDifInSecondes())

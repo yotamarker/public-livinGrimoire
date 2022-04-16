@@ -1,0 +1,6 @@
+upon detection of a flag event the spider sense should raise a paradoxing action
+which means an action that would negate the occurance of the defcon event before it happens
+
+for example : when a police officer tells someone to put the weapon down
+
+if, however the event is a goal, an anticipation action should be raised

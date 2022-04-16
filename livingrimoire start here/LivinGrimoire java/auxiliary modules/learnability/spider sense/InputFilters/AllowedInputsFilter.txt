@@ -1,0 +1,26 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+
+public class AllowedInputsFilter {
+    private ArrayList<String> allowedList;
+
+    public AllowedInputsFilter(String ... items) {
+        allowedList = new ArrayList<>(Arrays.asList(items));
+    }
+
+    public String filterInput(String input) {
+        if (contained(input)) {
+            return input;
+        }
+        return "";
+    }
+
+    private Boolean contained(String input) {
+        for (String item1 : this.allowedList) {
+            if (item1.contains(input)) {
+                return true;
+            }
+        }
+        return false;
+    }
+}

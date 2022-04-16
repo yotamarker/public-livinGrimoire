@@ -1,0 +1,33 @@
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.PriorityQueue;
+import java.util.Stack;
+
+public class CollectionsUtil<T> {
+	// fast way to summon collections
+	// FIFO : first in 1st out FILO : 1st in last out
+	// summon : CollectionsUtil<String> t6 = new CollectionsUtil<>();
+	public static Hashtable<String, String> stringDictionary() {
+		return new Hashtable<>();
+	}
+
+	public static PriorityQueue<String> FIFOQueue() {
+		return new PriorityQueue<String>();
+	}
+
+	public static Stack<String> stringFILOStack() {
+		return new Stack<>();
+	}
+
+	public PriorityQueue<T> customTypeFIFOQueue() {
+		return new PriorityQueue<T>();
+	}
+
+	public ArrayList<T> customTypeList() {
+		return new ArrayList<>();
+	}
+
+	public Stack<T> customTypeFILOStack() {
+		return new Stack<>();
+	}
+}

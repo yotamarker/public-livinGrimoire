@@ -1,0 +1,247 @@
+''' ----------------- REGEXUTIL ---------------- '''
+import re
+from typing import Match, Pattern
+from collections import Counter
+from math import sqrt
+
+
+class Point:
+    def __init__(self, x_init, y_init):
+        self.x = x_init
+        self.y = y_init
+
+    def shift(self, x, y):
+        self.x += x
+        self.y += y
+
+    def __repr__(self):
+        return "".join(["Point(", str(self.x), ",", str(self.y), ")"])
+
+
+def distance(a, b):
+    return sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2)
+
+
+''' REGEXUTIL CLASS'''
+
+
+# returns expression of type theRegex from the string str2Check
+class RegexUtil:
+
+    def regexChecker(self, theRegex: str, str2Check: str) -> str:
+        regexMatcher = re.search(theRegex, str2Check)
+        if (regexMatcher != None):
+            return regexMatcher.group(0).strip()
+        return ""
+
+    def numberRegex(self, str2Check: str) -> str:
+        theRegex = r"[-+]?[0-9]*[.,][0-9]*"
+        list1: list[str] = []
+        regexMatcher = re.search(theRegex, str2Check)
+        if (regexMatcher != None):
+            return regexMatcher.group(0).strip()
+        return ""
+
+    def timeStampRegex(self, str2Check: str) -> str:
+        theRegex = r"(([0-9]|[0-1][0-9]|[2][0-3]):([0-5][0-9])$)|(^([0-9]|[1][0-9]|[2][0-3])$)"
+        list1: list[str] = []
+        regexMatcher = re.search(theRegex, str2Check)
+        if (regexMatcher != None):
+            return regexMatcher.group(0).strip()
+        return ""
+
+    def intRegex(self, str2Check: str) -> str:
+        theRegex = r"[-+]?[0-9]{1,13}"
+        list1: list[str] = []
+        regexMatcher = re.search(theRegex, str2Check)
+        if (regexMatcher != None):
+            return regexMatcher.group(0).strip()
+        return ""
+
+    def pointRegex(self, str2Check: str) -> Point:
+        # "[-+]?[0-9]{1,13}(\\.[0-9]*)?" for double numbers
+        theRegex: str = "[-+]?[0-9]{1,13}"
+        result: Point = Point(0, 0)
+        list1: list[str] = []
+        regexMatcher = re.search(theRegex, str2Check)
+        if (regexMatcher != None):
+            result.y = int(regexMatcher.group(0).strip())
+        str2Check = str2Check[str2Check.index(f'{result.y}') + 1:len(str2Check)]
+        phase2 = str2Check
+        phase2 = self.intRegex(phase2)
+        if (phase2 == ""):
+            return Point(result.y, 0)
+
+        result.x = int(phase2)
+        return Point(result.y, result.x)
+
+    def regexChecker2(self, theRegex: str, str2Check: str) -> list[str]:
+        # return a list of all matches
+
+        mylist : list[str] = str2Check.split()
+        r = re.compile(theRegex)
+        l_final = list(filter(r.match, mylist))
+        return l_final
+
+    def contactRegex(self, str2Check: str) -> str:
+        # return a list of all matches
+        theRegex = r"(?<=contact)(.*)"
+        list1: list[str] = []
+        regexMatcher = re.search(theRegex, str2Check)
+        if (regexMatcher != None):
+            return regexMatcher.group(0).strip()
+        return ""
+
+    def emailRegex(self, str2Check: str) -> str:
+        # return a list of all matches
+        theRegex = '([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+'
+        list1: list[str] = []
+        regexMatcher = re.search(theRegex, str2Check)
+        if (regexMatcher != None):
+            return regexMatcher.group(0).strip()
+        return ""
+
+    def duplicateRegex(self, input: str) -> str:
+        # first split given string separated by space
+        # into words
+        words = input.split(' ')
+
+        # now convert list of words into dictionary
+        dict = Counter(words)
+
+        # traverse list of words and check which first word
+        # has frequency > 1
+        for key in words:
+            if dict[key] > 1:
+                return key
+        return ""
+
+    def uniqueWord(self, str1: str) -> str:
+        list1: list[str] = []  # of strings
+        s = str1.split(" ")
+        p = s[0]
+        list1.append(p)
+        # i
+        for i in range(1, len(s)):
+            if (not (p == s[i])):
+                list1.append(s[i])
+            p = s[i]
+        return list1[0]
+
+    def afterWord(self, word: str, str2Check: str) -> str:
+        # return a list of all matches
+        theRegex = r"(?<=" + word + r")(.*)"
+        list1: list[str] = []
+        regexMatcher = re.search(theRegex, str2Check)
+        if (regexMatcher != None):
+            return regexMatcher.group(0).strip()
+        return ""
+
+    def phoneRegex1(self, str2Check: str) -> str:
+        return self.regexChecker(r"[0]\d{2}\d{4}\d{3}$", str2Check)
+
+    def firstWord(self, str2Check: str) -> str:
+        arr: list[str] = str2Check.split(" ", 2)
+        firstWord = arr[0]  # the
+        return firstWord
+
+    def stripAwayNumbers(self, str1: str) -> str:
+        return re.sub(r'\d+', '', str1)
+
+
+''' --------------- ZEROTIMEGATE --------------- '''
+import time
+import datetime
+
+''' --------------- ZEROTIMEGATE --------------- '''
+import time
+import datetime
+from datetime import timedelta
+
+''' ZEROTIMEGATE CLASS '''
+
+
+class ZeroTimeGate:
+    # a gate that only opens x minutes after it has been set
+
+    def __init__(self, minutes) -> None:
+        self.pause: int = 1
+        self.openedGate: datetime.date = datetime.datetime.now()
+        self.checkPoint: datetime.date = datetime.datetime.now()
+
+        try:
+            self.pause = minutes
+            try:
+                time.sleep(0.1)
+            except Exception as e:
+                # TODO Auto-generated catch block
+                # e.printStackTrace()
+                pass
+        except:
+            pass
+
+    def isClosed(self) -> bool:
+        return (self.openedGate < datetime.datetime.now())
+
+    def isOpen(self) -> bool:
+        return (not (self.openedGate < datetime.datetime.now()))
+
+    def open(self, minutes: int):
+        now: datetime.date = datetime.datetime.now()
+        self.openedGate = now + timedelta(minutes=minutes)
+
+    def setPause(self, pause: int):
+        if 60 > pause > 0:
+            self.pause = pause
+
+    def resetCheckPoint(self):
+        self.checkPoint = datetime.datetime.now()
+
+    def getRunTimeTimeDifInSecondes(self) -> int:
+        # used to measure code snippets run time
+        now: datetime.date = datetime.datetime.now()
+        diff: datetime.timedelta = self.checkPoint - now
+        return diff.total_seconds()
+
+
+if __name__ == "__main__":
+    # Point testing
+    print(" TESTING POINT CLASS")
+    point = Point(3, 4)
+    print("This should return 3: " + str(point.x))
+
+    # RegexUtil testing
+    print("\n TESTING REGEXUTIL CLASS")
+    regex = RegexUtil()
+    print("The regexChecker method should return the word 'String': " + regex.regexChecker(r"(G*s)", r"Gotta Go Gym"))
+    print("The numberRegex method should return ?: " + regex.numberRegex(
+        "hello-789.998world"))
+    print("The timeStampRegex method should return ?: " + regex.timeStampRegex('the time is 4:35'))
+    print("The intRegex method should return ?: " + regex.intRegex('area51 is in nevada'))
+    print(regex.pointRegex('coordinate 6.6008').y)
+    print("The regexChecker2 method should return ?: ",
+          regex.regexChecker2(r"[-+]?[0-9]{1,13}", "1d2d3 23 apple banana 799"))  # err : should return entire list of matches
+    # see https://stackoverflow.com/questions/3640359/regular-expressions-search-in-list
+    print("The contactRegex method should return ?: " + regex.contactRegex('contact some person'))
+    print("The emailRegex method should return ?: " + regex.emailRegex('this is some cambodia@penom.pen test'))
+    print("The duplicateRegex method should return ?: " + regex.duplicateRegex('test hadoken hadoken'))
+    print(regex.uniqueWord('one two three three one'))
+    print("The afterWord method should return ?: " + regex.afterWord(r"sentence", r"A sentence with String"))
+    print("The phoneRegex1 method should return ?: " + regex.phoneRegex1('phone num 0556667766'))
+    print("The firstWord method should return ?: " + regex.firstWord(r"A sentence with String"))
+    print("strip numbers :")
+    print(regex.stripAwayNumbers("h3ll0"))
+
+    # ZeroTimeGate testing
+    print("\n TESTING ZEROTIMEGATE CLASS")
+    gate = ZeroTimeGate(1)
+    print("The isClosed method should return true: ", gate.isClosed())
+    print("The isOpen method should return false: ", gate.isOpen())
+    print(gate.openedGate)
+    gate.open(3)  # gate will stay opened for 3 minutes than close
+    print(gate.openedGate)
+    print("The isOpen method should return false: ", gate.isOpen())
+    print("ret true ", gate.isOpen())  # err
+    gate.checkPoint
+    print(gate.checkPoint)
+    print("time dif ?: ", gate.getRunTimeTimeDifInSecondes())

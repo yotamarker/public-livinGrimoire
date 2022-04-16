@@ -1,0 +1,141 @@
+from __future__ import annotations
+from abc import ABC, abstractmethod
+from enum import Enum
+
+'''
+Failure types:
+- ok: no fail
+- requip: item should be added
+- cloudian: algorithm goes to stand by in its Dclass
+- fail: no input
+'''
+
+
+class enumFail(Enum):
+    fail = "fail"
+    requip = "requip"
+    dequip = "dequip"
+    cloudian = "cloudian"
+    ok = "ok"
+
+
+class Mutatable(ABC):
+    @abstractmethod
+    def action(self, ear: str, skin: str, eye: str) -> str:
+        """Returns action string"""
+        ...
+
+    @abstractmethod
+    def failure(self, input: str) -> enumFail:
+        """Failure type only mutatable may use enumFail.fail"""
+        pass
+
+    @abstractmethod
+    def completed(self) -> bool:
+        """Has finished ?"""
+        pass
+
+    @abstractmethod
+    def clone(self) -> Mutatable:
+        pass
+
+    def getMutationLimit(self) -> int:
+        return 0
+
+    def myName(self) -> str:
+        """Returns the class name"""
+        return self.__class__.__name__
+
+    def mutation(self) -> Mutatable:
+        self.clone()
+
+
+class t1(Mutatable, ABC):
+    def mutation(self) -> Mutatable:
+        print("t1 mutating into t2")
+        return t2()
+
+    def clone(self) -> Mutatable:
+        print("t1 cloning another t1")
+        return t1()
+
+
+class t2(Mutatable, ABC):
+    def mutation(self) -> Mutatable:
+        print("t2 mutating into t1")
+        return t1()
+
+    def clone(self) -> Mutatable:
+        print("t2 cloning another t2")
+        return t2()
+
+
+class CldBool:
+    # cloudian : this class is used to provide shadow reference to a boolean variable
+    def __init__(self):
+        self.modeActive = False
+    @property
+    def getModeActive(self) -> bool:
+        return self.modeActive
+
+    def setModeActive(self, modeActive: bool):
+        self.modeActive = modeActive
+
+
+class APCldVerbatim(Mutatable):
+    '''this algorithm part says each string param verbatim'''
+
+    def __init__(self, cldBool: CldBool, *words):
+        super().__init__()
+        self.sentences = []
+        self.at = 0
+        self.cldBool = cldBool
+
+        try:
+            if (isinstance(words[0], list)):
+                self.sentences = words[0]
+                self.cldBool.setModeActive(True)
+            else:
+                for i in range(len(words)):
+                    self.sentences.append(words[i])
+                self.cldBool.setModeActive(True)
+        except:
+            self.at = 30
+
+    # Override
+    def action(self, ear: str, skin: str, eye: str) -> str:
+        # TODO Auto-generated method stub
+        axnStr = ""
+        if (self.at < len(self.sentences)):
+            axnStr = self.sentences[self.at]
+            self.at += 1
+
+        self.cldBool.setModeActive(not (self.at >= len(self.sentences)))
+        return axnStr
+
+    # Override
+    def failure(self, input: str) -> enumFail:
+        # TODO Auto-generated method stub
+        return enumFail.ok
+
+    # Override
+    def completed(self) -> bool:
+        return self.at >= len(self.sentences)
+
+    # Override
+    def clone(self) -> Mutatable:
+        # TODO Auto-generated method stub
+        return APCldVerbatim(self.cldBool, self.sentences)
+
+
+if __name__ == "__main__":
+    # CldBool testing
+    cldBool = CldBool()
+
+    # APCldVerbatim test one
+    print("\nTesting the first APCldVerbatim")
+    apcOne = APCldVerbatim(cldBool, "hi", "how", "are", "you")
+    print(cldBool.modeActive)
+    for x in range(6):
+        print(apcOne.action("","",""))
+    print(cldBool.modeActive)

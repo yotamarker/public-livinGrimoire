@@ -1,0 +1,39 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+
+public class NearInputFilter extends InputFilter {
+    /*
+     * if key inputs are detected the next input will go through
+     */
+    private FilteredList<String> recentInputs;
+    private ArrayList<String> keyInputs;
+
+    public NearInputFilter(int limitInputListSize, String... keyInputs) {
+        super();
+        this.keyInputs = new ArrayList<>(Arrays.asList(keyInputs));
+        recentInputs = new FilteredList<>(limitInputListSize);
+    }
+
+    @Override
+    public String filterInput(String ear, String skin, String eye) {
+        String result = "";
+        if (areListsSimilar(keyInputs, recentInputs.list)) {
+            recentInputs.list.clear();
+            result = ear;
+        }
+        if (!ear.isEmpty()) {
+            recentInputs.add(ear);
+        }
+        return result;
+    }
+
+    public static boolean areListsSimilar(ArrayList<String> list1, ArrayList<String> list2) {
+        for (String item1 : list1) {
+            for (String item2 : list2) {
+                if (item1.equals(item2))
+                    return true;
+            }
+        }
+        return false;
+    }
+}

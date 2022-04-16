@@ -1,0 +1,30 @@
+import java.util.ArrayList;
+
+public class DefconDetector {
+    ArrayList<String> defcons = new ArrayList<>();
+
+    public DefconDetector(String... alldefcons) {
+        for (String defcon : alldefcons) {
+            this.defcons.add(defcon);
+        }
+    }
+
+    public Boolean activeDefcon(String ear, String skin, String eye) {
+        for (String temp : this.defcons) {
+            if (ear.contains(temp)) {
+                return true;
+            }
+        }
+        for (String temp : this.defcons) {
+            if (skin.contains(temp)) {
+                return true;
+            }
+        }
+        for (String temp : this.defcons) {
+            if (eye.contains(temp)) {
+                return true;
+            }
+        }
+        return false;
+    }
+}

@@ -1,0 +1,12 @@
+''' Brain CLASS '''
+
+
+class Brain:
+    def __init__(self, chobit: Thinkable, mvc: Actionable):
+        super().__init__()
+        self.chi: Thinkable = chobit
+        self.mvc: Actionable = mvc
+
+    def doIt(self, ear: str, skin: str, eye: str):
+        temp_str: str = self.chi.think(ear, skin, eye)
+        self.mvc.act(temp_str)

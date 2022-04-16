@@ -1,0 +1,34 @@
+public class CounterGates {
+	private int cycler = 0;
+	private int limit;
+
+	public CounterGates(int limit) {
+		super();
+		this.limit = limit;
+	}
+
+	public int getLimit() {
+		return limit;
+	}
+
+	public void setLimit(int limit) {
+		this.limit = limit;
+	}
+
+	public int cycle() {
+		cycler++;
+		if (cycler == limit) {
+			cycler = 0;
+			return 0;
+		}
+		return cycler - 1;
+	}
+
+	public Boolean countingDown() {
+		cycler--;
+		if (cycler < 1) {
+			return false;
+		}
+		return true;
+	}
+}

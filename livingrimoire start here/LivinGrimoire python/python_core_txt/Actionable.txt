@@ -1,7 +1,0 @@
-''' Actionable CLASS '''
-
-
-class Actionable:
-    def act(self, input: str):
-        # override me
-        pass

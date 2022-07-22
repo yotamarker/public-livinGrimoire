@@ -1,0 +1,245 @@
+1. 
+open class AbsDictionaryDB
+	func save(key:String, value: String)
+    	func load(key:String)->String
+2. enumFail
+3.
+open class Mutatable{
+    func action(ear: String, skin: String, eye: String) -> String{
+    func failure(input: String) -> enumFail{
+    func completed() -> Bool{
+    func clone() -> Mutatable{
+    func getMutationLimit() -> Int{
+    func myName() -> String{
+    func mutation() -> Mutatable{
+4. T1:Mutatable, T2:Mutatable
+5. APSay:Mutatable
+6. 
+DeepCopier
+func copyList(original: Array<String>)->Array<String>
+7. APVerbatim:Mutatable
+8. enumTimes
+9. PlayGround
+10.
+class GrimoireMemento{
+    var rootToAPNumDic:[String:String] = [:] // APname : APName3 (final current mutation)
+    var APNumToObjDic:[String:Mutatable] = [:] // APName3 : actual object
+    private(set) var absDictionaryDB:AbsDictionaryDB
+    init(absDictionaryDB:AbsDictionaryDB)
+    func load(obj:Mutatable)->Mutatable
+    func reqquipMutation(mutationAPName: String)
+    func filterOutDigits(str1:String)->String
+    func getSimpleClassName(obj: Mutatable)->String
+    func loadMutations(obj: Mutatable, objName: String, objRoot: String)
+    func simpleLoad(key:String)->String
+    func simpleSave(key:String,value:String)
+11.
+class Algorithm{
+    private var goal:String = ""
+    private var representation:String = ""
+    var algParts: Array<Mutatable> = [Mutatable]()
+    init(goal:String, representation:String, algParts: Array<Mutatable>)
+    func getGoal()->String
+    func getRepresentation()->String
+    func getSize() -> Int
+    func clone()->Algorithm
+12.
+class CldBool
+    private var modeActive:Bool = false
+    func getModeActive()->Bool
+    func setModeActive(modeActive:Bool)
+13.
+class APCldVerbatim:APVerbatim
+    private var cldBool:CldBool = CldBool()
+    init(sentences: Array<String>, cldBool:CldBool)
+    override func action(ear: String, skin: String, eye: String) -> String
+    override func clone() -> Mutatable
+14.
+class Kokoro
+    private var emot:String = ""
+    var pain:[String:Int] = [:]
+    private(set) var grimoireMemento:GrimoireMemento
+    var toHeart:[String:String] = [:]
+    var fromHeart:[String:String] = [:]
+    var standBy:Bool = false
+    init(absDictionaryDB: AbsDictionaryDB)
+    func getPain(biJuuName: String) -> Int
+15.
+class Neuron
+    var algParts: Array<Algorithm> = [Algorithm]()
+    var negativeAlgParts: Array<Algorithm> = [Algorithm]()
+    func empty()
+16.
+class DiSkillUtils
+    func onePartAlgorithm(algMarker:String, algPart:Mutatable)->Algorithm
+    func algBuilder(algMarker:String, algParts:Mutatable...)->Algorithm
+    func simpleVerbatimAlgorithm(algMarker:String, sayThis:String...)->Algorithm
+    func simpleCloudianVerbatimAlgorithm(cldBool:CldBool, algMarker:String, sayThis:String...)->Algorithm
+    func onePartAlgorithm(algRepresantation:String, algMarker:String, algPart:Mutatable)->Algorithm
+    func algBuilder(algRepresantation:String, algMarker:String, algParts:Mutatable...)->Algorithm{
+    func simpleVerbatimAlgorithm(algRepresantation:String,algMarker:String, sayThis:String...)->Algorithm
+    func simpleCloudianVerbatimAlgorithm(algRepresantation:String, cldBool:CldBool, algMarker:String, sayThis:String...)->Algorithm
+    func stringContainsListElement(str1:String, items:Array<String>)->String
+17.
+open class DiSkillV2
+    private(set) var kokoro:Kokoro
+    let diSkillUtills:DiSkillUtils = DiSkillUtils()
+    var outAlg:Algorithm? = nil
+    init(kokoro:Kokoro)
+    func input(ear:String, skin:String, eye:String)
+    func output(noiron:Neuron)
+18.
+open class DiSkillV3:DiSkillV2
+    override func output(noiron:Neuron)
+19.
+class DiHelloWorld:DiSkillV2
+    override func input(ear: String, skin: String, eye: String) 
+20.
+class LGPointDouble
+    var x:Double = 0
+    var y:Double = 0
+    init()
+    init(x:Double,y:Double) 
+    func shift(x:Double,y:Double)
+    func toString()->String
+    func distance(a:LGPointDouble,b:LGPointDouble)->Double
+21.
+class LGPointInt
+    var x:Int = 0
+    var y:Int = 0
+    init()
+    init(x:Int,y:Int) 
+    func shift(x:Int,y:Int)
+    func toString()->String
+    func distance(a:LGPointInt,b:LGPointInt)->Double
+22. enum enumRegexGrimoire
+23. RegexUtil
+24.
+class TimeGate
+    private var pause:Double = 5.0
+    private var openDate:Date = Date()
+    private var checkPoint:Date = Date()
+    init()
+    init(pause:Double)
+    func setPause(pause:Double)
+    func openGate()
+    func isOpen() -> Bool
+    func isClosed() -> Bool
+    func closeGate()
+    func resetCheckPoint()
+    func timeFromCheckPoint() -> DateComponents
+25.
+class Cerabellum
+    private var fin:Int = 0
+    private(set) var at:Int = 0
+    private var failType:enumFail = enumFail.ok
+    private var incrementAt:Bool = false
+    var alg:Algorithm?
+    private var isActive1:Bool = false
+    private(set) var emot:String = ""
+    func advanceInAlg()
+    func setAlgorithm(algorithm:Algorithm)
+    func isActive() -> Bool 
+    func setActive(isActive:Bool)
+    func act(ear: String, skin: String, eye: String) -> String
+    func getMutationLimitOfActiveAlgPart() -> Int
+    func getFailType() -> enumFail
+26.
+class DExplorer
+    private var failureCounter:Int = 0
+    private var prevAP:String = ""
+    private let regexUtil:RegexUtil = RegexUtil()
+    func mutate(cera:Cerabellum, failure:enumFail)
+27.
+class PriorityQueue<T>
+  var elements: [T] = []
+  func insert(_ value: T)
+  func poll() -> T?
+  var head: T?
+  var tail: T?
+  func isEmpty() -> Bool
+  func size() -> Int
+29.
+class FusionCera:Cerabellum
+    private var abort:Int = 0
+    private(set) var algQueue:PriorityQueue<Algorithm>
+    init(algQueue:PriorityQueue<Algorithm>)
+    func setAbort(abort:Int)
+    override func act(ear: String, skin: String, eye: String) -> String
+30.
+class Fusion {
+    
+    private var algDurations:[String:Int] // run duration of alg, think cycles #
+    private var algDurations2:[String:Int] = [:]
+    private var emot:String = "" // emotion represented by the active alg part (Mutatable)
+    private var algQueue:PriorityQueue<Algorithm> = PriorityQueue<Algorithm>() // regular algs in stand by to run
+    private var dangerAlgQueue:PriorityQueue<Algorithm> = PriorityQueue<Algorithm>() // fight or flight algorithm in stand by to run
+    private var reqOverLoad:Bool = false // too many requests
+    private var repReq:Bool = false // chobit has already accepted this request
+    private var represantations:Set<String> = Set<String>() // algs representation attribute
+    private let dExplorer:DExplorer = DExplorer()
+    private var goalsToTrack : [String] = ["",""] // // dangerCera, mainCera string array
+    // cerabellums :
+    private let dangerCera:Cerabellum = Cerabellum()
+    // requip ceras
+    private(set) var fusionCera : FusionCera
+    private let mainCera:Cerabellum = Cerabellum()
+    private(set) var cera:[Cerabellum]
+    init(algDurations:[String:Int])
+    func setAlgQueue(shinkei:Neuron)
+    func getRepReq() -> Bool
+    func getReqOverload() -> Bool
+    func getEmot() -> String 
+    private func goalTrack(algRepresantation:String)
+    private func updateRepresentations()
+    private func goalTrackReset(algRepresantation:String)
+    private func fuze()
+    private func removeAlg(represantation:String)
+    func act(ear:String, skin:String, eye:String) -> String
+31.
+open class Personality
+    var kokoro:Kokoro = Kokoro(absDictionaryDB: AbsDictionaryDB())
+    var dClasses: Array<DiSkillV2> = [DiSkillV2]()
+    var algDurations:[String:Int] = [:]
+    private var fusion:Fusion
+    init()
+    func setDataBase(absDictionaryDB:AbsDictionaryDB)
+    func loadAlgDurations(algDurations:[String:Int])
+    func getFusion() -> Fusion
+    @discardableResult
+    func addSkill(skill:DiSkillV2) -> Personality
+    func clearSkills()
+    func addSkills(skills:DiSkillV2...)
+32.
+class Thinkable {
+    func think(ear: String, skin: String, eye: String) -> String
+33.
+class Chobits:Thinkable
+    fileprivate(set) var emot = "" // emotion represented by the current active alg part
+    private(set) var kokoro:Kokoro // consciousness
+    private var dClasses: Array<DiSkillV2> // skills of the chobit
+    private(set) var algDurations:[String:Int]
+    fileprivate var fusion:Fusion // multitasking center
+    fileprivate var noiron:Neuron = Neuron() // algorithms transporter
+    fileprivate var lastOutput = ""
+    fileprivate var timeGate:TimeGate = TimeGate() // circadian pacemaker
+    init (personality:Personality)
+    @discardableResult
+    func addSkill(skill:DiSkillV2) -> Chobits
+    func clearSkills()
+    func addSkills(skills:DiSkillV2...) 
+    func setPause(pause:Double)
+    func loadPersonality(personality:Personality)
+    fileprivate func translateIn(earIn:String) -> String
+    fileprivate func translateOut(outResult:String) -> String
+    private func inOut(dClass:DiSkillV2,ear:String,skin:String,eye:String) 
+    override func think(ear: String, skin: String, eye: String) -> String
+34.
+class Actionable
+    func act(input:String)
+35.
+class Brain
+    private let chi:Thinkable
+    private let MVC:Actionable
+    init(MVC:Actionable, chobit:Thinkable)
+    func doIt(ear:String, skin:String, eye:String)

@@ -1,0 +1,123 @@
+**the Living Grimoire** (or the livingrimoire) is an Artificial General Intelligence software design pattern,
+created by **Moti Barski**.
+
+***
+
+it was published on the battle programmers forum at <ref>yotamarker.com</ref>.
+
+with the github at
+<ref>https://github.com/yotamarker/public-livinGrimoire</ref>
+
+as of may 2022 the project has been available in several programming languages
+including :
+
+java
+kotlin
+python
+
+## principle of work :
+
+skills or abilities can be added to an instance of a living grimoire (a chobit class)
+via the personality class's object instance using just one line of code
+
+much like the learning scene in the movie matrix, in which Neo has skills
+installed in his mind, such as kung fu
+
+the skills logic is kept inside the skill itself
+
+when conditions are met the skill is triggered and it will send out an algorithm,
+which is a list of actions known as algorithm parts, to run.
+
+the brain class was created to address the issue of cluttered main classes
+it can be used to keep all the hardware logic code such as converting a string of
+output text into audio, for example.
+
+## the objectives of the living grimoire
+
+1 make coding simple. the main objective the Living Grimoire accomplishes
+is in reducing the task of coding to simply use 1 line of code to add a skill
+or 1 line of code to choose a personality, which is a skill set
+
+2 organization :
+the abilities of the living grimoire are packet neatly in their respective skills
+
+3 the Living Grimoire was developed for the purpose of developing waifubots,
+robotic girlfriends. users may publish skills in the Living Grimoire forums or
+post demos of skills for sale.
+
+in this way users may choose skills or hardware beef ups they wish for their waifubot
+and add this skills using 1 line of code.
+
+4 ease of collaboration
+
+to collaborate with anyone on a project, all that is needed to do is
+add his skill to the living grimoire instance using 1 line of code
+
+## key differences between the living grimoire and assistants such as Alexa, Bixby and Siri
+
+1. swift ability to absorb any skill using one line of code
+2. fusion and communication between skills :
+several skills can run together, pausing and resuming one another as needed
+3. priority of skills : for example fight or flight type skills
+take priority over other skills to protect what is dearest to the AI
+4. can form multistep algorithms to achieve goals
+5. actions can mutate upon failure.
+6. skill levels 1 and 2 require the user to use the chobits name or hidden name to engage
+while skill level 0 require no innate special permission to engage
+7. no censorship
+8. step by step walkthroughed documentation
+9. fully customizable TTS
+
+## hello world example (python main):
+
+https://github.com/yotamarker/public-livinGrimoire/blob/master/livingrimoire%20start%20here/LivinGrimoire%20python/python_core_txt/main%20livingrimoire%20test%20example.txt
+
+## the Living Grimoire classes list
+
+1. AbsDictionaryDB
+2. AbsDictionaryDBShadow
+3. enumFail
+4. Mutatable
+5. T1, T2 (test classes) //// used for testing. not core classes
+6. AbsAlgPart
+7. APSay
+8. APVerbatim
+9. Person //not core class
+10. enumTimes
+11. PlayGround // not core class
+12. GrimoireMemento
+13. Algorithm
+14. CldBool
+15. APCldVerbatim
+16. Kokoro
+17. Chi
+18. Neuron
+19. DISkillUtils
+20. DiSkillV2
+21. Point // not core class
+22. RegexUtil // not core class
+23. ZeroTimeGate
+24. Cerabellum
+25. DExplorer(DiSkillV2)
+26. PriorityQueue
+27. Fusion
+28. FusionCera
+29. Thinkable
+30. Actionable
+31. Brain
+32. PersonalityLight
+33. ChobitsLight(Thinkable)
+34. DiHelloWorld(DiSkillV2) // used for testing. not a core class
+
+books about the LivinGrimoire :
+![](https://i.ibb.co/61fWWnv/3d-Mockup.png)
+1 the living grimoire by Moti Barski : a detailed explanation with examples
+about the living grimoire project
+
+https://github.com/yotamarker/public-livinGrimoire/blob/master/livingrimoire%20start%20here/the%20living%20grimoie.pdf
+
+![](https://i.ibb.co/3kYrpKs/Moti-3-D-Mockup.jpg)
+2 Auxiliary Modules for the livingrimoire by Moti Barski:
+modules that ease writing skills and make the waifubot more human
+
+https://github.com/yotamarker/public-livinGrimoire/blob/master/livingrimoire%20start%20here/Auxiliary%20Modules%20for%20the%20livingrimoire.pdf

@@ -1,3 +1,4 @@
+package LG_Core;
 import java.util.PriorityQueue;
 
 public class FusionCera extends Cerabellum {
@@ -14,9 +15,9 @@ public class FusionCera extends Cerabellum {
 	}
 
 	@Override
-	public String act(String input) {
+	public String act(String ear, String skin, String eye) {
 		// TODO Auto-generated method stub
-		String result = super.act(input);
+		String result = super.act(ear, skin, eye);
 		abort--;
 		if (abort < 1) {
 			super.setActive(false);

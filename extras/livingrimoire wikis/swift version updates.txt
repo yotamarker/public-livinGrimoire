@@ -1,0 +1,23 @@
+updates to the latest version of the LivinGrimoire (swift 240722)
+
+fusion class :
+uses algorithm representation instead of algorithm goal attribute
+
+chobits class :
+builder design pattern to add skills :
+func addSkill(skill:DiSkillV2) -> Chobits
+func clearSkills()
+func addSkills(skills:DiSkillV2...) 
+
+set pause to change standBy boolean :
+when x minutes pause without input the standBy phase is true
+
+func setPause(pause:Double)
+
+DiSkillV3 class added
+
+this class is exactly like the DiSkillV2
+the difference is algorithms are set in the output method and
+loaded to the negativeAlgParts, which take priority in running.
+
+use this class for fight or flight skills

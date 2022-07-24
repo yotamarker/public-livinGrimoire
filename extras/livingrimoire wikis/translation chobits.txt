@@ -1,0 +1,7 @@
+chobit output manipulation
+
+connecting a chobit to a next chobit
+can make output translations easier
+
+translating to a dialect or a different language
+or even adding prefixes and sentence endings

@@ -1,0 +1,11 @@
+RegexUtil
+this class eases regular expression utilization
+and can also be used as a standalone class
+
+DiSkillUtils
+this class is an attribule of the DiSkillV2
+this class has methods to ease generating common algorithms
+such as speaking output
+
+for more refer to the DiHello world class (usage example)
+or the livingrimoire UML wiki

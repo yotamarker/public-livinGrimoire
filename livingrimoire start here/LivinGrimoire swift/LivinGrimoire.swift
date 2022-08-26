@@ -395,7 +395,7 @@ class PlayGround {
     func isNight() -> Bool {
       //  '''This method returns true if it's night (21-5)'''
        let hour: Int = self.getHoursAsInt()
-        return hour > 20 && hour < 6
+        return hour > 20 || hour < 6
     }
 
     func getTomorrow() -> String {
@@ -1172,7 +1172,7 @@ class PriorityQueue<T> {
   func insert(_ value: T) {
     elements.append(value)
   }
-
+  @discardableResult
   func poll() -> T? {
     guard !elements.isEmpty else {
       return nil

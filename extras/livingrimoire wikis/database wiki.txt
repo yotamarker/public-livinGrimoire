@@ -1,0 +1,19 @@
+the class AbsDictionaryDB is the livingrimoires database
+it has load and a save methods
+
+func save(key:String, value: String)
+func load(key:String)->String
+
+they can be accessed in a skill via kokoro.grimoireMemento
+
+
+the livingrimoire saves alg part mutations and load them at start up from the database
+assuming a subclass of AbsDictionaryDB was used, other wise it's simply a blueprint
+for a database, but no error will occure
+
+alg durations are not saved by default, they can be shallow referenced via the personality
+or chobits class and save outside this classes, or loaded into them with the setter methon.
+
+algorithm duration is how many think cycles an algorithm took to run the last time it run
+and it is used by the livingrimoire to decide the run rpiority of an algorithm compared to other
+algorithms requests to run

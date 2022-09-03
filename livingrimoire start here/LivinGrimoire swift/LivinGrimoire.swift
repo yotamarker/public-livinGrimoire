@@ -1039,14 +1039,17 @@ class RegexUtil{
 }
 class TimeGate{
     //time boolean gate
+    // gate goes open (pause minutes time)-> closed
     private var pause:Double = 5.0
     private var openDate:Date = Date()
     private var checkPoint:Date = Date()
     init() {
+        openGate()
     }
     init(pause:Double) {
         if pause < 0 || pause > 60 {return}
         self.pause = pause
+        openGate()
     }
     func setPause(pause:Double) {
         if pause < 0 || pause > 60 {return}
@@ -1057,7 +1060,7 @@ class TimeGate{
         openDate.addTimeInterval(TimeInterval(pause * 60.0))
     }
     func isOpen() -> Bool {
-        return Date() > openDate
+        return Date() < openDate
     }
     func isClosed() -> Bool {
         return !isOpen()

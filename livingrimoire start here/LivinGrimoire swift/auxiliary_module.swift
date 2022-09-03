@@ -181,10 +181,10 @@ class TrgParrot:TrGEV3{
     var tolerance:Int = 10
     var kokoro:Kokoro
     // responses
-    var defaultResponse:Responder = Responder("hadouken","chi2","chi3","chi4","shoryuken")
+    var defaultResponse:Responder = Responder("hadouken","talk","chi3","chi4","shoryuken")
     let repeatedResponder:RepeatedElements = RepeatedElements()
     let forcedResponses:ForcedLearn = ForcedLearn()
-    let replenisher:String = "talk to me"
+    let replenisher:String = "hey"
     private(set) var output:String = ""
     var convo:Bool = false
     let pl:PlayGround = PlayGround()

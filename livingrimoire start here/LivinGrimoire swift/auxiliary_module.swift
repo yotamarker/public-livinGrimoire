@@ -6,6 +6,25 @@
 //
 
 import Foundation
+// (*)Algorithm Dispensers
+class AlgDispenser {
+    // super class to output an algorithm out of a selection of algorithms
+    var algs:Array<Algorithm> = [Algorithm]()
+    var activeAlg:Int = 0
+    init(_algorithms:Algorithm...){
+        for alg in _algorithms {
+            algs.append(alg)
+        }
+    }
+    func addAlgorithm(alg:Algorithm) -> AlgDispenser {
+        algs.append(alg)
+        return self
+    }
+    func dispenseAlgorithm() -> Algorithm {
+        return algs[activeAlg]
+    }
+    func prepAlg(){}
+}
 // DETECTORS
 class EmoRecognizer {
     let happy = Responder("good","awesome","great","wonderful","sweet","happy")
@@ -265,5 +284,26 @@ class TrgParrot:TrGEV3{
     }
     func setMaxTolerance(newMaxTolerance:Int) {
         maxTolerance = newMaxTolerance
+    }
+}
+// (*) misc
+class DrawRnd {
+    private var numbers:Array<Int> = [Int]()
+    init(size:Int){
+        for index in 1...size{
+            numbers.append(index)
+        }
+    }
+    init(_ markers:Int...) {
+        for num in markers {
+            numbers.append(num)
+        }
+    }
+    func draw() -> Int {
+        if numbers.isEmpty {return 0}
+        let x:Int = Int.random(in: 0..<numbers.count)
+        let element:Int = numbers[x]
+        numbers.remove(at: x)
+        return element
     }
 }

@@ -1,0 +1,81 @@
+auxiliary modules legend
+
+a livingrimoire auxiliary module helps achieve capabilities
+within a livingrimoire skill as well as capsulate common coding tasks
+or coding snippets.
+
+class AlgDispenser {
+// super class to output an algorithm out of a selection of algorithms
+// the output logic may very depending on the coders choice
+    
+// DETECTORS (emotions or states)
+EmoRecognizer
+    func isExcited(in1:String) -> Bool
+    func isAngry(in1:String) -> Bool
+    func isHappy(in1:String) -> Bool
+    func isCurious(in1:String) -> Bool
+
+// (*) input filters
+// these filter or filter out input to relevant input. ignoring input non relevant to the skill
+InputFilter
+/// filter out non relevant input
+    func filter(ear: String, skin: String, eye: String) -> String
+
+// RESPONDERS
+// these output a simple response out of a selection of responses (String response)
+// the logic, structure, fixture, and variables of a response can be expanded
+
+RepeatedElements
+    // detects repeating elements within the x last inputs
+
+class ForcedLearn
+// a responder with learned responses of a set regex
+class Responder
+    // simple random response dispenser
+
+// TRIGGERS
+class TrGEV3
+    // advanced Boolean gates with internal logic
+    // these ease connecting common logic patterns, as triggers
+    
+class EV3DaisyChain
+    // this class connects several logic gates triggers together
+class TrgRnd:TrGEV3
+// this boolean gate is open after a random times of engagement
+class TrgMinute:TrGEV3
+    // trigger true at minute xy once per hour
+class TrgParrot:TrGEV3
+// engages in a way that mimics a parrot, see code for more
+
+class UniqueItemsPriorityQue
+    /// a priority queue without repeating elements
+    
+class TrgCountDown
+// (*) misc
+class DrawRnd
+// draws a different number each time
+// (*) learnability
+class AXLearnability
+// learns by trial and error
+func pendAlg()
+// an algorithm has been deployed
+func mutateAlg(input:String) -> Bool
+        // recommendation to mutate the algorithm ? true/ false
+class SpiderSense
+/// enables event prediction
+/// event's predictions can become event's predictions, by using a spiderSense
+/// for the c'tor of the next spider sense
+/// enabling  earlier but less
+///  accurate predictions, these can be used in detective work
+/// see code for more
+
+
+class AXListeaNLearn
+/// this module learn places, items and persons relevant to the skill's goal
+///  by listening to people
+/// if the items fail, they go into the lie log and ignored in the future
+/// see code for more
+
+// maps
+class Map
+a simple map of coordinates and descriptions

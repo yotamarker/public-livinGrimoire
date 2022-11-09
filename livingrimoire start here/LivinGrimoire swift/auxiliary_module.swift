@@ -23,7 +23,19 @@ class AlgDispenser {
     func dispenseAlgorithm() -> Algorithm {
         return algs[activeAlg]
     }
-    func prepAlg(){}
+    func rndAlg(){
+        activeAlg = Int.random(in: 0..<algs.count)
+    }
+    func moodAlg (mood:Int){
+        let c1:Int = algs.count
+        if -1<mood && mood<c1 {
+            activeAlg = mood
+        }
+    }
+    func cycleAlg(){
+        activeAlg += 1
+        if activeAlg == algs.count {activeAlg = 0}
+    }
 }
 // DETECTORS
 class EmoRecognizer {
@@ -52,7 +64,14 @@ class EmoRecognizer {
         return strContains(str1: in1, r: curious)
     }
 }
-
+// (*) input filters
+class InputFilter{
+    /// filter out non relevant input
+    func filter(ear: String, skin: String, eye: String) -> String {
+        /// override me
+        return ""
+    }
+}
 // RESPONDERS
 class RepeatedElements{
     // detects repeating elements
@@ -286,6 +305,89 @@ class TrgParrot:TrGEV3{
         maxTolerance = newMaxTolerance
     }
 }
+class UniqueItemsPriorityQue{
+    /// a priority queue without repeating elements
+    var p1:PriorityQueue<String> = PriorityQueue<String>()
+    var queLimit:Int = 5
+    init() {
+    }
+    init(queLimit:Int) {
+        self.queLimit = queLimit
+    }
+    init(_items:String...) {
+        self.queLimit = _items.count
+        for item in _items{
+            p1.insert(item)
+        }
+    }
+    /// insert an item into the queue
+    func input(in1:String) {
+        if !p1.elements.contains(in1){
+            p1.insert(in1)
+            if p1.size() > queLimit {p1.poll()}
+        }
+    }
+    func contains(str:String) -> Bool {
+        return p1.elements.contains(str)
+    }
+    @discardableResult
+    func poll() -> String {
+        guard !p1.isEmpty() else {
+        return ""
+      }
+        return p1.elements.removeFirst()
+    }
+      func size() -> Int {
+          return p1.size()
+      }
+    @discardableResult
+    func peak() -> String {
+        guard !p1.isEmpty() else {
+        return ""
+      }
+        return p1.elements[0]
+    }
+    func deleteStr(str1:String){
+        for i in 0...p1.size()-1 {
+            if p1.elements[i] == str1 {
+                p1.elements.remove(at: i)
+                break
+            }
+        }
+    }
+    func getRndItem()-> String{
+        guard !p1.isEmpty() else {
+        return ""
+      }
+        return p1.elements.randomElement()!
+    }
+    func clearData() {
+        p1 = PriorityQueue<String>()
+    }
+  }
+class TrgCountDown {
+    var maxCount:Int = 2
+    var count:Int
+    init() {
+        count = maxCount
+    }
+    init(limit:Int) {
+        count = limit
+        maxCount = limit
+    }
+    @discardableResult
+    func countDown() -> Bool{
+        count -= 1
+        if (count == 0) {
+            reset()
+            return true
+        }
+        return false
+    }
+    func reset() {
+        count = maxCount
+    }
+}
 // (*) misc
 class DrawRnd {
     private var numbers:Array<Int> = [Int]()
@@ -305,5 +407,165 @@ class DrawRnd {
         let element:Int = numbers[x]
         numbers.remove(at: x)
         return element
+    }
+}
+// (*) learnability
+class AXLearnability {
+    var defcons:UniqueItemsPriorityQue = UniqueItemsPriorityQue()
+    var algSent:Bool = false
+    var goal:UniqueItemsPriorityQue = UniqueItemsPriorityQue()
+    var defcon5:UniqueItemsPriorityQue = UniqueItemsPriorityQue()
+    let trg:TrgCountDown = TrgCountDown() // set lim
+    func pendAlg() {
+        // an algorithm has been deployed
+        algSent = true
+        trg.countDown()
+    }
+    func mutateAlg(input:String) -> Bool {
+        // recommendation to mutate the algorithm ? true/ false
+        if !algSent {return false} // no alg sent=> no reason to mutate
+        if goal.contains(str: input){trg.reset();algSent = false;return false}
+        // goal manifested the sent algorithm is good => no need to mutate the alg
+        if defcon5.contains(str: input) {trg.reset();algSent = false; return true}
+        // something bad happend probably because of the sent alg
+        // recommend alg mutation
+        if defcons.contains(str: input){algSent = false;return trg.countDown()}
+        // negative result, mutate the alg if this occures too much
+        return false
+    }
+}
+class SpiderSense {
+    /// enables event prediction
+    private var spiderSense:Bool = false
+    var events:UniqueItemsPriorityQue = UniqueItemsPriorityQue()
+    var alerts:UniqueItemsPriorityQue = UniqueItemsPriorityQue()
+    var prev:String = ""
+    init() {
+    }
+    /// event's predictions become event's predictions, enabling  earlier but less
+    ///  aqurate predictions, these can be used in detective work
+    init(lv1:SpiderSense) {
+        self.events = lv1.events
+    }
+    /// input param  can be run through an input filter prior to this function
+    /// weather related data (sky state) only for example for weather events predictions
+    func learn(in1:String) {
+        // simple prediction of an event from the events que :
+        if alerts.contains(str: in1){
+            spiderSense = true;return
+        }
+        // event has occured, remember what lead to it
+        if events.contains(str: in1){
+            alerts.input(in1: prev);return
+        }
+        // nothing happend
+        prev = in1
+    }
+    func getSpiderSense() -> Bool {
+        // spider sense is tingling
+        let t = spiderSense;spiderSense = false
+        return t
+    }
+}
+class Log:UniqueItemsPriorityQue {
+    /// chronological log of inputs
+    private var lastWithdrawal:String = ""
+    override func peak() -> String {
+        /// get last memory
+        lastWithdrawal = super.peak()
+        return lastWithdrawal
+    }
+    override func getRndItem() -> String {
+        /// get random memory
+        lastWithdrawal = super.getRndItem()
+        return lastWithdrawal
+    }
+    @discardableResult
+    func removeLastWithdrawal() ->String{
+        /// remove last processed memory
+        deleteStr(str1: self.lastWithdrawal)
+        let temp = lastWithdrawal
+        lastWithdrawal = ""
+        return temp
+    }
+    override func poll() -> String {
+        return peak()
+    }
+}
+class AXListeaNLearn{
+    /// this module learn places, items and persons relevant to the skill's goal
+    ///  by listening to people
+    let logNegative:Log
+    let logPossitive:Log
+    init(logMinus:Log, logPlus:Log) {
+        self.logNegative = logMinus
+        self.logPossitive = logPlus
+    }
+    // learnability mutation = true
+    func forget() {
+        /// an algorithm using the item, failed (reported by a Learnability class or a cloudian object)
+        ///  and so it will be moved to the lies Log
+        let temp = logPossitive.removeLastWithdrawal()
+        logNegative.input(in1: temp)
+    }
+    func clearNegativeLog() {
+        /// clear memory of lies and failed items
+        ///  this can be done once in a time period
+        ///   allowing for reconsideration of items that didn't work in the past
+        ///   but may work in the future
+        logNegative.clearData()
+    }
+    func peak() -> String {
+        // get 1st item from assumed working items, log
+        return logPossitive.peak()
+    }
+    func RndPeak() -> String {
+        // get random item from assumed working items, log
+        return logPossitive.getRndItem()
+    }
+    /// new data should be aquired via a regex for the verb/verb that correspond to
+    ///  the skill using the module
+    func insert(str1:String) {
+        // failed data AKA a lie is not accepted
+        if !logNegative.contains(str: str1){
+            logPossitive.input(in1: str1)
+        }
+    }
+}
+// maps
+class Map {
+    private var pointDescription:[String:String] = [:]
+    private var descriptionPoint:[String:String] = [:]
+    private var currentPosition:LGPointInt = LGPointInt()
+    private let regexUtil:RegexUtil = RegexUtil()
+    func reset() {
+        currentPosition.x = 0
+        currentPosition.y = 0
+    }
+    func moveBy(x:Int, y:Int) {
+        currentPosition.shift(x: x, y: y)
+    }
+    func moveTo(location:String) {
+        if let safeOptional = descriptionPoint[location]{
+            let text:String = safeOptional
+            let tempPoint:LGPointInt = regexUtil.intPointRegex(text: text)
+            currentPosition.x = tempPoint.x
+            currentPosition.y = tempPoint.y
+        }
+    }
+    func write(description:String) {
+        let pointStr = currentPosition.toString()
+        pointDescription[pointStr] = description
+        descriptionPoint[description] = pointStr
+    }
+    func read() -> String {
+        return pointDescription[currentPosition.toString()] ?? "null"
+    }
+    func read(p1:LGPointInt) -> String {
+        // used for predition
+        return pointDescription[p1.toString()] ?? "null"
+    }
+    func read(description:String) -> String {
+        return descriptionPoint[description] ?? "null"
     }
 }

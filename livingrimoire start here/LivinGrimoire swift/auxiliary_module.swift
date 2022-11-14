@@ -37,6 +37,45 @@ class AlgDispenser {
         if activeAlg == algs.count {activeAlg = 0}
     }
 }
+class SkillHubAlgDispenser {
+    /// super class to output an algorithm out of a selection of skills
+    ///  engage the hub with dispenseAlg and return the value to the containing the outAlg attribute
+    ///  of the containing skill (which houses the skill hub)
+    ///  this module enables using a selection of 1 skill for triggers instead of having the triggers engage on multible skill
+    ///   the methode is ideal for learnability and behavioral modifications
+    ///   use a learnability auxiliary module as a condition to run an active skill shuffle or change methode
+    ///   (rndAlg , cycleAlg)
+    ///   moods can be used for specific cases to change behavior of the AGI, for example low energy state
+    ///   for that use (moodAlg)
+    var skills:Array<DiSkillV2> = [DiSkillV2]()
+    var activeSkill:Int = 0
+    init(_skills:DiSkillV2...){
+        for skill in _skills {
+            self.skills.append(skill)
+        }
+    }
+    func addSkill(skill:DiSkillV2) -> SkillHubAlgDispenser {
+        self.skills.append(skill)
+        return self
+    }
+    func dispenseAlgorithm(ear:String, skin:String, eye:String) -> Algorithm? {
+        skills[activeSkill].input(ear: ear, skin: skin, eye: eye)
+        return skills[activeSkill].outAlg
+    }
+    func rndAlg(){
+        activeSkill = Int.random(in: 0..<skills.count)
+    }
+    func moodAlg (mood:Int){
+        let c1:Int = skills.count
+        if -1<mood && mood<c1 {
+            activeSkill = mood
+        }
+    }
+    func cycleAlg(){
+        activeSkill += 1
+        if activeSkill == skills.count {activeSkill = 0}
+    }
+}
 // DETECTORS
 class EmoRecognizer {
     let happy = Responder("good","awesome","great","wonderful","sweet","happy")

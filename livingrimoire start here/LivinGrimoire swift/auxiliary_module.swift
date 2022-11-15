@@ -39,7 +39,7 @@ class AlgDispenser {
 }
 class SkillHubAlgDispenser {
     /// super class to output an algorithm out of a selection of skills
-    ///  engage the hub with dispenseAlg and return the value to the containing the outAlg attribute
+    ///  engage the hub with dispenseAlg and return the value to outAlg attribute
     ///  of the containing skill (which houses the skill hub)
     ///  this module enables using a selection of 1 skill for triggers instead of having the triggers engage on multible skill
     ///   the methode is ideal for learnability and behavioral modifications

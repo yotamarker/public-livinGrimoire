@@ -1,0 +1,7 @@
+suggested skill summery convention format
+
+1 skill name
+2 skill creator
+3 skill description
+4 skill triggers
+5 notes (optional)

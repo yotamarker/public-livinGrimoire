@@ -1,0 +1,14 @@
+AP : AlgParts class names should start with AP. APSay for example
+
+D2 : DiSkillV2 (regular LvinGrimoire skill class names) should start with D2.
+for example D2Parrot
+
+D3 : DiSkillV3:DiSkillV2 which are skills whose algorithms have a priority to run
+(fight or flight high priority).
+
+D3 have more priority to run than D2 LivinGrimoire skills.
+these skill classes names should start with D3.
+for example : D3Detective
+
+AX : auxiliary modules. these classes names can start with AX
+for example AXLearnability

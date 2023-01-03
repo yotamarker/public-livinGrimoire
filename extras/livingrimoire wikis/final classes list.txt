@@ -1,35 +1,34 @@
-1 AbsDictionaryDB
-2 enumFail
-3 Mutatable
-4 T1:Mutatable, T2:Mutatable
-5 APSay:Mutatable
-6 DeepCopier
-7 APVerbatim:Mutatable
-8 enumTimes
-9 PlayGround
-10 GrimoireMemento
-11 Algorithm
-12 CldBool
-13 APCldVerbatim:APVerbatim
-14 Kokoro
-15 Neuron
-16 DiSkillUtils
-17 DiSkillV2
-18 DiSkillV3:DiSkillV2
-19 DiHelloWorld:DiSkillV2
-20 LGPointDouble
-21 LGPointInt
-22 enum enumRegexGrimoire
-23 RegexUtil
-24 TimeGate
-25 Cerabellum
-26 DExplorer
-27 PriorityQueue<T>
-29 FusionCera:Cerabellum
-30 Fusion
-31 Personality
-32 Thinkable 
-33 Chobits:Thinkable
-34 Actionable
-    func act(input:String)
-35 Brain
+1. AbsDictionaryDB
+2. enumFail
+3. Mutatable
+4. MemoryMutatable (+optional test classes T1:Mutatable, T2:Mutatable)
+5. APSay:Mutatable
+6. DeepCopier (not needed in java version)
+7. APVerbatim:Mutatable
+8. enumTimes
+9. PlayGround
+10. GrimoireMemento
+11. Algorithm
+12. CldBool
+13. APCldVerbatim:APVerbatim
+14. Kokoro
+15. Neuron
+16. DiSkillUtils
+17. DiSkillV2
+18. DiSkillV3:DiSkillV2
+19. DiHelloWorld:DiSkillV2
+20. LGPointDouble
+21. LGPointInt
+22. enum enumRegexGrimoire
+23. RegexUtil
+24. TimeGate
+25. Cerabellum
+26. DExplorer
+27. PriorityQueue<T> (not needed in java version)
+29. FusionCera:Cerabellum
+30. Fusion
+31. Personality
+32. Thinkable 
+33. Chobits:Thinkable
+34. Actionable
+35. Brain

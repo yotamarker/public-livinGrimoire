@@ -27,8 +27,7 @@
 27. PriorityQueue<T> (not needed in java version)
 29. FusionCera:Cerabellum
 30. Fusion
-31. Personality
-32. Thinkable 
-33. Chobits:Thinkable
-34. Actionable
-35. Brain
+31. Thinkable 
+32. Chobits:Thinkable
+33. Actionable
+34. Brain

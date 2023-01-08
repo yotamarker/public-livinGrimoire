@@ -15,12 +15,16 @@ class DiGreeter:DiSkillV2 {
     }
 }
 class DiParrot:DiSkillV2{
-    let trgParrot:TrgParrot
+    var trgParrot:TrgParrot
     var out1 = ""
     let cldBool:CldBool = CldBool()
-    override init(kokoro: Kokoro) {
-        trgParrot = TrgParrot(kokoro: kokoro)
-        super.init(kokoro: kokoro)
+    override init() {
+        trgParrot = TrgParrot(kokoro: Kokoro(absDictionaryDB: AbsDictionaryDB()))
+        super.init()
+    }
+    override func setKokoro(kokoro: Kokoro) {
+        setKokoro(kokoro: kokoro)
+        trgParrot = TrgParrot(kokoro: self.kokoro)
     }
     override func input(ear: String, skin: String, eye: String) {
         if cldBool.getModeActive() {return}

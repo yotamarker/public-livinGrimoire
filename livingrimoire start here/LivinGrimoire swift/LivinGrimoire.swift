@@ -47,6 +47,53 @@ open class Mutatable{
         return Mutatable()
     }
 }
+class MemoryMutatable:Mutatable{
+    /*
+         * an adaptor pattern to the Mutatable (algorithm part)
+         * the object will load the last mutated state which is the last and optimized
+         * mutation used.
+         * upon mutation the new last mutation is saved so it can be loaded for the next time
+         * mutations happen in the DExplorer class and triggered when the Mutatbles' failure method
+         * returns enumFail.failure
+         * you can code said enumFail.failure to return under chosen conditions in the action method of
+         * the MemoryMutatable object. (sub class of this class)
+         */
+    private(set) var kokoro:Kokoro
+    private(set) var aPart:Mutatable
+    init(kokoro:Kokoro, aPart:Mutatable) {
+        self.kokoro = kokoro
+        // load the last saved mutatable
+        self.aPart = kokoro.grimoireMemento.load(obj: aPart)
+    }
+    override func action(ear: String, skin: String, eye: String) -> String {
+        kokoro.in1(chi: self)
+        let result:String = aPart.action(ear: ear, skin: skin, eye: eye)
+        kokoro.out(isCompleted: completed(), failure: failure(input: ""))
+        return result
+    }
+    override func failure(input: String) -> enumFail {
+        return aPart.failure(input: input)
+    }
+    override func completed() -> Bool {
+        return aPart.completed()
+    }
+    override func clone() -> Mutatable {
+        return MemoryMutatable(kokoro: kokoro, aPart: aPart.clone())
+    }
+    override func getMutationLimit() -> Int {
+        return aPart.getMutationLimit()
+    }
+    override func mutation() -> Mutatable {
+        // upon mutation the last mutation is saved
+        let mutant:Mutatable = aPart
+        let tempAP = mutant.mutation()
+        kokoro.grimoireMemento.reqquipMutation(mutationAPName: tempAP.myName())
+        return MemoryMutatable(kokoro: kokoro, aPart: tempAP)
+    }
+    override func myName() -> String {
+        return aPart.myName()
+    }
+}
 class T1:Mutatable{
     var isCompleted:Bool = false
     override func mutation() -> Mutatable {
@@ -629,6 +676,8 @@ class Kokoro{
     func getPain(biJuuName: String) -> Int {
         return pain[biJuuName] ?? 0
     }
+    func in1(chi:MemoryMutatable){}
+    func out(isCompleted:Bool, failure:enumFail){}
 }
 // used to transport algorithms to other classes
 class Neuron{
@@ -703,12 +752,10 @@ class DiSkillUtils{
     }
 }
 open class DiSkillV2{
-    private(set) var kokoro:Kokoro
+    private(set) var kokoro:Kokoro = Kokoro(absDictionaryDB: AbsDictionaryDB())
     let diSkillUtills:DiSkillUtils = DiSkillUtils()
     var outAlg:Algorithm? = nil
-    init(kokoro:Kokoro) {
-        self.kokoro = kokoro
-    }
+    init() {}
     func input(ear:String, skin:String, eye:String){
     }
     func output(noiron:Neuron){
@@ -716,6 +763,10 @@ open class DiSkillV2{
             noiron.algParts.append(notNilAlg)
             self.outAlg = nil
         }
+    }
+    func setKokoro(kokoro:Kokoro){
+        // use this for telepathic communication between different chobits objects
+        self.kokoro = kokoro
     }
 }
 open class DiSkillV3:DiSkillV2{
@@ -1369,44 +1420,6 @@ class Fusion {
         return result
     }
 }
-open class Personality{
-    /**
-            note you can also add skills via the init override of this class or use one of the add skill func
-             in the ladder you should use the objects kokoro for the skills added
-     */
-    var kokoro:Kokoro = Kokoro(absDictionaryDB: AbsDictionaryDB())
-    var dClasses: Array<DiSkillV2> = [DiSkillV2]()
-    var algDurations:[String:Int] = [:]
-    private var fusion:Fusion
-    init() {
-        self.fusion = Fusion(algDurations: self.algDurations)
-    }
-    func setDataBase(absDictionaryDB:AbsDictionaryDB) {
-        self.kokoro = Kokoro(absDictionaryDB: absDictionaryDB)
-    }
-    func loadAlgDurations(algDurations:[String:Int]) {
-        // these are the run times of algorithms
-        self.algDurations = algDurations
-    }
-    func getFusion() -> Fusion {
-        return self.fusion
-    }
-    @discardableResult
-    func addSkill(skill:DiSkillV2) -> Personality {
-        // add a skill (builder design patterned func))
-        self.dClasses.append(skill)
-        return self
-    }
-    func clearSkills() {
-        // remove all skills
-        dClasses.removeAll()
-    }
-    func addSkills(skills:DiSkillV2...) {
-        for skill in skills{
-            dClasses.append(skill)
-        }
-    }
-}
 class Thinkable {
     func think(ear: String, skin: String, eye: String) -> String {
         // override me
@@ -1415,22 +1428,30 @@ class Thinkable {
 }
 class Chobits:Thinkable {
     fileprivate(set) var emot = "" // emotion represented by the current active alg part
-    private(set) var kokoro:Kokoro // consciousness
+    var kokoro:Kokoro // consciousness
     private var dClasses: Array<DiSkillV2> // skills of the chobit
-    private(set) var algDurations:[String:Int]
+    var algDurations:[String:Int]
     fileprivate var fusion:Fusion // multitasking center
     fileprivate var noiron:Neuron = Neuron() // algorithms transporter
     fileprivate var lastOutput = ""
     fileprivate var timeGate:TimeGate = TimeGate() // circadian pacemaker
-    init (personality:Personality) {
-        self.algDurations = personality.algDurations
-        self.fusion = personality.getFusion()
-        self.dClasses = personality.dClasses
-        self.kokoro = personality.kokoro
+    override init () {
+        self.algDurations = [:]
+        self.fusion = Fusion(algDurations: algDurations)
+        self.dClasses = [DiSkillV2]()
+        self.kokoro = Kokoro(absDictionaryDB: AbsDictionaryDB())
+    }
+    /* set the chobit database
+            the database is built as a key value dictionary
+            the database can be used with by the Kokoro attribute
+        * */
+    func setDataBase(absDictionaryDB:AbsDictionaryDB) {
+        self.kokoro = Kokoro(absDictionaryDB: absDictionaryDB)
     }
     @discardableResult
     func addSkill(skill:DiSkillV2) -> Chobits {
         // add a skill (builder design patterned func))
+        skill.setKokoro(kokoro: self.kokoro)
         self.dClasses.append(skill)
         return self
     }
@@ -1440,17 +1461,33 @@ class Chobits:Thinkable {
     }
     func addSkills(skills:DiSkillV2...) {
         for skill in skills{
+            skill.setKokoro(kokoro: self.kokoro)
             dClasses.append(skill)
         }
     }
     func setPause(pause:Double) {
+        // set standby timegate pause.
+        // pause time without output from the chobit
+        // means the standby attribute will be true for a moment.
+        // it is the equivelant of the chobit being bored
+        // the standby attribute can be accessed via the kokoro
+        // object within a skill if needed
         self.timeGate.setPause(pause: pause)
     }
-    func loadPersonality(personality:Personality) {
-        self.algDurations = personality.algDurations
-        self.fusion = personality.getFusion()
-        self.dClasses = personality.dClasses
-        self.kokoro = personality.kokoro
+    override func think(ear: String, skin: String, eye: String) -> String {
+        // the input will be processed by the chobits' skills
+        let tempEar:String = translateIn(earIn: ear)
+        for skill:DiSkillV2 in self.dClasses {
+            inOut(dClass: skill, ear: tempEar, skin: skin, eye: eye)
+        }
+        fusion.setAlgQueue(shinkei: self.noiron)
+        return translateOut(outResult: fusion.act(ear: tempEar, skin: skin, eye: eye))
+    }
+    func getSoulEmotion() -> String {
+        // get the last active AlgPart name
+        // the AP is an action, and it also represents
+        // an emotion
+        return fusion.getEmot()
     }
     fileprivate func translateIn(earIn:String) -> String {
         // makes sure the chobit doesn't feedback on her own output
@@ -1478,13 +1515,13 @@ class Chobits:Thinkable {
         dClass.input(ear: ear, skin: skin, eye: eye)
         dClass.output(noiron: self.noiron)
     }
-    override func think(ear: String, skin: String, eye: String) -> String {
-        let tempEar:String = translateIn(earIn: ear)
-        for skill:DiSkillV2 in self.dClasses {
-            inOut(dClass: skill, ear: tempEar, skin: skin, eye: eye)
-        }
-        fusion.setAlgQueue(shinkei: self.noiron)
-        return translateOut(outResult: fusion.act(ear: tempEar, skin: skin, eye: eye))
+    func getStandBy() -> Bool {
+        // this is an under use method
+        // only use this for testing
+        return kokoro.standBy
+    }
+    func getFusion() -> Fusion {
+        return self.fusion
     }
 }
 class Actionable {

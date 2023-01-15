@@ -1,15 +1,21 @@
-from abc import ABC, abstractmethod
-from LivinGrimoireCore import *
+# This is a sample Python script.
+from LivinGrimoireCoreV2 import *
 
-class Personality2(PersonalityLight):
-    # Override
-    def __init__(self, *absDictionaryDB: AbsDictionaryDB):
-        super().__init__(absDictionaryDB)
-        super().getdClassesLv1().append(DiHelloWorld(self.getKokoro()))
-
-
+class DeepCopier:
+    def copyList(self,original: list[str]) -> list[str]:
+        deepCopy: list[str] = []
+        for item in original:
+            deepCopy.append(item)
+        return deepCopy
 if __name__ == "__main__":
-    test_personality: Personality2 = Personality2()
-    chii: ChobitsLight = ChobitsLight(test_personality)
-    result = chii.think("hello", "", "")
-    print(result)
+    l1:list[str] = []
+    l1.append("shit")
+    l2 = l1
+    l1[0] = "jizz"
+    print(l2[0])
+    neo:Chobits = Chobits()
+    neo.addSkill(DiHelloWorld())
+    print(neo.think("","",""))
+    print(neo.think("hello", "", ""))
+    print(neo.think("", "", ""))
+

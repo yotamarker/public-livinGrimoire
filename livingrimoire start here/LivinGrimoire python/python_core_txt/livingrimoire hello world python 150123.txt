@@ -1,0 +1,5 @@
+    neo:Chobits = Chobits()
+    neo.addSkill(DiHelloWorld())
+    print(neo.think("","",""))
+    print(neo.think("hello", "", ""))
+    print(neo.think("", "", ""))

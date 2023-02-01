@@ -1,0 +1,83 @@
+package com.yotamarker.lgkotlin1;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+public class GhettoTranslator {
+    public HashMap<String, String> replacers = new HashMap<String, String>();
+    private RegexUtil regexUtil = new RegexUtil();
+    public GhettoTranslator() {
+        super();
+        replacers.put("be", "beez");
+        replacers.put("for", "fo");
+        replacers.put("bitch", "biotch");
+        replacers.put("dollar", "dolla");
+        replacers.put("money", "cha ching");
+        replacers.put("shit", "shii");
+        replacers.put("ass", "azz");
+        replacers.put("drink", "drank");
+        replacers.put("car", "ride");
+        replacers.put("wheels", "rimz");
+        replacers.put("watermelon", "watameron");
+        replacers.put("friends", "homeez");
+        replacers.put("girlfriend", "bu");
+        replacers.put("boyfriend", "boo");
+        replacers.put("finger", "finguh");
+        replacers.put("hair", "weave");
+        replacers.put("hell", "hayl");
+        replacers.put("what is up", "sap");
+        replacers.put("how are you", "sup");
+        replacers.put("nigger", "nigga");
+        replacers.put("i agree", "my nigga");
+        replacers.put("there", "der");
+        replacers.put("was", "wuz");
+        replacers.put("that", "dat");
+        replacers.put("something", "some");
+        replacers.put("driving", "whipping");
+        replacers.put("know what i meat", "nahmeen");
+        replacers.put("cigarette", "cig");
+        replacers.put("stupid", "fu");
+        replacers.put("fool", "fu");
+        replacers.put("butt", "cake");
+        replacers.put("family", "fambly");
+        replacers.put("me", "your girl");
+        replacers.put("ing", "in");
+        replacers.put("of them", "um");
+        replacers.put("str", "shkr");
+        replacers.put("going to", "gonna");
+        replacers.put("got to", "gotta");
+        replacers.put("want to", "wanna");
+        replacers.put("let me", "lemme");
+        replacers.put("give me", "gimme");
+        replacers.put("out to", "outta");
+        replacers.put("king of", "kinda");
+        replacers.put("i am going to", "eye ma");
+        replacers.put("i am a", "eye ma");
+        replacers.put("have to", "hafta");
+        replacers.put("do not know", "dunno");
+        replacers.put("did not do", "dindu");
+        replacers.put("nothing", "naffin");
+        // anti glitch :
+        replacers.put("haylo", "wasup");
+    }
+
+    public String translate(String material) {
+        String result = material;
+        Iterator hmIterator = replacers.entrySet().iterator();
+        while (hmIterator.hasNext()) {
+            Map.Entry mapElement = (Map.Entry) hmIterator.next();
+            String key = (String) mapElement.getKey();
+            String value = (String) mapElement.getValue();
+            result = result.replace(key, value);
+        }
+        String[] words = result.split("\\s+"); // splits by whitespace
+        for (String word : words) {
+            if (word.substring(word.length() - 1).equals("s")) {
+                result = result.replace(word, word + "es");
+            }
+        }
+        return result;
+    }
+}
+

@@ -1,0 +1,3 @@
+public interface actionable {
+    public void act(String thought);
+}

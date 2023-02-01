@@ -1,0 +1,4 @@
+public interface Mutatable {
+    public AbsAlgPart mutation();
+}
+

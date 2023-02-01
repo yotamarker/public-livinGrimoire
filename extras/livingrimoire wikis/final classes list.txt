@@ -3,7 +3,7 @@
 3. Mutatable
 4. MemoryMutatable (+optional test classes T1:Mutatable, T2:Mutatable)
 5. APSay:Mutatable
-6. DeepCopier (not needed in java version)
+6. DeepCopier
 7. APVerbatim:Mutatable
 8. enumTimes
 9. PlayGround

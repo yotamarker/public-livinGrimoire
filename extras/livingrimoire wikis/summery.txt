@@ -8,9 +8,10 @@ it was published on the battle programmers forum at <ref>yotamarker.com</ref>.
 with the github at
 <ref>https://github.com/yotamarker/public-livinGrimoire</ref>
 
-as of may 2022 the project has been available in several programming languages
+the project is available in several programming languages
 including :
 
+swift
 java
 kotlin
 python

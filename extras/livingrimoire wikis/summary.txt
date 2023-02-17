@@ -19,7 +19,7 @@ python
 ## principle of work :
 
 skills or abilities can be added to an instance of a living grimoire (a chobit class)
-via the personality class's object instance using just one line of code
+using just one line of code
 
 much like the learning scene in the movie matrix, in which Neo has skills
 installed in his mind, such as kung fu

@@ -24,10 +24,10 @@
 24. TimeGate
 25. Cerabellum
 26. DExplorer
-27. PriorityQueue<T> (not needed in java version)
-29. FusionCera:Cerabellum
-30. Fusion
-31. Thinkable 
-32. Chobits:Thinkable
-33. Actionable
-34. Brain
+27. LGFIFO
+28. FusionCera:Cerabellum
+29. Fusion
+30. Thinkable 
+31. Chobits:Thinkable
+32. Actionable
+33. Brain

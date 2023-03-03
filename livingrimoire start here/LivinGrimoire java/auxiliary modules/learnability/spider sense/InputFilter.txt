@@ -1,8 +1,0 @@
-public class InputFilter {
-    // super class for input filters
-    public String filterInput(String ear, String skin, String eye) {
-        // default returns ear data
-        // overide in sub classes
-        return ear;
-    }
-}

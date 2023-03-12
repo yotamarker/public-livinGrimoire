@@ -15,6 +15,9 @@ public class LGFIFO <T>{
         return elements.size();
     }
     public T poll(){
+        if(size() == 0){
+            return null;
+        }
         T result = elements.get(0);
         elements.remove(0);
         return result;

@@ -6,7 +6,7 @@ public class TrgParrot {
     // simulates a parrot chirp trigger mechanism
     // as such this trigger is off at night
     // in essence this trigger says: I am here, are you here? good.
-    private TrgTolerance tolerance = new TrgTolerance(5);
+    private TrgTolerance tolerance = new TrgTolerance(3);
     private Responder silencer = new Responder("ok","okay","stop","shut up","quiet");
     private PlayGround pl = new PlayGround();
 

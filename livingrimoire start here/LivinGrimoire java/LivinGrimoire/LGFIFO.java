@@ -7,12 +7,18 @@ import java.util.Random;
 
 public class LGFIFO <T>{
     //first in first out queue
-    private ArrayList<T> elements = new ArrayList<T>();
+    protected ArrayList<T> elements = new ArrayList<T>();
     public void add(T item){
         elements.add(item);
     }
     public int size(){
         return elements.size();
+    }
+    public T peak(){
+        if(size() == 0){
+            return null;
+        }
+        return elements.get(0);
     }
     public T poll(){
         if(size() == 0){
@@ -21,6 +27,13 @@ public class LGFIFO <T>{
         T result = elements.get(0);
         elements.remove(0);
         return result;
+    }
+    public void removeItem(T item){
+        if(elements.contains(item)){
+        elements.remove(item);}
+    }
+    public void clear(){
+        elements.clear();
     }
     private Random rand = new Random();
     public T getRNDElement(){

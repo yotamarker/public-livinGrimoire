@@ -12,6 +12,7 @@ public class RegexUtil {
     public RegexUtil(){
         regexDictionary.put(enumRegexGrimoire.email,"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}");
         regexDictionary.put(enumRegexGrimoire.timeStamp,"[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}");
+        regexDictionary.put(enumRegexGrimoire.simpleTimeStamp,"[0-9]{1,2}:[0-9]{1,2}");
         regexDictionary.put(enumRegexGrimoire.secondlessTimeStamp,"[0-9]{1,2}:[0-9]{1,2}");
         regexDictionary.put(enumRegexGrimoire.fullDate,"[0-9]{1,4}/[0-9]{1,2}/[0-9]{1,2} [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}");
         regexDictionary.put(enumRegexGrimoire.date,"[0-9]{1,4}/[0-9]{1,2}/[0-9]{1,2}");

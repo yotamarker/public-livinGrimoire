@@ -1,6 +1,10 @@
 package AXJava;
 
+import java.util.ArrayList;
+
 public class UniqueItemSizeLimitedPriorityQueue extends UniqueItemsPriorityQue{
+    // items in the queue are unique and do not repeat
+    // the size of the queue is limited
     private int limit = 5;
 
     public int getLimit() {
@@ -24,5 +28,8 @@ public class UniqueItemSizeLimitedPriorityQueue extends UniqueItemsPriorityQue{
             return "";
         }
         return temp;
+    }
+    public ArrayList<String> getAsList(){
+        return getElements();
     }
 }

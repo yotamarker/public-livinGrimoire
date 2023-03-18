@@ -5,8 +5,7 @@ import java.util.Random;
 public class TrgTolerance extends TrGEV3{
     // this boolean gate will return true till depletion or reset()
     private int repeats = 0;
-    private int maxrepeats = 2;
-    private Random rand = new Random();
+    private int maxrepeats; //2 recomended
     public TrgTolerance(int maxrepeats) {
         this.maxrepeats = maxrepeats;
     }
@@ -19,7 +18,7 @@ public class TrgTolerance extends TrGEV3{
     @Override
     public void reset() {
         // refill trigger
-        repeats = rand.nextInt(maxrepeats);
+        repeats = maxrepeats;
     }
 
     @Override

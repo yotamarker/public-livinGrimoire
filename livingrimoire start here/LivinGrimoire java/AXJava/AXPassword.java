@@ -1,0 +1,64 @@
+package AXJava;
+
+import LivinGrimoire.RegexUtil;
+import LivinGrimoire.enumRegexGrimoire;
+
+public class AXPassword {
+    // code # to open the gate
+    // while gate is open, code can be changed with: code new_number
+    private Boolean isOpen = false;
+    private int maxAttempts = 3;
+    private int loginAttempts = maxAttempts;
+    private RegexUtil regexUtil = new RegexUtil();
+    private int code = 0;
+    public Boolean codeUpdate(String ear){
+        // while the gate is toggled on, the password code can be changed
+        if(!isOpen){return false;}
+        if(ear.contains("code")){
+            String temp = regexUtil.extractRegex(enumRegexGrimoire.integer,ear);
+            if(!temp.isEmpty()){code = new LGTypeConverter().convertToInt(temp);
+            return true;}
+        }
+        return false;
+    }
+    public void openGate(String ear){
+        if(ear.contains("code")&&(loginAttempts > 0)){
+            int tempCode = new LGTypeConverter().convertToInt(regexUtil.extractRegex(enumRegexGrimoire.integer,ear));
+            if(tempCode == code){
+                loginAttempts = maxAttempts;
+                isOpen = true;
+            }
+            else {
+                loginAttempts--;
+            }
+        }
+    }
+    public Boolean isOpen() {
+        return isOpen;
+    }
+    public void resetAttempts(){
+        // should happen once a day or hour to prevent hacking
+        loginAttempts = maxAttempts;
+    }
+
+    public int getLoginAttempts() {
+        // return remaining login attempts
+        return loginAttempts;
+    }
+    public void closeGate(){
+        isOpen=false;
+    }
+    public void closeGate(String ear){
+        if(ear.contains("close")){isOpen=false;}
+    }
+
+    public void setMaxAttempts(int maxAttempts) {
+        this.maxAttempts = maxAttempts;
+    }
+
+    public int getCode() {
+        if(isOpen){
+        return code;}
+        return -1;
+    }
+}

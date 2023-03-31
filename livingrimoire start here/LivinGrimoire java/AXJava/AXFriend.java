@@ -2,7 +2,6 @@ package AXJava;
 
 import LivinGrimoire.Algorithm;
 import LivinGrimoire.DISkillUtils;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 public class AXFriend {
     private String myName = "chi"; // default name

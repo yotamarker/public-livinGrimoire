@@ -173,6 +173,9 @@ class LGFIFO:
         else:
             return self.queue[random.randint(0, len(self.queue) - 1)]
 
+    def contains(self, item) -> bool:
+        return self.queue.__contains__(item)
+
 
 class UniqueItemsPriorityQue(LGFIFO):
     # a priority queue without repeating elements
@@ -207,3 +210,53 @@ class UniqueItemSizeLimitedPriorityQueue(UniqueItemsPriorityQue):
         if temp is None:
             return ""
         return temp
+
+
+class AXLearnability:
+
+    def __init__(self, tolerance: int):
+        self._algSent = False
+        # problems that may result because of the last deployed algorithm:
+        self.defcons: UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue(5)
+        # major chaotic problems that may result because of the last deployed algorithm:
+        self.defcon5: UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue(5)
+        # goals the last deployed algorithm aims to achieve:
+        self.goals: UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue(5)
+        # how many failures / problems till the algorithm needs to mutate (change):
+        self.trgTolerance: TrgTolerance = TrgTolerance(tolerance)
+
+    def pendAlg(self):
+        '''// an algorithm has been deployed
+        // call this method when an algorithm is deployed (in a DiSkillV2 object)'''
+        self._algSent = True
+        self.trgTolerance.trigger()
+
+    def pendAlgWithoutConfirmation(self):
+        # an algorithm has been deployed
+        self._algSent = True
+        '''//no need to await for a thank you or check for goal manifestation :
+        // trgTolerance.trigger();
+        // using this method instead of the default "pendAlg" is the same as
+        // giving importance to the stick and not the carrot when learning
+        // this method is mosly fitting work place situations'''
+
+    def mutateAlg(self, input: str) -> bool:
+        # recommendation to mutate the algorithm ? true/ false
+        if not self._algSent:
+            return False  # no alg sent=> no reason to mutate
+        if self.goals.contains(input):
+            self.trgTolerance.reset()
+            self._algSent = False
+            return False
+        # goal manifested the sent algorithm is good => no need to mutate the alg
+        if self.defcon5.contains(input):
+            self.trgTolerance.reset()
+            self._algSent = False
+            return True
+        '''// ^ something bad happend probably because of the sent alg
+        // recommend alg mutation'''
+        if self.defcons.contains(input):
+            self._algSent = False
+            return self.trgTolerance.trigger()
+        # ^ negative result, mutate the alg if this occures too much
+        return False

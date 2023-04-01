@@ -37,9 +37,6 @@ public class LGFIFO <T>{
     }
     private Random rand = new Random();
     public T getRNDElement(){
-        if (elements.isEmpty()) {
-            return null;
-        }
         return  elements.get(rand.nextInt(elements.size()));
     }
     public boolean contains(T input){

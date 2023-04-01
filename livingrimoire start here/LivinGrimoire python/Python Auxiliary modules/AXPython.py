@@ -171,4 +171,39 @@ class LGFIFO:
         if self.isEmpty():
             return None
         else:
-            return self.queue[random.randint(0, len(self.queue) -1)]
+            return self.queue[random.randint(0, len(self.queue) - 1)]
+
+
+class UniqueItemsPriorityQue(LGFIFO):
+    # a priority queue without repeating elements
+    # override
+    def insert(self, data):
+        if not self.queue.__contains__(data):
+            self.queue.append(data)
+
+
+class UniqueItemSizeLimitedPriorityQueue(UniqueItemsPriorityQue):
+    # items in the queue are unique and do not repeat
+    # the size of the queue is limited
+    def __init__(self, limit: int):
+        super().__init__()
+        self._limit = limit
+
+    # override
+    def insert(self, data):
+        if super().size() < self._limit:
+            super().insert(data)
+
+    # override
+    def poll(self) -> str:
+        temp = super().poll()
+        if temp is None:
+            return ""
+        return temp
+
+    # override
+    def getRNDElement(self):
+        temp = super().getRNDElement()
+        if temp is None:
+            return ""
+        return temp

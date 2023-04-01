@@ -29,6 +29,16 @@ public class UniqueItemSizeLimitedPriorityQueue extends UniqueItemsPriorityQue{
         }
         return temp;
     }
+
+    @Override
+    public String getRNDElement() {
+        String temp = super.getRNDElement();
+        if (temp == null){
+            return "";
+        }
+        return temp;
+    }
+
     public ArrayList<String> getAsList(){
         return getElements();
     }

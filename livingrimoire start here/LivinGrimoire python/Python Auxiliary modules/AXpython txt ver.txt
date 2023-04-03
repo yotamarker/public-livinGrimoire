@@ -337,7 +337,7 @@ class AXPassword:
             temp: str = self._regexUtil.extractEnumRegex(enumRegexGrimoire.integer, ear)
             if not temp == "":
                 # if not temp.isEmpty
-                self._code = self._typeConverter.convertToInt(temp)
+                self._code = int(temp)
                 return True
         return False
 
@@ -345,7 +345,7 @@ class AXPassword:
         if ear.__contains__("code") and self._loginAttempts > 0:
             tempCode: str = self._regexUtil.extractEnumRegex(enumRegexGrimoire.integer, ear)
             if not tempCode == "":
-                code_x: int = self._typeConverter.convertToInt(tempCode)
+                code_x: int = int(tempCode)
                 if code_x == self._code:
                     self._loginAttempts = self._maxAttempts
                     self._isOpen = True

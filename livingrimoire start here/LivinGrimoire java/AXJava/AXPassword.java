@@ -16,27 +16,26 @@ public class AXPassword {
         if(!isOpen){return false;}
         if(ear.contains("code")){
             String temp = regexUtil.extractRegex(enumRegexGrimoire.integer,ear);
-            if(!temp.isEmpty()){code = new LGTypeConverter().convertToInt(temp);
+            if(!temp.isEmpty()){code = Integer.parseInt(temp);
             return true;}
         }
         return false;
     }
-    public void openGate(String ear){
-        if(ear.contains("code")&&(loginAttempts > 0)){
-            String noCode = regexUtil.extractRegex(enumRegexGrimoire.integer,ear);
-            if(noCode.isEmpty()){
-                   return;
-               }
+    public void openGate(String ear) {
+        if (ear.contains("code") && (loginAttempts > 0)) {
+            String noCode = regexUtil.extractRegex(enumRegexGrimoire.integer, ear);
+            if (noCode.isEmpty()) {
+                return;
             }
-            int tempCode = new LGTypeConverter().convertToInt(regexUtil.extractRegex(enumRegexGrimoire.integer,ear));
-            if(tempCode == code){
+            int tempCode = Integer.parseInt(noCode);
+            if (tempCode == code) {
                 loginAttempts = maxAttempts;
                 isOpen = true;
-            }
-            else {
+            } else {
                 loginAttempts--;
             }
         }
+    }
     public Boolean isOpen() {
         return isOpen;
     }

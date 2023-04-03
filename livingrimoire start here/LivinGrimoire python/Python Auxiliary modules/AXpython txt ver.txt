@@ -377,3 +377,19 @@ class AXPassword:
         if (self._isOpen):
             return self._code
         return -1
+
+
+class ButtonEngager:
+    """ detect if a button was pressed
+     this class disables phisical button engagement while it remains being pressed"""
+
+    def __init__(self):
+        self._prev_state: bool = False
+
+    def engage(self, btnState: bool) -> bool:
+        # send true for pressed state
+        if self._prev_state != btnState:
+            self._prev_state = btnState
+            if btnState:
+                return True
+        return False

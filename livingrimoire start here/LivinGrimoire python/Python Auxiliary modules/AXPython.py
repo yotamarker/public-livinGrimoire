@@ -260,3 +260,120 @@ class AXLearnability:
             return self.trgTolerance.trigger()
         # ^ negative result, mutate the alg if this occures too much
         return False
+
+
+class AXNightRider:
+    # night rider display simulation for LED lights count up than down
+    def __init__(self, limit: int):
+        self._mode: int = 0
+        self._position: int = 0
+        self._lim = 0
+        if limit > 0:
+            self._lim = limit
+        self._direction = 1
+
+    def setLim(self, lim: int):
+        # number of LEDs
+        self._lim = lim
+
+    def setMode(self, mode: int):
+        # room for more modes to be added
+        if 10 > mode > -1:
+            self._mode = mode
+
+    def getPosition(self) -> int:
+        match self._mode:
+            case 0:
+                self.mode0()
+        return self._position
+
+    def mode0(self):
+        # clasic night rider display
+        self._position += self._direction
+        if self._direction < 1:
+            if self._position < 1:
+                self._position = 0
+                self._direction = 1
+        else:
+            if self._position > self._lim - 1:
+                self._position = self._lim
+                self._direction = -1
+
+
+class LGTypeConverter:
+    def __init__(self):
+        self._regexUtil: RegexUtil = RegexUtil()
+
+    def convertToInt(self, v1: str) -> int:
+        temp: str = self._regexUtil.extractEnumRegex(enumRegexGrimoire.integer, v1)
+        if temp == "":
+            return 0
+        return int(temp)
+
+    def convertToDouble(self, v1: str) -> float:
+        temp: str = self._regexUtil.extractEnumRegex(enumRegexGrimoire.double_num, v1)
+        if temp == "":
+            return 0.0
+        return float(temp)
+
+
+class AXPassword:
+    ''' code # to open the gate
+     while gate is open, code can be changed with: code new_number'''
+
+    def __init__(self):
+        self._isOpen: bool = False
+        self._maxAttempts: int = 3
+        self._loginAttempts = self._maxAttempts
+        self._regexUtil: RegexUtil = RegexUtil()
+        self._code = 0
+        self._typeConverter: LGTypeConverter = LGTypeConverter()
+
+    def codeUpdate(self, ear: str) -> bool:
+        # while the gate is toggled on, the password code can be changed
+        if not self._isOpen:
+            return False
+        if ear.__contains__("code"):
+            temp: str = self._regexUtil.extractEnumRegex(enumRegexGrimoire.integer, ear)
+            if not temp == "":
+                # if not temp.isEmpty
+                self._code = self._typeConverter.convertToInt(temp)
+                return True
+        return False
+
+    def openGate(self, ear: str):
+        if ear.__contains__("code") and self._loginAttempts > 0:
+            tempCode: str = self._regexUtil.extractEnumRegex(enumRegexGrimoire.integer, ear)
+            if not tempCode == "":
+                code_x: int = self._typeConverter.convertToInt(tempCode)
+                if code_x == self._code:
+                    self._loginAttempts = self._maxAttempts
+                    self._isOpen = True
+                else:
+                    self._loginAttempts -= 1
+
+    def isOpen(self):
+        return self._isOpen
+
+    def resetAttempts(self):
+        # should happen once a day or hour to prevent hacking
+        self._loginAttempts = self._maxAttempts
+
+    def getLoginAttempts(self):
+        # return remaining login attempts
+        return self._loginAttempts
+
+    def closeGate(self):
+        self._isOpen = False
+
+    def closeGate(self, ear: str):
+        if ear.__contains__("close"):
+            self._isOpen = False
+
+    def setMaxAttempts(self, max: int):
+        self._maxAttempts = max
+
+    def getCode(self) -> int:
+        if (self._isOpen):
+            return self._code
+        return -1

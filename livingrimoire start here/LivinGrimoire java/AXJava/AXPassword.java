@@ -23,6 +23,11 @@ public class AXPassword {
     }
     public void openGate(String ear){
         if(ear.contains("code")&&(loginAttempts > 0)){
+            String noCode = regexUtil.extractRegex(enumRegexGrimoire.integer,ear);
+            if(noCode.isEmpty()){
+                   return;
+               }
+            }
             int tempCode = new LGTypeConverter().convertToInt(regexUtil.extractRegex(enumRegexGrimoire.integer,ear));
             if(tempCode == code){
                 loginAttempts = maxAttempts;
@@ -32,7 +37,6 @@ public class AXPassword {
                 loginAttempts--;
             }
         }
-    }
     public Boolean isOpen() {
         return isOpen;
     }

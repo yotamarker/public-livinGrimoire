@@ -165,7 +165,8 @@ class LGFIFO:
         self.queue.clear()
 
     def removeItem(self, item):
-        self.queue.remove(item)
+        if self.queue.__contains__(item):
+            self.queue.remove(item)
 
     def getRNDElement(self):
         if self.isEmpty():
@@ -393,3 +394,71 @@ class ButtonEngager:
             if btnState:
                 return True
         return False
+
+
+class CombinatoricalUtils:
+    # combo related algorithmic tools
+    def __init__(self):
+        self.result: list[str] = []
+
+    def _generatePermutations(self, lists: list[list[str]], result: list[str], depth: int, current: str):
+        # this function has a private modifier (the "_" makes it so)
+        if depth == len(lists):
+            result.append(current)
+            return
+        for i in range(0, len(lists) + 1):
+            self._generatePermutations(lists, result, depth + 1, current + lists[depth][i])
+
+    def generatePermutations(self, lists: list[list[str]]):
+        # generate all permutations between all string lists in lists, which is a list of lists of strings
+        self.result = []
+        self._generatePermutations(lists, self.result, 0, "")
+
+    def generatePermutations(self, *lists: list[list[str]]):
+        # this is the varargs vertion of this function
+        # example method call: cu.generatePermutations(l1,l2)
+        temp_lists: list[list[str]] = []
+        for i in range(0, len(lists)):
+            temp_lists.append(lists[i])
+        self.result = []
+        self._generatePermutations(temp_lists, self.result, 0, "")
+
+
+class Cycler:
+    # cycles through numbers limit to 0 non-stop
+    def __init__(self, limit: int):
+        self.limit: int = limit
+        self._cycler: int = limit
+
+    def cycleCount(self) -> int:
+        self._cycler -= 1
+        if self._cycler < 0:
+            self._cycler = self.limit
+        return self._cycler
+
+    def reset(self):
+        self._cycler = self.limit
+
+
+class DrawRnd:
+    # draw a random element, than take said element out
+    def __init__(self, *values: str):
+        self.converter: LGTypeConverter = LGTypeConverter()
+        self.strings: LGFIFO = LGFIFO()
+        for i in range(0, len(values)):
+            self.strings.insert(values[i])
+
+    def drawAndRemove(self) -> str:
+        temp: str = self.strings.getRNDElement()
+        self.strings.removeItem(temp)
+        return temp
+
+    def drawAsIntegerAndRemove(self) -> int:
+        temp: str = self.strings.getRNDElement()
+        if temp is None:
+            return 0
+        self.strings.removeItem(temp)
+        return self.converter.convertToInt(temp)
+
+    def getSimpleRNDNum(self: int) -> int:
+        return random.randint(0, self)

@@ -2,7 +2,7 @@ package AXJava;
 
 public class EmoDetectorStressed extends Responder{
     public EmoDetectorStressed() {
-        super("ouch","help","fudge sticks","dough");
+        super("ouch","help","dough");
     }
     public Boolean isHappy(String str){
         return super.strContainsResponse(str);

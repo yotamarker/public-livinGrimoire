@@ -462,3 +462,49 @@ class DrawRnd:
 
     def getSimpleRNDNum(self: int) -> int:
         return random.randint(0, self)
+
+
+class Responder:
+    # simple random response dispenser
+    def __init__(self, *replies: str):
+        self.responses: list[str] = []
+        for response in replies:
+            self.responses.append(response)
+
+    def getAResponse(self) -> str:
+        if not self.responses:
+            return ""
+        return self.responses[random.randint(0, len(self.responses) - 1)]
+
+    def responsesContainsStr(self, item: str) -> bool:
+        return self.responses.__contains__(item)
+
+    def strContainsResponse(self, item: str) -> bool:
+        for response in self.responses:
+            if item.__contains__(response):
+                return True
+        return False
+
+
+class EmoDetectorCurious(Responder):
+    def __init__(self):
+        super().__init__("why", "where", "when", "how", "who", "which", "whose","what")
+
+    def isCurious(self, item: str):
+        return self.strContainsResponse(item)
+
+
+class EmoDetectorHappy(Responder):
+    def __init__(self):
+        super().__init__("good", "awesome", "great", "happy")
+
+    def isHappy(self, item: str):
+        return self.strContainsResponse(item)
+
+
+class EmoDetectorStressed(Responder):
+    def __init__(self):
+        super().__init__("ouch", "help", "dough")
+
+    def isStressed(self, item: str):
+        return self.strContainsResponse(item)

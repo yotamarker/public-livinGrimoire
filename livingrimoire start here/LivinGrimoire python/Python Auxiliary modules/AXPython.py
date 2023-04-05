@@ -24,7 +24,7 @@ class AlgDispenser:
 
     def rndAlg(self) -> Algorithm:
         # return a random algorithm
-        return self._algs[random.randint(0, len(self._algs))]
+        return self._algs[random.randint(0, len(self._algs) - 1)]
 
     def moodAlg(self, mood: int) -> Algorithm:
         # set output algorithm based on number representing mood
@@ -47,6 +47,58 @@ class AlgDispenser:
         self._activeAlg += 1
         if self._activeAlg == len(self._algs):
             self._activeAlg += 0
+
+
+class SkillHubAlgDispenser:
+    """super class to output an algorithm out of a selection of skills
+//      engage the hub with dispenseAlg and return the value to outAlg attribute
+//      of the containing skill (which houses the skill hub)
+//      this module enables using a selection of 1 skill for triggers instead of having the triggers engage on multible skill
+//       the methode is ideal for learnability and behavioral modifications
+//       use a learnability auxiliary module as a condition to run an active skill shuffle or change methode
+//       (rndAlg , cycleAlg)
+//       moods can be used for specific cases to change behavior of the AGI, for example low energy state
+//       for that use (moodAlg)"""
+
+    def __init__(self, *skillsParams: DiSkillV2):
+        super().__init__()
+        self._skills: list[DiSkillV2] = []
+        self._activeSkill: int = 0
+        self._tempN: Neuron = Neuron()
+        for i in range(0, len(skillsParams)):
+            self._skills.append(skillsParams[i])
+
+    def addSkill(self, skill: DiSkillV2) -> SkillHubAlgDispenser:
+        # builder pattern
+        self._skills.append(skill)
+        return self
+
+    def dispenseAlgorithm(self, ear: str, skin: str, eye: str) -> Algorithm:
+        # return value to outAlg param of (external) summoner DiskillV2
+        self._skills[self._activeSkill].input(ear, skin, eye)
+        self._tempN.empty()
+        self._skills[self._activeSkill].output(self._tempN)
+        if not self._tempN.negativeAlgParts:
+            return self._tempN.negativeAlgParts[0]
+        if not self._tempN.algParts:
+            return self._tempN.algParts[0]
+        return None
+
+    def randomizeActiveSkill(self):
+        self._activeSkill = random.randint(0, len(self._skills) - 1)
+
+    def setActiveSkillWithMood(self, mood: int):
+        # mood integer represents active skill
+        # different mood = different behavior
+        if -1 < mood < len(self._skills) - 1:
+            self._activeSkill = mood
+
+    def cycleActiveSkill(self):
+        # changes active skill
+        # I recommend this method be triggered with a Learnability or SpiderSense object
+        self._activeSkill += 1
+        if self._activeSkill == len(self._skills):
+            self._activeSkill = 0
 
 
 class TrGEV3:
@@ -189,14 +241,16 @@ class UniqueItemsPriorityQue(LGFIFO):
 class UniqueItemSizeLimitedPriorityQueue(UniqueItemsPriorityQue):
     # items in the queue are unique and do not repeat
     # the size of the queue is limited
+    # this cls can also be used to detect repeated elements (nagging or reruns)
     def __init__(self, limit: int):
         super().__init__()
         self._limit = limit
 
     # override
     def insert(self, data):
-        if super().size() < self._limit:
-            super().insert(data)
+        if super().size() == self._limit:
+            super().poll()
+        super().insert(data)
 
     # override
     def poll(self) -> str:
@@ -621,7 +675,7 @@ class Map:
 
     def read(self) -> str:
         # read place description
-        temp:str = self._currentPosition.__repr__()
+        temp: str = self._currentPosition.__repr__()
         if not self._pointDescription.__contains__(temp):
             return "null"
         return self._pointDescription[temp]
@@ -639,3 +693,33 @@ class Map:
         if not self._descriptionPoint.__contains__(description):
             return "null"
         return self._descriptionPoint[description]
+
+
+class Catche:
+    # limited sized dictionary
+    def __init__(self, size):
+        super().__init__()
+        self._limit: int = size
+        self._keys: UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue(size)
+        self._d1: dict[str, str] = {}
+
+    def insert(self, key: str, value: str):
+        # update
+        if self._d1.__contains__(key):
+            self._d1[key] = value
+            return
+        # insert:
+        if self._keys.size() == self._limit:
+            temp = self._keys.peak()
+            del self._d1[temp]
+        self._keys.insert(key)
+        self._d1[key] = value
+
+    def clear(self):
+        self._keys.clear()
+        self._d1.clear()
+
+    def read(self, key: str) -> str:
+        if not self._d1.__contains__(key):
+            return "null"
+        return self._d1[key]

@@ -17,8 +17,9 @@ public class UniqueItemSizeLimitedPriorityQueue extends UniqueItemsPriorityQue{
 
     @Override
     public void add(String item) {
-        if(super.size()<limit){
-        super.add(item);}
+        if(super.size() == limit){
+            super.poll();}
+        super.add(item);
     }
 
     @Override

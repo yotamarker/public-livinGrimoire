@@ -717,6 +717,14 @@ class LGPointInt:
         self.x += x
         self.y += y
 
+    def setPosition(self, x: int, y: int):
+        self.x = x
+        self.y = y
+
+    def reset(self):
+        self.x = 0
+        self.y = 0
+
     def __repr__(self):
         return "".join(["Point(", str(self.x), ",", str(self.y), ")"])
 

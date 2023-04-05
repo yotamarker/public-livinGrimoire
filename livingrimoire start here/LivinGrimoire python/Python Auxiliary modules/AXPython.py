@@ -488,7 +488,7 @@ class Responder:
 
 class EmoDetectorCurious(Responder):
     def __init__(self):
-        super().__init__("why", "where", "when", "how", "who", "which", "whose","what")
+        super().__init__("why", "where", "when", "how", "who", "which", "whose", "what")
 
     def isCurious(self, item: str):
         return self.strContainsResponse(item)
@@ -508,3 +508,134 @@ class EmoDetectorStressed(Responder):
 
     def isStressed(self, item: str):
         return self.strContainsResponse(item)
+
+
+class ForcedLearn(UniqueItemSizeLimitedPriorityQueue):
+    '''remembers key inputs because they start with keyword
+   // also can dispense key inputs'''
+
+    def __init__(self, queLimit: int):
+        super().__init__(queLimit)
+        self._regexUtil: RegexUtil = RegexUtil()
+        self.keyword: str = "say"
+
+    # override
+    def insert(self, data):
+        temp: str = self._regexUtil.afterWord(self.keyword, data)
+        if not temp == "":
+            super().insert(temp)
+
+
+class EV3DaisyChainAndMode(TrGEV3):
+    # this class connects several logic gates triggers together
+    def __init__(self, gates: TrGEV3):
+        self._trgGates: list[TrGEV3] = []
+        for gate in gates:
+            self._trgGates.append(gate)
+
+    # override
+    def input(self, ear: str, skin: str, eye: str):
+        for gate in self._trgGates:
+            gate.input(ear, skin, eye)
+
+    # override
+    def reset(self):
+        for gate in self._trgGates:
+            gate.reset()
+
+    # override
+    def trigger(self) -> bool:
+        for gate in self._trgGates:
+            if not gate.trigger():
+                # not all gates return true
+                return False
+            # all gates return true
+            return True
+
+
+class EV3DaisyChainOrMode(TrGEV3):
+    # this class connects several logic gates triggers together
+    def __init__(self, gates: TrGEV3):
+        self._trgGates: list[TrGEV3] = []
+        for gate in gates:
+            self._trgGates.append(gate)
+
+    # override
+    def input(self, ear: str, skin: str, eye: str):
+        for gate in self._trgGates:
+            gate.input(ear, skin, eye)
+
+    # override
+    def reset(self):
+        for gate in self._trgGates:
+            gate.reset()
+
+    # override
+    def trigger(self) -> bool:
+        for gate in self._trgGates:
+            if gate.trigger():
+                # at least 1 gate is engaged
+                return True
+            # all gates are not engaged
+            return False
+
+
+class InputFilter:
+    """filter out non-relevant input
+    or filter in relevant data"""
+
+    def input(self, ear: str, skin: str, eye: str) -> str:
+        # override me
+        pass
+
+
+class Map:
+    def __init__(self):
+        self._pointDescription: dict[str, str] = {}
+        self._descriptionPoint: dict[str, str] = {}
+        self._currentPosition: LGPointInt = LGPointInt(0, 0)
+        self.regexUtil: RegexUtil = RegexUtil()
+
+    def reset(self):
+        # sleep location is considered (0,0) location
+        self._currentPosition.reset()
+
+    def moveBy(self, x: int, y: int):
+        # shift current position
+        self._currentPosition.shift(x, y)
+
+    def moveTo(self, location: str):
+        # use this when the AI is returning home
+        if self._descriptionPoint.__contains__(location):
+            value: str = self._descriptionPoint[location]
+            p1 = self.regexUtil.pointRegex(value)
+            self._currentPosition.x = p1.x
+            self._currentPosition.y = p1.y
+
+    def write(self, description):
+        # location name or item description will be
+        # saved on the map on the current point position
+        pointStr: str = self._currentPosition.__repr__()
+        self._pointDescription[pointStr] = description
+        self._descriptionPoint[description] = pointStr
+
+    def read(self) -> str:
+        # read place description
+        temp:str = self._currentPosition.__repr__()
+        if not self._pointDescription.__contains__(temp):
+            return "null"
+        return self._pointDescription[temp]
+
+    def readPoint(self, p1: LGPointInt) -> str:
+        # used for predition of upcoming locations
+        # returns: what is the location name at point
+        temp: str = p1.__repr__()
+        if not self._pointDescription.__contains__(temp):
+            return "null"
+        return self._pointDescription[temp]
+
+    def locationCoordinate(self, description):
+        # get location coordinate
+        if not self._descriptionPoint.__contains__(description):
+            return "null"
+        return self._descriptionPoint[description]

@@ -398,7 +398,13 @@ class PlayGround:
     def getCurrentTimeStamp(self) -> str:
         '''This method returns the current time (hh:mm)'''
         right_now = datetime.datetime.now()
-        return str(right_now.hour) + ":" + str(right_now.minute)
+        temp_minute:int = right_now.minute
+        tempstr:str=""
+        if temp_minute<10:
+            tempstr = "0" + str(right_now.minute)
+        else:
+            tempstr = str(right_now.minute)
+        return str(right_now.hour) + ":" + tempstr
 
     def getMonthAsInt(self) -> int:
         '''This method returns the current month (MM)'''
@@ -753,6 +759,7 @@ def distance(a, b):
 class enumRegexGrimoire(Enum):
     email = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}"
     timeStamp = "[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}"
+    simpleTimeStamp = "[0-9]{1,2}:[0-9]{1,2}"
     integer = "[-+]?[0-9]{1,13}"
     double_num = "[-+]?[0-9]*[.,][0-9]*"
     repeatedWord = "\\b([\\w\\s']+) \\1\\b"

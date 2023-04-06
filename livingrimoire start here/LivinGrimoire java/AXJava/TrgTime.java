@@ -3,7 +3,6 @@ package AXJava;
 import LivinGrimoire.PlayGround;
 import LivinGrimoire.RegexUtil;
 import LivinGrimoire.enumRegexGrimoire;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 public class TrgTime {
     String t = "null";
@@ -14,14 +13,16 @@ public class TrgTime {
         t = regexUtil.extractRegex(enumRegexGrimoire.simpleTimeStamp,v1);
     }
     public Boolean alarm(){
+        String now = pl.getCurrentTimeStamp();
         if(alarm){
-            String now = pl.getCurrentTimeStamp();
             if(now.equals(t)){
                 alarm = false;
                 return true;
             }
         }
-        alarm = true;
+        if(!now.equals(t)){
+            alarm = true;
+        }
         return false;
     }
 }

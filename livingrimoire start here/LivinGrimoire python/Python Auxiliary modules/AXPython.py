@@ -809,3 +809,106 @@ class TrgMinute(TrGEV3):
     def reset(self):
         self._hour1 = -1
 
+
+class TrgParrot:
+    # simulates a parrot chirp trigger mechanism
+    # as such this trigger is off at night
+    # in essence this trigger says: I am here, are you here? good.
+    def __init__(self, limit: int):
+        super().__init__()
+        temp_lim: int = 3
+        if limit > 0:
+            temp_lim = limit
+        self._tolerance: TrgTolerance = TrgTolerance(temp_lim)
+        self._silencer: Responder = Responder("ok", "okay", "stop", "shut up", "quiet")
+        self._pl: PlayGround = PlayGround()
+
+    def trigger(self, standBy: bool, ear: str) -> bool:
+        """relies on the Kokoro standby boolean
+         no input or output for a set amount of time results with a true
+         and replenishing the trigger."""
+        if self._pl.isNight():
+            # is it night? I will be quite
+            return False
+        # you want the bird to shut up?
+        if self._silencer.responsesContainsStr(ear):
+            self._tolerance.disable()
+            return False
+        # no input or output for a while?
+        if standBy:
+            # I will chirp!
+            self._tolerance.reset()
+            return True
+        # we are handshaking?
+        if not ear == "":
+            # I will reply chirp till it grows old for me (a set amount of times till reset)
+            if self._tolerance.trigger():
+                return True
+        return False
+
+
+class TrgSnooze(TrGEV3):
+    # this boolean gate will return true per minute interval
+    # max repeats times.
+    def __init__(self, maxRepeats: int):
+        super().__init__()
+        self._repeats: int = 0
+        self._maxRepeats: int = maxRepeats
+        self._snooze: bool = True
+        self._snoozeInterval: int = 5
+        self._playGround: PlayGround = PlayGround()
+
+    def setSnoozeInterval(self, snoozeInterval):
+        if 1 < snoozeInterval < 11:
+            self._snoozeInterval = snoozeInterval
+
+    # override
+    def reset(self):
+        # refill trigger
+        # engage this code when an alarm clock was engaged to enable snoozing
+        self._repeats = self._maxRepeats
+
+    def setMaxrepeats(self, max_repeats: int):
+        self._maxRepeats = max_repeats
+        self.reset()
+
+    # override
+    def trigger(self) -> bool:
+        # trigger a snooze alarm?
+        minutes: int = self._playGround.getMinutesAsInt()
+        # non interval minute case:
+        if minutes % self._snoozeInterval != 0:
+            self._snooze = True
+            return False
+        # 1 time activation per snooze interval minute:
+        if self._repeats > 0 and self._snooze:
+            self._snooze = False
+            self._repeats -= 1
+            return True
+        return False
+
+    def disable(self):
+        # engage this method to stop the snoozing
+        self._repeats = 0
+
+
+class TrgTime:
+    def __init__(self):
+        super().__init__()
+        self._t = "null"
+        self._regexUtil: RegexUtil = RegexUtil()
+        self._pl: PlayGround = PlayGround()
+        self._alarm: bool = True
+
+    def setTime(self, v1: str):
+        self._t = self._regexUtil.extractEnumRegex(enumRegexGrimoire.simpleTimeStamp, v1)
+
+    def alarm(self) -> bool:
+        now: str = self._pl.getCurrentTimeStamp()
+        if self._alarm:
+            if now == self._t:
+                self._alarm = False
+                return True
+        if now != self._t:
+            self._alarm = True
+        return False

@@ -3,61 +3,34 @@ package AXJava;
 import java.util.Hashtable;
 
 public class Catche {
-    private Hashtable<String,String> dic1 = new Hashtable<>();
-    private int limit = 3;
-
-    public void setLimit(int limit) {
-        this.limit = limit;
+    // limited sized dictionary
+    private int limit;
+    private UniqueItemSizeLimitedPriorityQueue keys;
+    private Hashtable<String,String> d1 = new Hashtable<>();
+    public Catche(int size) {
+        this.limit = size;
+        this.keys = new UniqueItemSizeLimitedPriorityQueue();
+        this.keys.setLimit(size);
     }
-
-    public int getLimit() {
-        return limit;
-    }
-
-    public Boolean containsKey(String str1){
-        return dic1.containsKey(str1);
-    }
-    public void overwriteInsert(String oldKey,String key, String value){
-        int index = dicIndex.get(oldKey);
-        dicIndex.put(key,index);
-        dicIndex.remove(oldKey);
-        indexDic.remove(index);
-        indexDic.put(index,key);
-        dic1.remove(oldKey);
-        dic1.put(key,value);
-    }
-    public Boolean hasRoom(){
-        return limit > dic1.size();
-    }
-    private Hashtable<Integer,String> indexDic = new Hashtable<>();
-    private Hashtable<String, Integer> dicIndex = new Hashtable<>();
-    public void Insert(String key, String value){
-        if (hasRoom()) {
-            int index = dic1.size();
-            dic1.put(key,value);
-            indexDic.put(index,key);
-            dicIndex.put(key,index);
-        }
-    }
-    public void insertAt(int position, String key, String value){
-        if (!(position < limit) || !(position > -1)){
+    public void insert(String key,String value){
+        // update
+        if (d1.contains(key)){
+            d1.put(key,value);
             return;
         }
-        String oldkey = indexDic.get(position);
-        dic1.remove(oldkey);
-        dic1.put(key,value);
-        indexDic.put(position, key);
-        dicIndex.remove(oldkey);
-        dicIndex.put(key,position);
-    }
-    public String getItem(String key){
-        return dic1.getOrDefault(key,"");
-    }
-    public String getItem(int position){
-        if (!(position < limit) || !(position > -1)){
-            return "";
+        // insert
+        if (keys.size() == limit){
+            String temp = keys.peak();
+            d1.remove(key);
         }
-        String key = indexDic.get(position);
-        return dic1.getOrDefault(key,"");
+        keys.add(key);
+        d1.put(key,value);
+    }
+    public void clear() {
+        keys.clear();
+        d1.clear();
+    }
+    public String read(String key){
+        return d1.getOrDefault(key,"null");
     }
 }

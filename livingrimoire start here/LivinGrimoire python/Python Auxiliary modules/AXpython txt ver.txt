@@ -26,7 +26,7 @@ class AlgDispenser:
         # return a random algorithm
         return self._algs[random.randint(0, len(self._algs) - 1)]
 
-    def moodAlg(self, mood: int) -> Algorithm:
+    def moodAlg(self, mood: int):
         # set output algorithm based on number representing mood
         if len(self._algs) > mood > -1:
             self._activeAlg = mood
@@ -50,15 +50,16 @@ class AlgDispenser:
 
 
 class SkillHubAlgDispenser:
-    """super class to output an algorithm out of a selection of skills
-//      engage the hub with dispenseAlg and return the value to outAlg attribute
-//      of the containing skill (which houses the skill hub)
-//      this module enables using a selection of 1 skill for triggers instead of having the triggers engage on multible skill
-//       the methode is ideal for learnability and behavioral modifications
-//       use a learnability auxiliary module as a condition to run an active skill shuffle or change methode
-//       (rndAlg , cycleAlg)
-//       moods can be used for specific cases to change behavior of the AGI, for example low energy state
-//       for that use (moodAlg)"""
+    # super class to output an algorithm out of a selection of skills
+    """
+      engage the hub with dispenseAlg and return the value to outAlg attribute
+      of the containing skill (which houses the skill hub)
+      this module enables using a selection of 1 skill for triggers instead of having the triggers engage on multible skill
+       the methode is ideal for learnability and behavioral modifications
+       use a learnability auxiliary module as a condition to run an active skill shuffle or change methode
+       (rndAlg , cycleAlg)
+       moods can be used for specific cases to change behavior of the AGI, for example low energy state
+       for that use (moodAlg)"""
 
     def __init__(self, *skillsParams: DiSkillV2):
         super().__init__()
@@ -73,7 +74,7 @@ class SkillHubAlgDispenser:
         self._skills.append(skill)
         return self
 
-    def dispenseAlgorithm(self, ear: str, skin: str, eye: str) -> Algorithm:
+    def dispenseAlgorithm(self, ear: str, skin: str, eye: str):
         # return value to outAlg param of (external) summoner DiskillV2
         self._skills[self._activeSkill].input(ear, skin, eye)
         self._tempN.empty()
@@ -162,7 +163,8 @@ class AXFriend:
     def getFriendIsActive(self):
         return self._friendIsActive
 
-    def handle(self, ear: str, skin: str, eye: str) -> Algorithm:
+    def handle(self, ear: str, skin: str, eye: str):
+        # returns algorithm or None
         if self._needFriend and ear.__contains__("i am "):
             # register new friend
             self._active.reset()
@@ -253,7 +255,8 @@ class UniqueItemSizeLimitedPriorityQueue(UniqueItemsPriorityQue):
         super().insert(data)
 
     # override
-    def poll(self) -> str:
+    def poll(self):
+        # returns string
         temp = super().poll()
         if temp is None:
             return ""
@@ -281,8 +284,8 @@ class AXLearnability:
         self.trgTolerance: TrgTolerance = TrgTolerance(tolerance)
 
     def pendAlg(self):
-        '''// an algorithm has been deployed
-        // call this method when an algorithm is deployed (in a DiSkillV2 object)'''
+        """// an algorithm has been deployed
+        // call this method when an algorithm is deployed (in a DiSkillV2 object)"""
         self._algSent = True
         self.trgTolerance.trigger()
 
@@ -373,8 +376,8 @@ class LGTypeConverter:
 
 
 class AXPassword:
-    ''' code # to open the gate
-     while gate is open, code can be changed with: code new_number'''
+    """ code # to open the gate
+     while gate is open, code can be changed with: code new_number"""
 
     def __init__(self):
         self._isOpen: bool = False
@@ -582,7 +585,7 @@ class ForcedLearn(UniqueItemSizeLimitedPriorityQueue):
 
 class EV3DaisyChainAndMode(TrGEV3):
     # this class connects several logic gates triggers together
-    def __init__(self, gates: TrGEV3):
+    def __init__(self, *gates: TrGEV3):
         self._trgGates: list[TrGEV3] = []
         for gate in gates:
             self._trgGates.append(gate)
@@ -609,7 +612,7 @@ class EV3DaisyChainAndMode(TrGEV3):
 
 class EV3DaisyChainOrMode(TrGEV3):
     # this class connects several logic gates triggers together
-    def __init__(self, gates: TrGEV3):
+    def __init__(self, *gates: TrGEV3):
         self._trgGates: list[TrGEV3] = []
         for gate in gates:
             self._trgGates.append(gate)
@@ -697,7 +700,7 @@ class Map:
 
 class Catche:
     # limited sized dictionary
-    def __init__(self, size):
+    def __init__(self, size: int):
         super().__init__()
         self._limit: int = size
         self._keys: UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue(size)
@@ -723,3 +726,86 @@ class Catche:
         if not self._d1.__contains__(key):
             return "null"
         return self._d1[key]
+
+
+class SpiderSense:
+    # enables event prediction
+    def __init__(self, lim: int):
+        super().__init__()
+        self._spiderSense: bool = False
+        self._events: UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue(lim)
+        self._alerts: UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue(lim)
+        self._prev: str = ""
+
+    def addEvent(self, event: str):
+        # builder pattern
+        self._events.insert(event)
+        return self
+
+    """input param  can be run through an input filter prior to this function
+     weather related data (sky state) only for example for weather events predictions"""
+
+    """side note:
+     use separate spider sense for data learned by hear say in contrast to actual experience
+     as well as lies (false predictions)"""
+
+    def learn(self, in1: str):
+        # simple prediction of an event from the events que :
+        if self._alerts.contains(in1):
+            self._spiderSense = True
+            return
+        # event has occured, remember what lead to it
+        if self._events.contains(in1):
+            self._alerts.insert(self._prev)
+            return
+        # nothing happend
+        self._prev = in1
+
+    def getSpiderSense(self) -> bool:
+        # spider sense is tingling? event predicted?
+        temp: bool = self._spiderSense
+        self._spiderSense = False
+        return temp
+
+    def getAlertsShallowCopy(self):
+        # return shallow copy of alerts list
+        return self._alerts.queue
+
+    def getAlertsClone(self) -> list[str]:
+        # return deep copy of alerts list
+        l_temp: list[str] = []
+        for item in self._alerts.queue:
+            l_temp.append(item)
+        return l_temp
+
+    def clearAlerts(self):
+        """this can for example prevent war, because say once a month or a year you stop
+         being on alert against a rival"""
+        self._alerts.clear()
+
+
+class TrgMinute(TrGEV3):
+    # trigger true at minute once per hour
+    def __init__(self):
+        super().__init__()
+        self._hour1: int = -1
+        self._minute: int = random.randint(0, 60)
+        self.pgrd: PlayGround = PlayGround()
+
+    def setMinute(self, minute):
+        if -1 < minute < 61:
+            self._minute = minute
+
+    # override
+    def trigger(self) -> bool:
+        temp_hour: int = self.pgrd.getHoursAsInt()
+        if temp_hour != self._hour1:
+            if self.pgrd.getMinutesAsInt() == self._minute:
+                self._hour1 = temp_hour
+                return True
+        return False
+
+    # override
+    def reset(self):
+        self._hour1 = -1
+

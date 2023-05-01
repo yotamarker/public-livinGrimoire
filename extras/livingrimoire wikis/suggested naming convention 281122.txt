@@ -12,3 +12,12 @@ for example : D3Detective
 
 AX : auxiliary modules. these classes names can start with AX
 for example AXLearnability
+
+AXU: Auxiliary Modules for Upper Chobits, which are Chobit objects that process
+input before it gets to a thinking chobit object.
+these may include: AI pharmaceuticals, reality morph, input filtering (reality/pain),
+data classification, and even AI hormones.
+
+AXL: Auxiliary Modules for Lower Chobits, which are Chobit objects that process
+input from thinking Chobits. 
+these may include trandlations, reply decorations, decoding, and custom dialects.

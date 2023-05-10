@@ -29,4 +29,11 @@ public class Cycler {
     public void reset() {
         cycler = limit;
     }
+    public void setToZero(){cycler = 0;}
+    public void sync(int n){
+        if((n<-1)||(n>limit)){
+            return;
+        }
+        cycler = n;
+    }
 }

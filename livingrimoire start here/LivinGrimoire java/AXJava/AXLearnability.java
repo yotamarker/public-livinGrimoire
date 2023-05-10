@@ -13,6 +13,7 @@ public class AXLearnability {
 
     public AXLearnability(int tolerance) {
         this.trgTolerance = new TrgTolerance(tolerance);
+        trgTolerance.reset();
     }
     public void pendAlg(){
         // an algorithm has been deployed
@@ -37,7 +38,12 @@ public class AXLearnability {
         if (defcon5.contains(input)) {trgTolerance.reset();algSent = false; return true;}
         // ^ something bad happend probably because of the sent alg
         // recommend alg mutation
-        if (defcons.contains(input)){algSent = false;return trgTolerance.trigger();}
+        if (defcons.contains(input)){algSent = false;
+            Boolean mutate= !trgTolerance.trigger();
+            if(mutate){
+                trgTolerance.reset();
+            }
+            return mutate;}
         // ^ negative result, mutate the alg if this occures too much
         return false;
     }

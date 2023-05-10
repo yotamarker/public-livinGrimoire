@@ -24,8 +24,8 @@ public class TrgTolerance extends TrGEV3{
     @Override
     public Boolean trigger() {
         // will return true till depletion or reset()
+        repeats--;
         if (repeats > 0) {
-            repeats--;
             return true;
         }
         return false;

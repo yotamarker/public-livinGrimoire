@@ -1,15 +1,19 @@
 package AXJava;
 
+import LivinGrimoire.DeepCopier;
+
 import java.util.ArrayList;
 import java.util.Random;
 
 public class DrawRnd {
     // draw a random element, than take said element out
     private ArrayList<String> strings = new ArrayList<>();
+    private ArrayList<String> stringsSource = new ArrayList<>();
     private Random rand = new Random();
     public DrawRnd(String... values) {
         for (int i = 0; i < values.length; i++) {
             strings.add(values[i]);
+            stringsSource.add(values[i]);
         }
     }
     public String draw(){
@@ -32,5 +36,9 @@ public class DrawRnd {
         String element = strings.get(x);
         strings.remove(x);
         return tc.convertToInt(element);
+    }
+    public void reset(){
+        DeepCopier dc = new DeepCopier();
+        strings = dc.copyList(stringsSource);
     }
 }

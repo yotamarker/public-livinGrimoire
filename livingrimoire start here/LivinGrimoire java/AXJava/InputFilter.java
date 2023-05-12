@@ -7,4 +7,8 @@ public class InputFilter {
         // override me
         return "";
     }
+    public AXKeyValuePair filter(String ear){
+        // override me : key = context/category, value: param
+        return new AXKeyValuePair();
+    }
 }

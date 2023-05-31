@@ -14,7 +14,6 @@ public class AXNeuroSama {
         if (output.isEmpty()){
             return output;
         }
-        String result = "";
         if(rnd.getSimpleRNDNum(rate) == 0){
             return output + nyaa.getAResponse();
         }

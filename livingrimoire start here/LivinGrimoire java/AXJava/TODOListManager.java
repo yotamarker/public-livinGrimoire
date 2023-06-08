@@ -1,16 +1,19 @@
 package AXJava;
 
 public class TODOListManager {
+    /* manages to do tasks.
+    q1 tasks are mentioned once, and forgotten
+    backup tasks are the memory of recently mentioned tasks
+    * */
     private UniqueItemSizeLimitedPriorityQueue q1 = new UniqueItemSizeLimitedPriorityQueue();
     private UniqueItemSizeLimitedPriorityQueue backup = new UniqueItemSizeLimitedPriorityQueue();
-    private DrawRnd d1 = new DrawRnd();
 
     public TODOListManager(int todoLim) {
         q1.setLimit(todoLim);
         backup.setLimit(todoLim);
     }
 
-    public void addElement(String e1){
+    public void addTask(String e1){
         q1.add(e1);
     }
     public String getTask(){
@@ -19,6 +22,7 @@ public class TODOListManager {
         return temp;
     }
     public String getOldTask(){
+        // task graveyard (tasks you've tackled already)
         return backup.getRNDElement();
     }
     public void clearAllTasks(){

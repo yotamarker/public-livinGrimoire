@@ -66,6 +66,11 @@ public class PersistantQuestion {
     }
 
     public void setMode(String mode) {
-        this.mode = mode;
+        if (dic.containsKey(mode)){
+        this.mode = mode;}
+    }
+    public void setPause(int pause){
+        // set pause between question to wait for answer
+        this.outputDripper.setLimit(pause);
     }
 }

@@ -104,11 +104,24 @@ class EmoRecognizer {
     }
 }
 // (*) input filters
+class AXKeyValuePair{
+    private var key:String = ""
+    private var value:String = ""
+    func getKey()->String{return key}
+    func getValue()->String{return value}
+    func setKey(key:String){self.key = key}
+    func setValue(value:String){self.value = value}
+}
 class InputFilter{
-    /// filter out non relevant input
+    // filter out non-relevant input
+    // or filter in relevant data
     func filter(ear: String, skin: String, eye: String) -> String {
         /// override me
         return ""
+    }
+    func filter(ear:String)->AXKeyValuePair{
+        // override me : key = context/category, value: param
+        return AXKeyValuePair()
     }
 }
 // RESPONDERS
@@ -404,6 +417,22 @@ class UniqueItemsPriorityQue{
         p1 = PriorityQueue<String>()
     }
   }
+class UniqueItemSizeLimitedPriorityQueue:UniqueItemsPriorityQue{
+    // items in the queue are unique and do not repeat
+    // the size of the queue is limited
+    private var limit:Int = 5
+    func getLimit()->Int{return limit}
+    func setLimit(lim:Int){self.limit = lim}
+    override func input(in1: String) {
+        if size() == limit {
+            super.poll()
+        }
+        super.input(in1: in1)
+    }
+    func getAsList()->[String]{
+        return super.p1.elements
+    }
+}
 class TrgCountDown {
     var maxCount:Int = 2
     var count:Int
@@ -429,38 +458,70 @@ class TrgCountDown {
 }
 // (*) misc
 class DrawRnd {
-    private var numbers:Array<Int> = [Int]()
-    init(size:Int){
-        for index in 1...size{
-            numbers.append(index)
+    // draw a random element, than take said element out
+    private var strings:Array<String> = [String]()
+    private var stringsSource:Array<String> = [String]()
+    init(_ values:String...) {
+        for temp in values {
+            strings.append(temp)
+            stringsSource.append(temp)
         }
     }
-    init(_ markers:Int...) {
-        for num in markers {
-            numbers.append(num)
-        }
-    }
-    func draw() -> Int {
-        if numbers.isEmpty {return 0}
-        let x:Int = Int.random(in: 0..<numbers.count)
-        let element:Int = numbers[x]
-        numbers.remove(at: x)
+    func draw() -> String {
+        if strings.isEmpty {return ""}
+        let x:Int = Int.random(in: 0..<strings.count)
+        let element:String = strings[x]
+        strings.remove(at: x)
         return element
+    }
+    func reset(){
+        let dc:DeepCopier = DeepCopier()
+        strings = dc.copyList(original: stringsSource)
+    }
+    func getSimpleRNDNum(bound:Int)->Int{
+        // return 0->bound-1
+        return Int.random(in: 0...bound-1)
+    }
+    private let tc:LGTypeConverter = LGTypeConverter()
+    func drawAsInt()->Int{
+        return tc.convertToInt(v1: draw())
+    }
+}
+class LGTypeConverter{
+    func convertToInt(v1:String)->Int{
+        return Int(v1) ?? 0
+    }
+    func convertToDouble(v1:String)->Double{
+        return Double(v1) ?? 0
     }
 }
 // (*) learnability
 class AXLearnability {
-    var defcons:UniqueItemsPriorityQue = UniqueItemsPriorityQue()
     var algSent:Bool = false
+    // problems that may result because of the last deployed algorithm:
+    var defcons:UniqueItemsPriorityQue = UniqueItemsPriorityQue() // default size = 5
     var goal:UniqueItemsPriorityQue = UniqueItemsPriorityQue()
+    // major problems that force an alg to mutate
     var defcon5:UniqueItemsPriorityQue = UniqueItemsPriorityQue()
     let trg:TrgCountDown = TrgCountDown() // set lim
     func pendAlg() {
         // an algorithm has been deployed
+        // call this method when an algorithm is deployed (in a DiSkillV2 object)
         algSent = true
         trg.countDown()
     }
+    func pendAlgWithoutConfirmation() {
+        // an algorithm has been deployed
+        // call this method when an algorithm is deployed (in a DiSkillV2 object)
+        algSent = true
+        //no need to await for a thank you or check for goal manifestation :
+        // trgTolerance.trigger();
+        // using this method instead of the default "pendAlg" is the same as
+        // giving importance to the stick and not the carrot when learning
+        // this method is mosly fitting work place situations
+    }
     func mutateAlg(input:String) -> Bool {
+        // you can use an input filter to define defcons
         // recommendation to mutate the algorithm ? true/ false
         if !algSent {return false} // no alg sent=> no reason to mutate
         if goal.contains(str: input){trg.reset();algSent = false;return false}
@@ -606,5 +667,328 @@ class Map {
     }
     func read(description:String) -> String {
         return descriptionPoint[description] ?? "null"
+    }
+}
+class AXLHousing{
+    func decorate(str1:String)->String{
+        // override me
+        return ""
+    }
+}
+class Cycler{
+    private var cycler:Int = 0
+    private var limit:Int
+    init(limit:Int) {
+        self.limit = limit
+        self.cycler = limit
+    }
+    func getLimit()->Int{
+        return self.limit
+    }
+    func setLimit(limit:Int){
+        self.limit = limit
+    }
+    func cycleCount()->Int{
+        cycler-=1
+        if(cycler < 0){
+            cycler = limit
+        }
+        return cycler
+    }
+    func reset(){
+        cycler = limit
+    }
+    func setToZero(){
+        cycler = 0
+    }
+    func sync(n:Int){
+        if (-1>n) || (n>limit) {
+            return
+        }
+        cycler = n
+    }
+}
+class OutPutDripper{
+    // drips true once every limit times
+    // shushes the waifubot enough time to hear a reply from user
+    private var cycler:Int = 0
+    private var limit:Int // set to 1 for on off effect
+    init(limit:Int) {
+        self.limit = limit
+        self.cycler = limit
+    }
+    func getLimit()->Int{
+        return self.limit
+    }
+    func setLimit(limit:Int){
+        self.limit = limit
+    }
+    func drip()->Bool{
+        cycler-=1
+        if(cycler < 0){
+            cycler = limit
+        }
+        return cycler == 0
+    }
+    func reset(){
+        cycler = limit
+    }
+    func setToZero(){
+        cycler = 0
+    }
+    func sync(n:Int){
+        if (-1>n) || (n>limit) {
+            return
+        }
+        cycler = n
+    }
+}
+class AXLHub{
+    // hubs many reply decorators, language translators, encriptors and other string modifiers
+    // decorate(str) to decorate string using the active string decorator
+    private let cycler:Cycler
+    private let drawRnd:DrawRnd = DrawRnd()
+    private var size:Int = 0
+    private var nyaa:Array<AXLHousing> = [AXLHousing]()
+    private var activeNyaa:Int = 0
+    init(_nyaa:AXLHousing...) {
+        for temp in nyaa{
+            self.nyaa.append(temp)
+        }
+        size = self.nyaa.count
+        cycler = Cycler(limit: size - 1)
+        cycler.setToZero()
+    }
+    func decorate(str1:String)->String{
+        return nyaa[activeNyaa].decorate(str1: str1)
+    }
+    func cycleDecoration(){
+        activeNyaa = cycler.cycleCount()
+    }
+    func randomizeDecoration(){
+        activeNyaa = drawRnd.getSimpleRNDNum(bound: size)
+    }
+    func modeDecoratrion(mode:Int){
+        if mode < 0{return}
+        if mode >= nyaa.count {return}
+        activeNyaa = mode
+    }
+}
+class AXNeuroSama{
+    private let nyaa:Responder = Responder(" heart", " heart", " wink", " heart heart heart")
+    private let rnd:DrawRnd = DrawRnd()
+    private var rate:Int
+    init(rate: Int) {
+        // the higher the rate the less likely to decorate outputs
+        // recomended value = 3
+        self.rate = rate
+    }
+    func decorate(output:String)->String{
+        if output.isEmpty{return ""}
+        if rnd.getSimpleRNDNum(bound: rate) == 0{return output + nyaa.getAResponse()}
+        return output
+    }
+}
+class AXLNeuroSama{
+    private let nyaa:AXNeuroSama = AXNeuroSama(rate: 3)
+    func decorate(_ str1: String) -> String {
+        return self.nyaa.decorate(output: str1)
+    }
+}
+class Strategy{
+    private var activeStrategy:UniqueItemsPriorityQue // active strategic options
+    private var allStrategies:DrawRnd // bank of all strategies. out of this pool active strategies are pulled
+    init(allStrategies: DrawRnd) {
+        // create the strategy Object with a bank of options
+        self.allStrategies = allStrategies
+        self.activeStrategy = UniqueItemsPriorityQue()
+    }
+    func evolveStrategies(strategiesLimit:Int){
+        // add N strategic options to the active strategies bank, from the total strategy bank
+        self.activeStrategy.queLimit = strategiesLimit
+        var temp:String = allStrategies.draw()
+        for _ in 0...strategiesLimit{
+            if(temp.isEmpty){break}
+            activeStrategy.input(in1: temp)
+            temp = allStrategies.draw()
+        }
+        allStrategies.reset()
+    }
+    func getStrategy()->String{return activeStrategy.getRndItem()}
+}
+class AXStrategy{
+    /* this auxiliary module is used to output strategies based on context
+            can be used for battles, and games
+            upon pain/lose use the evolve methode to update to different new active strategies
+            check for battle state end externaly (opponent state/hits on rival counter)
+        a dictionary of strategies*/
+    private var lim:Int
+    private var strategies:[String:Strategy]=[:]
+    init(lim: Int) {
+        // limit of active strategies (pulled from all available strategies)
+        self.lim = lim
+    }
+    func addStrategy(context:String, techniques:DrawRnd){
+        // add strategies per context
+        let temp:Strategy = Strategy(allStrategies: techniques)
+        temp.evolveStrategies(strategiesLimit: lim)
+        self.strategies[context] = temp
+    }
+    func evolve(){
+        // replace active strategies
+        let keys = self.strategies.keys
+        for key in keys{
+            self.strategies[key]!.evolveStrategies(strategiesLimit: lim)
+        }
+    }
+    func process(context:String)->String{
+        // process input, return action based on game context now
+        return self.strategies[context]?.getStrategy() ?? ""
+    }
+}
+class PerChance{
+    /*
+     * extend me and add sentences and lists for parameters in the sentences in the
+     * sub classes c'tor.
+      replicate speech paterns, generate movie scripts or books and enjoy
+     */
+    var sentences:Array<String> = [String]()
+    var wordToList:[String:UniqueItemSizeLimitedPriorityQueue]=[:]
+    private let regexUtil:RegexUtil = RegexUtil()
+    func generateJoke()->String{
+        let result:String = sentences.randomElement() ?? ""
+        return clearRecursion(result: result)
+    }
+    private func clearRecursion(result:String)->String{
+        var result2:String = ""
+        var params:Array<String> = [String]()
+        params = regexUtil.extractAllRegexResults(regex: "(\\w+)(?= #)", text: result)
+        for strI in params{
+            let temp:UniqueItemSizeLimitedPriorityQueue = wordToList[strI]!
+            let s1:String = temp.getRndItem()
+            result2 = result.replacingOccurrences(of: strI + " #", with: s1)
+        }
+        if !result2.contains("#"){return result2}
+        return clearRecursion(result: result2)
+    }
+    func addParam(category:String, value1:String){
+        wordToList[category]?.input(in1: value1)
+    }
+    func addParam(kv:AXKeyValuePair){
+        wordToList[kv.getKey()]?.input(in1: kv.getValue())
+    }
+}
+class TODOListManager{
+    /* manages to do tasks.
+    q1 tasks are mentioned once, and forgotten
+    backup tasks are the memory of recently mentioned tasks
+    * */
+    var q1:UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue()
+    var backup:UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue()
+    init(todoLim:Int) {
+        self.q1.setLimit(lim: todoLim)
+        self.backup.setLimit(lim: todoLim)
+    }
+    func addTask(e1:String){
+        q1.input(in1: e1)
+    }
+    func getTask()->String{
+        let temp:String = self.q1.poll()
+        if !temp.isEmpty {backup.input(in1: temp)}
+        return temp
+    }
+    func getOldAnTask()->String{
+        // task graveyard (tasks you've tackled already)
+        return backup.getRndItem()
+    }
+    func clearAllTasks(){
+        q1.clearData()
+        backup.clearData()
+    }
+}
+class PersistantQuestion{
+    private var isActive:Bool = false
+    private var mode:String = "yes" // key mode
+    private var dic:[String:DrawRnd]=[:]
+    private var outputDripper:OutPutDripper = OutPutDripper(limit: 1)
+    private var loggedAnswer:String = "" // only used in log() which replaces process()
+    // getters and setters
+    func getLoggedAnswer()->String{
+        return self.loggedAnswer
+    }
+    func setLoggedAnswer(loggedAnswer:String){
+        // underuse
+        self.loggedAnswer = loggedAnswer
+    }
+    func getMode()->String{
+        return mode
+    }
+    func setMode(newMode:String){
+        // dictionary contains key code:
+        if dic.keys.contains(newMode){
+            mode = newMode
+        }
+    }
+    func setPause(pause:Int){
+        // set pause between question to wait for answer
+        self.outputDripper.setLimit(limit: pause)
+    }
+    func activate(){
+        self.isActive = true
+    }
+    func deActivate(){
+        self.isActive = false
+        self.dic[mode]!.reset()
+    }
+    // end setters and getters
+    func addPath(answer:String, nags:DrawRnd){
+        self.dic[answer]=nags
+    }
+    func process(inp:String)->String{
+        // got answer?
+        if dic.keys.contains(inp){
+            mode = inp
+            isActive = false
+            dic[mode]!.reset()
+            return "okay"; // can extend code to reply key, rnd finalizer
+        }
+        // nag for answer
+        if !outputDripper.drip(){
+            return ""
+        }
+        let result:String = dic[mode]!.draw()
+        if !result.isEmpty {
+            return result
+        }
+        dic[mode]!.reset()
+        isActive = false
+        return "i see"
+    }
+    func log(inp:String)->String{
+        // got answer?
+        if dic.keys.contains(inp){
+            mode = inp
+            loggedAnswer = inp
+            isActive = false
+            dic[mode]!.reset()
+            return "okay"; // can extend code to reply key, rnd finalizer
+        }
+        if !inp.isEmpty{
+            loggedAnswer = inp
+            isActive = false
+            dic[mode]!.reset()
+            return "okay"; // can extend code to reply key, rnd finalizer
+        }
+        // nag for answer
+        if !outputDripper.drip(){
+            return ""
+        }
+        let result:String = dic[mode]!.draw()
+        if !result.isEmpty {
+            return result
+        }
+        dic[mode]!.reset()
+        isActive = false
+        return "i see"
     }
 }

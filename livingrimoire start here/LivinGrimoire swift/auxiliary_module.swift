@@ -992,3 +992,27 @@ class PersistantQuestion{
         return "i see"
     }
 }
+class AXGamification{
+    // this auxiliary module can add fun to tasks, skills, and abilities simply by
+    // tracking their usage, and maximum use count.
+    private var counter:Int = 0
+    private var max:Int = 0
+    func getCounter()->Int{
+        return counter
+    }
+    func getMax()->Int{
+        return max
+    }
+    func resetCounter(){
+        counter = 0
+    }
+    func resetAll(){
+        counter = 0; max = 0
+    }
+    func increament(){
+        counter += 1
+        if counter > max{
+            max = counter
+        }
+    }
+}

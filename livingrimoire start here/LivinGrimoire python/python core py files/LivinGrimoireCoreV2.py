@@ -793,20 +793,17 @@ class RegexUtil:
         return ""
 
     def extractAllRegexes(self, theRegex: str, str2Check: str) -> list[str]:
-        # return a list of all matches
-
-        mylist: list[str] = str2Check.split()
-        r = re.compile(theRegex)
-        l_final = list(filter(r.match, mylist))
-        return l_final
+        p = re.compile(theRegex)
+        return  p.findall(str2Check)
+        # mylist: list[str] = str2Check.split()
+        # r = re.compile(theRegex)
+        # l_final = list(filter(r.match, mylist))
+        # return l_final
 
     def extractAllEnumRegexes(self, theRegex: enumRegexGrimoire, str2Check: str) -> list[str]:
         # return a list of all matches
-
-        mylist: list[str] = str2Check.split()
-        r = re.compile(theRegex)
-        l_final = list(filter(r.match, mylist))
-        return l_final
+        p = re.compile(theRegex)
+        return p.findall(str2Check)
 
     def pointRegex(self, str2Check: str) -> LGPointInt:
         # "[-+]?[0-9]{1,13}(\\.[0-9]*)?" for double numbers

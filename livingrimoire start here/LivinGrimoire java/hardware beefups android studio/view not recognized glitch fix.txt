@@ -1,8 +1,0 @@
-2
-
-just add these lines in your build.gradle (app) at the top:
-
-plugins {
-    id 'com.android.application'
-    id 'kotlin-android'
-    id 'kotlin-android-extensions' }

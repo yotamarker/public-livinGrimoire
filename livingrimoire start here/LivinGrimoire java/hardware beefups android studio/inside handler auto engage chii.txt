@@ -1,4 +1,0 @@
-var resultStr = chii!!.doIt("","","")
-                editText.setText("")
-                mbTTS.voiceIt(resultStr)
-                if (mbTTS.TTS){speakOut(resultStr)}

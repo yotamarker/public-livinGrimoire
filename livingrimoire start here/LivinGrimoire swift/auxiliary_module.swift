@@ -906,7 +906,7 @@ class TODOListManager{
         backup.clearData()
     }
 }
-class PersistantQuestion{
+class PersistentQuestion{
     private var isActive:Bool = false
     private var mode:String = "yes" // key mode
     private var dic:[String:DrawRnd]=[:]
@@ -939,6 +939,9 @@ class PersistantQuestion{
     func deActivate(){
         self.isActive = false
         self.dic[mode]!.reset()
+    }
+    func getIsActive()->Bool{
+        return self.isActive
     }
     // end setters and getters
     func addPath(answer:String, nags:DrawRnd){
@@ -1009,10 +1012,28 @@ class AXGamification{
     func resetAll(){
         counter = 0; max = 0
     }
-    func increament(){
+    func increment(){
         counter += 1
         if counter > max{
             max = counter
         }
+    }
+}
+class Differ{
+    private var powerLevel:Int = 90
+    private var difference:Int = 0
+    func getPoweLevel()->Int{
+        return self.powerLevel
+    }
+    func getPowerLVDifference()->Int{
+        return self.difference
+    }
+    func clearPowerLVDifference(){
+        self.difference = 0
+    }
+    func samplePowerLV(pl:Int){
+        // pl is the current power level
+        self.difference = pl - self.powerLevel
+        self.powerLevel = pl
     }
 }

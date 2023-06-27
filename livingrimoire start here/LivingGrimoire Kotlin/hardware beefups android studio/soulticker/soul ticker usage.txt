@@ -1,3 +1,0 @@
-in the main class (kotlin):
-val soulTickerTest = SoulTickerTest(Handler(),textView);
-soulTickerTest.turnOn()

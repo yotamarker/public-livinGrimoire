@@ -20,7 +20,7 @@ public class AXGamification {
         max = 0;
         counter = 0;
     }
-    public void increament(){
+    public void increment(){
         counter++;
         if (counter > max) {
             max = counter;

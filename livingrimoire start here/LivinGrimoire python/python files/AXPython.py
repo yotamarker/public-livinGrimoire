@@ -1307,3 +1307,72 @@ class Differ:
         # pl is the current power level
         self._difference = pl - self._powerLevel
         self._powerLevel = pl
+
+
+class AXMachineCode:
+    # common code lines used in machine code to declutter machine code
+    # also simplified extensions for common dictionary actions
+    def __init__(self):
+        self.dic: dict[str, int] = {}
+
+    def addKeyValuePair(self, key: str, value: int) -> AXMachineCode:
+        self.dic[key] = value
+        return self
+
+    def getMachineCodeFor(self, key: str) -> int:
+        # dictionary get or default
+        if not key in self.dic:
+            return -1
+        return self.dic[key]
+
+
+class AXInputWaiter:
+    # wait for any input
+    def __init__(self, tolerance: int):
+        self._trgTolerance: TrgTolerance = TrgTolerance(tolerance)
+        self._trgTolerance.reset()
+
+    def reset(self):
+        self._trgTolerance.reset()
+
+    def wait(self, s1: str) -> False:
+        # return true till any input detected or till x times of no input detection
+        if not s1 == "":
+            return False
+        return self._trgTolerance.trigger()
+
+    def setWait(self, timesToWait: int):
+        self._trgTolerance.setMaxRepeats(timesToWait)
+
+
+class AXCmdBreaker:
+    def __init__(self, conjuration: str):
+        self.conjuration: str = conjuration
+
+    def extractCmdParam(self, s1: str) -> str:
+        if self.conjuration in s1:
+            return s1.replace(self.conjuration, "").strip()
+        return ""
+
+
+class AXContextCmd:
+    # engage on commands
+    # when commands are engaged, context commans can also engage
+    def __init__(self):
+        self.commands: UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue(5)
+        self.contextCommands: UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue(5)
+        self.trgTolerance: TrgTolerance = TrgTolerance(3)
+
+    def engageCommand(self, s1: str) -> bool:
+        if self.commands.contains(s1):
+            self.trgTolerance.reset()
+        if not self.trgTolerance.trigger():
+            return False
+        return self.contextCommands.contains(s1)
+
+    def setInputWait(self,thinkCycles:int):
+        self.trgTolerance.setMaxRepeats(thinkCycles)
+
+    def disable(self):
+        # context commands are disabled till next engagement with a command
+        self.trgTolerance.disable()

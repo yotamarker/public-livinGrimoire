@@ -14,6 +14,7 @@ public class AXInputWaiter {
     public Boolean wait(String s1){
         // return true till any input detected or till x times of no input detection
         if (!s1.isEmpty()){
+            trgTolerance.disable();
             return false;
         }
         return trgTolerance.trigger();

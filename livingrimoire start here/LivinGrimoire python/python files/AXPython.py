@@ -1309,6 +1309,8 @@ class Differ:
         self._powerLevel = pl
 
 
+# command auxiliary modules collection
+
 class AXMachineCode:
     # common code lines used in machine code to declutter machine code
     # also simplified extensions for common dictionary actions
@@ -1338,6 +1340,7 @@ class AXInputWaiter:
     def wait(self, s1: str) -> False:
         # return true till any input detected or till x times of no input detection
         if not s1 == "":
+            self._trgTolerance.disable()
             return False
         return self._trgTolerance.trigger()
 
@@ -1370,9 +1373,11 @@ class AXContextCmd:
             return False
         return self.contextCommands.contains(s1)
 
-    def setInputWait(self,thinkCycles:int):
+    def setInputWait(self, thinkCycles: int):
         self.trgTolerance.setMaxRepeats(thinkCycles)
 
     def disable(self):
         # context commands are disabled till next engagement with a command
         self.trgTolerance.disable()
+
+# command auxiliary modules collection end

@@ -1037,3 +1037,108 @@ class Differ{
         self.powerLevel = pl
     }
 }
+
+class TrgTolerance {
+    // this boolean gate will return true till depletion or reset()
+    var maxRepeats:Int
+    var repeats:Int = 0
+    init(maxRepeats:Int) {
+        self.maxRepeats = maxRepeats
+    }
+    func setMaxRepeats(maxRepeats:Int){
+        self.maxRepeats = maxRepeats
+        reset()
+    }
+    @discardableResult
+    func trigger() -> Bool{
+        // will return true till depletion or reset()
+        repeats -= 1
+        if (repeats > 0) {
+            return true
+        }
+        return false
+    }
+    func reset() {
+        // refill trigger
+        self.repeats = self.maxRepeats
+    }
+    func disable(){
+        repeats = 0
+    }
+}
+// command auxiliary modules collection
+class AXCmdBreaker{
+    // separate command parameter from the command
+    var conjuration:String
+    init(conjuration: String) {
+        self.conjuration = conjuration
+    }
+    func extractCmdParam(s1:String)->String{
+        if s1.contains(conjuration){
+            return s1.replacingOccurrences(of: conjuration, with: "").trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+        return ""
+    }
+}
+
+class AXInputWaiter{
+    // wait for any input
+    private var trgTolerance:TrgTolerance
+    init(tolerance: Int) {
+        self.trgTolerance = TrgTolerance(maxRepeats: tolerance)
+        self.trgTolerance.reset()
+    }
+    func reset(){
+        self.trgTolerance.reset()
+    }
+    func wait(s1:String)->Bool{
+        // return true till any input detected or till x times of no input detection
+        if !s1.isEmpty {
+            trgTolerance.disable()
+            return false
+        }
+        return self.trgTolerance.trigger()
+    }
+    func setWait(timesToWait:Int){
+        trgTolerance.setMaxRepeats(maxRepeats: timesToWait)
+    }
+}
+
+class AXMachineCode{
+    // common code lines used in machine code to declutter machine code
+    var dic:[String:Int] = [:]
+    @discardableResult
+    func addKeyValuePair(key:String,value:Int)->AXMachineCode{
+        dic[key] = value
+        return self
+    }
+    func getMachineCodeFor(key:String)->Int{
+        return dic[key, default: -1]
+    }
+}
+
+class AXContextCmd{
+    // engage on commands
+    // when commands are engaged, context commans can also engage
+    public var commands:UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue()
+    public var contextCommands:UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue()
+    private var trgTolerance:TrgTolerance = TrgTolerance(maxRepeats: 3)
+    func engageCommand(ear:String) -> Bool {
+        if commands.contains(str: ear){
+            trgTolerance.reset()
+            return true
+        }
+        if !trgTolerance.trigger(){
+            return false
+        }
+        return contextCommands.contains(str: ear)
+    }
+    func setInputWait(thinkCycles:Int){
+        trgTolerance.setMaxRepeats(maxRepeats: thinkCycles)
+    }
+    func disable(){
+        // context commands are disabled till next engagement with a command
+        trgTolerance.disable()
+    }
+}
+// command auxiliary modules collection end

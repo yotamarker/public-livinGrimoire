@@ -1,0 +1,15 @@
+the auxiliary command collection modules, facilitate the  triggering of codes inside a skill
+as a result of a command.
+
+AXCMDBreaker: recognizes a command and extracts it's param.
+example reminder skill :i need to (trigger code to store reminder) buy juice(param)
+
+AXMachineCode: a dictionary with a -1 default return value, this can be used for machine
+code switch case.
+
+AXContextCommad: enables commands to trigger code only within context.
+example: what did i want to do? what else?
+what else only has meaning within the context.
+
+AXInputWaiter: waits n times till any input given. this can be used to separate
+a command param from it's trigger.

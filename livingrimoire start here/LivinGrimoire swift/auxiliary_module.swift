@@ -1018,6 +1018,19 @@ class AXGamification{
             max = counter
         }
     }
+    func incrementBy(amount:Int){
+        counter += amount
+        if counter > max{
+            max = counter
+        }
+    }
+    func reward(cost:Int)->Bool{
+        // game grind points used for rewards
+        // consumables, items or upgrades this makes games fun
+        if cost > counter{return false}
+        counter -= cost
+        return true
+    }
 }
 class Differ{
     private var powerLevel:Int = 90

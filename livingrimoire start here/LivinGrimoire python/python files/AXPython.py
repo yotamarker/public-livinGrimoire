@@ -974,6 +974,19 @@ class AXGamification:
         if self._counter > self._max:
             self._max = self._counter
 
+    def incrementBy(self, n: int):
+        self._counter += n
+        if self._counter > self._max:
+            self._max = self._counter
+
+    def reward(self, cost: int) -> bool:
+        # game grind points used for rewards
+        # consumables, items or upgrades this makes games fun
+        if cost < self._counter:
+            self._counter -= cost
+            return True
+        return False
+
 
 class AXKeyValuePair:
     def __init__(self):

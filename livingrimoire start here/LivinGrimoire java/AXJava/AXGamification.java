@@ -26,4 +26,17 @@ public class AXGamification {
             max = counter;
         }
     }
+    public void incrementBy(int n){
+        counter+= n;
+        if (counter > max) {
+            max = counter;
+        }
+    }
+    public Boolean reward(int cost){
+        // game grind points used for rewards
+        // consumables, items or upgrades this makes games fun
+        if (cost>counter){return false;}
+        counter-=cost;
+        return true;
+    }
 }

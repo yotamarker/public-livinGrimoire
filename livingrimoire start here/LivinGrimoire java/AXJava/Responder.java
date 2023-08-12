@@ -31,4 +31,5 @@ public class Responder {
         }
         return result;
     }
+    public void addResponse(String s1){responses.add(s1);}
 }

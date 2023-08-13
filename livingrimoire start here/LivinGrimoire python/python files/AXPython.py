@@ -573,6 +573,9 @@ class Responder:
                 return True
         return False
 
+    def addResponse(self, s1: str):
+        self.responses.append(s1)
+
 
 class EmoDetectorCurious(Responder):
     def __init__(self):
@@ -1393,4 +1396,23 @@ class AXContextCmd:
         # context commands are disabled till next engagement with a command
         self.trgTolerance.disable()
 
+
 # command auxiliary modules collection end
+class DiSysOut(DiSkillV2):
+    # Override
+    def input(self, ear: str, skin: str, eye: str):
+        if not ear == "" and not ear.__contains__("#"):
+            print(ear)
+
+
+class AXLSpeechModifier(AXLHousing):
+    def __init__(self, dic: [str, str]):
+        self.dic = dic
+
+    # Override
+    def decorate(self, str1: str) -> str:
+        result: str = ""
+        words = str1.split()
+        for item in words:
+            result = result + " " + self.dic.get(item, item)
+        return result.strip()

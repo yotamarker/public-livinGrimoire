@@ -14,12 +14,14 @@ the living grimoire was created by Moti Barski
 
 Translation of code from java to python : Marco Vavassori, Moti Barski"""
 
+
 class DeepCopier:
-    def copyList(self,original: list[str]) -> list[str]:
+    def copyList(self, original: list[str]) -> list[str]:
         deepCopy: list[str] = []
         for item in original:
             deepCopy.append(item)
         return deepCopy
+
 
 class AbsDictionaryDB:
     def save(self, key: str, value: str):
@@ -272,7 +274,7 @@ class APVerbatim(Mutatable):
 
     def __init__(self, *args) -> None:
         super().__init__()
-        self.sentences:list[str] = []
+        self.sentences: list[str] = []
         self.at = 0
 
         try:
@@ -398,9 +400,9 @@ class PlayGround:
     def getCurrentTimeStamp(self) -> str:
         '''This method returns the current time (hh:mm)'''
         right_now = datetime.datetime.now()
-        temp_minute:int = right_now.minute
-        tempstr:str=""
-        if temp_minute<10:
+        temp_minute: int = right_now.minute
+        tempstr: str = ""
+        if temp_minute < 10:
             tempstr = "0" + str(right_now.minute)
         else:
             tempstr = str(right_now.minute)
@@ -794,7 +796,7 @@ class RegexUtil:
 
     def extractAllRegexes(self, theRegex: str, str2Check: str) -> list[str]:
         p = re.compile(theRegex)
-        return  p.findall(str2Check)
+        return p.findall(str2Check)
         # mylist: list[str] = str2Check.split()
         # r = re.compile(theRegex)
         # l_final = list(filter(r.match, mylist))
@@ -1243,27 +1245,87 @@ class Thinkable:
         return ""
 
 
-''' Actionable CLASS '''
+'''*********
+ *intro *
+ ********
 
+ up until now, the LivinGrimoire was on par with the matrix learn scene.
+ one line of code to add one skill.
 
-class Actionable:
-    def act(self, input: str):
-        # override me
-        pass
+ that is great, that is sci-fi turned real, that is the most significant coding achievement in the history of time.
 
+ but hey why stop there? why only be on par with the matrix and the human brain ?
+ what is beyond the matrix level? you already know
 
-''' Brain CLASS '''
+ cyberpunk>the matrix.
+ one line of code to add a skill, but ALSO! 1 line of code to add a hardware capability.
+
+ ***********
+ *Atributes*
+ ***********
+
+ the logicChobit is a Chobits attribute with logic skills. these skills have algorithmic logic,
+ and thinking patterns.
+
+ the hardwareChobit is a Chobit attribute with hardware skills. these skills access the
+ hardware capabilities of the machine.
+ for example: output printing, sending mail, sending SMS, making a phone call, taking
+ a photo, accessing GPIO pins, opening a program, fetching the weather and so on.
+
+ ********************
+ *special attributes*
+ ********************
+
+ in some cases the hardware chobit may want to send a message to the logic chobit,
+ for example to give feedback on hardware components. this is handled by the bodyInfo
+ String.
+
+ the emot attribute is the chobit's current emotion.
+
+ the logicChobitOutput is the chobit's last output.
+
+ **********************
+ *hardware skill types*
+ **********************
+
+ assembly style: these skills are triggered by strings with certain wild card characters
+ for example: #open browser
+
+ funnel: these are triggered by strings without wild cards.
+ for example: "hello world"->prints hello world
+
+ *************
+ *example use*
+ *************
+ DiSysOut is an example of a hardware skill
+
+ see Brain main for example use of the cyberpunk Software Design Pattern'''
 
 
 class Brain:
-    def __init__(self, chobit: Thinkable, mvc: Actionable):
-        super().__init__()
-        self.chi: Thinkable = chobit
-        self.mvc: Actionable = mvc
+    def __init__(self):
+        self._emotion: str = ""
+        self._bodyInfo: str = ""
+        self._logicChobitOutput: str = ""
+        self.logicChobit: Chobits = Chobits()
+        self.hardwareChobit: Chobits = Chobits()
+
+    def getEmotion(self) -> str:
+        return self._emotion
+
+    def getBodyInfo(self) -> str:
+        return self._bodyInfo
+
+    def getLogicChobitOutput(self) -> str:
+        return self._logicChobitOutput
 
     def doIt(self, ear: str, skin: str, eye: str):
-        temp_str: str = self.chi.think(ear, skin, eye)
-        self.mvc.act(temp_str)
+        if not self._bodyInfo == "":
+            self._logicChobitOutput = self.logicChobit.think(ear, self._bodyInfo, eye)
+        else:
+            self._logicChobitOutput = self.logicChobit.think(ear, skin, eye)
+        self._emotion = self.logicChobit.getSoulEmotion()
+        self._bodyInfo = self.hardwareChobit.think(self._logicChobitOutput, skin, eye)
 
 
 ''' Chobits CLASS '''
@@ -1273,7 +1335,7 @@ class Chobits(Thinkable):
 
     def __init__(self):
         super().__init__()
-        self._dClasses: list[DiSkillV2] = [] # _ is a private access modifier
+        self._dClasses: list[DiSkillV2] = []  # _ is a private access modifier
         # algorithms fusion (polymarization)
         self._algDurations: dict[str, int] = {}
         self._fusion: Fusion = Fusion(self._algDurations)
@@ -1306,7 +1368,7 @@ class Chobits(Thinkable):
             skill.setKokoro(self._kokoro)
             self._dClasses.append(skill)
 
-    def setPause(self, pause:int):
+    def setPause(self, pause: int):
         # set standby timegate pause.
         # pause time without output from the chobit
         # means the standby attribute will be true for a moment.
@@ -1314,6 +1376,7 @@ class Chobits(Thinkable):
         # the standby attribute can be accessed via the kokoro
         # object within a skill if needed
         self._timeGate.setPause(pause)
+
     # override
     def think(self, ear: str, skin: str, eye: str) -> str:
         ear = self.translateIn(ear)
@@ -1361,14 +1424,14 @@ class Chobits(Thinkable):
          between chobits in the same project'''
         return self._kokoro
 
-    def setKokoro(self,kokoro:Kokoro):
+    def setKokoro(self, kokoro: Kokoro):
         # use this for telepathic communication between different chobits objects
         self._kokoro = kokoro
 
     def getAlgDurations(self) -> dict[str, int]:
         return self._algDurations
 
-    def setAlgDurations(self,algDurations:dict[str, int]):
+    def setAlgDurations(self, algDurations: dict[str, int]):
         '''think cycles run duration per algorithm
          use this method for saving run times if you wish
          algDurations are shallow ref to Fusions' algDurations

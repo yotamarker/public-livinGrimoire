@@ -1,3 +1,0 @@
-    val neo:Chobits = Chobits()
-    neo.addSkill(DiHelloWorld())
-    println(neo.think("hello","",""))

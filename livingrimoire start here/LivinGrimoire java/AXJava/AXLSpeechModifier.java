@@ -17,6 +17,6 @@ public class AXLSpeechModifier extends AXLHousing{
             words[i] = dic.getOrDefault(words[i], words[i]);
             result = result + " " + words[i];
         }
-        return result;
+        return result.trim();
     }
 }

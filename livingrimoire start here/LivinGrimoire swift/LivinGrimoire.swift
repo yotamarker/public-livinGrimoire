@@ -1524,20 +1524,84 @@ class Chobits:Thinkable {
         return self.fusion
     }
 }
-class Actionable {
-    func act(input:String) {
-        // override me
-    }
-}
+/* Brain class
+ *********
+ *intro *
+ ********
+
+ up until now, the LivinGrimoire was on par with the matrix learn scene.
+ one line of code to add one skill.
+
+ that is great, that is sci-fi turned real, that is the most significant coding achievement in the history of time.
+
+ but hey why stop there? why only be on par with the matrix and the human brain ?
+ what is beyond the matrix level? you already know
+
+ cyberpunk>the matrix.
+ one line of code to add a skill, but ALSO! 1 line of code to add a hardware capability.
+
+ ***********
+ *Atributes*
+ ***********
+
+ the logicChobit is a Chobits attribute with logic skills. these skills have algorithmic logic,
+ and thinking patterns.
+
+ the hardwareChobit is a Chobit attribute with hardware skills. these skills access the
+ hardware capabilities of the machine.
+ for example: output printing, sending mail, sending SMS, making a phone call, taking
+ a photo, accessing GPIO pins, opening a program, fetching the weather and so on.
+
+ ********************
+ *special attributes*
+ ********************
+
+ in some cases the hardware chobit may want to send a message to the logic chobit,
+ for example to give feedback on hardware components. this is handled by the bodyInfo
+ String.
+
+ the emot attribute is the chobit's current emotion.
+
+ the logicChobitOutput is the chobit's last output.
+
+ **********************
+ *hardware skill types*
+ **********************
+
+ assembly style: these skills are triggered by strings with certain wild card characters
+ for example: #open browser
+
+ funnel: these are triggered by strings without wild cards.
+ for example: "hello world"->prints hello world
+
+ *************
+ *example use*
+ *************
+ DiSysOut is an example of a hardware skill
+
+ see Brain main for example use of the cyberpunk Software Design Pattern
+ */
 class Brain {
-    private let chi:Thinkable
-    private let MVC:Actionable
-    init(MVC:Actionable, chobit:Thinkable) {
-        self.chi = chobit
-        self.MVC = MVC
+    public var logicChobit:Chobits
+    public var hardwareChobit:Chobits
+    private var emotion:String = ""
+    private var bodyInfo:String = ""
+    private var logicChobitOutput:String = ""
+    public func getEmotion()->String{return emotion}
+    public func getLogicChobitOutput()->String{return logicChobitOutput}
+    public func getBodyInfo()->String{return bodyInfo}
+    init() {
+        self.logicChobit = Chobits()
+        self.hardwareChobit = Chobits()
     }
     func doIt(ear:String, skin:String, eye:String) {
-        let result:String = chi.think(ear: ear, skin: skin, eye: eye)
-        MVC.act(input: result)
+        if !bodyInfo.isEmpty{
+            logicChobitOutput = logicChobit.think(ear: ear, skin: bodyInfo, eye: eye)
+        }
+        else{
+            logicChobitOutput = logicChobit.think(ear: ear, skin: skin, eye: eye)
+        }
+        emotion = logicChobit.getSoulEmotion()
+        bodyInfo = hardwareChobit.think(ear: logicChobitOutput, skin: skin, eye: ear)
     }
 }

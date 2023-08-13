@@ -177,6 +177,7 @@ class Responder{
     func contains(str:String) -> Bool {
         return responses.contains(str)
     }
+    func addResponse(s1:String){self.responses.append(s1)}
 }
 // TRIGGERS
 public class TrGEV3 {
@@ -1155,3 +1156,25 @@ class AXContextCmd{
     }
 }
 // command auxiliary modules collection end
+class DiSysOut:DiSkillV2{
+    // hello world skill for testing purposes
+    override func input(ear: String, skin: String, eye: String) {
+        if(!ear.isEmpty && !ear.contains("#")){
+            print(ear)
+        }
+    }
+}
+class AXLSpeechModifier:AXLHousing{
+    public var dic:[String:String] = [:]
+    init(dic:[String:String]){
+        self.dic = dic
+    }
+    override func decorate(str1: String) -> String {
+        var result:String = ""
+        let words = str1.components(separatedBy: " ")
+        for item in words{
+            result = result + " " + dic[item, default: item]
+        }
+        return result.trimmingCharacters(in: NSCharacterSet.whitespaces)
+    }
+}

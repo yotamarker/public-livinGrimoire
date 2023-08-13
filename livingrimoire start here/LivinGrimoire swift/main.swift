@@ -5,8 +5,8 @@
 //  Created by moti barski
 //
 import Foundation
-let neo = Chobits()
-neo.addSkill(skill: DiHelloWorld())
-print(neo.think(ear: "", skin: "", eye: ""))
-print(neo.think(ear: "hello", skin: "", eye: ""))
-print(neo.think(ear: "", skin: "", eye: ""))
+
+let b1:Brain = Brain()
+b1.logicChobit.addSkill(skill: DiHelloWorld())
+b1.hardwareChobit.addSkill(skill: DiSysOut())
+b1.doIt(ear: "hello", skin: "", eye: "")

@@ -58,9 +58,22 @@ package LivinGrimoire;
 public class Brain {
     public Chobits logicChobit;
     public Chobits hardwareChobit;
-    private String emot = "";
+    private String emotion = "";
     private String bodyInfo = "";
     private String logicChobitOutput = "";
+
+    public String getEmotion() {
+        return emotion;
+    }
+
+    public String getBodyInfo() {
+        return bodyInfo;
+    }
+
+    public String getLogicChobitOutput() {
+        return logicChobitOutput;
+    }
+
     public Brain() {
         logicChobit = new Chobits();
         hardwareChobit = new Chobits();
@@ -68,12 +81,11 @@ public class Brain {
     public void doIt(String ear, String skin, String eye) {
         if (!bodyInfo.isEmpty()){
             logicChobitOutput = logicChobit.think(ear,bodyInfo,eye);
-            emot = logicChobit.getSoulEmotion();
         }
         else{
             logicChobitOutput = logicChobit.think(ear,skin,eye);
-            emot = logicChobit.getSoulEmotion();
         }
+        emotion = logicChobit.getSoulEmotion();
         bodyInfo = hardwareChobit.think(logicChobitOutput,skin,eye);
     }
 }

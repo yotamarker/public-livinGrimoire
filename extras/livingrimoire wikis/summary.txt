@@ -71,8 +71,7 @@ while skill level 0 require no innate special permission to engage
 
 ## hello world example (python main):
 
-https://github.com/yotamarker/public-livinGrimoire/blob/master/livingrimoire%20start%20here/LivinGrimoire%20python/python_core_txt/main%20livingrimoire%20test%20example.txt
-
+https://github.com/yotamarker/public-livinGrimoire/blob/master/livingrimoire%20start%20here/LivinGrimoire%20python/python%20files/main.py
 ## the Living Grimoire classes list
 
 1. AbsDictionaryDB

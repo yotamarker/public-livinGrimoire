@@ -922,6 +922,10 @@ class TimeGate:
         now: datetime.date = datetime.datetime.now()
         self.openedGate = now + timedelta(minutes=minutes)
 
+    def openForPauseMinutes(self):
+        now: datetime.date = datetime.datetime.now()
+        self.openedGate = now + timedelta(minutes=self.pause)
+
     def setPause(self, pause: int):
         if 60 > pause > 0:
             self.pause = pause

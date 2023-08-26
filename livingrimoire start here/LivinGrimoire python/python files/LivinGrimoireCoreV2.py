@@ -485,13 +485,23 @@ class PlayGround:
         '''This method returns the date in x minutes'''
         right_now = datetime.datetime.now()
         final_time = right_now + datetime.timedelta(minutes=extra_minutes)
-        return str(final_time)
+        regex: RegexUtil = RegexUtil()
+        s1: str = str(final_time)
+        s1 = regex.extractEnumRegex(enumRegexGrimoire.simpleTimeStamp, s1)
+        if s1[0] == '0':
+            s1 = s1[1:]
+        return s1
 
     def getPastInXMin(self, less_minutes: int) -> str:
         '''This method returns the date x minutes before'''
         right_now = datetime.datetime.now()
         final_time = right_now - datetime.timedelta(minutes=less_minutes)
-        return str(final_time)
+        regex: RegexUtil = RegexUtil()
+        s1: str = str(final_time)
+        s1 = regex.extractEnumRegex(enumRegexGrimoire.simpleTimeStamp, s1)
+        if s1[0] == '0':
+            s1 = s1[1:]
+        return s1
 
     def getFutureHour(self, startHour: int, addedHours: int) -> int:
         '''This method returns the hour in x hours from the starting hour'''

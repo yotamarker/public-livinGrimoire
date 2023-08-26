@@ -1416,3 +1416,125 @@ class AXLSpeechModifier(AXLHousing):
         for item in words:
             result = result + " " + self.dic.get(item, item)
         return result.strip()
+
+class TimeAccumulator:
+    # accumulator ++ each tick minutes interval
+    def __init__(self, tick: int):
+        # accumulation ticker
+        self._timeGate: TimeGate = TimeGate(tick)
+        self._accumulator: int = 0
+        self._timeGate.openForPauseMinutes()
+
+    def setTick(self, tick: int):
+        self._timeGate.setPause(tick)
+
+    def getAccumulator(self) -> int:
+        return self._accumulator
+
+    def reset(self):
+        self._accumulator = 0
+
+    def tick(self):
+        if self._timeGate.isClosed():
+            self._timeGate.openForPauseMinutes()
+            self._accumulator += 1
+
+
+class Responder1Word:
+    # learns 1 word input
+    # outputs learned recent words
+    def __init__(self):
+        self.q: UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue(5)
+        self.q.insert("chi")
+        self.q.insert("gaga")
+        self.q.insert("gugu")
+        self.q.insert("baby")
+
+    def listen(self, ear: str):
+        if not (ear.__contains__(" ") or ear == ""):
+            self.q.insert(ear)
+
+    def getAResponse(self) -> str:
+        return self.q.getRNDElement()
+
+    def contains(self, ear: str) -> bool:
+        return self.q.contains(ear)
+
+
+class TrgEveryNMinutes(TrGEV3):
+    # trigger returns true every minutes interval, post start time
+    def __init__(self, startTime: str, minutes: int):
+        self._playGround: PlayGround = PlayGround()
+        self._minutes:int = minutes  # minute interval between triggerings
+        self._timeStamp = startTime
+        self._trgTime: TrgTime = TrgTime()
+        self._trgTime.setTime(startTime)
+
+    def setMinutes(self, minutes: int):
+        if minutes > -1:
+            self._minutes = minutes
+
+    # override
+    def trigger(self) -> bool:
+        if self._trgTime.alarm():
+            self._timeStamp = self._playGround.getFutureInXMin(self._minutes)
+            self._trgTime.setTime(self._timeStamp)
+            return True
+        return False
+
+    # override
+    def reset(self):
+        self._timeStamp = self._playGround.getCurrentTimeStamp()
+
+
+class Cron(TrGEV3):
+    # triggers true, limit times, after initial time, and every minutes interval
+    # counter resets at initial time, assuming trigger method was run
+    def __init__(self, startTime: str, minutes: int, limit:int):
+        self._playGround: PlayGround = PlayGround()
+        self._minutes:int = minutes  # minute interval between triggerings
+        self._timeStamp = startTime
+        self._initislTimeStamp = startTime
+        self._trgTime: TrgTime = TrgTime()
+        self._trgTime.setTime(startTime)
+        self._counter:int = 0
+        self._limit:int = limit
+        if limit < 1:
+            self._limit = 1
+
+    def setMinutes(self, minutes: int):
+        if minutes > -1:
+            self._minutes = minutes
+
+    def getLimit(self)->int:
+        return self._limit
+
+    def setLimit(self,limit:int):
+        if limit>0:
+            self._limit = limit
+
+    def getCounter(self)->int:
+        return self._counter
+
+    def setMinutes(self,minutes:int):
+        if minutes > -1:
+            self._minutes = minutes
+
+    # override
+    def trigger(self) -> bool:
+        # delete counter = 0 if you don't want the trigger to work the next day
+        if self._counter == self._limit:
+            self._trgTime.setTime(self._initislTimeStamp)
+            self._counter = 0
+            return False
+        if self._trgTime.alarm():
+            self._timeStamp = self._playGround.getFutureInXMin(self._minutes)
+            self._trgTime.setTime(self._timeStamp)
+            self._counter += 1
+            return True
+        return False
+
+    # override
+    def reset(self):
+        # manual trigger reset
+        self._counter = 0

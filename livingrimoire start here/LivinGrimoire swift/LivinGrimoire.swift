@@ -224,7 +224,7 @@ enum enumTimes: Int {
 class PlayGround {
     
     var right_now = Date()
-    let calendar = Calendar.current
+    var calendar = Calendar.current
     var dateComponent = DateComponents()
     
     var week_days: [Int:String]
@@ -253,54 +253,57 @@ class PlayGround {
 
     func getCurrentTimeStamp() -> String {
        // '''This method returns the current time (hh:mm)'''
-  
-        return String(calendar.component(.hour, from: right_now)) + ":" + String(calendar.component(.minute, from: right_now))
+        right_now = Date()
+        let minutes:Int = calendar.component(.minute, from: right_now)
+        let m:String = minutes<10 ? "0"+String(minutes):String(minutes)
+        return String(calendar.component(.hour, from: right_now)) + ":" + m
     }
 
     func getMonthAsInt() -> Int {
        // '''This method returns the current month (MM)'''
-       
+        right_now = Date()
         return calendar.component(.month, from: right_now)
     }
 
     func getDayOfTheMonthAsInt() -> Int {
        // '''This method returns the current day (dd)'''
-       
+        right_now = Date()
         return calendar.component(.day, from: right_now)
     }
 
     func getYearAsInt() -> Int {
       //  '''This method returns the current year (yyyy)'''
-       
+        right_now = Date()
         return calendar.component(.year, from: right_now)
     }
 
     func getDayAsInt() -> Int {
        // '''This method returns the current day of the week (1, 2, ... 7)'''
-
+        right_now = Date()
         return calendar.component(.weekday, from: right_now)
     }
 
     func getMinutes() -> String {
        // '''This method returns the current minutes (mm)'''
-       
+        right_now = Date()
         return right_now.minute() ?? ""
     }
 
     func getSeconds() -> String {
       //  '''This method returns the current seconds (ss)'''
-        
+        right_now = Date()
         return String(calendar.component(.second, from: right_now))
     }
 
     func getDayOfDWeek() -> String {
       //  '''This method returns the current day of the week as a word (monday, ...)'''
-    
+        right_now = Date()
         return right_now.dayOfWeek()!
     }
 
     func translateMonthDay() -> String {
        // '''This method returns the current day of the month as a word (first_of, ...)'''
+        right_now = Date()
         let currentDay_number = calendar.component(.day, from: right_now)
         let currentDay_string = dayOfMonth[currentDay_number] ?? "?"
         return currentDay_string
@@ -310,7 +313,7 @@ class PlayGround {
     func getSpecificTime(time_variable: enumTimes) -> String {
 //        '''This method returns the current specific date in words (eleventh_of June 2021, ...)'''
 
-        
+        right_now = Date()
        let enum_temp = time_variable
         switch enum_temp {
         case .date:
@@ -331,19 +334,19 @@ class PlayGround {
 
     func getSecondsAsInt() -> Int {
        // '''This method returns the current seconds'''
-       
+        right_now = Date()
         return calendar.component(.second, from: right_now)
     }
 
     func getMinutesAsInt() -> Int {
        // '''This method returns the current minutes'''
-      
+        right_now = Date()
         return calendar.component(.minute, from: right_now)
     }
 
     func getHoursAsInt() -> Int {
       //  '''This method returns the current hour'''
-        
+        right_now = Date()
         return calendar.component(.hour, from: right_now)
     }
 
@@ -390,7 +393,7 @@ class PlayGround {
 
     func timeInXMinutes(x: Int) -> String {
        // '''This method returns the time (hh:mm) in x minutes'''
-        
+        right_now = Date()
         // reset datecomponents
        dateComponent = DateComponents()
         dateComponent.minute = x
@@ -399,6 +402,7 @@ class PlayGround {
     
     }
     func isDayTime() -> Bool {
+        right_now = Date()
       //  '''This method returns true if it's daytime (6-18)'''
     return 5 < calendar.component(.hour, from: right_now)  &&  calendar.component(.hour, from: right_now) < 19
     }
@@ -466,7 +470,7 @@ class PlayGround {
 
     func getGMT() -> Date {
        // '''This method returns the local GMT'''
-      
+        right_now = Date()
         return right_now.localToGMT()
         
     }
@@ -524,11 +528,13 @@ extension Date {
 extension PlayGround {
     func nowPlusOneDay() -> Date {
         // reset datecomponents
+        right_now = Date()
         dateComponent = DateComponents()
       dateComponent.day = 1
         return Calendar.current.date(byAdding: dateComponent, to: right_now) ?? Date()
     }
     func nowMinusOneDay() -> Date {
+        right_now = Date()
         // reset datecomponents
         dateComponent = DateComponents()
       dateComponent.day = -1
@@ -833,7 +839,7 @@ class LGPointInt{
 }
 enum enumRegexGrimoire{
     case email, timeStamp, integer, double, repeatedWord, phone, trackingID, IPV4, domain, number,
-    secondlessTimeStamp, date, fullDate
+    secondlessTimeStamp, date, fullDate, simpleTimeStamp
 }
 class RegexUtil{
     var regexDictionary:[enumRegexGrimoire:String] = [:]
@@ -851,6 +857,7 @@ class RegexUtil{
         regexDictionary[enumRegexGrimoire.IPV4] = "([0-9].){4}[0-9]*"
         regexDictionary[enumRegexGrimoire.domain] = "[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}"
         regexDictionary[enumRegexGrimoire.number] = "\\d+(\\.\\d+)?"
+        regexDictionary[enumRegexGrimoire.simpleTimeStamp] = "[0-9]{1,2}:[0-9]{1,2}"
     }
     func extractAllRegexResults(regex:String, text: String) -> [String] {
         var results = [String]()
@@ -1091,24 +1098,24 @@ class RegexUtil{
 class TimeGate{
     //time boolean gate
     // gate goes open (pause minutes time)-> closed
-    private var pause:Double = 5.0
+    private var pause:Int = 5
     private var openDate:Date = Date()
     private var checkPoint:Date = Date()
     init() {
         openGate()
     }
-    init(pause:Double) {
+    init(pause:Int) {
         if pause < 0 || pause > 60 {return}
         self.pause = pause
         openGate()
     }
-    func setPause(pause:Double) {
+    func setPause(pause:Int) {
         if pause < 0 || pause > 60 {return}
         self.pause = pause
     }
     func openGate() {
         // the gate will stay open for pause minutes
-        openDate.addTimeInterval(TimeInterval(pause * 60.0))
+        openDate.addTimeInterval(TimeInterval(pause * 60))
     }
     func isOpen() -> Bool {
         return Date() < openDate
@@ -1465,7 +1472,7 @@ class Chobits:Thinkable {
             dClasses.append(skill)
         }
     }
-    func setPause(pause:Double) {
+    func setPause(pause:Int) {
         // set standby timegate pause.
         // pause time without output from the chobit
         // means the standby attribute will be true for a moment.

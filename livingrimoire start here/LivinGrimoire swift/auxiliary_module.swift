@@ -1178,3 +1178,161 @@ class AXLSpeechModifier:AXLHousing{
         return result.trimmingCharacters(in: NSCharacterSet.whitespaces)
     }
 }
+class Responder1Word{
+    // learns 1 word inputs
+    // outputs learned recent words
+    var q:UniqueItemsPriorityQue = UniqueItemsPriorityQue()
+    init() {
+        self.q.input(in1: "chi")
+        self.q.input(in1: "gugu")
+        self.q.input(in1: "gaga")
+        self.q.input(in1: "baby")
+    }
+    func listen(ear:String){
+        if(!(ear.contains(" ") || ear.isEmpty)){
+            q.input(in1: ear)
+        }
+    }
+    func getAResponse()->String{
+        return q.getRndItem()
+    }
+    func contains(ear:String)->Bool{
+        return q.contains(str: ear)
+    }
+}
+class TimeAccumulator{
+    // accumulator ++ each tick minutes interval
+    private let timeGate:TimeGate
+    private var accumulator:Int = 0
+    init(tick:Int) {
+        // accumulation ticker
+        timeGate = TimeGate(pause: tick)
+        timeGate.openGate()
+    }
+    func setTick(tick:Int){
+        timeGate.setPause(pause: tick)
+    }
+    func tick(){
+        if timeGate.isClosed(){
+            timeGate.openGate()
+            accumulator+=1
+        }
+    }
+    func getAccumulator()->Int{
+        return accumulator
+    }
+    func reset(){
+        accumulator = 0
+    }
+}
+class TrgTime{
+    var t:String = "null"
+    let regexUtil:RegexUtil = RegexUtil()
+    var pl:PlayGround = PlayGround()
+    private var alarm:Bool = true
+    func setTime(v1:String){
+        t = regexUtil.regexChecker(theRegex: enumRegexGrimoire.simpleTimeStamp, str2Check: v1)
+    }
+    func trigger()->Bool{
+        let now:String = pl.getCurrentTimeStamp()
+        if alarm{
+            if now == t{
+                alarm = false
+                return true
+            }
+        }
+        if !(now == t){
+            alarm = true
+        }
+        return false
+    }
+}
+class TrgEveryNMinutes:TrGEV3{
+    // trigger returns true every minutes interval, post start time
+    private var minutes:Int // minute interval between triggerings
+    private let pl:PlayGround = PlayGround()
+    private var trgTime:TrgTime
+    private var timeStamp:String = ""
+    init(startTime:String, minutes:Int) {
+        self.minutes = minutes
+        self.timeStamp = startTime
+        trgTime = TrgTime()
+        trgTime.setTime(v1: startTime)
+    }
+    func setMinutes(minutes:Int){
+        // set interval between trigger times
+        if minutes > -1{
+            self.minutes = minutes
+        }
+    }
+    override func trigger() -> Bool {
+        if trgTime.trigger() {
+            timeStamp = pl.getFutureInXMin(extra_minutes: minutes)
+            trgTime.setTime(v1: timeStamp)
+            return true
+        }
+        return false
+    }
+    override func reset() {
+        timeStamp = pl.getCurrentTimeStamp()
+        trgTime.setTime(v1: timeStamp)
+    }
+}
+class Cron:TrGEV3{
+    // triggers true, limit times, after initial time, and every minutes interval
+    // counter resets at initial time, assuming trigger method was run
+    private var minutes:Int // minute interval between triggerings
+    private let pl:PlayGround = PlayGround()
+    private var trgTime:TrgTime
+    private var timeStamp:String = ""
+    private var initialTimeStamp:String = ""
+    private var limit:Int
+    private var counter:Int = 0
+    init(startTime:String, minutes:Int, limit:Int) {
+        self.minutes = minutes
+        self.timeStamp = startTime
+        self.initialTimeStamp = startTime
+        trgTime = TrgTime()
+        trgTime.setTime(v1: startTime)
+        self.limit = limit
+        if limit<0{
+            self.limit = 1
+        }
+    }
+    func getIimit()->Int{
+        return limit
+    }
+    func setLimit(lim:Int){
+        if lim > -1{
+            limit = lim
+        }
+    }
+    func getCounter()->Int{
+        return self.counter
+    }
+    func setMinutes(minutes:Int){
+        // set interval between trigger times
+        if minutes > -1{
+            self.minutes = minutes
+        }
+    }
+    override func trigger() -> Bool {
+        // delete counter = 0 if you don't want the trigger to work the next day
+        if counter == limit{
+            trgTime.setTime(v1: initialTimeStamp)
+            counter = 0
+            return false
+        }
+        if trgTime.trigger() {
+            timeStamp = pl.getFutureInXMin(extra_minutes: minutes)
+            trgTime.setTime(v1: timeStamp)
+            counter += 1
+            return true
+        }
+        return false
+    }
+    override func reset() {
+        // manual trigger reset
+        counter = 0
+    }
+}

@@ -7,7 +7,6 @@ import java.util.Random;
 public class Cron extends TrGEV3{
     // triggers true, limit times, after initial time, and every minutes interval
     // counter resets at initial time, assuming trigger method was run
-    private PlayGround playGround = new PlayGround();
     int minutes; // minute interval between triggerings
     private PlayGround pl = new PlayGround();
     private TrgTime trgTime;

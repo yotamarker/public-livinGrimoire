@@ -1,4 +1,0 @@
-+responder1word
-+timeaccumulator
-+tryeverynminutes
-+cron

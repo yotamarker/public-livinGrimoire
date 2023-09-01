@@ -26,4 +26,8 @@ public class TimeAccumulator {
         }
     }
     public void reset(){accumulator = 0;}
+
+    public void decAccumulator() {
+        if (accumulator > 0){accumulator--;}
+    }
 }

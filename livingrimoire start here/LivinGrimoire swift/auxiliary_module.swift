@@ -1224,6 +1224,11 @@ class TimeAccumulator{
     func reset(){
         accumulator = 0
     }
+    func decAccumulator(){
+        if accumulator > 0 {
+            accumulator -= 1
+        }
+    }
 }
 class TrgTime{
     var t:String = "null"

@@ -1417,6 +1417,7 @@ class AXLSpeechModifier(AXLHousing):
             result = result + " " + self.dic.get(item, item)
         return result.strip()
 
+
 class TimeAccumulator:
     # accumulator ++ each tick minutes interval
     def __init__(self, tick: int):
@@ -1438,6 +1439,10 @@ class TimeAccumulator:
         if self._timeGate.isClosed():
             self._timeGate.openForPauseMinutes()
             self._accumulator += 1
+
+    def decAccumulator(self):
+        if self._accumulator > 0:
+            self._accumulator -= 1
 
 
 class Responder1Word:
@@ -1465,7 +1470,7 @@ class TrgEveryNMinutes(TrGEV3):
     # trigger returns true every minutes interval, post start time
     def __init__(self, startTime: str, minutes: int):
         self._playGround: PlayGround = PlayGround()
-        self._minutes:int = minutes  # minute interval between triggerings
+        self._minutes: int = minutes  # minute interval between triggerings
         self._timeStamp = startTime
         self._trgTime: TrgTime = TrgTime()
         self._trgTime.setTime(startTime)
@@ -1490,15 +1495,15 @@ class TrgEveryNMinutes(TrGEV3):
 class Cron(TrGEV3):
     # triggers true, limit times, after initial time, and every minutes interval
     # counter resets at initial time, assuming trigger method was run
-    def __init__(self, startTime: str, minutes: int, limit:int):
+    def __init__(self, startTime: str, minutes: int, limit: int):
         self._playGround: PlayGround = PlayGround()
-        self._minutes:int = minutes  # minute interval between triggerings
+        self._minutes: int = minutes  # minute interval between triggerings
         self._timeStamp = startTime
         self._initislTimeStamp = startTime
         self._trgTime: TrgTime = TrgTime()
         self._trgTime.setTime(startTime)
-        self._counter:int = 0
-        self._limit:int = limit
+        self._counter: int = 0
+        self._limit: int = limit
         if limit < 1:
             self._limit = 1
 
@@ -1506,17 +1511,17 @@ class Cron(TrGEV3):
         if minutes > -1:
             self._minutes = minutes
 
-    def getLimit(self)->int:
+    def getLimit(self) -> int:
         return self._limit
 
-    def setLimit(self,limit:int):
-        if limit>0:
+    def setLimit(self, limit: int):
+        if limit > 0:
             self._limit = limit
 
-    def getCounter(self)->int:
+    def getCounter(self) -> int:
         return self._counter
 
-    def setMinutes(self,minutes:int):
+    def setMinutes(self, minutes: int):
         if minutes > -1:
             self._minutes = minutes
 

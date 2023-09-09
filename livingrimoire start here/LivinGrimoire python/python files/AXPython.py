@@ -1543,3 +1543,9 @@ class Cron(TrGEV3):
     def reset(self):
         # manual trigger reset
         self._counter = 0
+
+    def setStartTime(self, t1: str):
+        self._initislTimeStamp = t1
+        self._timeStamp = t1
+        self._trgTime.setTime(t1)
+        self._counter = 0

@@ -1340,4 +1340,10 @@ class Cron:TrGEV3{
         // manual trigger reset
         counter = 0
     }
+    func setStartTime(t1:String){
+        initialTimeStamp = t1
+        timeStamp = t1
+        trgTime.setTime(v1: t1)
+        counter = 0
+    }
 }

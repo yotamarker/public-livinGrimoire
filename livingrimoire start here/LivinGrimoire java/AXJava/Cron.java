@@ -59,4 +59,10 @@ public class Cron extends TrGEV3{
         // manual trigger reset
         counter = 0;
     }
+    public void setStartTime(String t1){
+        initialTimeStamp = t1;
+        timeStamp = t1;
+        trgTime.setTime(t1);
+        counter = 0;
+    }
 }

@@ -72,6 +72,7 @@ while skill level 0 require no innate special permission to engage
 ## hello world example (python main):
 
 https://github.com/yotamarker/public-livinGrimoire/blob/master/livingrimoire%20start%20here/LivinGrimoire%20python/python%20files/main.py
+
 ## the Living Grimoire classes list
 
 1. AbsDictionaryDB
@@ -114,9 +115,9 @@ books about the LivinGrimoire :
 1 the living grimoire by Moti Barski : a detailed explanation with examples
 about the living grimoire project
 
-https://github.com/yotamarker/public-livinGrimoire/blob/master/livingrimoire%20start%20here/the%20living%20grimoie.pdf
+https://github.com/yotamarker/public-livinGrimoire/blob/master/livingrimoire%20start%20here/the%20living%20grimoire.pdf
 
-![](https://i.ibb.co/3kYrpKs/Moti-3-D-Mockup.jpg)
+![](https://i.ibb.co/QbfMkfp/Moti-3-D-Mockup.jpg)
 2 Auxiliary Modules for the livingrimoire by Moti Barski:
 modules that ease writing skills and make the waifubot more human
 

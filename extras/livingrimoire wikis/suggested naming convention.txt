@@ -1,23 +1,31 @@
-AP : AlgParts class names should start with AP. APSay for example
+**AP** : AlgParts class names should start with AP. APSay for example
 
-D2 : DiSkillV2 (regular LvinGrimoire skill class names) should start with D2.
+***
+
+**D2** : DiSkillV2 (regular LvinGrimoire skill class names) should start with D2.
 for example D2Parrot
 
-D3 : DiSkillV3:DiSkillV2 which are skills whose algorithms have a priority to run
+***
+
+**D3** : DiSkillV3:DiSkillV2 which are skills whose algorithms have a priority to run
 (fight or flight high priority).
 
 D3 have more priority to run than D2 LivinGrimoire skills.
 these skill classes names should start with D3.
 for example : D3Detective
 
-AX : auxiliary modules. these classes names can start with AX
+***
+
+**AX** : auxiliary modules. these classes names can start with AX
 for example AXLearnability
 
-AXU: Auxiliary Modules for Upper Chobits, which are Chobit objects that process
+***
+
+**AXU**: Auxiliary Modules for Upper Chobits, which are Chobit objects that process
 input before it gets to a thinking chobit object.
 these may include: AI pharmaceuticals, reality morph, input filtering (reality/pain),
 data classification, and even AI hormones.
 
-AXL: Auxiliary Modules for Lower Chobits, which are Chobit objects that process
+**AXL**: Auxiliary Modules for Lower Chobits, which are Chobit objects that process
 input from thinking Chobits. 
 these may include trandlations, reply decorations, decoding, and custom dialects.

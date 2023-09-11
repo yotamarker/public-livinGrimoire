@@ -1,0 +1,10 @@
+
+
+coding cheat sheets for the java, python, swift, and the Koltin programming languages.
+
+said sheets make programming easier and faster, as they concentrate commonly used codes.
+
+the cheat sheets can be found in the "livingrimoire start here" directory in each respective language directory.
+
+additionally, a keynote cheat sheet was added to the extras directory for coders who want to create presentations
+about livingrimoire skills, alg parts, auxiliary modules and such

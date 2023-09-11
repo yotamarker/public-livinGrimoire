@@ -1,0 +1,5 @@
+livingrimoire start here dir:
+here you can find 4 versions of the livingrimoire (java, Koltin, python, swift)
+choose according to the programming language you are using.
+
+the extras dir has livingrimoire wiki txt files

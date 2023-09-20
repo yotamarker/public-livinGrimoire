@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class DrawRnd {
-    // draw a random element, than take said element out
+    // draw a random element, then take said element out
     private ArrayList<String> strings = new ArrayList<>();
     private ArrayList<String> stringsSource = new ArrayList<>();
     private Random rand = new Random();
@@ -15,6 +15,10 @@ public class DrawRnd {
             strings.add(values[i]);
             stringsSource.add(values[i]);
         }
+    }
+    public void addElement(String element){
+        strings.add(element);
+        stringsSource.add(element);
     }
     public String draw(){
         if (strings.isEmpty()) {return "";}

@@ -22,6 +22,12 @@ class DeepCopier:
             deepCopy.append(item)
         return deepCopy
 
+    def copyListOfInts(self, original: list[int]) -> list[int]:
+        deepCopy: list[int] = []
+        for item in original:
+            deepCopy.append(item)
+        return deepCopy
+
 
 class AbsDictionaryDB:
     def save(self, key: str, value: str):

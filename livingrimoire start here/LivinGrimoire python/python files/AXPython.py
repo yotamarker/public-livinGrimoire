@@ -522,7 +522,7 @@ class Cycler:
 
 
 class DrawRnd:
-    # draw a random element, than take said element out
+    # draw a random element, then take said element out
     def __init__(self, *values: str):
         self.converter: LGTypeConverter = LGTypeConverter()
         self.strings: LGFIFO = LGFIFO()
@@ -530,6 +530,10 @@ class DrawRnd:
         for i in range(0, len(values)):
             self.strings.insert(values[i])
             self._stringsSource.append(values[i])
+
+    def addElement(self, element: str):
+        self.strings.insert(element)
+        self._stringsSource.append(element)
 
     def drawAndRemove(self) -> str:
         temp: str = self.strings.getRNDElement()
@@ -542,6 +546,33 @@ class DrawRnd:
             return 0
         self.strings.removeItem(temp)
         return self.converter.convertToInt(temp)
+
+    def getSimpleRNDNum(self, lim: int) -> int:
+        return random.randint(0, lim)
+
+    def reset(self):
+        self.strings.clear()
+        for t in self._stringsSource:
+            self.strings.insert(t)
+
+
+class DrawRndDigits:
+    # draw a random integer, then take said element out
+    def __init__(self, *values: int):
+        self.strings: LGFIFO = LGFIFO()
+        self._stringsSource: list[int] = []
+        for i in range(0, len(values)):
+            self.strings.insert(values[i])
+            self._stringsSource.append(values[i])
+
+    def addElement(self, element: int):
+        self.strings.insert(element)
+        self._stringsSource.append(element)
+
+    def drawAndRemove(self) -> int:
+        temp: int = self.strings.getRNDElement()
+        self.strings.removeItem(temp)
+        return temp
 
     def getSimpleRNDNum(self, lim: int) -> int:
         return random.randint(0, lim)

@@ -1,5 +1,5 @@
 from __future__ import annotations
-from LivinGrimoireCoreV2 import *
+from LivinGrimoire23 import *
 
 import random
 
@@ -1580,3 +1580,31 @@ class Cron(TrGEV3):
         self._timeStamp = t1
         self._trgTime.setTime(t1)
         self._counter = 0
+
+''' PRIORITYQUEUE CLASS '''
+
+
+# A simple implementation of Priority Queue
+# using Queue.
+class PriorityQueueVer0(object):
+    def __init__(self):
+        self.queue = []
+
+    def __str__(self):
+        return ' '.join([str(i) for i in self.queue])
+
+    # for checking if the queue is empty
+    def isEmpty(self):
+        return len(self.queue) == 0
+
+    # for inserting an element in the queue
+    def insert(self, data):
+        self.queue.append(data)
+
+    # for popping an element based on Priority
+    def poll(self) -> object:
+        if not len(self.queue) == 0:
+            result0 = self.queue[0]
+            del self.queue[0]
+            return result0
+        return None

@@ -1,0 +1,59 @@
+send a byte to an Arduino from the laptop/Raspberri Pi
+
+add the files:
+LivinGrimoireCoreV2.py and AXPython.py to the project:
+https://github.com/yotamarker/public-livinGrimoire/tree/master/livingrimoire%20start%20here/LivinGrimoire%20python/python%20files
+
+also:
+run in command line:
+pip3 install pyserial
+than restart pycharm
+
+here is the Arduino code (sent to the Arduino via Arduino IDE):
+
+int ledPin = 13;
+ 
+void setup() {
+  Serial.begin(9600);
+  pinMode(ledPin,OUTPUT);
+  digitalWrite(ledPin,LOW);
+}
+ 
+void loop() { 
+    if (Serial.read() == 'T'){
+      digitalWrite(ledPin,HIGH);}
+}
+it's a hello world. all it does is light up the default built in led (pin 13).
+
+skill code:
+import serial
+import time
+
+class DiArduino1(DiSkillV2):
+    def __init__(self):
+        self._cmdBreaker: AXCmdBreaker = AXCmdBreaker("sr")
+        self._ser = serial.Serial("COM4", 9600, timeout=1.0)
+        time.sleep(3)
+        super().__init__()
+
+    def setCommandPrefix(self,cmd_prefix):
+        self._cmdBreaker.conjuration = cmd_prefix
+
+    # Override
+    def input(self, ear: str, skin: str, eye: str):
+        if ear == "close serial":
+            self._ser.close()
+        n: str = self._cmdBreaker.extractCmdParam(ear)
+        if not n == "":
+            self._ser.reset_input_buffer()
+            n2: bytes = n.encode('ASCII')
+            self._ser.write(n2)
+            print("serial port closed")
+
+example skill use in main:
+
+neo:Chobits = Chobits()
+neo.addSkill(DiArduino1())
+neo.think("sr T", "", "")
+time.sleep(2)
+neo.think("close serial", "", "")

@@ -464,7 +464,7 @@ class Neuron:
 
     def insertAlg(self, priority: int, alg: Algorithm):
         if 0 < priority < 6:
-            if len(self._defcons[priority]) < 3:
+            if len(self._defcons[priority]) < 4:
                 self._defcons[priority].append(alg)
 
     def getAlg(self, defcon: int) -> Algorithm:

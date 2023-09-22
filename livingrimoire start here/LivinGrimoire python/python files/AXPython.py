@@ -74,15 +74,14 @@ class SkillHubAlgDispenser:
         self._skills.append(skill)
         return self
 
-    def dispenseAlgorithm(self, ear: str, skin: str, eye: str):
+    def dispenseAlgorithm(self, ear: str, skin: str, eye: str) -> Algorithm:
         # return value to outAlg param of (external) summoner DiskillV2
         self._skills[self._activeSkill].input(ear, skin, eye)
-        self._tempN.empty()
         self._skills[self._activeSkill].output(self._tempN)
-        if not self._tempN.negativeAlgParts:
-            return self._tempN.negativeAlgParts[0]
-        if not self._tempN.algParts:
-            return self._tempN.algParts[0]
+        for i in range(1, 6):
+            temp: Algorithm = self._tempN.getAlg(i)
+            if temp is not None:
+                return temp
         return None
 
     def randomizeActiveSkill(self):
@@ -1580,6 +1579,7 @@ class Cron(TrGEV3):
         self._timeStamp = t1
         self._trgTime.setTime(t1)
         self._counter = 0
+
 
 ''' PRIORITYQUEUE CLASS '''
 

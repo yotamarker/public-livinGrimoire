@@ -35,13 +35,12 @@ public class SkillHubAlgDispenser {
     public Algorithm dispenseAlgorithm(String ear, String skin, String eye){
         // return value to outAlg param of (external) summoner DiskillV2
         skills.get(activeSkill).input(ear,skin,eye);
-        tempN.empty();
         skills.get(activeSkill).output(tempN);
-        if (!tempN.negativeAlgParts.isEmpty()){
-            return tempN.negativeAlgParts.get(0);
-        }
-        if (!tempN.algParts.isEmpty()){
-            return tempN.algParts.get(0);
+        for (int i = 1; i < 6; i++) {
+            Algorithm temp = tempN.getAlg(i);
+            if (temp != null){
+                return temp;
+            }
         }
         return null;
     }

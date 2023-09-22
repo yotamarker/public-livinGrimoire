@@ -37,12 +37,6 @@ public class APVerbatim extends Mutatable {
     }
 
     @Override
-    public enumFail failure(String input) {
-        // TODO Auto-generated method stub
-        return enumFail.ok;
-    }
-
-    @Override
     public Boolean completed() {
         // TODO Auto-generated method stub
         return at >= this.sentences.size();

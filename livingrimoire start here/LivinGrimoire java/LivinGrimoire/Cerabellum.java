@@ -4,7 +4,6 @@ public class Cerabellum {
     // runs an algorithm
     private int fin;
     private int at;
-    private enumFail failType;
     private Boolean incrementAt = false;
 
     public void advanceInAlg() {
@@ -65,11 +64,7 @@ public class Cerabellum {
         }
         return axnStr;
     }
-
-    public int getMutationLimitOfActiveAlgPart() {
-        return alg.getAlgParts().get(at).getMutationLimit();
-    }
-    public enumFail getFailType() {
-        return alg.getAlgParts().get(at).failure("");
+    public void deActivation(){
+        this.isActive = this.isActive && !alg.getAlgParts().get(at).algKillSwitch;
     }
 }

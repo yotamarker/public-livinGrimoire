@@ -4,6 +4,7 @@ public class DiSkillV2 {
     protected Kokoro kokoro = new Kokoro(new AbsDictionaryDB()); // consciousness, shallow ref class to enable interskill communications
     protected DISkillUtils diSkillUtils = new DISkillUtils();
     protected Algorithm outAlg = null; // skills output
+    protected int outpAlgPriority = -1; // defcon 1->5
 
     public DiSkillV2() {
         super();
@@ -14,7 +15,8 @@ public class DiSkillV2 {
     // extraction of skill algorithm to run (if there is one)
     public void output(Neuron noiron) {
         if (outAlg != null) {
-            noiron.algParts.add(outAlg);
+            noiron.insertAlg(this.outpAlgPriority,outAlg);
+            outpAlgPriority = -1;
             outAlg = null;
         }
     }

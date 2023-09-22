@@ -48,7 +48,7 @@ class Mutatable(ABC):
     # one part of an algorithm, it is a basic simple action or sub goal
     def __init__(self):
         # set True to stop the entire running active Algorithm
-        self.algKillSwitch:bool = False
+        self.algKillSwitch: bool = False
 
     @abstractmethod
     def action(self, ear: str, skin: str, eye: str) -> str:
@@ -458,18 +458,20 @@ class Algorithm:
 # used to transport algorithms to other classes
 class Neuron:
     def __init__(self) -> None:
-        self._defcons:dict[int, list[Algorithm]] = {}
-        for i in range(1,6):
+        self._defcons: dict[int, list[Algorithm]] = {}
+        for i in range(1, 6):
             self._defcons[i] = []
 
     def insertAlg(self, priority: int, alg: Algorithm):
         if 0 < priority < 6:
-            if len(self._defcons[priority])<3:
+            if len(self._defcons[priority]) < 3:
                 self._defcons[priority].append(alg)
 
     def getAlg(self, defcon: int) -> Algorithm:
         if len(self._defcons[defcon]) > 0:
-            return self._defcons[defcon].pop(0)
+            temp = self._defcons[defcon].pop(0)
+            if temp is not None:
+                return temp.clone()
         return None
 
 
@@ -517,7 +519,7 @@ class DiSkillV2:
         self._kokoro = Kokoro(AbsDictionaryDB())  # consciousness, shallow ref class to enable interskill communications
         self._diSkillUtils = DISkillUtils()
         self._outAlg = None  # skills output
-        self._outpAlgPriority = -1
+        self._outpAlgPriority: int = -1  # defcon 1->5
 
     # skill triggers and algorithmic logic
     def input(self, ear: str, skin: str, eye: str):
@@ -830,7 +832,7 @@ class Cerabellum:
 
 class Fusion:
     def __init__(self):
-        self._emot:str = ""
+        self._emot: str = ""
         self.ceraArr: list[Cerabellum] = [Cerabellum() for i in range(5)]
         self._result: str = ""
 
@@ -840,11 +842,11 @@ class Fusion:
         return temp
 
     def loadAlgs(self, neuron: Neuron):
-        for i in range(1,6):
-            if not self.ceraArr[i-1].isActive:
+        for i in range(1, 6):
+            if not self.ceraArr[i - 1].isActive:
                 temp: Algorithm = neuron.getAlg(i)
                 if not temp is None:
-                    self.ceraArr[i].setAlgorithm(temp)
+                    self.ceraArr[i-1].setAlgorithm(temp)
 
     def runAlgs(self, ear: str, skin: str, eye: str) -> str:
         self._result = ""
@@ -955,7 +957,6 @@ class Chobits(Thinkable):
         self._fusion: Fusion = Fusion()
         self._noiron: Neuron = Neuron()
         self._kokoro: Kokoro = Kokoro(AbsDictionaryDB())  # soul
-        self._lastOutput: str = ""
 
     '''set the chobit database
         the database is built as a key value dictionary

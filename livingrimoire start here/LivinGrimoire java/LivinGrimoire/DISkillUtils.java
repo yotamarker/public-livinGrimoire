@@ -4,60 +4,56 @@ import java.util.ArrayList;
 
 public class DISkillUtils {
     // alg part based algorithm building methodes
-    public Algorithm onePartAlgorithm(String algMarker,Mutatable algPart) {
+    public Algorithm onePartAlgorithm(Mutatable algPart) {
         // returns a simple algorithm containing 1 alg part
-        String representation = "rep_" + algMarker;
         ArrayList<Mutatable> algParts1 = new ArrayList<>();
         algParts1.add(algPart);
-        Algorithm algorithm = new Algorithm(algMarker, representation, algParts1);
+        Algorithm algorithm = new Algorithm(algParts1);
         return algorithm;
     }
     // var args param
-    public Algorithm algBuilder(String algMarker, Mutatable... algParts) {
+    public Algorithm algBuilder(Mutatable... algParts) {
         // returns a simple algorithm for saying sent parameter
-        String representation = "rep_" + algMarker;;
         ArrayList<Mutatable> algParts1 = new ArrayList<>();
         for (int i = 0; i < algParts.length; i++) {
             algParts1.add(algParts[i]);
         }
-        Algorithm algorithm = new Algorithm(algMarker, representation, algParts1);
+        Algorithm algorithm = new Algorithm(algParts1);
         return algorithm;
     }
-    public Algorithm onePartAlgorithmWithRepresantation(String algRepresentation, String algMarker,Mutatable algPart) {
+    public Algorithm onePartAlgorithmWithRepresantation(Mutatable algPart) {
         // returns a simple algorithm containing 1 alg part
-        String representation = algRepresentation;
         ArrayList<Mutatable> algParts1 = new ArrayList<>();
         algParts1.add(algPart);
-        Algorithm algorithm = new Algorithm(algMarker, representation, algParts1);
+        Algorithm algorithm = new Algorithm(algParts1);
         return algorithm;
     }
-    public Algorithm algBuilderWithRepresantation(String algRepresentation, String algMarker, Mutatable... algParts) {
+    public Algorithm algBuilderWithRepresantation(Mutatable... algParts) {
         // returns a simple algorithm for saying sent parameter
-        String representation = algRepresentation;;
         ArrayList<Mutatable> algParts1 = new ArrayList<>();
         for (int i = 0; i < algParts.length; i++) {
             algParts1.add(algParts[i]);
         }
-        Algorithm algorithm = new Algorithm(algMarker, representation, algParts1);
+        Algorithm algorithm = new Algorithm(algParts1);
         return algorithm;
     }
     // String part based algorithm building methodes
-    public Algorithm simpleVerbatimAlgorithm(String algMarker, String... sayThis) {
+    public Algorithm simpleVerbatimAlgorithm(String... sayThis) {
         // returns alg that says the word string (sayThis)
-        return onePartAlgorithm(algMarker, new APVerbatim(sayThis));
+        return onePartAlgorithm(new APVerbatim(sayThis));
     }
-    public Algorithm simpleVerbatimAlgorithmWithRepresantation(String algRepresentation, String algMarker, String... sayThis) {
+    public Algorithm simpleVerbatimAlgorithmWithRepresantation(String... sayThis) {
         // returns alg that says the word string (sayThis)
-        return onePartAlgorithmWithRepresantation(algRepresentation, algMarker, new APVerbatim(sayThis));
+        return onePartAlgorithmWithRepresantation(new APVerbatim(sayThis));
     }
     // String part based algorithm building methodes with cloudian (shallow ref object to inform on alg completion)
-    public Algorithm simpleCloudiandVerbatimAlgorithmWithRepresantation(String algRepresentation,CldBool cldBool, String algMarker, String... sayThis) {
+    public Algorithm simpleCloudiandVerbatimAlgorithmWithRepresantation(CldBool cldBool, String... sayThis) {
         // returns alg that says the word string (sayThis)
-        return onePartAlgorithmWithRepresantation(algRepresentation, algMarker, new APCldVerbatim(cldBool, sayThis));
+        return onePartAlgorithmWithRepresantation(new APCldVerbatim(cldBool, sayThis));
     }
-    public Algorithm simpleCloudiandVerbatimAlgorithm(CldBool cldBool, String algMarker, String... sayThis) {
+    public Algorithm simpleCloudiandVerbatimAlgorithm(CldBool cldBool, String... sayThis) {
         // returns alg that says the word string (sayThis)
-        return onePartAlgorithm(algMarker, new APCldVerbatim(cldBool, sayThis));
+        return onePartAlgorithm(new APCldVerbatim(cldBool, sayThis));
     }
     public String strContainsList(String str1, ArrayList<String> items) {
         // returns the 1st match between words in a string and values in a list.

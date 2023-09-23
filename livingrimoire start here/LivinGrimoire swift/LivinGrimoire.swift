@@ -6,6 +6,7 @@
 //
 
 import Foundation
+
 open class AbsDictionaryDB{
     func save(key:String, value: String){
         // save to DB (override me)
@@ -15,16 +16,11 @@ open class AbsDictionaryDB{
         return "null"
     }
 }
-enum enumFail{
-    case fail, requip, dequip, cloudian, ok
-}
+
 open class Mutatable{
+    var algKillSwitch:Bool = false
     func action(ear: String, skin: String, eye: String) -> String{
         return ""
-    }
-    func failure(input: String) -> enumFail{
-        // Failure type only mutatable may use enumFail.fail
-        return enumFail.ok
     }
     func completed() -> Bool{
         //Has finished ?
@@ -34,109 +30,11 @@ open class Mutatable{
         return Mutatable()
     }
     
-    func getMutationLimit() -> Int{
-        return 0
-    }
-    
     func myName() -> String{
         // Returns the class name
         return String(describing: type(of: self))
                       }
-    
-    func mutation() -> Mutatable{
-        return Mutatable()
-    }
-}
-class MemoryMutatable:Mutatable{
-    /*
-         * an adaptor pattern to the Mutatable (algorithm part)
-         * the object will load the last mutated state which is the last and optimized
-         * mutation used.
-         * upon mutation the new last mutation is saved so it can be loaded for the next time
-         * mutations happen in the DExplorer class and triggered when the Mutatbles' failure method
-         * returns enumFail.failure
-         * you can code said enumFail.failure to return under chosen conditions in the action method of
-         * the MemoryMutatable object. (sub class of this class)
-         */
-    private(set) var kokoro:Kokoro
-    private(set) var aPart:Mutatable
-    init(kokoro:Kokoro, aPart:Mutatable) {
-        self.kokoro = kokoro
-        // load the last saved mutatable
-        self.aPart = kokoro.grimoireMemento.load(obj: aPart)
-    }
-    override func action(ear: String, skin: String, eye: String) -> String {
-        kokoro.in1(chi: self)
-        let result:String = aPart.action(ear: ear, skin: skin, eye: eye)
-        kokoro.out(isCompleted: completed(), failure: failure(input: ""))
-        return result
-    }
-    override func failure(input: String) -> enumFail {
-        return aPart.failure(input: input)
-    }
-    override func completed() -> Bool {
-        return aPart.completed()
-    }
-    override func clone() -> Mutatable {
-        return MemoryMutatable(kokoro: kokoro, aPart: aPart.clone())
-    }
-    override func getMutationLimit() -> Int {
-        return aPart.getMutationLimit()
-    }
-    override func mutation() -> Mutatable {
-        // upon mutation the last mutation is saved
-        let mutant:Mutatable = aPart
-        let tempAP = mutant.mutation()
-        kokoro.grimoireMemento.reqquipMutation(mutationAPName: tempAP.myName())
-        return MemoryMutatable(kokoro: kokoro, aPart: tempAP)
-    }
-    override func myName() -> String {
-        return aPart.myName()
-    }
-}
-class T1:Mutatable{
-    var isCompleted:Bool = false
-    override func mutation() -> Mutatable {
-        print("T1 mutating into T2")
-        return T2() // modify to t2
-    }
-    override func clone() -> Mutatable {
-        print("T1 cloning another T1 object")
-        return T1()
-    }
-    override func action(ear: String, skin: String, eye: String) -> String {
-        self.isCompleted = true
-        return "I am a T1 object"
-    }
-    override func completed() -> Bool {
-        return self.isCompleted
-    }
-    override func getMutationLimit() -> Int {
-        return 1
-    }
-}
-class T2:Mutatable{
-    var isCompleted:Bool = false
-    override func mutation() -> Mutatable {
-        print("T2 mutating into T1")
-        return T1() // modify to t2
-    }
-    override func clone() -> Mutatable {
-        print("T2 cloning another T2 object")
-        return T2()
-    }
-    override func action(ear: String, skin: String, eye: String) -> String {
-        self.isCompleted = true
-        return "I am a T2 object"
-    }
-    override func completed() -> Bool {
-        return self.isCompleted
-    }
-    override func getMutationLimit() -> Int {
-        return 1
-    }
-}
-/*
+}/*
  it speaks something x times
  a most basic skill.
  also fun to make the chobit say what you want */
@@ -168,6 +66,13 @@ class APsay:Mutatable{
 class DeepCopier{
     func copyList(original: Array<String>)->Array<String>{
         var deepCopy: Array<String> = [String]()
+        for item in original{
+            deepCopy.append(item)
+        }
+        return deepCopy
+    }
+    func copyListOfInts(original: Array<Int>)->Array<Int>{
+        var deepCopy: Array<Int> = [Int]()
         for item in original{
             deepCopy.append(item)
         }
@@ -544,66 +449,9 @@ extension PlayGround {
 }
 // grimoirememento
 class GrimoireMemento{
-    var rootToAPNumDic:[String:String] = [:] // APname : APName3 (final current mutation)
-    var APNumToObjDic:[String:Mutatable] = [:] // APName3 : actual object
     private(set) var absDictionaryDB:AbsDictionaryDB
     init(absDictionaryDB:AbsDictionaryDB){
         self.absDictionaryDB = absDictionaryDB
-    }
-    func load(obj:Mutatable)->Mutatable{
-        /*
-         load final mutation from memory of obj
-         */
-        let objName:String = getSimpleClassName(obj: obj) // APName3
-        let objRoot = filterOutDigits(str1: objName) // APName
-        // if not in active DB try adding from external DB
-        if !rootToAPNumDic.keys.contains(objRoot){
-            let temp = self.absDictionaryDB.load(key: objRoot)
-            if temp != "null"{
-                self.rootToAPNumDic[objRoot]=temp
-            }
-        }
-        if !rootToAPNumDic.keys.contains(objRoot){
-            rootToAPNumDic[objRoot]=objName
-            return obj
-        }
-        if rootToAPNumDic[objRoot]==objName{return obj}
-        else{
-            let APNum = rootToAPNumDic[objRoot]
-            if APNumToObjDic.keys.contains(APNum!){return APNumToObjDic[APNum!]!.clone()}
-            else{
-                loadMutations(obj: obj, objName: objName, objRoot: objRoot)
-                return APNumToObjDic[APNum!]!.clone()
-            }
-        }
-    }
-    func reqquipMutation(mutationAPName: String){
-        // save mutation
-        let rootName:String=filterOutDigits(str1: mutationAPName)
-        self.rootToAPNumDic[rootName] = mutationAPName
-        self.absDictionaryDB.save(key: rootName, value: mutationAPName)
-    }
-    func filterOutDigits(str1:String)->String{
-        return str1.trimmingCharacters(in: CharacterSet(charactersIn: "0123456789"))
-    }
-    func getSimpleClassName(obj: Mutatable)->String{
-        return String(describing: type(of: obj))
-    }
-    func loadMutations(obj: Mutatable, objName: String, objRoot: String){
-        /*
-         make sure all the AP mutation sets of obj are present
-         self assumes the last mutation mutates into the prime mutation
-         */
-        var tempObj = obj.clone()
-        var mutant:Mutatable = tempObj
-        let end:String = objName
-        repeat{
-            let objectName:String = getSimpleClassName(obj: tempObj)
-            APNumToObjDic[objectName] = tempObj.clone()
-            mutant = tempObj
-            tempObj = mutant.mutation()
-        }
-        while(end != getSimpleClassName(obj: tempObj))
     }
     func simpleLoad(key:String)->String{
         return self.absDictionaryDB.load(key: key)
@@ -615,19 +463,9 @@ class GrimoireMemento{
 }
 // a step by step plan to achieve a goal
 class Algorithm{
-    private var goal:String = ""
-    private var representation:String = ""
     var algParts: Array<Mutatable> = [Mutatable]()
-    init(goal:String, representation:String, algParts: Array<Mutatable>) {
-        self.goal = goal.isEmpty ? "unknown" : goal
-        self.representation = representation.isEmpty ? "unknown" : representation
+    init(algParts: Array<Mutatable>) {
         self.algParts = algParts
-    }
-    func getGoal()->String{
-        return self.goal
-    }
-    func getRepresentation()->String{
-        return self.representation
     }
     func getSize() -> Int {
         return algParts.count
@@ -637,7 +475,7 @@ class Algorithm{
         for item in self.algParts{
             deepCopy.append(item)
         }
-        return Algorithm(goal: goal, representation: representation, algParts: deepCopy)
+        return Algorithm(algParts: deepCopy)
     }
 }
 class CldBool{
@@ -668,86 +506,81 @@ class APCldVerbatim:APVerbatim{
         let deepCoper = DeepCopier()
         return APCldVerbatim(sentences: deepCoper.copyList(original: sentences), cldBool: self.cldBool)
     }
+    override func completed() -> Bool {
+        return self.at >= self.sentences.count
+    }
 }
 class Kokoro{
     private var emot:String = ""
-    var pain:[String:Int] = [:]
     private(set) var grimoireMemento:GrimoireMemento
     var toHeart:[String:String] = [:]
-    var fromHeart:[String:String] = [:]
-    var standBy:Bool = false
     init(absDictionaryDB: AbsDictionaryDB) {
         self.grimoireMemento = GrimoireMemento(absDictionaryDB: absDictionaryDB)
     }
-    func getPain(biJuuName: String) -> Int {
-        return pain[biJuuName] ?? 0
+    func getEmot()->String{
+        return emot
     }
-    func in1(chi:MemoryMutatable){}
-    func out(isCompleted:Bool, failure:enumFail){}
+    func setEmot(emot:String){
+        self.emot = emot
+    }
 }
 // used to transport algorithms to other classes
 class Neuron{
-    var algParts: Array<Algorithm> = [Algorithm]()
-    var negativeAlgParts: Array<Algorithm> = [Algorithm]()
-    func empty(){
-        self.algParts.removeAll()
-        self.negativeAlgParts.removeAll()
+    private var defcons:[Int:Array<Algorithm>] = [:]
+    init() {
+        for i in 1...6{
+            defcons[i] = [Algorithm]()
+        }
+    }
+    func insertAlg(priority:Int, alg:Algorithm){
+        if priority>0 && priority < 6 {
+            if defcons[priority]!.count < 4{
+                defcons[priority]!.append(alg)
+            }
+        }
+    }
+    func getAlg(defcon:Int)->Algorithm?{
+        if defcons[defcon]!.count>0{
+            var temp:Algorithm = defcons[defcon]!.remove(at: 0)
+            return temp.clone()
+        }
+        return nil
     }
 }
 class DiSkillUtils{
-    func onePartAlgorithm(algMarker:String, algPart:Mutatable)->Algorithm{
+    func onePartAlgorithm(algPart:Mutatable)->Algorithm{
         // returns an algorithm composed of 1 algorithm part
-        let representasion:String = "rep_\(algMarker)"
         var algParts1: Array<Mutatable> = [Mutatable]()
         algParts1.append(algPart)
-        let result:Algorithm = Algorithm(goal: algMarker, representation: representasion, algParts: algParts1)
+        let result:Algorithm = Algorithm(algParts: algParts1)
         return result
     }
-    func algBuilder(algMarker:String, algParts:Mutatable...)->Algorithm{
+    func algBuilder(algParts:Mutatable...)->Algorithm{
         // builds an algorithm out of alg parts
-        let representasion:String = "rep_\(algMarker)"
         var algParts1: Array<Mutatable> = [Mutatable]()
         for algPart in algParts{
             algParts1.append(algPart)
         }
-        let result:Algorithm = Algorithm(goal: algMarker, representation: representasion, algParts: algParts1)
+        let result:Algorithm = Algorithm(algParts: algParts1)
         return result
     }
     func simpleVerbatimAlgorithm(algMarker:String, sayThis:String...)->Algorithm{
         // builds an algorithm of sentences to say
-        return onePartAlgorithm(algMarker: algMarker, algPart: APVerbatim(sentences: sayThis))
+        return onePartAlgorithm(algPart: APVerbatim(sentences: sayThis))
     }
     func simpleCloudianVerbatimAlgorithm(cldBool:CldBool, algMarker:String, sayThis:String...)->Algorithm{
         // builds an algorithm of sentences to say
         // the cloudian reference can prevent sending algorithms while this one is running (prevention done at the skill input method)
-        return onePartAlgorithm(algMarker: algMarker, algPart: APCldVerbatim(sentences: sayThis, cldBool: cldBool))
+        return onePartAlgorithm(algPart: APCldVerbatim(sentences: sayThis, cldBool: cldBool))
     }
-    func onePartAlgorithm(algRepresantation:String, algMarker:String, algPart:Mutatable)->Algorithm{
-        // returns an algorithm composed of 1 algorithm part
-        let representasion:String = algRepresantation
-        var algParts1: Array<Mutatable> = [Mutatable]()
-        algParts1.append(algPart)
-        let result:Algorithm = Algorithm(goal: algMarker, representation: representasion, algParts: algParts1)
-        return result
-    }
-    func algBuilder(algRepresantation:String, algMarker:String, algParts:Mutatable...)->Algorithm{
-        // builds an algorithm out of alg parts
-        let representasion:String = algRepresantation
-        var algParts1: Array<Mutatable> = [Mutatable]()
-        for algPart in algParts{
-            algParts1.append(algPart)
-        }
-        let result:Algorithm = Algorithm(goal: algMarker, representation: representasion, algParts: algParts1)
-        return result
-    }
-    func simpleVerbatimAlgorithm(algRepresantation:String,algMarker:String, sayThis:String...)->Algorithm{
+    func simpleVerbatimAlgorithm(sayThis:String...)->Algorithm{
         // builds an algorithm of sentences to say
-        return onePartAlgorithm(algRepresantation:algRepresantation, algMarker: algMarker, algPart: APVerbatim(sentences: sayThis))
+        return onePartAlgorithm(algPart: APVerbatim(sentences: sayThis))
     }
-    func simpleCloudianVerbatimAlgorithm(algRepresantation:String, cldBool:CldBool, algMarker:String, sayThis:String...)->Algorithm{
+    func simpleCloudianVerbatimAlgorithm(cldBool:CldBool, sayThis:String...)->Algorithm{
         // builds an algorithm of sentences to say
         // the cloudian reference can prevent sending algorithms while this one is running (prevention done at the skill input method)
-        return onePartAlgorithm(algRepresantation: algRepresantation,algMarker: algMarker, algPart: APCldVerbatim(sentences: sayThis, cldBool: cldBool))
+        return onePartAlgorithm(algPart: APCldVerbatim(sentences: sayThis, cldBool: cldBool))
     }
     func stringContainsListElement(str1:String, items:Array<String>)->String{
         // returns the 1st match between words in a string and values in a list.
@@ -761,12 +594,14 @@ open class DiSkillV2{
     private(set) var kokoro:Kokoro = Kokoro(absDictionaryDB: AbsDictionaryDB())
     let diSkillUtills:DiSkillUtils = DiSkillUtils()
     var outAlg:Algorithm? = nil
+    var outpAlgPriority:Int = -1 // defcon 1->5
     init() {}
     func input(ear:String, skin:String, eye:String){
     }
     func output(noiron:Neuron){
         if let notNilAlg = self.outAlg{
-            noiron.algParts.append(notNilAlg)
+            noiron.insertAlg(priority: outpAlgPriority, alg: notNilAlg)
+            self.outpAlgPriority = -1
             self.outAlg = nil
         }
     }
@@ -775,25 +610,18 @@ open class DiSkillV2{
         self.kokoro = kokoro
     }
 }
-open class DiSkillV3:DiSkillV2{
-    // algorithm will be loaded with priority to run
-    // use for fight or flight type skills
-    override func output(noiron:Neuron){
-        if let notNilAlg = self.outAlg{
-            noiron.negativeAlgParts.append(notNilAlg)
-            self.outAlg = nil
-        }
-    }
-}
+
 class DiHelloWorld:DiSkillV2{
     // hello world skill for testing purposes
     override func input(ear: String, skin: String, eye: String) {
         switch (ear)  {
           case "hello":
-            self.outAlg = diSkillUtills.simpleVerbatimAlgorithm(algMarker: "test2", sayThis: "hello world")
+            self.outAlg = diSkillUtills.simpleVerbatimAlgorithm(sayThis: "hello world")
+            self.outpAlgPriority = 4
           case "incantation 0":
             // cancel running algorithm entirely at any alg part point
-            self.outAlg = diSkillUtills.simpleVerbatimAlgorithm(algRepresantation: "test 0", algMarker: "incantation0", sayThis: "fly","bless of magic caster","infinity wall", "magic ward holy","life essence")
+            self.outAlg = diSkillUtills.simpleVerbatimAlgorithm(algMarker: "incantation0", sayThis: "fly","bless of magic caster","infinity wall", "magic ward holy","life essence")
+            self.outpAlgPriority = 4
         default:
             return
         }
@@ -1142,7 +970,6 @@ class Cerabellum{
     // runs an algorithm
     private var fin:Int = 0
     private(set) var at:Int = 0
-    private var failType:enumFail = enumFail.ok
     private var incrementAt:Bool = false
     var alg:Algorithm?
     private var isActive1:Bool = false
@@ -1182,51 +1009,11 @@ class Cerabellum{
         }
         return axnStr
     }
-    func getMutationLimitOfActiveAlgPart() -> Int {
-        return alg!.algParts[at].getMutationLimit()
-    }
-    func getFailType() -> enumFail {
-        return alg!.algParts[at].failure(input: "")
+    func deActivation() {
+        self.isActive1 = self.isActive1 && !alg!.algParts[at].algKillSwitch
     }
 }
-class DExplorer {
-    // class responsible for mutations of algParts (Mutatable)
-    private var failureCounter:Int = 0
-    private var prevAP:String = ""
-    private let regexUtil:RegexUtil = RegexUtil()
-    func mutate(cera:Cerabellum, failure:enumFail) {
-        let AP:String = regexUtil.stripAwayNumbers(str1: cera.emot)
-        /*
-                 * group relies on a naming convention each class in a mutation series must have
-                 * the same class name concated with a number : APMoan1, APMoan2, APMaon3 ...
-         */
-        // give up ?
-        if prevAP.contains(AP) && !(failure == enumFail.ok){
-            failureCounter += 1
-            if failureCounter > cera.getMutationLimitOfActiveAlgPart(){
-                cera.setActive(isActive: false)
-                // failureCounter = 0 // enable mutation even on next algpart assuming it will be the same type (example alg: APx APx)
-            }
-            else{
-                if !prevAP.contains(AP){
-                    failureCounter = 0
-                }
-            }
-        }
-        prevAP = AP
-        // set AP to return fail from it's failure func to enable mutation
-        switch (failure)  {
-          case .fail:
-            let mutant:Mutatable = cera.alg!.algParts[cera.at]
-            cera.alg!.algParts[cera.at] = mutant.mutation()
-          case .cloudian:
-            // cancel running algorithm entirely at any alg part point
-            cera.setActive(isActive: false)
-        default:
-            return
-        }
-    }
-}
+
 class PriorityQueue<T> {
   var elements: [T] = []
 
@@ -1255,174 +1042,33 @@ class PriorityQueue<T> {
         return elements.count
     }
 }
-class FusionCera:Cerabellum {
-    private var abort:Int = 0
-    private(set) var algQueue:PriorityQueue<Algorithm>
-    init(algQueue:PriorityQueue<Algorithm>) {
-        self.algQueue = algQueue
-    }
-    func setAbort(abort:Int) {
-        self.abort = abort + 1
-    }
-    override func act(ear: String, skin: String, eye: String) -> String {
-        let result:String = super.act(ear: ear, skin: skin, eye: eye)
-        abort -= 1
-        if abort < 1 {
-            super.setActive(isActive: false)
-        }else{
-            if !super.isActive(){
-                let rep = super.alg!.getRepresentation()
-                for i in 1..<algQueue.size() {
-                    if rep == algQueue.elements[i].getRepresentation(){
-                        algQueue.elements.remove(at: i); break
-                    }
-                }
-            }
-        }
-        return result
-    }
-}
 class Fusion {
-    /*
-     * fuses algorithms and sends needed algorithm to a designated cerabellum
-     * cobject for activation
-     */
-    private var algDurations:[String:Int] // run duration of alg, think cycles #
-    private var algDurations2:[String:Int] = [:]
     private var emot:String = "" // emotion represented by the active alg part (Mutatable)
-    private var algQueue:PriorityQueue<Algorithm> = PriorityQueue<Algorithm>() // regular algs in stand by to run
-    private var dangerAlgQueue:PriorityQueue<Algorithm> = PriorityQueue<Algorithm>() // fight or flight algorithm in stand by to run
-    private var reqOverLoad:Bool = false // too many requests
-    private var repReq:Bool = false // chobit has already accepted this request
-    private var represantations:Set<String> = Set<String>() // algs representation attribute
-    private let dExplorer:DExplorer = DExplorer()
-    private var goalsToTrack : [String] = ["",""] // // dangerCera, mainCera string array
-    // cerabellums :
-    private let dangerCera:Cerabellum = Cerabellum()
-    // requip ceras
-    private(set) var fusionCera : FusionCera
-    private let mainCera:Cerabellum = Cerabellum()
-    private(set) var cera:[Cerabellum]
-    init(algDurations:[String:Int]) {
-        fusionCera = FusionCera(algQueue: self.algQueue)
-        cera = [dangerCera,fusionCera,mainCera]
-        self.algDurations = algDurations
-    }
-    func setAlgQueue(shinkei:Neuron) {
-        for algorithm:Algorithm in shinkei.negativeAlgParts {
-            if self.dangerAlgQueue.isEmpty(){
-                self.dangerAlgQueue.elements.append(algorithm.clone())
-            }else{break}
-        }
-        self.repReq = false
-        for algorithm:Algorithm in shinkei.algParts{
-            updateRepresentations() // update all standby algs list (to hashset)
-            let tempAlgRepresentation = algorithm.getRepresentation()
-            let existinAlg:Bool = self.represantations.contains(tempAlgRepresentation)
-            if existinAlg {
-                // this requested alg is already in stand by, this is negging !
-                self.repReq = true
-                continue
-            }
-            if self.algQueue.size() < 5 {
-                // add alg if there is room in the alg queue
-                self.algQueue.insert(algorithm.clone())
-            }else{
-                break
-            }
-        }
-        // full of algs to do and another one is requested ? that is an overload
-        self.reqOverLoad = self.algQueue.size() > 4 && !shinkei.algParts.isEmpty
-        // empty neuron
-        shinkei.empty()
-        if !dangerCera.isActive() && !dangerAlgQueue.isEmpty(){
-            dangerCera.setAlgorithm(algorithm: dangerAlgQueue.poll()!)
-            goalsToTrack[0] = dangerCera.alg!.getRepresentation()
-            goalTrack(algRepresantation: goalsToTrack[0])
-        }
-        if !mainCera.isActive() && !algQueue.isEmpty(){
-            mainCera.setAlgorithm(algorithm: algQueue.poll()!)
-            goalsToTrack[1] = mainCera.alg!.getRepresentation()
-            goalTrack(algRepresantation: goalsToTrack[1])
-        }
-        fuze()
-    }
-    func getRepReq() -> Bool {
-        // was a request repeatedly asked for ?
-        return self.repReq
-    }
-    func getReqOverload() -> Bool {
-        // too many requests ?
-        return self.reqOverLoad
-    }
+    private var result:String = ""
+    private var CeraArr = [Cerabellum(),Cerabellum(),Cerabellum(),Cerabellum(),Cerabellum()]
     func getEmot() -> String {
-        // get active AlgPart representing the emotion
-        return self.emot
+        let temp:String = emot
+        emot = ""
+        return temp
     }
-    private func goalTrack(algRepresantation:String) {
-        // make sure algDurations has this alg
-        if algDurations2[algRepresantation] == nil {
-            algDurations[algRepresantation] = 0
-            algDurations2[algRepresantation] = 0
-        }else{
-            algDurations[algRepresantation] = algDurations2[algRepresantation]
-        }
-    }
-    private func updateRepresentations() {
-        self.represantations = Set<String>()
-        for algorithm:Algorithm in self.algQueue.elements {
-            self.represantations.insert(algorithm.getRepresentation())
-        }
-    }
-    private func goalTrackReset(algRepresantation:String) {
-        if !algRepresantation.isEmpty {
-            algDurations2[algRepresantation] = 0
-        }
-    }
-    private func fuze() {
-        if mainCera.isActive() && !fusionCera.isActive(){
-            var algRunTime:Int = algDurations[mainCera.alg!.getRepresentation()]!
-            algRunTime = algRunTime / 2
-            var gRep1:String = ""; var time1:Int = 0
-            for alg1:Algorithm in algQueue.elements{
-                gRep1 = alg1.getRepresentation()
-                goalTrack(algRepresantation: gRep1)
-                time1 = algDurations[gRep1]!
-                // alg in queue is faster than the one running ?
-                if time1 < algRunTime {
-                    fusionCera.setAlgorithm(algorithm: alg1)
-                    removeAlg(represantation: gRep1) // remove alg from queue, its gonna be running on the fusionCera
-                    fusionCera.setAbort(abort: time1)
-                    goalTrackReset(algRepresantation: gRep1)
-                    break
+    func loadAlgs(neuron:Neuron) {
+        for i in 1...5{
+            if !CeraArr[i-1].isActive(){
+                if let temp:Algorithm = neuron.getAlg(defcon: i){
+                    CeraArr[i].setAlgorithm(algorithm: temp)
                 }
             }
         }
-        goalTrackReset(algRepresantation: goalsToTrack[0]);goalsToTrack[0] = ""
-        goalTrackReset(algRepresantation: goalsToTrack[1]);goalsToTrack[1] = ""
     }
-    private func removeAlg(represantation:String) {
-        for i in 0..<algQueue.size() {
-            if represantation == algQueue.elements[i].getRepresentation(){
-                algQueue.elements.remove(at: i); break
-            }
-        }
-    }
-    func act(ear:String, skin:String, eye:String) -> String {
-        var result:String = ""
-        for i in 0..<cera.count {
-            if cera[i].isActive(){
-                result = cera[i].act(ear: ear, skin: skin, eye: eye)
-                dExplorer.mutate(cera: cera[i], failure: cera[i].getFailType())
-                cera[i].advanceInAlg()
-                self.emot = cera[i].emot
-                if i > 1 {
-                    let temp:String = cera[i].alg!.getRepresentation()
-                    let n1:Int = algDurations2[temp]!
-                    algDurations2[temp] = n1 + 1
-                }
-                break
-            }
+    func runAlgs(ear: String, skin: String, eye: String) -> String {
+        result = ""
+        for i in 0...4 {
+            if !CeraArr[i].isActive(){continue}
+            result = CeraArr[i].act(ear: ear, skin: skin, eye: eye)
+            CeraArr[i].advanceInAlg()
+            emot = CeraArr[i].emot
+            CeraArr[i].deActivation() // deactivation if Mutatable.algkillswitch = true
+            break
         }
         return result
     }
@@ -1435,16 +1081,12 @@ class Thinkable {
 }
 class Chobits:Thinkable {
     fileprivate(set) var emot = "" // emotion represented by the current active alg part
-    var kokoro:Kokoro // consciousness
+    var kokoro:Kokoro = Kokoro(absDictionaryDB: AbsDictionaryDB())// consciousness
     private var dClasses: Array<DiSkillV2> // skills of the chobit
-    var algDurations:[String:Int]
     fileprivate var fusion:Fusion // multitasking center
     fileprivate var noiron:Neuron = Neuron() // algorithms transporter
-    fileprivate var lastOutput = ""
-    fileprivate var timeGate:TimeGate = TimeGate() // circadian pacemaker
     override init () {
-        self.algDurations = [:]
-        self.fusion = Fusion(algDurations: algDurations)
+        self.fusion = Fusion()
         self.dClasses = [DiSkillV2]()
         self.kokoro = Kokoro(absDictionaryDB: AbsDictionaryDB())
     }
@@ -1472,23 +1114,13 @@ class Chobits:Thinkable {
             dClasses.append(skill)
         }
     }
-    func setPause(pause:Int) {
-        // set standby timegate pause.
-        // pause time without output from the chobit
-        // means the standby attribute will be true for a moment.
-        // it is the equivelant of the chobit being bored
-        // the standby attribute can be accessed via the kokoro
-        // object within a skill if needed
-        self.timeGate.setPause(pause: pause)
-    }
     override func think(ear: String, skin: String, eye: String) -> String {
         // the input will be processed by the chobits' skills
-        let tempEar:String = translateIn(earIn: ear)
         for skill:DiSkillV2 in self.dClasses {
-            inOut(dClass: skill, ear: tempEar, skin: skin, eye: eye)
+            inOut(dClass: skill, ear: ear, skin: skin, eye: eye)
         }
-        fusion.setAlgQueue(shinkei: self.noiron)
-        return translateOut(outResult: fusion.act(ear: tempEar, skin: skin, eye: eye))
+        fusion.loadAlgs(neuron: noiron)
+        return fusion.runAlgs(ear: ear, skin: skin, eye: eye)
     }
     func getSoulEmotion() -> String {
         // get the last active AlgPart name
@@ -1496,36 +1128,9 @@ class Chobits:Thinkable {
         // an emotion
         return fusion.getEmot()
     }
-    fileprivate func translateIn(earIn:String) -> String {
-        // makes sure the chobit doesn't feedback on her own output
-        return earIn == lastOutput ? "" : earIn
-    }
-    fileprivate func translateOut(outResult:String) -> String {
-        // save last output served
-        if !outResult.isEmpty {
-            lastOutput = outResult
-            self.timeGate.openGate()
-            self.kokoro.standBy = false
-        }
-        // standBy :
-        else{
-            if self.timeGate.isClosed() {
-                self.kokoro.standBy = true
-                self.timeGate.openGate()
-            }else{
-                self.kokoro.standBy = false
-            }
-        }
-        return outResult
-    }
     private func inOut(dClass:DiSkillV2,ear:String,skin:String,eye:String) {
         dClass.input(ear: ear, skin: skin, eye: eye)
         dClass.output(noiron: self.noiron)
-    }
-    func getStandBy() -> Bool {
-        // this is an under use method
-        // only use this for testing
-        return kokoro.standBy
     }
     func getFusion() -> Fusion {
         return self.fusion

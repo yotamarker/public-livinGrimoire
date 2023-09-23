@@ -470,8 +470,7 @@ class Neuron:
     def getAlg(self, defcon: int) -> Algorithm:
         if len(self._defcons[defcon]) > 0:
             temp = self._defcons[defcon].pop(0)
-            if temp is not None:
-                return temp.clone()
+            return temp.clone()
         return None
 
 

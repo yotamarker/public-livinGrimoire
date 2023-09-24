@@ -16,9 +16,7 @@ public class Fusion {
     }
 
     public String getEmot() {
-        String temp = emot;
-        emot = "";
-        return temp;
+        return emot;
     }
     public void loadAlgs(Neuron neuron){
         for (int i = 1; i < 6; i++) {
@@ -40,8 +38,9 @@ public class Fusion {
             ceraArr[i].advanceInAlg();
             emot = ceraArr[i].getEmot();
             ceraArr[i].deActivation(); // deactivation if Mutatable.algkillswitch = true
-            break;
+            return result;
         }
+        emot = "";
         return result;
     }
 }

@@ -836,9 +836,7 @@ class Fusion:
         self._result: str = ""
 
     def getEmot(self) -> str:
-        temp = self._emot
-        self._emot = ""
-        return temp
+        return self._emot
 
     def loadAlgs(self, neuron: Neuron):
         for i in range(1, 6):
@@ -856,7 +854,8 @@ class Fusion:
             self.ceraArr[i].advanceInAlg()
             self._emot = self.ceraArr[i].getEmot()
             self.ceraArr[i].deActivateAlg()  # deactivation if Mutatable.algkillswitch = true
-            break
+            return self._result
+        self._emot = ""
         return self._result
 
 

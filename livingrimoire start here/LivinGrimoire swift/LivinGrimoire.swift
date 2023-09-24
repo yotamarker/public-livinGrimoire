@@ -1047,9 +1047,7 @@ class Fusion {
     private var result:String = ""
     private var CeraArr = [Cerabellum(),Cerabellum(),Cerabellum(),Cerabellum(),Cerabellum()]
     func getEmot() -> String {
-        let temp:String = emot
-        emot = ""
-        return temp
+        return emot
     }
     func loadAlgs(neuron:Neuron) {
         for i in 1...5{
@@ -1068,8 +1066,9 @@ class Fusion {
             CeraArr[i].advanceInAlg()
             emot = CeraArr[i].emot
             CeraArr[i].deActivation() // deactivation if Mutatable.algkillswitch = true
-            break
+            return result
         }
+        emot = ""
         return result
     }
 }

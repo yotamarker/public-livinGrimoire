@@ -1,0 +1,35 @@
+#include <Arduino.h>
+#include "LivinGrimoireLight.h"
+// Skill class
+void Skill::inOut() 
+{
+  // override me
+}
+// ListOfSkills class
+void ListOfSkills::append(Skill* item) 
+{
+  if (length < 16) data[length++] = item;
+}
+void ListOfSkills::remove(byte index) 
+{
+  if (index >= length) return;
+ memmove(&data[index], &data[index+1], length -
+index - 1);
+ length--;
+}
+// Chobit class
+void Chobit::addSkill(Skill* s1)
+{
+    dSkills->append(s1);
+}
+void Chobit::clearSkills()
+  {
+    dSkills = new ListOfSkills();
+  }
+void Chobit::think(byte ear, byte skin, byte eye)
+  {
+    for(int i=0;i<dSkills->length;i++)
+    {
+      dSkills->data[i]->inOut();
+    }
+  }

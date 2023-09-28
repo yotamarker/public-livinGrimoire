@@ -1,0 +1,13 @@
+#include "DiHelloWorld.h"
+#include "LivinGrimoireLight.h"
+void setup() {
+    Led led1(13); // used to initialize the Hello World skill
+    Skill* s2 = new DiHelloWorld(led1); // example skill created
+    Chobit* c1 = new Chobit();
+    c1->addSkill(s2);
+    c1->think(0, 0, 0);
+    c1->think(0, 0, 0);
+}
+
+void loop() {
+}

@@ -2,17 +2,8 @@
 
 ***
 
-**D2** : DiSkillV2 (regular LvinGrimoire skill class names) should start with D2.
-for example D2Parrot
-
-***
-
-**D3** : DiSkillV3:DiSkillV2 which are skills whose algorithms have a priority to run
-(fight or flight high priority).
-
-D3 have more priority to run than D2 LivinGrimoire skills.
-these skill classes names should start with D3.
-for example : D3Detective
+**Di** : DiSkillV2 (LivinGrimoire skill class names) should start with Di.
+for example DiHelloWorld.
 
 ***
 
@@ -28,4 +19,4 @@ data classification, and even AI hormones.
 
 **AXL**: Auxiliary Modules for Lower Chobits, which are Chobit objects that process
 input from thinking Chobits. 
-these may include trandlations, reply decorations, decoding, and custom dialects.
+these may include translations, reply decorations, decoding, and custom dialects.

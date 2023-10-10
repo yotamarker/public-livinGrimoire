@@ -33,4 +33,7 @@ public class TODOListManager {
         q1.removeItem(task);
         backup.removeItem(task);
     }
+    public Boolean containsTask(String task){
+        return backup.contains(task);
+    }
 }

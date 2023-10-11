@@ -541,22 +541,17 @@ class Neuron{
     }
     func getAlg(defcon:Int)->Algorithm?{
         if defcons[defcon]!.count>0{
-            var temp:Algorithm = defcons[defcon]!.remove(at: 0)
+            let temp:Algorithm = defcons[defcon]!.remove(at: 0)
             return temp.clone()
         }
         return nil
     }
 }
 class DiSkillUtils{
-    func onePartAlgorithm(algPart:Mutatable)->Algorithm{
-        // returns an algorithm composed of 1 algorithm part
-        var algParts1: Array<Mutatable> = [Mutatable]()
-        algParts1.append(algPart)
-        let result:Algorithm = Algorithm(algParts: algParts1)
-        return result
-    }
+    // alg part based algorithm building methods
+    // var args param
     func algBuilder(algParts:Mutatable...)->Algorithm{
-        // builds an algorithm out of alg parts
+        // returns an algorithm built with the algPart varargs
         var algParts1: Array<Mutatable> = [Mutatable]()
         for algPart in algParts{
             algParts1.append(algPart)
@@ -564,23 +559,15 @@ class DiSkillUtils{
         let result:Algorithm = Algorithm(algParts: algParts1)
         return result
     }
-    func simpleVerbatimAlgorithm(algMarker:String, sayThis:String...)->Algorithm{
-        // builds an algorithm of sentences to say
-        return onePartAlgorithm(algPart: APVerbatim(sentences: sayThis))
-    }
-    func simpleCloudianVerbatimAlgorithm(cldBool:CldBool, algMarker:String, sayThis:String...)->Algorithm{
-        // builds an algorithm of sentences to say
-        // the cloudian reference can prevent sending algorithms while this one is running (prevention done at the skill input method)
-        return onePartAlgorithm(algPart: APCldVerbatim(sentences: sayThis, cldBool: cldBool))
-    }
+    // String based algorithm building methods
     func simpleVerbatimAlgorithm(sayThis:String...)->Algorithm{
-        // builds an algorithm of sentences to say
-        return onePartAlgorithm(algPart: APVerbatim(sentences: sayThis))
+        // returns an algorithm that says the sayThis Strings verbatim per think cycle
+        return algBuilder(algParts: APVerbatim(sentences: sayThis))
     }
-    func simpleCloudianVerbatimAlgorithm(cldBool:CldBool, sayThis:String...)->Algorithm{
-        // builds an algorithm of sentences to say
-        // the cloudian reference can prevent sending algorithms while this one is running (prevention done at the skill input method)
-        return onePartAlgorithm(algPart: APCldVerbatim(sentences: sayThis, cldBool: cldBool))
+    // String part based algorithm building methods with cloudian (shallow ref object to inform on alg completion)
+    func simpleCloudianVerbatimAlgorithm(cldBool:CldBool,sayThis:String...)->Algorithm{
+        /// returns an algorithm that says the sayThis Strings verbatim per think cycle
+        return algBuilder(algParts: APCldVerbatim(sentences: sayThis, cldBool: cldBool))
     }
     func stringContainsListElement(str1:String, items:Array<String>)->String{
         // returns the 1st match between words in a string and values in a list.
@@ -609,6 +596,31 @@ open class DiSkillV2{
         // use this for telepathic communication between different chobits objects
         self.kokoro = kokoro
     }
+    // in skill algorithm building shortcut methods:
+    func setVerbatimAlgFromList(priority:Int,  sayThis: Array<String>) {
+        // build a simple output algorithm to speak string by string per think cycle
+        // uses list param
+        self.outAlg = diSkillUtills.algBuilder(algParts: APVerbatim(sentences: sayThis))
+        self.outpAlgPriority = priority // 1->5 1 is the highest algorithm priority
+    }
+    func setVerbatimAlg(priority:Int,  sayThis:String...) {
+        // build a simple output algorithm to speak string by string per think cycle
+        // uses varargs param
+        var temp: Array<String> = [String]()
+        for strTemp in sayThis{
+            temp.append(strTemp)
+        }
+        setVerbatimAlgFromList(priority: priority, sayThis: temp)
+    }
+    func algPartsFusion(priority:Int, algParts: Mutatable...) {
+        var algParts1: Array<Mutatable> = [Mutatable]()
+        for algPart in algParts{
+            algParts1.append(algPart)
+        }
+        let result:Algorithm = Algorithm(algParts: algParts1)
+        self.outAlg = result
+        self.outpAlgPriority = priority // 1->5 1 is the highest algorithm priority
+    }
 }
 
 class DiHelloWorld:DiSkillV2{
@@ -616,12 +628,11 @@ class DiHelloWorld:DiSkillV2{
     override func input(ear: String, skin: String, eye: String) {
         switch (ear)  {
           case "hello":
-            self.outAlg = diSkillUtills.simpleVerbatimAlgorithm(sayThis: "hello world")
-            self.outpAlgPriority = 4
+            super.setVerbatimAlg(priority: 4, sayThis: "hello world")
           case "incantation 0":
             // cancel running algorithm entirely at any alg part point
-            self.outAlg = diSkillUtills.simpleVerbatimAlgorithm(algMarker: "incantation0", sayThis: "fly","bless of magic caster","infinity wall", "magic ward holy","life essence")
-            self.outpAlgPriority = 4
+            super.setVerbatimAlg(priority: 4, sayThis: "fly","bless of magic caster","infinity wall", "magic ward holy","life essence")
+
         default:
             return
         }

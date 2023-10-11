@@ -815,6 +815,9 @@ class TODOListManager{
         q1.clearData()
         backup.clearData()
     }
+    func containsTask(task:String) -> Bool {
+        return backup.contains(str: task)
+    }
 }
 class PersistentQuestion{
     private var isActive:Bool = false
@@ -1254,5 +1257,10 @@ class Cron:TrGEV3{
         timeStamp = t1
         trgTime.setTime(v1: t1)
         counter = 0
+    }
+}
+class AXStrOrDefault{
+    func gerOrDefault(str1:String, default1:String) -> String {
+        return str1.isEmpty ? default1 : str1
     }
 }

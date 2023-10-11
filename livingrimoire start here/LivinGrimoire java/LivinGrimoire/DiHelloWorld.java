@@ -10,7 +10,7 @@ public class DiHelloWorld extends DiSkillV2{
     public void input(String ear, String skin, String eye) {
         switch (ear){
             case "hello":
-                super.setVerbatimAlg(4,"hello world");
+                super.setVerbatimAlg(4,"hello world"); // 1->5 1 is the highest algorithm priority
                 break;
         }
     }

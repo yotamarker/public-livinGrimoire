@@ -6,7 +6,7 @@ public class DISkillUtils {
     // alg part based algorithm building methods
     // var args param
     public Algorithm algBuilder(Mutatable... algParts) {
-        // returns a simple algorithm for saying sent parameter
+        // returns an algorithm built with the algPart varargs
         ArrayList<Mutatable> algParts1 = new ArrayList<>();
         for (int i = 0; i < algParts.length; i++) {
             algParts1.add(algParts[i]);
@@ -14,14 +14,14 @@ public class DISkillUtils {
         Algorithm algorithm = new Algorithm(algParts1);
         return algorithm;
     }
-    // String part based algorithm building methodes
+    // String based algorithm building methods
     public Algorithm simpleVerbatimAlgorithm(String... sayThis) {
-        // returns alg that says the word string (sayThis)
+        // returns an algorithm that says the sayThis Strings verbatim per think cycle
         return algBuilder(new APVerbatim(sayThis));
     }
-    // String part based algorithm building methodes with cloudian (shallow ref object to inform on alg completion)
+    // String part based algorithm building methods with cloudian (shallow ref object to inform on alg completion)
     public Algorithm simpleCloudiandVerbatimAlgorithm(CldBool cldBool, String... sayThis) {
-        // returns alg that says the word string (sayThis)
+        // returns an algorithm that says the sayThis Strings verbatim per think cycle
         return algBuilder(new APCldVerbatim(cldBool, sayThis));
     }
     public String strContainsList(String str1, ArrayList<String> items) {

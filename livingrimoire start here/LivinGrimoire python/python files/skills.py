@@ -14,15 +14,13 @@ class DiMisser(DiSkillV2):
     def input(self, ear: str, skin: str, eye: str):
         if ear == "i am home":
             self._cron.setStartTime(self._pl.getPastInXMin(10))
-            self._outAlg = self._diSkillUtils.simpleVerbatimAlgorithm(self._responder.getAResponse())
-            self._outpAlgPriority = 4
+            self.setVerbatimAlg(4, self._responder.getAResponse())
             return
         if self._cron.trigger():
             n: int = self._cron.getCounter()
             match n:
                 case _:
-                    self._outAlg = self._diSkillUtils.simpleVerbatimAlgorithm(f'hmph {n}')
-                    self._outpAlgPriority = 4
+                    self.setVerbatimAlg(4, f'hmph {n}')
 
 
 class DiBurper(DiSkillV2):
@@ -58,8 +56,7 @@ class DiBurper(DiSkillV2):
         now_minutes: int = self._pl.getMinutesAsInt()
         if self._burpMinutes.contains(now_minutes):
             self._burpMinutes.removeItem(now_minutes)
-            self._outAlg = self._diSkillUtils.simpleVerbatimAlgorithm(self._responder1.getAResponse())
-            self._outpAlgPriority = 4
+            self.setVerbatimAlg(4,self._responder1.getAResponse())
 
 
 class DiSneezer(DiSkillV2):
@@ -93,8 +90,7 @@ class DiSneezer(DiSkillV2):
         now_minutes: int = self._pl.getMinutesAsInt()
         if self._sneezeMinutes.contains(now_minutes):
             self._sneezeMinutes.removeItem(now_minutes)
-            self._outAlg = self._diSkillUtils.simpleVerbatimAlgorithm(self._responder1.getAResponse())
-            self._outpAlgPriority = 4
+            self.setVerbatimAlg(4, self._responder1.getAResponse())
 
 
 class DiPetv3(DiSkillV2):
@@ -132,8 +128,7 @@ class DiPetv3(DiSkillV2):
         now_minutes: int = self._pl.getMinutesAsInt()
         if self._chirpMinutes.contains(now_minutes):
             self._chirpMinutes.removeItem(now_minutes)
-            self._outAlg = self._diSkillUtils.simpleVerbatimAlgorithm(self._responder1.getAResponse())
-            self._outpAlgPriority = 3
+            self.setVerbatimAlg(3,self._responder1.getAResponse())
 
 
 class DiReplier(DiSkillV2):
@@ -150,7 +145,7 @@ class DiReplier(DiSkillV2):
             n: int = self._rnd.getSimpleRNDNum(100)
             if n < 100:
                 temp: str = self._responder1.getAResponse()
-                self._outAlg = self._diSkillUtils.simpleVerbatimAlgorithm(temp)
-                self._outpAlgPriority = 4
+                self.setVerbatimAlg(4, temp)
         # listen n learn recent single words
         self._responder1.listen(ear)
+

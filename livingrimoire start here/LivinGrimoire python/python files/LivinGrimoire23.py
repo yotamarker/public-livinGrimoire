@@ -478,28 +478,25 @@ class Neuron:
 
 
 class DISkillUtils:
-    def verbatimGorithmOne(self, itte: Mutatable) -> Algorithm:
-        # returns a simple algorithm containing 1 alg part
-        representation = "util"
+    # alg part based algorithm building methods
+    # var args param
+    def algBuilder(self, *itte: Mutatable) -> Algorithm:
+        # returns an algorithm built with the algPart varargs
         algParts1: list[Mutatable] = []
-        algParts1.append(itte)
-        algorithm = Algorithm("util", representation, algParts1)
+        for i in range(0, len(itte)):
+            algParts1.append(itte[i])
+        algorithm: Algorithm = Algorithm(algParts1)
         return algorithm
 
-    def customizedVerbatimGorithm(self, itte: Mutatable) -> Algorithm:
-        # the most stable and advanced algorithm builder
-        # returns a simple algorithm containing 1 alg part
-        algParts1: list[Mutatable] = [itte]
-        algorithm = Algorithm(algParts1)
-        return algorithm
-
+    # String based algorithm building methods
     def simpleVerbatimAlgorithm(self, *sayThis) -> Algorithm:
         # returns alg that says the word string (sayThis)
-        return self.customizedVerbatimGorithm(APVerbatim(*sayThis))
+        return self.algBuilder(APVerbatim(*sayThis))
 
+    # String part based algorithm building methods with cloudian (shallow ref object to inform on alg completion)
     def simpleCloudiandVerbatimAlgorithm(self, cldBool: CldBool, *sayThis) -> Algorithm:
         # returns alg that says the word string (sayThis)
-        return self.customizedVerbatimGorithm(APCldVerbatim(cldBool, *sayThis))
+        return self.algBuilder(APCldVerbatim(cldBool, *sayThis))
 
     def strContainsList(self, str1: str, items: list[str]) -> str:
         # returns the 1st match between words in a string and values in a list.
@@ -535,13 +532,33 @@ class DiSkillV2:
         # use this for telepathic communication between different chobits objects
         self._kokoro = kokoro
 
+    # in skill algorithm building shortcut methods:
+    def setVerbatimAlg(self, priority: int, *sayThis: str):
+        # build a simple output algorithm to speak string by string per think cycle
+        # uses varargs param
+        temp:list[str] = []
+        for i in range(0,len(sayThis)):
+            temp.append(sayThis[i])
+        self._outAlg = self._diSkillUtils.simpleVerbatimAlgorithm(temp)
+        self._outpAlgPriority = priority  # 1->5 1 is the highest algorithm priority
+
+    def setVebatimAlgFromList(self, priority: int, sayThis: list[str]):
+        # build a simple output algorithm to speak string by string per think cycle
+        # uses list param
+        self._outAlg = self._diSkillUtils.algBuilder(APVerbatim(sayThis))
+        self._outpAlgPriority = priority  # 1->5 1 is the highest algorithm priority
+
+    def algPartsFusion(self, priority: int, *algParts: Mutatable):
+        # build a custom algorithm out of a chain of algorithm parts(actions)
+        self._outAlg = self._diSkillUtils.algBuilder(algParts)
+        self._outpAlgPriority = priority  # 1->5 1 is the highest algorithm priority
+
 
 class DiHelloWorld(DiSkillV2):
     # Override
     def input(self, ear: str, skin: str, eye: str):
         if ear == "hello":
-            self._outAlg = self._diSkillUtils.simpleVerbatimAlgorithm("hello world ver 2023")
-            self._outpAlgPriority = 4
+            self.setVerbatimAlg(4, "hello world") # # 1->5 1 is the highest algorithm priority
 
 
 ''' ----------------- REGEXUTIL ---------------- '''
@@ -843,7 +860,7 @@ class Fusion:
             if not self.ceraArr[i - 1].isActive:
                 temp: Algorithm = neuron.getAlg(i)
                 if not temp is None:
-                    self.ceraArr[i-1].setAlgorithm(temp)
+                    self.ceraArr[i - 1].setAlgorithm(temp)
 
     def runAlgs(self, ear: str, skin: str, eye: str) -> str:
         self._result = ""

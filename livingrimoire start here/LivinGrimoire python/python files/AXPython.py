@@ -1082,6 +1082,9 @@ class TODOListManager:
         self._q1.removeItem(task)
         self._backup.removeItem(task)
 
+    def containsTask(self, task: str) -> bool:
+        return self._backup.contains(task)
+
 
 class AXNeuroSama:
     def __init__(self, rate: int):
@@ -1608,3 +1611,8 @@ class PriorityQueueVer0(object):
             del self.queue[0]
             return result0
         return None
+
+
+# class AXStrOrDefault:
+def getOrDefault(str1: str, default1: str) -> str:
+    return default1 if (str1 == "") else str1

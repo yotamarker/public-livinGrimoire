@@ -1,9 +1,6 @@
 package skills;
 
-import AXJava.AXCmdBreaker;
-import AXJava.AXStrOrDefault;
-import AXJava.TODOListManager;
-import AXJava.UniqueItemSizeLimitedPriorityQueue;
+import AXJava.*;
 import LivinGrimoire.APVerbatim;
 import LivinGrimoire.DISkillUtils;
 import LivinGrimoire.DiSkillV2;
@@ -11,6 +8,67 @@ import LivinGrimoire.DiSkillV2;
 import java.util.ArrayList;
 
 public class DiHabit extends DiSkillV2 {
+    /*1 *habit*
+
+set: i should x
+
+get: random habit
+
+engage : x completed
+
+clear : clear habits
+
+2 *bad habit*
+
+set: i must not x
+
+get: random bad habit
+
+engage: x completed
+
+clear: clear bad habits
+
+3 *dailies*
+
+set: i out to x
+
+get: random daily
+
+engage: x completed
+
+clear: clear dailies
+
+4 *preps or weekend tasks*
+
+set: i have to x
+
+get: random prep or random weekend
+
+engage: x completed
+
+clear: clear preps or clear weekends
+
+5 *expirations*
+
+set: i got to x
+
+get: random expiration or random expirations
+(will return all of then)
+
+engage: none
+
+clear: clear expirations
+
+6 *to do*
+
+set: i need to
+
+get: random task (for new ToDos)
+or random to do (for completed to dos)
+
+engage: auto
+
+clear: clear tasks or clear task or clear to do*/
     /*setter params*/
     // habit params
     private UniqueItemSizeLimitedPriorityQueue habitsPositive = new UniqueItemSizeLimitedPriorityQueue();
@@ -35,6 +93,9 @@ public class DiHabit extends DiSkillV2 {
     //getter param
     private AXCmdBreaker getterCmdBreaker = new AXCmdBreaker("random");
     private AXStrOrDefault strOrDefault = new AXStrOrDefault();
+    // gamification modules for shallow ref in other skills
+    private AXGamification gamification = new AXGamification();
+    private AXGamification punishments = new AXGamification();
 
     public DiHabit() {
         habitsPositive.setLimit(15);
@@ -42,6 +103,14 @@ public class DiHabit extends DiSkillV2 {
         dailies.setLimit(3);
         weekends.setLimit(3);
         expirations.setLimit(3);
+    }
+
+    public AXGamification getGamification() {
+        return gamification;
+    }
+
+    public AXGamification getPunishments() {
+        return punishments;
     }
 
     @Override
@@ -126,14 +195,17 @@ public class DiHabit extends DiSkillV2 {
         // engagers
         if(ear.contains("completed")){
             if (!(diSkillUtils.strContainsList(ear,habitsPositive.getAsList()).isEmpty())){
+                gamification.increment();
                 setVerbatimAlg(4,"good boy");
                 return;
             }
             if (!(diSkillUtils.strContainsList(ear,habitsNegative.getAsList()).isEmpty())){
+                punishments.increment();
                 setVerbatimAlg(4,"bad boy");
                 return;
             }
             if (!(diSkillUtils.strContainsList(ear,dailies.getAsList()).isEmpty())){
+                gamification.increment();
                 setVerbatimAlg(4,"daily engaged");
                 return;
             }

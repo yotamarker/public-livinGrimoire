@@ -68,7 +68,11 @@ or random to do (for completed to dos)
 
 engage: auto
 
-clear: clear tasks or clear task or clear to do*/
+clear: clear tasks or clear task or clear to do
+
+note the gamification modules can be shallow referenced into another skill
+and used to "unlock" skills.
+*/
     /*setter params*/
     // habit params
     private UniqueItemSizeLimitedPriorityQueue habitsPositive = new UniqueItemSizeLimitedPriorityQueue();
@@ -185,7 +189,7 @@ clear: clear tasks or clear task or clear to do*/
                     setVerbatimAlgFromList(4,expirations.getAsList());
                     return;
                 case "task":
-                    setVerbatimAlg(4,strOrDefault.getOrDefault(todo.getTask(),"no tasks registered"));
+                    setVerbatimAlg(4,strOrDefault.getOrDefault(todo.getTask(),"no new tasks registered"));
                     return;
                 case "to do":
                     setVerbatimAlg(4,strOrDefault.getOrDefault(todo.getOldTask(),"no tasks registered"));

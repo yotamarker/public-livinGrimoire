@@ -33,6 +33,7 @@ public class Chobits extends thinkable {
             this.dClasses.add(skill);
         }
     }
+    public void removeSkill(DiSkillV2 skill){dClasses.remove(skill);}
     @Override
     public String think(String ear, String skin, String eye) {
         for (DiSkillV2 dCls : dClasses) {

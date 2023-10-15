@@ -995,6 +995,9 @@ class Chobits(Thinkable):
             skill.setKokoro(self._kokoro)
             self._dClasses.append(skill)
 
+    def removeSkill(self, skill:DiSkillV2):
+        self._dClasses.remove(skill)
+
     # override
     def think(self, ear: str, skin: str, eye: str) -> str:
         for dCls in self._dClasses:

@@ -1124,6 +1124,14 @@ class Chobits:Thinkable {
             dClasses.append(skill)
         }
     }
+    func removeSkill(skill:DiSkillV2) {
+        for i in 0...dClasses.count - 1{
+            if dClasses[i] === skill{
+                dClasses.remove(at: i)
+                break
+            }
+        }
+    }
     override func think(ear: String, skin: String, eye: String) -> String {
         // the input will be processed by the chobits' skills
         for skill:DiSkillV2 in self.dClasses {

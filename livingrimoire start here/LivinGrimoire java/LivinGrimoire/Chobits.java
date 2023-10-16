@@ -34,6 +34,9 @@ public class Chobits extends thinkable {
         }
     }
     public void removeSkill(DiSkillV2 skill){dClasses.remove(skill);}
+    public Boolean containsSkill(DiSkillV2 skill){
+        return dClasses.contains(skill);
+    }
     @Override
     public String think(String ear, String skin, String eye) {
         for (DiSkillV2 dCls : dClasses) {

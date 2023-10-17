@@ -536,8 +536,8 @@ class DiSkillV2:
     def setVerbatimAlg(self, priority: int, *sayThis: str):
         # build a simple output algorithm to speak string by string per think cycle
         # uses varargs param
-        temp:list[str] = []
-        for i in range(0,len(sayThis)):
+        temp: list[str] = []
+        for i in range(0, len(sayThis)):
             temp.append(sayThis[i])
         self._outAlg = self._diSkillUtils.simpleVerbatimAlgorithm(temp)
         self._outpAlgPriority = priority  # 1->5 1 is the highest algorithm priority
@@ -558,7 +558,7 @@ class DiHelloWorld(DiSkillV2):
     # Override
     def input(self, ear: str, skin: str, eye: str):
         if ear == "hello":
-            self.setVerbatimAlg(4, "hello world") # # 1->5 1 is the highest algorithm priority
+            self.setVerbatimAlg(4, "hello world")  # # 1->5 1 is the highest algorithm priority
 
 
 ''' ----------------- REGEXUTIL ---------------- '''
@@ -995,8 +995,11 @@ class Chobits(Thinkable):
             skill.setKokoro(self._kokoro)
             self._dClasses.append(skill)
 
-    def removeSkill(self, skill:DiSkillV2):
+    def removeSkill(self, skill: DiSkillV2):
         self._dClasses.remove(skill)
+
+    def containsSkill(self, skill: DiSkillV2)->bool:
+        return self._dClasses.__contains__(skill)
 
     # override
     def think(self, ear: str, skin: str, eye: str) -> str:

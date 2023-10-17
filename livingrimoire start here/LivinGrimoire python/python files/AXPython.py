@@ -1616,3 +1616,20 @@ class PriorityQueueVer0(object):
 # class AXStrOrDefault:
 def getOrDefault(str1: str, default1: str) -> str:
     return default1 if (str1 == "") else str1
+
+
+class AXStringSplit:
+    # may be used to prepare data before saving or after loading
+    # the advantage is less data fields. for example: {skills: s1_s2_s3}
+    def __init__(self):
+        self._saparator: str = "_"
+
+    def setSaparator(self, saparator: str):
+        self._saparator = saparator
+
+    def split(self, str1: str) -> list[str]:
+        return str1.split(self._saparator)
+
+    def stringBuilder(self,l1:list[str])->str:
+        sTemp = self._saparator
+        return sTemp.join(l1)

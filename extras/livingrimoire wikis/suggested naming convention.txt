@@ -7,6 +7,11 @@ for example DiHelloWorld.
 
 ***
 
+**The**: a unique skill, which has effect or is affected by the Chobit Object,
+or requires a reference to the Chobit Object in it's c'tor. see TheShell skill as an example.
+
+***
+
 **AX** : auxiliary modules. these classes names can start with AX
 for example AXLearnability
 

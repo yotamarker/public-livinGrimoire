@@ -1264,3 +1264,22 @@ class AXStrOrDefault{
         return str1.isEmpty ? default1 : str1
     }
 }
+class AXStringSplit{
+    // may be used to prepare data before saving or after loading
+    // the advantage is less data fields. for example: {skills: s1_s2_s3}
+    private var separator:Character = "_"
+    func setSeparator(separator:Character) {
+        self.separator = separator
+    }
+    func splitStr(s1:String)->Array<String>{
+        var result:Array<String> = [String]()
+        let temp = s1.split(separator: self.separator)
+        for item in temp{
+            result.append(String(item))
+        }
+        return result
+    }
+    func stringBuilder(strArrList:Array<String>) -> String {
+        return strArrList.joined(separator: String(separator))
+    }
+}

@@ -1,23 +1,25 @@
 The shell is a unique livingrimoire skill. it enables installing and uninstalling skills while the code is running.
 
+***
+
+
 main code example use(Java):
 SELECT CONTENT
 Code:
-
-        Sh_Brain b1 = new Sh_Brain();
-        b1.setShell(new TheShell(b1));
-        // adding all skills:
-        b1.addLogicSkill("hello world", new DiHelloWorld());
-        b1.addHardwareSkill("output",new DiSysOut()); // this skill prints output
-        // ^ shell filled with skills
-        b1.doIt("install output", "","");
-        b1.doIt("install hello world", "","");
-        b1.doIt("hello", "","");
-        b1.doIt("abolish hello world", "","");
-        b1.doIt("hello", "","");
-        System.out.println("skill reinstall:");
-        b1.doIt("install hello world", "","");
-        b1.doIt("hello", "","");
+>         Sh_Brain b1 = new Sh_Brain();
+>         b1.setShell(new TheShell(b1));
+>         // adding all skills:
+>         b1.addLogicSkill("hello world", new DiHelloWorld());
+>         b1.addHardwareSkill("output",new DiSysOut()); // this skill prints output
+>         // ^ shell filled with skills
+>         b1.doIt("install output", "","");
+>         b1.doIt("install hello world", "","");
+>         b1.doIt("hello", "","");
+>         b1.doIt("abolish hello world", "","");
+>         b1.doIt("hello", "","");
+>         System.out.println("skill reinstall:");
+>         b1.doIt("install hello world", "","");
+>         b1.doIt("hello", "","");
 
 output:
 
@@ -29,7 +31,7 @@ skill reinstall:
 logic skill has been installed
 hello world
 
-:s32: up till now the coder would hardcode the skills he wants the LivinGrimoire AGI software design patten, then
+up till now the coder would hardcode the skills he wants the LivinGrimoire AGI software design patten, then
 run the code.
 
 TheShell enables modifying the skills which the livingrimoire is equipped with while the program is running.

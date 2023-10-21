@@ -14,7 +14,7 @@ public class Sh_Brain extends Brain {
     }
 
     public void setShell(TheShell shell) {
-        // for using TheShell skill sub class objects with different input
+        // for using TheShell skill subclass objects with different input
         // method logic
         this.shell = shell;
     }
@@ -24,6 +24,7 @@ public class Sh_Brain extends Brain {
         temp = shell.shellChobit.think(ear, skin, eye);
         if(temp.isEmpty()){
             super.doIt(ear, skin, eye);
+            return;
         }
         hardwareChobit.think(temp,skin,eye);
     }

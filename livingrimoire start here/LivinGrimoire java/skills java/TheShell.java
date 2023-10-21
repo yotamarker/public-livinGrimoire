@@ -8,13 +8,13 @@ import java.util.Hashtable;
 
 public class TheShell extends DiSkillV2 {
     public Chobits shellChobit = new Chobits();
-    private Chobits logicChobit;
-    private Chobits hardwareChobit;
-    private Hashtable<String,DiSkillV2> logicSkills = new Hashtable<>(); // all logic skills
-    private Hashtable<String,DiSkillV2> hardwareSkills = new Hashtable<>(); // all hardware skills
-    private AXCmdBreaker installer = new AXCmdBreaker("install");
-    private AXCmdBreaker uninstaller = new AXCmdBreaker("abolish");
-    private String temp = "";
+    protected Chobits logicChobit;
+    protected Chobits hardwareChobit;
+    protected Hashtable<String,DiSkillV2> logicSkills = new Hashtable<>(); // all logic skills
+    protected Hashtable<String,DiSkillV2> hardwareSkills = new Hashtable<>(); // all hardware skills
+    protected AXCmdBreaker installer = new AXCmdBreaker("install");
+    protected AXCmdBreaker uninstaller = new AXCmdBreaker("abolish");
+    protected String temp = "";
 
     public TheShell(Sh_Brain b1) {
         this.logicChobit = b1.logicChobit;

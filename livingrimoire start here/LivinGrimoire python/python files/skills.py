@@ -321,3 +321,119 @@ class DiHabit(DiSkillV2):
                         self._todo.clearTask(self._temp)
                         self.setVerbatimAlg(4, f'{self._temp} task cleared')
                         self._temp = ""
+
+
+class TheShell(DiSkillV2):
+    def __init__(self, b1: ShBrain):
+        super().__init__()
+        self.shellChobit: Chobits = Chobits()
+        self.logicChobit: Chobits = b1.logicChobit
+        self.hardwareChobit: Chobits = b1.hardwareChobit
+        self.shellChobit.addSkill(self)
+        self.logicSkills: [str, DiSkillV2] = {}
+        self.hardwareSkills: [str, DiSkillV2] = {}
+        self.installer: AXCmdBreaker = AXCmdBreaker("install")
+        self.uninstaller: AXCmdBreaker = AXCmdBreaker("abolish")
+        self.temp: str = ""
+
+    def addLogicalSkill(self, skillName: str, skill: DiSkillV2):
+        self.logicSkills[skillName] = skill
+
+    def addHardwareSkill(self, skillName: str, skill: DiSkillV2):
+        self.hardwareSkills[skillName] = skill
+
+    # shell methods
+    def _sh_addSkill(self, skillKey) -> int:
+        if not (skillKey in self.logicSkills or skillKey in self.hardwareSkills):
+            return 0  # skill does not exist
+        # find the skill
+        if skillKey in self.logicSkills:
+            ref: DiSkillV2 = self.logicSkills[skillKey]
+            if self.logicChobit.containsSkill(ref):
+                return 1  # logic skill already installed
+            self.logicChobit.addSkill(ref)
+            return 2  # logic skill has been installed
+        ref: DiSkillV2 = self.hardwareSkills[skillKey]
+        if self.hardwareChobit.containsSkill(ref):
+            return 3  # hardware skill already installed
+        self.hardwareChobit.addSkill(ref)
+        return 4  # hardware skill has been installed
+
+    def _sh_removeSkill(self, skillKey) -> int:
+        if not (skillKey in self.logicSkills or skillKey in self.hardwareSkills):
+            return 0  # skill does not exist
+        if skillKey in self.logicSkills:
+            ref: DiSkillV2 = self.logicSkills[skillKey]
+            if self.logicChobit.containsSkill(ref):
+                self.logicChobit.removeSkill(ref)
+                return 1  # logic skill has been uninstalled
+            return 2  # logic skill is not installed
+        ref: DiSkillV2 = self.hardwareChobit[skillKey]
+        if self.hardwareChobit.containsSkill(ref):
+            self.hardwareChobit.removeSkill(ref)
+            return 3  # hardware skill has been uninstalled
+        return 4  # hardware skill is not installed
+
+    def _sh_removeAllSkills(self):
+        self.logicChobit.clearSkills()
+        self.hardwareChobit.clearSkills()
+
+    # Override
+    def input(self, ear: str, skin: str, eye: str):
+        if ear == "remove all skills":
+            self._sh_removeAllSkills()
+        self.temp = self.installer.extractCmdParam(ear)
+        if self.temp:  # string is not empty?
+            match (self._sh_addSkill(self.temp)):
+                case 0:
+                    self.setVerbatimAlg(4, "skill does not exist")
+                case 1:
+                    self.setVerbatimAlg(4, "logic skill already installed")
+                case 2:
+                    self.setVerbatimAlg(4, "logic skill has been installed")
+                case 3:
+                    self.setVerbatimAlg(4, "hardware skill already installed")
+                case 4:
+                    self.setVerbatimAlg(4, "hardware skill has been installed")
+            self.temp = ""
+            return
+        self.temp = self.uninstaller.extractCmdParam(ear)
+        if self.temp:  # string is not empty?
+            match (self._sh_removeSkill(self.temp)):
+                case 0:
+                    self.setVerbatimAlg(4, "skill does not exist")
+                case 1:
+                    self.setVerbatimAlg(4, "logic skill has been uninstalled")
+                case 2:
+                    self.setVerbatimAlg(4, "logic skill is not installed")
+                case 3:
+                    self.setVerbatimAlg(4, "hardware skill has been uninstalled")
+                case 4:
+                    self.setVerbatimAlg(4, "hardware skill is not installed")
+            self.temp = ""
+
+
+class ShBrain(Brain):
+    def __init__(self):
+        super().__init__()
+        self._shell: TheShell = TheShell(self)
+        self._temp: str = ""
+
+    def addLogicalSkill(self, skillName: str, skill: DiSkillV2):
+        self._shell.addLogicalSkill(skillName, skill)
+
+    def addHardwareSkill(self, skillName: str, skill: DiSkillV2):
+        self._shell.addHardwareSkill(skillName, skill)
+
+    def setShell(self, newShell: TheShell):
+        #  for using TheShell skill subclass objects with different input
+        #  method logic
+        self._shell = newShell
+
+    # Override
+    def doIt(self, ear: str, skin: str, eye: str):
+        self._temp = self._shell.shellChobit.think(ear, skin, eye)
+        if not self._temp:  # is empty?
+            super().doIt(ear, skin, eye)
+            return
+        self.hardwareChobit.think(self._temp, skin, eye)

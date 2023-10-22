@@ -1630,6 +1630,20 @@ class AXStringSplit:
     def split(self, str1: str) -> list[str]:
         return str1.split(self._saparator)
 
-    def stringBuilder(self,l1:list[str])->str:
+    def stringBuilder(self, l1: list[str]) -> str:
         sTemp = self._saparator
         return sTemp.join(l1)
+
+
+class RefreshQ(UniqueItemSizeLimitedPriorityQueue):
+    def __init__(self, limit: int):
+        super().__init__(limit)
+
+    def removeItem(self, item: str):
+        super().getAsList().remove(item)
+
+    def insert(self, data):
+        # FILO 1st in last out
+        if super().contains(data):
+            self.removeItem(data)
+        super().insert(data)

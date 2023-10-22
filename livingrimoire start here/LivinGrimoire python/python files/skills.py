@@ -143,7 +143,7 @@ class DiReplier(DiSkillV2):
         # night? return;
         if self._responder1.contains(ear):
             n: int = self._rnd.getSimpleRNDNum(100)
-            if n < 100:
+            if n < 35:
                 temp: str = self._responder1.getAResponse()
                 self.setVerbatimAlg(4, temp)
         # listen n learn recent single words

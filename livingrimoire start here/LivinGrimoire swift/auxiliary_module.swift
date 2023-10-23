@@ -1283,3 +1283,15 @@ class AXStringSplit{
         return strArrList.joined(separator: String(separator))
     }
 }
+class RefreshQ:UniqueItemsPriorityQue{
+    func removeItem(item:String) {
+        super.p1.elements.removeAll(where: { $0 == item })
+    }
+    override func input(in1: String) {
+        // FILO
+        if super.contains(str: in1){
+            removeItem(item: in1)
+        }
+        super.input(in1: in1)
+    }
+}

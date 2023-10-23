@@ -1125,13 +1125,7 @@ class Chobits:Thinkable {
         }
     }
     func removeSkill(skill:DiSkillV2) {
-        if dClasses.count == 0 {return}
-        for i in 0...dClasses.count - 1{
-            if dClasses[i] === skill{
-                dClasses.remove(at: i)
-                break
-            }
-        }
+        dClasses.removeAll(where: { $0 === skill })
     }
     func containsSkill(skill:DiSkillV2)-> Bool {
         if dClasses.count == 0 {return false}

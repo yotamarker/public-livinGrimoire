@@ -9,4 +9,11 @@ public class UniqueItemsPriorityQue extends LGFIFO<String>{
         if(!super.contains(item)){
         super.add(item);}
     }
+    public String peak() {
+        String temp = super.peak();
+        if (temp == null){
+            return "";
+        }
+        return temp;
+    }
 }

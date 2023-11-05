@@ -242,6 +242,14 @@ class UniqueItemsPriorityQue(LGFIFO):
         if not self.queue.__contains__(data):
             self.queue.append(data)
 
+    # override
+    def peak(self) -> str:
+        # returns string
+        temp = super().peak()
+        if temp is None:
+            return ""
+        return temp
+
 
 class UniqueItemSizeLimitedPriorityQueue(UniqueItemsPriorityQue):
     # items in the queue are unique and do not repeat
@@ -1158,61 +1166,6 @@ class OutputDripper(Cycler):
         self.limit = lim
 
 
-class PerChance:
-    '''extend me and add sentences and lists for parameters in the sentences in the
-   sub classes c'tor.
-   replicate speech paterns, generate movie scripts or books and enjoy'''
-
-    def __init__(self):
-        self.sentences: list[str] = []
-        self.wordToList: dict[str, UniqueItemSizeLimitedPriorityQueue] = {}
-        self.regexUtil: RegexUtil = RegexUtil()
-
-    def _clearRecursion(self, result: str) -> str:
-        while "#" in result:
-            t: str = self.regexUtil.extractRegex("(\\w+)(?= #)", result)
-            temp: UniqueItemSizeLimitedPriorityQueue = self.wordToList[t]
-            s1 = temp.getRNDElement()
-            result = result.replace(t + " #", s1)
-        return result
-
-    def generateJoke(self) -> str:
-        # select random element in arraylist code example:
-        result: str = random.choice(self.sentences)
-        return self._clearRecursion(result)
-
-    def addParam(self, category: str, value: str):
-        if category in self.wordToList:
-            self.wordToList[category].insert(value)
-
-    def addParam(self, kv: AXKeyValuePair):
-        if kv.key in self.wordToList:
-            self.wordToList[kv.key].insert(kv.value)
-
-
-class PerChanceTest(PerChance):
-    # example test class for perchance chatbot
-    def __init__(self):
-        super().__init__()
-        self.sentences.append("here is a  salad vegi1 #, vegi2 # and herb #.")
-        self.sentences.append("how about this salad vegi1 #, vegi2 # and herb #. it goes well with tuna fish")
-        temp: UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue(3)
-        temp.insert("tomato")
-        temp.insert("sherry tomato")
-        temp.insert("pickle")
-        self.wordToList["vegi1"] = temp
-        temp = UniqueItemSizeLimitedPriorityQueue(3)
-        temp.insert("carrot")
-        temp.insert("onion")
-        temp.insert("radish")
-        self.wordToList["vegi2"] = temp
-        temp = UniqueItemSizeLimitedPriorityQueue(3)
-        temp.insert("dill")
-        temp.insert("parcely")
-        temp.insert("coriander")
-        self.wordToList["herb"] = temp
-
-
 class Strategy:
     def __init__(self, allStrategies: DrawRnd, strategiesLim: int):
         # bank of all strategies. out of this pool active strategies are pulled
@@ -1647,3 +1600,151 @@ class RefreshQ(UniqueItemSizeLimitedPriorityQueue):
         if super().contains(data):
             self.removeItem(data)
         super().insert(data)
+
+
+class AXTimeContextResponder:
+    # output reply based on the part of day as context
+    def __init__(self):
+        self._pl: PlayGround = PlayGround()
+        self.morning: Responder = Responder()
+        self.afternoon: Responder = Responder()
+        self.evening: Responder = Responder()
+        self.night: Responder = Responder()
+        self._responders: dict[str, Responder] = {"morning": self.morning, "afternoon": self.afternoon,
+                                                  "evening": self.evening, "night": self.night}
+
+    def respond(self) -> str:
+        return self._responders[self._pl.partOfDay()].getAResponse()
+
+
+class PercentDripper:
+    def __init__(self):
+        self.__dr: DrawRnd = DrawRnd()
+        self.__limis: int = 35
+
+    def setLimit(self, limis):
+        self.__limis = limis
+
+    def drip(self) -> bool:
+        return self.__dr.getSimpleRNDNum(100) < self.__limis
+
+    def dripPlus(self, plus: int) -> bool:
+        return self.__dr.getSimpleRNDNum(100) < self.__limis + plus
+
+
+class AXNPC:
+    def __init__(self):
+        self.responder = Responder()
+        self.dripper = PercentDripper()
+
+    def respond(self) -> str:
+        if self.dripper.drip():
+            return self.responder.getAResponse()
+        return ""
+
+    def respondPlus(self, plus) -> str:
+        if self.dripper.dripPlus(plus):
+            return self.responder.getAResponse()
+        return ""
+
+
+class ChatBot:
+    """
+chatbot = ChatBot(5)
+
+chatbot.addParam("name", "jinpachi")
+chatbot.addParam("name", "sakura")
+chatbot.addParam("verb", "eat")
+chatbot.addParam("verb", "code")
+
+chatbot.addSentence("i can verb #")
+
+chatbot.learnParam("ryu is a name")
+chatbot.learnParam("ken is a name")
+chatbot.learnParam("drink is a verb")
+chatbot.learnParam("rest is a verb")
+
+chatbot.learnV2("hello ryu i like to code")
+chatbot.learnV2("greetings ken")
+for i in range(1, 10):
+    print(chatbot.talk())
+    print(chatbot.getALoggedParam())
+"""
+    def __init__(self, logParamLim):
+        self.sentences:RefreshQ = RefreshQ(5)
+        self.wordToList:dict[str,RefreshQ] = {}
+        self.rand = random.Random()
+        self.regexUtil:RegexUtil = RegexUtil()
+        self.allParamRef:dict[str,str] = {}
+        self.paramLim:int = 5
+        self.loggedParams:RefreshQ = RefreshQ(5)
+        self.conjuration:str = "is a"
+        self.loggedParams.setLimit(logParamLim)
+
+    def setConjuration(self, conjuration):
+        self.conjuration = conjuration
+
+    def setSentencesLim(self, lim):
+        self.sentences.setLimit(lim)
+
+    def setParamLim(self, paramLim):
+        self.paramLim = paramLim
+
+    def getWordToList(self):
+        return self.wordToList
+
+    def talk(self):
+        result = self.sentences.getRNDElement()
+        return self.clearRecursion(result)
+
+    def clearRecursion(self, result):
+        params = self.regexUtil.extractAllRegexes("(\\w+)(?= #)", result)
+        for strI in params:
+            temp = self.wordToList.get(strI)
+            s1 = temp.getRNDElement()
+            result = result.replace(strI + " #", s1)
+        if "#" not in result:
+            return result
+        else:
+            return self.clearRecursion(result)
+
+    def addParam(self, category, value):
+        if category not in self.wordToList:
+            temp = RefreshQ(self.paramLim)
+            self.wordToList[category] = temp
+        self.wordToList[category].insert(value)
+        self.allParamRef[value] = category
+
+    def addKeyValueParam(self, kv):
+        if kv.getKey() not in self.wordToList:
+            temp = RefreshQ(self.paramLim)
+            self.wordToList[kv.getKey()] = temp
+        self.wordToList[kv.getKey()].add(kv.getValue())
+        self.allParamRef[kv.getValue()] = kv.getKey()
+
+    def addSentence(self, sentence):
+        self.sentences.insert(sentence)
+
+    def learn(self, s1):
+        for key in self.wordToList.keys():
+            s1 = s1.replace(key, "{} #".format(key))
+        self.sentences.insert(s1)
+
+    def learnV2(self, s1):
+        for key in self.allParamRef.keys():
+            s1 = s1.replace(key, "{} #".format(self.allParamRef[key]))
+        self.sentences.insert(s1)
+
+    def learnParam(self, s1):
+        if self.conjuration not in s1:
+            return
+        category = self.regexUtil.afterWord(self.conjuration, s1)
+        if category not in self.wordToList:
+            return
+        param = s1.replace("{} {}".format(self.conjuration, category), "")
+        self.wordToList[category].insert(param)
+        self.allParamRef[param.strip()] = category
+        self.loggedParams.insert(s1)
+
+    def getALoggedParam(self):
+        return self.loggedParams.getRNDElement()

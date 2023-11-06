@@ -111,12 +111,18 @@ public class ChatBot {
         sentences.add(s1.trim());
     }
     // learn while code is running
-    public void learnV2(String s1){
+    public Boolean learnV2(String s1){
+        // returns true if sentence has params
+        // meaning sentence has been learnt
+        String OGStr = s1;
         s1 = " "+s1;
         for (String key : allParamRef.keySet()) {
             s1 = s1.replace(" "+ key, String.format(" %s #", allParamRef.get(key)));
         }
-        sentences.add(s1.trim());
+        s1 = s1.trim();
+        if (!(OGStr.equals(s1))){
+        sentences.add(s1.trim());return true;}
+        return false;
     }
     public void learnParam(String s1){
         if (!s1.contains(conjuration)){return;}

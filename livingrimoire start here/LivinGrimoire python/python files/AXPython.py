@@ -1670,15 +1670,16 @@ for i in range(1, 10):
     print(chatbot.talk())
     print(chatbot.getALoggedParam())
 """
+
     def __init__(self, logParamLim):
-        self.sentences:RefreshQ = RefreshQ(5)
-        self.wordToList:dict[str,RefreshQ] = {}
+        self.sentences: RefreshQ = RefreshQ(5)
+        self.wordToList: dict[str, RefreshQ] = {}
         self.rand = random.Random()
-        self.regexUtil:RegexUtil = RegexUtil()
-        self.allParamRef:dict[str,str] = {}
-        self.paramLim:int = 5
-        self.loggedParams:RefreshQ = RefreshQ(5)
-        self.conjuration:str = "is a"
+        self.regexUtil: RegexUtil = RegexUtil()
+        self.allParamRef: dict[str, str] = {}
+        self.paramLim: int = 5
+        self.loggedParams: RefreshQ = RefreshQ(5)
+        self.conjuration: str = "is a"
         self.loggedParams.setLimit(logParamLim)
 
     def setConjuration(self, conjuration):
@@ -1731,11 +1732,18 @@ for i in range(1, 10):
             s1 = s1.replace(" " + key, " {} #".format(key))
         self.sentences.insert(s1.strip())
 
-    def learnV2(self, s1):
+    def learnV2(self, s1)->bool:
+        # returns true if sentence has params
+        # meaning sentence has been learnt
+        OGStr: str = s1
         s1 = " " + s1
         for key in self.allParamRef.keys():
             s1 = s1.replace(" " + key, " {} #".format(self.allParamRef[key]))
-        self.sentences.insert(s1.strip())
+        s1 = s1.strip()
+        if not OGStr == s1:
+            self.sentences.insert(s1)
+            return True
+        return False
 
     def learnParam(self, s1):
         if self.conjuration not in s1:

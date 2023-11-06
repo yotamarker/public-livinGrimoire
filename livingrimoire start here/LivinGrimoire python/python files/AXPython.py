@@ -1726,14 +1726,16 @@ for i in range(1, 10):
         self.sentences.insert(sentence)
 
     def learn(self, s1):
+        s1 = " " + s1
         for key in self.wordToList.keys():
-            s1 = s1.replace(key, "{} #".format(key))
-        self.sentences.insert(s1)
+            s1 = s1.replace(" " + key, " {} #".format(key))
+        self.sentences.insert(s1.strip())
 
     def learnV2(self, s1):
+        s1 = " " + s1
         for key in self.allParamRef.keys():
-            s1 = s1.replace(key, "{} #".format(self.allParamRef[key]))
-        self.sentences.insert(s1)
+            s1 = s1.replace(" " + key, " {} #".format(self.allParamRef[key]))
+        self.sentences.insert(s1.strip())
 
     def learnParam(self, s1):
         if self.conjuration not in s1:
@@ -1741,9 +1743,9 @@ for i in range(1, 10):
         category = self.regexUtil.afterWord(self.conjuration, s1)
         if category not in self.wordToList:
             return
-        param = s1.replace("{} {}".format(self.conjuration, category), "")
+        param = s1.replace("{} {}".format(self.conjuration, category), "").strip()
         self.wordToList[category].insert(param)
-        self.allParamRef[param.strip()] = category
+        self.allParamRef[param] = category
         self.loggedParams.insert(s1)
 
     def getALoggedParam(self):

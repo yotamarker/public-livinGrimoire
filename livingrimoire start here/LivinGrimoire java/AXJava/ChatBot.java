@@ -66,7 +66,6 @@ public class ChatBot {
     }
 
     private String clearRecursion(String result) {
-        int x;
         ArrayList<String> params = new ArrayList<String>();
         params = regexUtil.extractAllRegexes("(\\w+)(?= #)", result);
         for (String strI : params) {
@@ -105,25 +104,27 @@ public class ChatBot {
     }
     // chatbot.learn("hello name i like to verb");
     public void learn(String s1){
+        s1 = " "+s1;
         for (String key : wordToList.keySet()) {
-            s1 = s1.replace(key, String.format("%s #", key));
+            s1 = s1.replace(" "+ key, String.format(" %s #", key));
         }
-        sentences.add(s1);
+        sentences.add(s1.trim());
     }
     // learn while code is running
     public void learnV2(String s1){
+        s1 = " "+s1;
         for (String key : allParamRef.keySet()) {
-            s1 = s1.replace(key, String.format("%s #", allParamRef.get(key)));
+            s1 = s1.replace(" "+ key, String.format(" %s #", allParamRef.get(key)));
         }
-        sentences.add(s1);
+        sentences.add(s1.trim());
     }
     public void learnParam(String s1){
         if (!s1.contains(conjuration)){return;}
         String category = regexUtil.afterWord(conjuration,s1);
         if(!(wordToList.containsKey(category))){return;}
-        String param = s1.replace(conjuration +" "+category,"");
+        String param = s1.replace(conjuration +" "+category,"").trim();
         wordToList.get(category).add(param);
-        allParamRef.put(param.trim(),category);
+        allParamRef.put(param,category);
         loggedParams.add(s1);
     }
     public String getALoggedParam(){return  loggedParams.getRNDElement();}

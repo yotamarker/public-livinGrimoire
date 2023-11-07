@@ -35,7 +35,6 @@ public class ChatBot {
     * */
     protected RefreshQ sentences = new RefreshQ();
     protected Hashtable<String, RefreshQ> wordToList = new Hashtable<>(); // params
-    protected Random rand = new Random(); // randomizer
     private RegexUtil regexUtil = new RegexUtil();
     protected Hashtable<String, String> allParamRef = new Hashtable<>();
     protected int paramLim = 5;

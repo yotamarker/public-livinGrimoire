@@ -756,38 +756,7 @@ class AXStrategy{
         return self.strategies[context]?.getStrategy() ?? ""
     }
 }
-class PerChance{
-    /*
-     * extend me and add sentences and lists for parameters in the sentences in the
-     * sub classes c'tor.
-      replicate speech paterns, generate movie scripts or books and enjoy
-     */
-    var sentences:Array<String> = [String]()
-    var wordToList:[String:UniqueItemSizeLimitedPriorityQueue]=[:]
-    private let regexUtil:RegexUtil = RegexUtil()
-    func generateJoke()->String{
-        let result:String = sentences.randomElement() ?? ""
-        return clearRecursion(result: result)
-    }
-    private func clearRecursion(result:String)->String{
-        var result2:String = ""
-        var params:Array<String> = [String]()
-        params = regexUtil.extractAllRegexResults(regex: "(\\w+)(?= #)", text: result)
-        for strI in params{
-            let temp:UniqueItemSizeLimitedPriorityQueue = wordToList[strI]!
-            let s1:String = temp.getRndItem()
-            result2 = result.replacingOccurrences(of: strI + " #", with: s1)
-        }
-        if !result2.contains("#"){return result2}
-        return clearRecursion(result: result2)
-    }
-    func addParam(category:String, value1:String){
-        wordToList[category]?.input(in1: value1)
-    }
-    func addParam(kv:AXKeyValuePair){
-        wordToList[kv.getKey()]?.input(in1: kv.getValue())
-    }
-}
+
 class TODOListManager{
     /* manages to do tasks.
     q1 tasks are mentioned once, and forgotten
@@ -1283,7 +1252,7 @@ class AXStringSplit{
         return strArrList.joined(separator: String(separator))
     }
 }
-class RefreshQ:UniqueItemsPriorityQue{
+class RefreshQ:UniqueItemSizeLimitedPriorityQueue{
     func removeItem(item:String) {
         super.p1.elements.removeAll(where: { $0 == item })
     }
@@ -1293,5 +1262,188 @@ class RefreshQ:UniqueItemsPriorityQue{
             removeItem(item: in1)
         }
         super.input(in1: in1)
+    }
+}
+class PercentDripper {
+    private let dr:DrawRnd = DrawRnd()
+    private var limis:Int = 35
+    
+    func setLimis(_ limis: Int) {
+        self.limis = limis
+    }
+    
+    func drip() -> Bool {
+        return dr.getSimpleRNDNum(bound: 100) < limis
+    }
+    
+    func dripPlus(_ plus: Int) -> Bool {
+        return dr.getSimpleRNDNum(bound: 100) < limis + plus
+    }
+}
+class AXNPC {
+    public var responder:Responder = Responder()
+    public var dripper:PercentDripper = PercentDripper()
+    
+    func respond() -> String {
+        if dripper.drip() {
+            return responder.getAResponse()
+        }
+        return ""
+    }
+    
+    func respondPlus(plus: Int) -> String {
+        if dripper.dripPlus(plus) {
+            return responder.getAResponse()
+        }
+        return ""
+    }
+}
+class AXTimeContextResponder {
+    private var pl:PlayGround = PlayGround()
+    var morning:Responder = Responder()
+    var afternoon:Responder = Responder()
+    var evening:Responder = Responder()
+    var night:Responder = Responder()
+    fileprivate var responders = [String: Responder]()
+    
+    init() {
+        responders["morning"] = morning
+        responders["afternoon"] = afternoon
+        responders["evening"] = evening
+        responders["night"] = night
+    }
+    
+    func respond() -> String {
+        return responders[pl.partOfDay()]?.getAResponse() ?? ""
+    }
+}
+class ChatBot {
+    /*
+     let chatbot:ChatBot = ChatBot(logParamLim: 5)
+     chatbot.addParam("name", "jinpachi")
+     chatbot.addParam("name", "sakura")
+     chatbot.addParam("verb", "eat")
+     chatbot.addParam("verb", "code")
+
+     chatbot.addSentence("i can verb #")
+
+     chatbot.learnParam("ryu is a name")
+     chatbot.learnParam("ken is a name")
+     chatbot.learnParam("drink is a verb")
+     chatbot.learnParam("rest is a verb")
+
+     chatbot.learnV2("hello ryu i like to code")
+     chatbot.learnV2("greetings ken")
+     for _ in 0...10{
+         print(chatbot.talk())
+     }
+     */
+    var sentences = RefreshQ()
+    var wordToList = [String: RefreshQ]()
+    private var regexUtil = RegexUtil()
+    var allParamRef = [String: String]()
+    var paramLim = 5
+    var loggedParams = RefreshQ()
+    private var conjuration = "is a"
+    
+    init(logParamLim: Int) {
+        loggedParams.setLimit(lim: logParamLim)
+    }
+    
+    func setConjuration(_ conjuration: String) {
+        self.conjuration = conjuration
+    }
+    
+    func setSentencesLim(_ lim: Int) {
+        sentences.setLimit(lim: lim)
+    }
+    
+    func setParamLim(_ paramLim: Int) {
+        self.paramLim = paramLim
+    }
+    
+    func getWordToList() -> [String: RefreshQ] {
+        return wordToList
+    }
+    
+    func talk() -> String {
+        let result = sentences.getRndItem()
+        return clearRecursion(result)
+    }
+    
+    private func clearRecursion(_ result: String) -> String {
+        var tempResult:String = result
+        var params = [String]()
+        params = regexUtil.extractAllRegexResults(regex: "(\\w+)(?= #)", text: result)
+        for strI in params {
+            guard let temp = wordToList[strI] else { continue }
+            let s1 = temp.getRndItem()
+            tempResult = tempResult.replacingOccurrences(of: strI + " #", with: s1)
+        }
+        if !tempResult.contains("#") {
+            return tempResult
+        } else {
+            return clearRecursion(tempResult)
+        }
+    }
+    
+    func addParam(_ category: String, _ value: String) {
+        if !(wordToList.keys.contains(category)) {
+            let temp = RefreshQ()
+            temp.setLimit(lim: paramLim)
+            wordToList[category] = temp
+        }
+        wordToList[category]?.input(in1: value)
+        allParamRef[value] = category
+    }
+    
+    func addParam(_ kv: AXKeyValuePair) {
+        if !(wordToList.keys.contains(kv.getKey())) {
+            let temp = RefreshQ()
+            temp.setLimit(lim: paramLim)
+            wordToList[kv.getKey()] = temp
+        }
+        wordToList[kv.getKey()]?.input(in1: kv.getValue())
+        allParamRef[kv.getValue()] = kv.getKey()
+    }
+    
+    func addSentence(_ sentence: String) {
+        sentences.input(in1: sentence)
+    }
+    
+    func learn(_ s1: String) {
+        var s1 = " " + s1
+        for key in wordToList.keys {
+            s1 = s1.replacingOccurrences(of: " " + key, with: " \(key) #")
+        }
+        sentences.input(in1: s1.trimmingCharacters(in: .whitespaces))
+    }
+    @discardableResult
+    func learnV2(_ s1: String) -> Bool {
+        let OGStr = s1
+        var s1 = " " + s1
+        for key in allParamRef.keys {
+            s1 = s1.replacingOccurrences(of: " " + key, with: " \(allParamRef[key]!) #")
+        }
+        s1 = s1.trimmingCharacters(in: .whitespaces)
+        if OGStr != s1 {
+            sentences.input(in1: s1)
+            return true
+        }
+        return false
+    }
+    
+    func learnParam(_ s1: String) {
+        guard s1.contains(conjuration) else { return }
+        let category = regexUtil.afterWord(word: conjuration, str2Check: s1)
+        guard wordToList.keys.contains(category) else { return }
+        let param = s1.replacingOccurrences(of: conjuration + " " + category, with: "").trimmingCharacters(in: .whitespaces)
+        wordToList[category]?.input(in1: param)
+        allParamRef[param] = category
+        loggedParams.input(in1: s1)
+    }
+    
+    func getALoggedParam() -> String {
+        return loggedParams.getRndItem()
     }
 }

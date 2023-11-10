@@ -63,6 +63,9 @@ public class AXPrompt {
     }
 
     public AXKeyValuePair getKv() {
+        if (kv == null){
+            return null;
+        }
         AXKeyValuePair temp = new AXKeyValuePair();
         temp.setKey(kv.getKey());
         temp.setValue(kv.getValue());

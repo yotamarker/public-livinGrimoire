@@ -1732,7 +1732,7 @@ for i in range(1, 10):
             s1 = s1.replace(" " + key, " {} #".format(key))
         self.sentences.insert(s1.strip())
 
-    def learnV2(self, s1)->bool:
+    def learnV2(self, s1) -> bool:
         # returns true if sentence has params
         # meaning sentence has been learnt
         OGStr: str = s1
@@ -1758,3 +1758,74 @@ for i in range(1, 10):
 
     def getALoggedParam(self):
         return self.loggedParams.getRNDElement()
+
+
+class Prompt:
+    def __init__(self):
+        self.regexUtil: RegexUtil = RegexUtil()
+        self.kv: AXKeyValuePair = AXKeyValuePair()
+        self.prompt: str = ""
+        self.regex: str = ""
+        self.kv.key = "default"
+
+    def getPrompt(self):
+        return self.prompt
+
+    def setPrompt(self, prompt) -> str:
+        self.prompt = prompt
+
+    def process(self, in1) -> bool:
+        self.kv.value = self.regexUtil.extractRegex(self.regex, in1)
+        return self.kv.value == ""
+
+    def getKv(self) -> AXKeyValuePair:
+        return self.kv
+
+    def setRegex(self, regex):
+        self.regex = regex
+
+
+class AXPrompt:
+    def __init__(self):
+        self.isActive: bool = False
+        self.index = 0
+        self.prompts: list[Prompt] = []
+        self.kv: AXKeyValuePair = None
+
+    def addPrompt(self, p1):
+        self.prompts.append(p1)
+
+    def getPrompt(self) -> Prompt:
+        if len(self.prompts) == 0:
+            return ""
+        return self.prompts[self.index].getPrompt()
+
+    def process(self, in1):
+        if len(self.prompts) == 0 or not self.isActive:
+            return
+        b1 = self.prompts[self.index].process(in1)
+        if not b1:
+            self.kv = self.prompts[self.index].getKv()
+            self.index += 1
+        if self.index == len(self.prompts):
+            self.isActive = False
+
+    def getActive(self)->bool:
+        return self.isActive
+
+    def getKv(self):
+        if self.kv is None:
+            return None
+        temp:AXKeyValuePair = AXKeyValuePair()
+        temp.key = self.kv.key
+        temp.value = self.kv.value
+        self.kv = None
+        return temp
+
+    def activate(self):
+        self.isActive = True
+        self.index = 0
+
+    def deactivate(self):
+        self.isActive = False
+        self.index = 0

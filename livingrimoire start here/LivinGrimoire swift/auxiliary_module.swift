@@ -1447,3 +1447,90 @@ class ChatBot {
         return loggedParams.getRndItem()
     }
 }
+class Prompt {
+    let regexUtil:RegexUtil = RegexUtil()
+    var kv:AXKeyValuePair = AXKeyValuePair()
+    var prompt:String = ""
+    var regex:String = ""
+    
+    init() {
+        kv.setKey(key: "default")
+    }
+    
+    func getPrompt() -> String {
+        return prompt
+    }
+    
+    func setPrompt(prompt: String) {
+        self.prompt = prompt
+    }
+    
+    func process(in1: String) -> Bool {
+        kv.setValue(value: regexUtil.regexChecker(theRegex: regex, str2Check: in1))
+        return kv.getValue().isEmpty
+    }
+    
+    func getKv() -> AXKeyValuePair {
+        return kv
+    }
+    
+    func setRegex(regex: String) {
+        self.regex = regex
+    }
+}
+class AXPrompt {
+    var isActive: Bool = false
+    var index: Int = 0
+    var prompts: Array<Prompt> = [Prompt]()
+    var kv: AXKeyValuePair? = nil
+    
+    func addPrompt(_ p1: Prompt) {
+        prompts.append(p1)
+    }
+    
+    func getPrompt() -> String {
+        if prompts.isEmpty {
+            return ""
+        }
+        return prompts[index].getPrompt()
+    }
+    
+    func process(_ in1: String) {
+        if prompts.isEmpty || !isActive {
+            return
+        }
+        let b1 = prompts[index].process(in1: in1)
+        if !b1 {
+            kv = prompts[index].getKv()
+            index += 1
+        }
+        if index == prompts.count {
+            isActive = false
+        }
+    }
+    
+    func getActive() -> Bool {
+        return isActive
+    }
+    
+    func getKv() -> AXKeyValuePair? {
+        if kv == nil {
+            return nil
+        }
+        let temp = AXKeyValuePair()
+        temp.setKey(key: kv!.getKey())
+        temp.setValue(value: kv!.getValue())
+        kv = nil
+        return temp
+    }
+    
+    func activate() {
+        isActive = true
+        index = 0
+    }
+    
+    func deactivate() {
+        isActive = false
+        index = 0
+    }
+}

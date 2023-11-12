@@ -88,6 +88,17 @@ public class ChatBot {
         wordToList.get(category).add(value);
         allParamRef.put(value,category); // for learnV2
     }
+    // same as the addParam but only the latest parameter is saved
+    // used for topics, names, cases where 1 latest parameter is needed
+    public void addSubject(String category, String value){
+        if(!(wordToList.containsKey(category))){
+            RefreshQ temp = new RefreshQ();
+            temp.setLimit(1);
+            wordToList.put(category, temp);
+        }
+        wordToList.get(category).add(value);
+        allParamRef.put(value,category); // for learnV2
+    }
     public void addParam(AXKeyValuePair kv){
         if(!(wordToList.containsKey(kv.getKey()))){
             RefreshQ temp = new RefreshQ();
@@ -131,6 +142,24 @@ public class ChatBot {
         wordToList.get(category).add(param);
         allParamRef.put(param,category);
         loggedParams.add(s1);
+    }
+    // add key value pair collected by an AXPrompt object
+    public void addParamFromAXPrompt(AXKeyValuePair kv){
+        if(!(wordToList.containsKey(kv.getKey()))){
+            return;
+        }
+        wordToList.get(kv.getKey()).add(kv.getValue());
+        allParamRef.put(kv.getValue(),kv.getKey()); // for learnV2
+    }
+    // load entire RefreshQ of parameters
+    // example : list of nicknames per name
+    // this special use case requires a specialized Object to retain
+    // a set topic(name) and {category, param1#param2#...}(converted into a que)
+    public void addRefreshQ(String category, RefreshQ q1){
+        if(!(wordToList.containsKey(category))){
+            return;
+        }
+        wordToList.put(category, q1);
     }
     public String getALoggedParam(){return  loggedParams.getRNDElement();}
 }

@@ -1396,6 +1396,17 @@ class ChatBot {
         wordToList[category]?.input(in1: value)
         allParamRef[value] = category
     }
+    // same as the addParam but only the latest parameter is saved
+    // used for topics, names, cases where 1 latest parameter is needed
+    func addSubject(_ category: String, _ value: String) {
+        if !(wordToList.keys.contains(category)) {
+            let temp = RefreshQ()
+            temp.setLimit(lim: 1)
+            wordToList[category] = temp
+        }
+        wordToList[category]?.input(in1: value)
+        allParamRef[value] = category
+    }
     
     func addParam(_ kv: AXKeyValuePair) {
         if !(wordToList.keys.contains(kv.getKey())) {
@@ -1441,6 +1452,24 @@ class ChatBot {
         wordToList[category]?.input(in1: param)
         allParamRef[param] = category
         loggedParams.input(in1: s1)
+    }
+    // add key value pair collected by an AXPrompt object
+    func addParamFromAXPrompt(_ kv: AXKeyValuePair) {
+        if !(wordToList.keys.contains(kv.getKey())) {
+            return
+        }
+        wordToList[kv.getKey()]?.input(in1: kv.getValue())
+        allParamRef[kv.getValue()] = kv.getKey()
+    }
+    // load entire RefreshQ of parameters
+    // example : list of nicknames per name
+    // this special use case requires a specialized Object to retain
+    // a set topic(name) and {category, param1#param2#...}(converted into a que)
+    func addRefreshQ(_ category: String, _ q1: RefreshQ) {
+        if !(wordToList.keys.contains(category)) {
+            return
+        }
+        wordToList[category]! = q1
     }
     
     func getALoggedParam() -> String {

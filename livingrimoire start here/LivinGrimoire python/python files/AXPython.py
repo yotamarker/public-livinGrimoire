@@ -1723,6 +1723,13 @@ for i in range(1, 10):
         self.wordToList[kv.getKey()].add(kv.getValue())
         self.allParamRef[kv.getValue()] = kv.getKey()
 
+    def addSubject(self, category, value):
+        if category not in self.wordToList:
+            temp = RefreshQ(1)
+            self.wordToList[category] = temp
+        self.wordToList[category].insert(value)
+        self.allParamRef[value] = category
+
     def addSentence(self, sentence):
         self.sentences.insert(sentence)
 
@@ -1755,6 +1762,18 @@ for i in range(1, 10):
         self.wordToList[category].insert(param)
         self.allParamRef[param] = category
         self.loggedParams.insert(s1)
+
+    def addParamFromAXPrompt(self, kv):
+        if kv.getKey() not in self.wordToList:
+            return
+        self.wordToList[kv.getKey()].add(kv.getValue())
+        self.allParamRef[kv.getValue()] = kv.getKey()
+
+    def addRefreshQ(self, category, q1:RefreshQ):
+        if category not in self.wordToList:
+            temp = RefreshQ(1)
+            return
+        self.wordToList[category] = q1
 
     def getALoggedParam(self):
         return self.loggedParams.getRNDElement()

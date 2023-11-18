@@ -1366,21 +1366,24 @@ class AXContextCmd:
     def __init__(self):
         self.commands: UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue(5)
         self.contextCommands: UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue(5)
-        self.trgTolerance: TrgTolerance = TrgTolerance(3)
+        self.trgTolerance: bool = False
 
     def engageCommand(self, s1: str) -> bool:
-        if self.commands.contains(s1):
-            self.trgTolerance.reset()
-        if not self.trgTolerance.trigger():
+        if len(s1) == 0:
             return False
-        return self.contextCommands.contains(s1)
-
-    def setInputWait(self, thinkCycles: int):
-        self.trgTolerance.setMaxRepeats(thinkCycles)
+        # active context
+        if self.contextCommands.contains(s1):
+            self.trgTolerance = True
+            return True
+        # exit context:
+        if self.trgTolerance and not self.commands.contains(s1):
+            self.trgTolerance = False
+            return False
+        return self.trgTolerance
 
     def disable(self):
         # context commands are disabled till next engagement with a command
-        self.trgTolerance.disable()
+        self.trgTolerance = False
 
 
 # command auxiliary modules collection end
@@ -1633,19 +1636,28 @@ class PercentDripper:
 
 
 class AXNPC:
-    def __init__(self):
-        self.responder = Responder()
+    def __init__(self, replyStackLim: int, outputChance: int):
+        self.responder: RefreshQ = RefreshQ(replyStackLim)
         self.dripper = PercentDripper()
+        if 0 < outputChance < 101:
+            self.dripper.setLimit(outputChance)
+        self.cmdBreaker: AXCmdBreaker = AXCmdBreaker("say")
 
     def respond(self) -> str:
         if self.dripper.drip():
-            return self.responder.getAResponse()
+            return self.responder.getRNDElement()
         return ""
 
     def respondPlus(self, plus) -> str:
         if self.dripper.dripPlus(plus):
-            return self.responder.getAResponse()
+            return self.responder.getRNDElement()
         return ""
+
+    def learn(self, ear: str):
+        temp: str = self.cmdBreaker.extractCmdParam(ear)
+        if len(temp) == 0:
+            return
+        self.responder.insert(temp)
 
 
 class ChatBot:
@@ -1769,7 +1781,7 @@ for i in range(1, 10):
         self.wordToList[kv.getKey()].add(kv.getValue())
         self.allParamRef[kv.getValue()] = kv.getKey()
 
-    def addRefreshQ(self, category, q1:RefreshQ):
+    def addRefreshQ(self, category, q1: RefreshQ):
         if category not in self.wordToList:
             temp = RefreshQ(1)
             return
@@ -1829,13 +1841,13 @@ class AXPrompt:
         if self.index == len(self.prompts):
             self.isActive = False
 
-    def getActive(self)->bool:
+    def getActive(self) -> bool:
         return self.isActive
 
     def getKv(self):
         if self.kv is None:
             return None
-        temp:AXKeyValuePair = AXKeyValuePair()
+        temp: AXKeyValuePair = AXKeyValuePair()
         temp.key = self.kv.key
         temp.value = self.kv.value
         self.kv = None

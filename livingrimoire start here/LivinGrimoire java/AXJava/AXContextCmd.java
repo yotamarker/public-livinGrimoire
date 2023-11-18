@@ -5,22 +5,21 @@ public class AXContextCmd {
     // when commands are engaged, context commans can also engage
     public UniqueItemSizeLimitedPriorityQueue commands = new UniqueItemSizeLimitedPriorityQueue();
     public UniqueItemSizeLimitedPriorityQueue contextCommands = new UniqueItemSizeLimitedPriorityQueue();
-    public TrgTolerance trgTolerance  = new TrgTolerance(3);
+    public Boolean trgTolerance  = false;
     public Boolean engageCommand(String s1){
-        if (commands.contains(s1)){
-            trgTolerance.reset();
+        if (s1.isEmpty()){return false;}
+        if (contextCommands.contains(s1)){
+            trgTolerance = true;
             return true;
         }
-        if (!trgTolerance.trigger()){
+        if (trgTolerance && !commands.contains(s1)){
+            trgTolerance = false;
             return false;
         }
-        return contextCommands.contains(s1);
-    }
-    public void setInputWait(int thinkCycles){
-        trgTolerance.setMaxrepeats(thinkCycles);
+        return trgTolerance;
     }
     public void disable(){
         // context commands are disabled till next engagement with a command
-        trgTolerance.disable();
+        trgTolerance = false;
     }
 }

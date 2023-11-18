@@ -1017,23 +1017,22 @@ class AXContextCmd{
     // when commands are engaged, context commans can also engage
     public var commands:UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue()
     public var contextCommands:UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue()
-    private var trgTolerance:TrgTolerance = TrgTolerance(maxRepeats: 3)
+    private var trgTolerance:Bool = false
     func engageCommand(ear:String) -> Bool {
-        if commands.contains(str: ear){
-            trgTolerance.reset()
+        if ear.isEmpty{return false}
+        if contextCommands.contains(str: ear){
+            trgTolerance = true
             return true
         }
-        if !trgTolerance.trigger(){
+        if trgTolerance && !commands.contains(str: ear){
+            trgTolerance = false
             return false
         }
-        return contextCommands.contains(str: ear)
-    }
-    func setInputWait(thinkCycles:Int){
-        trgTolerance.setMaxRepeats(maxRepeats: thinkCycles)
+        return trgTolerance
     }
     func disable(){
         // context commands are disabled till next engagement with a command
-        trgTolerance.disable()
+        trgTolerance = false
     }
 }
 // command auxiliary modules collection end
@@ -1281,21 +1280,33 @@ class PercentDripper {
     }
 }
 class AXNPC {
-    public var responder:Responder = Responder()
+    public var responder:RefreshQ = RefreshQ()
     public var dripper:PercentDripper = PercentDripper()
+    public var cmdBreaker:AXCmdBreaker = AXCmdBreaker(conjuration: "say")
+    init(replyStockLim:Int,outputChance:Int) {
+        responder.setLimit(lim: replyStockLim)
+        if 0 < outputChance && outputChance < 101{
+            dripper.setLimis(outputChance)
+        }
+    }
     
     func respond() -> String {
         if dripper.drip() {
-            return responder.getAResponse()
+            return responder.getRndItem()
+        }
+        return ""
+    }
+    func respondPlus(plus:Int) -> String {
+        if dripper.dripPlus(plus) {
+            return responder.getRndItem()
         }
         return ""
     }
     
-    func respondPlus(plus: Int) -> String {
-        if dripper.dripPlus(plus) {
-            return responder.getAResponse()
-        }
-        return ""
+    func learn(ear:String) {
+        let temp:String = cmdBreaker.extractCmdParam(s1: ear)
+        if temp.isEmpty {return}
+        responder.input(in1: temp)
     }
 }
 class AXTimeContextResponder {

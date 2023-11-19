@@ -30,4 +30,16 @@ public class AXNPC {
         if (temp.isEmpty()){return;}
         responder.add(temp);
     }
+    public String strRespond(String ear){
+        if (dripper.drip() && responder.strContainsResponse(ear)){
+            return responder.getRNDElement();
+        }
+        return "";
+    }
+    public String forceRespond(){
+        return responder.getRNDElement();
+    }
+    public void setConjuration(String conjuration){
+        cmdBreaker.conjuration = conjuration;
+    }
 }

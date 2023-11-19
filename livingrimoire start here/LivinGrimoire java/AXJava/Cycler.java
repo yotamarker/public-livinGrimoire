@@ -36,4 +36,5 @@ public class Cycler {
         }
         cycler = n;
     }
+    public int getMode(){return cycler;}
 }

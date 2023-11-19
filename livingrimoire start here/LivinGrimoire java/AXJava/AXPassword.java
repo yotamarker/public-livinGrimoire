@@ -64,4 +64,13 @@ public class AXPassword {
         return code;}
         return -1;
     }
+    public void randomizeCode(int lim, int minimumLim){
+        // event feature
+        code = new DrawRnd().getSimpleRNDNum(lim) + minimumLim;
+    }
+    public int getCodeEvent(){
+        // event feature
+        // get the code during weekly/monthly event after it has been randomized
+        return code;
+    }
 }

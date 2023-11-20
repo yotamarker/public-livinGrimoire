@@ -326,6 +326,14 @@ class UniqueItemsPriorityQue{
     func clearData() {
         p1 = PriorityQueue<String>()
     }
+    func strContains(str1:String) -> Bool {
+        for line in p1.elements {
+            if str1.contains(line){
+                return true
+            }
+        }
+        return false
+    }
   }
 class UniqueItemSizeLimitedPriorityQueue:UniqueItemsPriorityQue{
     // items in the queue are unique and do not repeat
@@ -616,6 +624,9 @@ class Cycler{
             return
         }
         cycler = n
+    }
+    func getMode() -> Int {
+        return cycler
     }
 }
 class OutPutDripper{
@@ -1308,6 +1319,12 @@ class AXNPC {
         if temp.isEmpty {return}
         responder.input(in1: temp)
     }
+    func forceRespond() -> String {
+        return responder.getRndItem()
+    }
+    func setConjuration(conjuration:String) {
+        self.cmdBreaker.conjuration = conjuration
+    }
 }
 class AXTimeContextResponder {
     private var pl:PlayGround = PlayGround()
@@ -1572,5 +1589,83 @@ class AXPrompt {
     func deactivate() {
         isActive = false
         index = 0
+    }
+}
+class AXPassword {
+    private var isOpen: Bool = false
+    private var maxAttempts: Int = 3
+    private var loginAttempts: Int = 3
+    private var regexUtil: RegexUtil = RegexUtil()
+    private var code: Int = 0
+    
+    func codeUpdate(ear: String) -> Bool {
+        if !isOpen {
+            return false
+        }
+        if ear.contains("code") {
+            let temp = regexUtil.regexChecker(theRegex: enumRegexGrimoire.integer, str2Check: ear)
+            if !temp.isEmpty {
+                code = Int(temp)!
+                return true
+            }
+        }
+        return false
+    }
+    
+    func openGate(ear: String) {
+        if ear.contains("code") && loginAttempts > 0 {
+            let noCode = regexUtil.regexChecker(theRegex: enumRegexGrimoire.integer, str2Check: ear)
+            if noCode.isEmpty {
+                return
+            }
+            let tempCode = Int(noCode)!
+            if tempCode == code {
+                loginAttempts = maxAttempts
+                isOpen = true
+            } else {
+                loginAttempts -= 1
+            }
+        }
+    }
+    
+    func isGateOpen() -> Bool {
+        return isOpen
+    }
+    
+    func resetAttempts() {
+        loginAttempts = maxAttempts
+    }
+    
+    func getLoginAttempts() -> Int {
+        return loginAttempts
+    }
+    
+    func closeGate() {
+        isOpen = false
+    }
+    
+    func closeGate(ear: String) {
+        if ear.contains("close") {
+            isOpen = false
+        }
+    }
+    
+    func setMaxAttempts(maxAttempts: Int) {
+        self.maxAttempts = maxAttempts
+    }
+    
+    func getCode() -> Int {
+        if isOpen {
+            return code
+        }
+        return -1
+    }
+    
+    func randomizeCode(lim: Int, minimumLim: Int) {
+        code = DrawRnd().getSimpleRNDNum(bound: lim) + minimumLim
+    }
+    
+    func getCodeEvent() -> Int {
+        return code
     }
 }

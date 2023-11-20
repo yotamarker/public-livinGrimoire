@@ -250,6 +250,12 @@ class UniqueItemsPriorityQue(LGFIFO):
             return ""
         return temp
 
+    def strContainsResponse(self, item: str) -> bool:
+        for response in self.queue:
+            if item.__contains__(response):
+                return True
+        return False
+
 
 class UniqueItemSizeLimitedPriorityQueue(UniqueItemsPriorityQue):
     # items in the queue are unique and do not repeat
@@ -455,9 +461,18 @@ class AXPassword:
         self._maxAttempts = max
 
     def getCode(self) -> int:
-        if (self._isOpen):
+        if self._isOpen:
             return self._code
         return -1
+
+    def randomizeCode(self, lim: int, minimumLim: int):
+        # event feature
+        self._code = DrawRnd().getSimpleRNDNum(lim) + minimumLim
+
+    def getCodeEvent(self) -> int:
+        # event feature
+        # get the code during weekly/monthly event after it has been randomized
+        return self._code
 
 
 class ButtonEngager:
@@ -526,6 +541,9 @@ class Cycler:
         if n < -1 or n > self.limit:
             return
         self._cycler = n
+
+    def getMode(self) -> int:
+        return self._cycler
 
 
 class DrawRnd:
@@ -1658,6 +1676,12 @@ class AXNPC:
         if len(temp) == 0:
             return
         self.responder.insert(temp)
+
+    def forceRespond(self) -> str:
+        return self.responder.getRNDElement()
+
+    def setConjuration(self, conjuration:str):
+        self.cmdBreaker.conjuration = conjuration
 
 
 class ChatBot:

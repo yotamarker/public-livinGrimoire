@@ -1677,10 +1677,16 @@ class AXNPC:
             return
         self.responder.insert(temp)
 
+    def strRespond(self, ear: str) -> str:
+        # respond if ear contains a learned input
+        if self.dripper.drip() and self.responder.strContainsResponse(ear):
+            return self.responder.getRNDElement()
+        return ""
+
     def forceRespond(self) -> str:
         return self.responder.getRNDElement()
 
-    def setConjuration(self, conjuration:str):
+    def setConjuration(self, conjuration: str):
         self.cmdBreaker.conjuration = conjuration
 
 
@@ -1884,3 +1890,32 @@ class AXPrompt:
     def deactivate(self):
         self.isActive = False
         self.index = 0
+
+
+class AnnoyedQ:
+
+    def __init__(self, queLim: int):
+        self._q1: RefreshQ = RefreshQ(queLim)
+        self._q2: RefreshQ = RefreshQ(queLim)
+
+    def learn(self, ear: str):
+        if self._q1.contains(ear):
+            self._q2.insert(ear)
+            return
+        self._q1.insert(ear)
+
+    def isAnnoyed(self, ear: str) -> bool:
+        return self._q2.strContainsResponse(ear)
+
+
+class AXNPC2(AXNPC):
+
+    def __init__(self, replyStockLim: int, outputChance: int):
+        super().__init__(replyStockLim, outputChance)
+        self.annoyedQue: AnnoyedQ = AnnoyedQ(5)
+
+    def strLearn(self, ear: str):
+        # learns inputs containing strings that are repeatedly used by others
+        self.annoyedQue.learn(ear)
+        if self.annoyedQue.isAnnoyed(ear):
+            self.responder.insert(ear)

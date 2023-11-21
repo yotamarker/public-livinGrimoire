@@ -32,7 +32,7 @@ public class AXNPC {
         responder.add(temp);
     }
     public String strRespond(String ear){
-        // respond is ear contains a learned input
+        // respond if ear contains a learned input
         if (dripper.drip() && responder.strContainsResponse(ear)){
             return responder.getRNDElement();
         }

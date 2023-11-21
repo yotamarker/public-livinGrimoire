@@ -1319,6 +1319,13 @@ class AXNPC {
         if temp.isEmpty {return}
         responder.input(in1: temp)
     }
+    func strRespond(ear:String) -> String {
+        // respond if ear contains a learned input
+        if dripper.drip() && responder.strContains(str1: ear){
+            return responder.getRndItem()
+        }
+        return ""
+    }
     func forceRespond() -> String {
         return responder.getRndItem()
     }
@@ -1667,5 +1674,33 @@ class AXPassword {
     
     func getCodeEvent() -> Int {
         return code
+    }
+}
+class AnnoyedQue{
+    private var q1:RefreshQ
+    private var q2:RefreshQ
+    init(queLim:Int) {
+        self.q1 = RefreshQ(queLimit: queLim)
+        self.q2 = RefreshQ(queLimit: queLim)
+    }
+    func learn(ear:String) {
+        if q1.contains(str: ear){
+            q2.input(in1: ear)
+            return
+        }
+        q1.input(in1: ear)
+    }
+    func isAnnoyed(ear:String) -> Bool {
+        return q2.strContains(str1: ear)
+    }
+}
+class AXNPC2:AXNPC{
+    public var annoyedQue:AnnoyedQue = AnnoyedQue(queLim: 5)
+    func strLearn(ear:String) {
+        // learns inputs containing strings that are repeatedly used by others
+        annoyedQue.learn(ear: ear)
+        if annoyedQue.isAnnoyed(ear: ear){
+            responder.input(in1: ear)
+        }
     }
 }

@@ -1704,3 +1704,40 @@ class AXNPC2:AXNPC{
         }
     }
 }
+class TrgArgue{
+    public var commands:UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue()
+    public var contextCommands:UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue()
+    private var trgTolerance:Bool = false
+    private var counter:Int = 0
+    func getCounter() -> Int {
+        return counter
+    }
+    func engageCommand(ear:String) -> Int {
+        // 0-> no engagement
+        // 1-> engaged boolean gate (request made)
+        // 2-> engaged argument : consecutive request made (request in succession after a previous request)
+        if ear.isEmpty{return 0}
+        if contextCommands.contains(str: ear){
+            if trgTolerance{
+                counter += 1
+            }
+            trgTolerance = true
+            return 1
+        }
+        if trgTolerance {
+            if !commands.strContains(str1: ear){
+                trgTolerance = false
+                counter = 0
+                return 0
+            }else{
+                counter += 1
+                return 2
+            }
+        }
+        return 0
+    }
+    func disable(){
+        // context commands are disabled till next engagement with a command
+        trgTolerance = false
+    }
+}

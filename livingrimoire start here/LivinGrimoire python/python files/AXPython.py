@@ -1919,3 +1919,40 @@ class AXNPC2(AXNPC):
         self.annoyedQue.learn(ear)
         if self.annoyedQue.isAnnoyed(ear):
             self.responder.insert(ear)
+
+
+class TrgArgue:
+    def __init__(self):
+        self.commands: UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue(5)
+        self.contextCommands: UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue(5)
+        self.trgTolerance: bool = False
+        self._counter: int = 0  # count argues/requests made in succession
+        # (breaking point of argument can be established (argue till counter == N))
+
+    def getCounter(self) -> int:
+        return self._counter
+
+    def engageCommand(self, s1: str) -> int:
+        # 0-> no engagement
+        # 1-> engaged boolean gate (request made)
+        # 2-> engaged argument : consecutive request made (request in succession after a previous request)
+        if len(s1) == 0:
+            return 0
+        if self.contextCommands.contains(s1):
+            if self.trgTolerance:
+                self._counter +=1
+            self.trgTolerance = True
+            return 1
+        if self.trgTolerance:
+            if not self.commands.strContainsResponse(s1):
+                self.trgTolerance = False
+                self._counter = 0
+                return  0
+            else:
+                self._counter += 1
+                return 2
+        return 0
+
+    def disable(self):
+        # context commands are disabled till next engagement with a command
+        self.trgTolerance = False

@@ -19,7 +19,7 @@ package AXJava;
 public class TrgArgue {
     public UniqueItemSizeLimitedPriorityQueue commands = new UniqueItemSizeLimitedPriorityQueue();
     public UniqueItemSizeLimitedPriorityQueue contextCommands = new UniqueItemSizeLimitedPriorityQueue();
-    public Boolean trgTolerance  = false;
+    private Boolean trgTolerance  = false;
     private int counter = 0; // count argues/requests made in succession
     // (breaking point of argument can be established (argue till counter == N))
 
@@ -32,7 +32,7 @@ public class TrgArgue {
         // 0-> no engagement
         // 1-> engaged boolean gate (request made)
         // 2-> engaged argument : consecutive request made (request in succession after a previous request)
-        if (s1.isEmpty()){counter = 0;return 0;}
+        if (s1.isEmpty()){return 0;}
         if (contextCommands.contains(s1)){
             if(trgTolerance){counter++;}
             trgTolerance = true;

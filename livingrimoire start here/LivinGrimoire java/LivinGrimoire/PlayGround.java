@@ -2,6 +2,7 @@ package LivinGrimoire;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -408,5 +409,14 @@ public class PlayGround {
 
         // display current TimeZone using getDisplayName() method of TimeZone class
         return "Current TimeZone is : " + timeZone.getDisplayName();
+    }
+    public String findDay(int month, int day, int year) {
+
+        LocalDate localDate = LocalDate.of(year, month, day);
+
+        java.time.DayOfWeek dayOfWeek = localDate.getDayOfWeek();
+        System.out.println(dayOfWeek);
+
+        return dayOfWeek.toString().toLowerCase();
     }
 }

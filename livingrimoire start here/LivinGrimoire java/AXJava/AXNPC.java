@@ -25,14 +25,16 @@ public class AXNPC {
         }
         return "";
     }
-    public void learn(String ear){
+    public boolean learn(String ear){
         // say hello there : hello there is learned
         String temp = cmdBreaker.extractCmdParam(ear);
-        if (temp.isEmpty()){return;}
+        if (temp.isEmpty()){return false;}
         responder.add(temp);
+        return true;
     }
     public String strRespond(String ear){
         // respond if ear contains a learned input
+        if (ear.isEmpty()){return "";}
         if (dripper.drip() && responder.strContainsResponse(ear)){
             return responder.getRNDElement();
         }

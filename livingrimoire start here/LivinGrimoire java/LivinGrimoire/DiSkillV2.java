@@ -44,4 +44,8 @@ public class DiSkillV2 {
         this.outAlg = this.diSkillUtils.algBuilder(algParts);
         this.outpAlgPriority = priority; // 1->5 1 is the highest algorithm priority
     }
+    public Boolean pendingAlgorithm(){
+        // is an algorithm pending?
+        return this.outAlg != null;
+    }
 }

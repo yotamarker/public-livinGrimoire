@@ -39,4 +39,9 @@ public class AXGamification {
         counter-=cost;
         return true;
     }
+    public Boolean surplus(int cost){
+        // has surplus for reward?
+        if (cost>counter){return false;}
+        return true;
+    }
 }

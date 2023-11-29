@@ -14,8 +14,8 @@ public class GamificationN extends DiSkillV2 {
         axGamification = rewardBank.getAxGamification();
     }
 
-    public void setCost(int cost) {
-        this.cost = cost;
+    public GamificationN setCost(int cost) {
+        this.cost = cost;return this;
     }
 
     @Override

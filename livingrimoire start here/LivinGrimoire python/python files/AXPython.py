@@ -1046,6 +1046,11 @@ class AXGamification:
             return True
         return False
 
+    def surplus(self, cost: int) -> bool:
+        if cost < self._counter:
+            return True
+        return False
+
 
 class AXKeyValuePair:
     def __init__(self):
@@ -1671,14 +1676,18 @@ class AXNPC:
             return self.responder.getRNDElement()
         return ""
 
-    def learn(self, ear: str):
+    def learn(self, ear: str) -> bool:
+        # say hello there : hello there is learned
         temp: str = self.cmdBreaker.extractCmdParam(ear)
         if len(temp) == 0:
-            return
+            return False
         self.responder.insert(temp)
+        return True
 
     def strRespond(self, ear: str) -> str:
         # respond if ear contains a learned input
+        if len(ear) == 0:
+            return ""
         if self.dripper.drip() and self.responder.strContainsResponse(ear):
             return self.responder.getRNDElement()
         return ""

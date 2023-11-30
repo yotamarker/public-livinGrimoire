@@ -425,8 +425,11 @@ class PlayGround:
         return timezone
 
     def getLocal(self) -> str:
-        '''This method returns the local time zone'''
+        """This method returns the local time zone"""
         return datetime.datetime.now(datetime.timezone.utc).astimezone().tzinfo
+
+    def findDay(self, month: int, day: int, year: int) -> str:
+        return datetime.date(year, month, day).strftime("%A")
 
 
 # A step-by-step plan to achieve a goal
@@ -552,6 +555,10 @@ class DiSkillV2:
         # build a custom algorithm out of a chain of algorithm parts(actions)
         self._outAlg = self._diSkillUtils.algBuilder(algParts)
         self._outpAlgPriority = priority  # 1->5 1 is the highest algorithm priority
+
+    def pendingAlgorithm(self) -> bool:
+        # is an algorithm pending?
+        return self._outAlg is not None
 
 
 class DiHelloWorld(DiSkillV2):
@@ -998,7 +1005,7 @@ class Chobits(Thinkable):
     def removeSkill(self, skill: DiSkillV2):
         self._dClasses.remove(skill)
 
-    def containsSkill(self, skill: DiSkillV2)->bool:
+    def containsSkill(self, skill: DiSkillV2) -> bool:
         return self._dClasses.__contains__(skill)
 
     # override

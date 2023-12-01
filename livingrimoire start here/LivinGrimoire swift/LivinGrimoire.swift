@@ -385,6 +385,23 @@ class PlayGround {
         return TimeZone.current.identifier 
     }
     func findDay(month:Int,day:Int,year:Int) -> String {
+        // gets weekday from date
+        if day > 31 {
+            return ""
+        }
+        if (day > 30){
+            if ((month == 4)||(month == 6)||(month == 9)||(month == 11)){return ""}
+        }
+        if(month == 2){
+            if(isLeapYear(year: getYearAsInt())){
+                if (day > 29){
+                    return ""
+                }
+            }
+            if(day > 28){
+                return ""
+            }
+        }
         // convert string to date
         let today:String = "\(year)-\(month)-\(day)"
         let formatter  = DateFormatter()
@@ -393,6 +410,21 @@ class PlayGround {
         let myCalendar = Calendar(identifier: .gregorian)
         let weekDay = myCalendar.component(.weekday, from: todayDate)
         return self.week_days[weekDay] ?? ""
+    }
+    func nxtDayOnDate(dayOfMonth:Int) -> String {
+        // get the weekday on the next dayOfMonth
+        let today:Int = getDayOfTheMonthAsInt()
+        if today <= dayOfMonth {
+            return findDay(month: getMonthAsInt(), day: dayOfMonth, year: getYearAsInt())
+        }else if (!(getMonthAsInt() == 12)){
+            return findDay(month: getMonthAsInt() + 1, day: dayOfMonth, year: getYearAsInt())
+        }
+        return findDay(month: 1, day: dayOfMonth, year: getYearAsInt() + 1)
+    }
+    func isLeapYear(year:Int) -> Bool {
+        var isLeapYear:Bool
+        isLeapYear = (year % 4 == 0)
+        return isLeapYear && (year % 100 != 0 || year % 400 == 0)
     }
 }
                       
@@ -630,6 +662,9 @@ open class DiSkillV2{
         let result:Algorithm = Algorithm(algParts: algParts1)
         self.outAlg = result
         self.outpAlgPriority = priority // 1->5 1 is the highest algorithm priority
+    }
+    func pendingAlgorithm() -> Bool {
+        return outAlg != nil
     }
 }
 

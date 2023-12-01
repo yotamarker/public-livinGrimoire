@@ -131,7 +131,7 @@ class APSay(Mutatable):
 
 
 class APVerbatim(Mutatable):
-    '''this algorithm part says each past param verbatim'''
+    """this algorithm part says each past param verbatim"""
 
     def __init__(self, *args) -> None:
         super().__init__()
@@ -251,7 +251,7 @@ class PlayGround:
                            29: "twentynineth_of", 30: "thirtyth_of", 31: "thirtyfirst_of"}
 
     def getCurrentTimeStamp(self) -> str:
-        '''This method returns the current time (hh:mm)'''
+        """This method returns the current time (hh:mm)"""
         right_now = datetime.datetime.now()
         temp_minute: int = right_now.minute
         tempstr: str = ""
@@ -262,46 +262,46 @@ class PlayGround:
         return str(right_now.hour) + ":" + tempstr
 
     def getMonthAsInt(self) -> int:
-        '''This method returns the current month (MM)'''
+        """This method returns the current month (MM)"""
         right_now = datetime.datetime.now()
         return right_now.month
 
     def getDayOfTheMonthAsInt(self) -> int:
-        '''This method returns the current day (dd)'''
+        """This method returns the current day (dd)"""
         right_now = datetime.datetime.now()
         return right_now.day
 
     def getYearAsInt(self) -> int:
-        '''This method returns the current year (yyyy)'''
+        """This method returns the current year (yyyy)"""
         right_now = datetime.datetime.now()
         return right_now.year
 
     def getDayAsInt(self) -> int:
-        '''This method returns the current day of the week (1, 2, ... 7)'''
+        """This method returns the current day of the week (1, 2, ... 7)"""
         right_now = datetime.datetime.now()
         return right_now.isoweekday()
 
     def getMinutes(self) -> str:
-        '''This method returns the current minutes (mm)'''
+        """This method returns the current minutes (mm)"""
         right_now = datetime.datetime.now()
         return str(right_now.minute)
 
     def getSeconds(self) -> str:
-        '''This method returns the current seconds (ss)'''
+        """This method returns the current seconds (ss)"""
         right_now = datetime.datetime.now()
         return str(right_now.second)
 
     def getDayOfDWeek(self) -> str:
-        '''This method returns the current day of the week as a word (monday, ...)'''
+        """This method returns the current day of the week as a word (monday, ...)"""
         right_now = datetime.datetime.now()
         return calendar.day_name[right_now.weekday()]
 
     def translateMonthDay(self, day: int) -> str:
-        '''This method returns the current day of the month as a word (first_of, ...)'''
+        """This method returns the current day of the month as a word (first_of, ...)"""
         return self.dayOfMonth.get(day, "")
 
     def getSpecificTime(self, time_variable: enumTimes) -> str:
-        '''This method returns the current specific date in words (eleventh_of June 2021, ...)'''
+        """This method returns the current specific date in words (eleventh_of June 2021, ...)"""
         enum_temp = time_variable.name
         if enum_temp == "DATE":
             right_now = datetime.datetime.now()
@@ -320,22 +320,22 @@ class PlayGround:
         return output
 
     def getSecondsAsInt(self) -> int:
-        '''This method returns the current seconds'''
+        """This method returns the current seconds"""
         right_now = datetime.datetime.now()
         return right_now.second
 
     def getMinutesAsInt(self) -> int:
-        '''This method returns the current minutes'''
+        """This method returns the current minutes"""
         right_now = datetime.datetime.now()
         return right_now.minute
 
     def getHoursAsInt(self) -> int:
-        '''This method returns the current hour'''
+        """This method returns the current hour"""
         right_now = datetime.datetime.now()
         return right_now.hour
 
     def getFutureInXMin(self, extra_minutes: int) -> str:
-        '''This method returns the date in x minutes'''
+        """This method returns the date in x minutes"""
         right_now = datetime.datetime.now()
         final_time = right_now + datetime.timedelta(minutes=extra_minutes)
         regex: RegexUtil = RegexUtil()
@@ -346,7 +346,7 @@ class PlayGround:
         return s1
 
     def getPastInXMin(self, less_minutes: int) -> str:
-        '''This method returns the date x minutes before'''
+        """This method returns the date x minutes before"""
         right_now = datetime.datetime.now()
         final_time = right_now - datetime.timedelta(minutes=less_minutes)
         regex: RegexUtil = RegexUtil()
@@ -357,11 +357,11 @@ class PlayGround:
         return s1
 
     def getFutureHour(self, startHour: int, addedHours: int) -> int:
-        '''This method returns the hour in x hours from the starting hour'''
+        """This method returns the hour in x hours from the starting hour"""
         return (startHour + addedHours) % 24
 
     def getFutureFromXInYMin(self, to_add: int, start: str) -> str:
-        '''This method returns the time (hh:mm) in x minutes the starting time (hh:mm)'''
+        """This method returns the time (hh:mm) in x minutes the starting time (hh:mm)"""
         values = start.split(":")
         times_to_add = (int(values[1]) + to_add) // 60
         new_minutes = (int(values[1]) + to_add) % 60
@@ -369,13 +369,13 @@ class PlayGround:
         return new_time
 
     def timeInXMinutes(self, x: int) -> str:
-        '''This method returns the time (hh:mm) in x minutes'''
+        """This method returns the time (hh:mm) in x minutes"""
         right_now = datetime.datetime.now()
         final_time = right_now + datetime.timedelta(minutes=x)
         return str(final_time.hour) + ":" + str(final_time.minute)
 
     def isDayTime(self) -> bool:
-        '''This method returns true if it's daytime (6-18)'''
+        """This method returns true if it's daytime (6-18)"""
         return 5 < datetime.datetime.now().hour < 19
 
     def smallToBig(self, *a) -> bool:
@@ -385,7 +385,7 @@ class PlayGround:
         return True
 
     def partOfDay(self) -> str:
-        '''This method returns which part of the day it is (morning, ...)'''
+        """This method returns which part of the day it is (morning, ...)"""
         hour: int = self.getHoursAsInt()
         if self.smallToBig(5, hour, 12):
             return "morning"
@@ -396,40 +396,73 @@ class PlayGround:
         return "night"
 
     def convertToDay(self, number: int) -> str:
-        '''This method converts the week number to the weekday name'''
+        """This method converts the week number to the weekday name"""
         return self.week_days.get(number, "")
 
     def isNight(self) -> bool:
-        '''This method returns true if it's night (21-5)'''
+        """This method returns true if it's night (21-5)"""
         hour: int = self.getHoursAsInt()
         return hour > 20 or hour < 6
 
     def getTomorrow(self) -> str:
-        '''This method returns tomorrow'''
+        """This method returns tomorrow"""
         right_now = datetime.datetime.now()
-        if (right_now.weekday() == 6):
+        if right_now.weekday() == 6:
             return "sunday"
         return calendar.day_name[right_now.weekday() + 1]
 
     def getYesterday(self) -> str:
-        '''This method returns yesterday'''
+        """This method returns yesterday"""
         right_now = datetime.datetime.now()
         if right_now.weekday == 0:
             return "Sunday"
         return calendar.day_name[right_now.weekday() - 1]
 
     def getGMT(self) -> int:
-        '''This method returns the local GMT'''
+        """This method returns the local GMT"""
         right_now = datetime.datetime.now()
         timezone = int(str(right_now.astimezone())[-6:-3])
         return timezone
 
-    def getLocal(self) -> str:
+    @staticmethod
+    def getLocal() -> str:
         """This method returns the local time zone"""
         return datetime.datetime.now(datetime.timezone.utc).astimezone().tzinfo
 
-    def findDay(self, month: int, day: int, year: int) -> str:
-        return datetime.date(year, month, day).strftime("%A")
+    @staticmethod
+    def findDay(month: int, day: int, year: int) -> str:
+        # get weekday from date
+        if day > 31:
+            return ""
+        # april, june, sep, nov case:
+        if day > 30:
+            if (month == 4) or (month == 6) or (month == 9) or (month == 11):
+                return ""
+        # feb case:
+        if month == 2:
+            if PlayGround.isLeapYear(year):
+                if day > 29:
+                    return ""
+            if day > 28:
+                return ""
+        return datetime.date(year, month, day).strftime("%A").lower()
+
+    @staticmethod
+    def nxtDayOnDate(dayOfMonth: int) -> str:
+        # get the weekday on the next dayOfMonth
+        today: int = PlayGround().getDayOfTheMonthAsInt()
+        if today <= dayOfMonth:
+            return PlayGround.findDay(PlayGround().getMonthAsInt() , dayOfMonth, PlayGround().getYearAsInt())
+        elif not (PlayGround().getMonthAsInt() == 12):
+            return PlayGround.findDay(PlayGround().getMonthAsInt() + 1, dayOfMonth, PlayGround().getYearAsInt())
+        return PlayGround.findDay(1, dayOfMonth, PlayGround().getYearAsInt() + 1)
+
+    @staticmethod
+    def isLeapYear(year: int):
+        # divisible by 4
+        isLeapyear: bool = year % 4 == 0
+        # divisible by 4, not by 100, or divisible by 400
+        return isLeapyear and (year % 100 != 0 or year % 400 == 0)
 
 
 # A step-by-step plan to achieve a goal

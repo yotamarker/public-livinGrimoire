@@ -411,12 +411,44 @@ public class PlayGround {
         return "Current TimeZone is : " + timeZone.getDisplayName();
     }
     public String findDay(int month, int day, int year) {
-
+        // get weekday from date
+        if (day > 31){
+            return "";
+        }
+        if (day> 30){
+            if ((month == 4)||(month == 6)||(month == 9)||(month == 11)){return "";}
+        }
+        if(month == 2){
+            if(isLeapYear(getYearAsInt())){
+                if (day > 29){
+                    return "";
+                }
+            }
+            if(day > 28){
+                return "";
+            }
+        }
         LocalDate localDate = LocalDate.of(year, month, day);
-
         java.time.DayOfWeek dayOfWeek = localDate.getDayOfWeek();
-        System.out.println(dayOfWeek);
-
         return dayOfWeek.toString().toLowerCase();
+    }
+    public String nxtDayOnDate(int dayOfMonth){
+        // get the weekday on the next dayOfMonth
+        int today = getDayOfTheMonthAsInt();
+        if (today <= dayOfMonth){
+            return findDay(getMonthAsInt() + 1,dayOfMonth,getYearAsInt());
+        } else if (!(getMonthAsInt() == 12)) {
+            return findDay(getMonthAsInt() + 2,dayOfMonth,getYearAsInt());
+        }
+        return findDay(2,dayOfMonth,getYearAsInt()+1);
+    }
+    public Boolean isLeapYear(int year){
+        boolean isLeapYear;
+
+        // divisible by 4
+        isLeapYear = (year % 4 == 0);
+
+        // divisible by 4, not by 100, or divisible by 400
+        return isLeapYear && (year % 100 != 0 || year % 400 == 0);
     }
 }

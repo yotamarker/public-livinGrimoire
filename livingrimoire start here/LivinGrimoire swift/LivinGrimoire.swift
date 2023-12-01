@@ -384,6 +384,16 @@ class PlayGround {
        // '''This method returns the local time zone'''
         return TimeZone.current.identifier 
     }
+    func findDay(month:Int,day:Int,year:Int) -> String {
+        // convert string to date
+        let today:String = "\(year)-\(month)-\(day)"
+        let formatter  = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        guard let todayDate = formatter.date(from: today) else { return "" }
+        let myCalendar = Calendar(identifier: .gregorian)
+        let weekDay = myCalendar.component(.weekday, from: todayDate)
+        return self.week_days[weekDay] ?? ""
+    }
 }
                       
 extension Date {

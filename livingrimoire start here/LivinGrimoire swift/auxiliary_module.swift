@@ -924,6 +924,11 @@ class AXGamification{
         counter -= cost
         return true
     }
+    func surplus(cost:Int)->Bool{
+        // has surplus for reward?
+        if cost > counter{return false}
+        return true
+    }
 }
 class Differ{
     private var powerLevel:Int = 90
@@ -1313,14 +1318,19 @@ class AXNPC {
         }
         return ""
     }
-    
-    func learn(ear:String) {
+    @discardableResult
+    func learn(ear:String) -> Bool{
+        // say hello there : hello there is learned
         let temp:String = cmdBreaker.extractCmdParam(s1: ear)
-        if temp.isEmpty {return}
+        if temp.isEmpty {return false}
         responder.input(in1: temp)
+        return true
     }
     func strRespond(ear:String) -> String {
         // respond if ear contains a learned input
+        if ear.isEmpty {
+            return ""
+        }
         if dripper.drip() && responder.strContains(str1: ear){
             return responder.getRndItem()
         }

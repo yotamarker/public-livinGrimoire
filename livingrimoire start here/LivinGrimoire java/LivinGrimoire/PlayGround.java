@@ -437,10 +437,10 @@ public class PlayGround {
         int today = getDayOfTheMonthAsInt();
         if (today <= dayOfMonth){
             return findDay(getMonthAsInt() + 1,dayOfMonth,getYearAsInt());
-        } else if (!(getMonthAsInt() == 12)) {
+        } else if (!(getMonthAsInt() == 11)) { // december?
             return findDay(getMonthAsInt() + 2,dayOfMonth,getYearAsInt());
         }
-        return findDay(2,dayOfMonth,getYearAsInt()+1);
+        return findDay(1,dayOfMonth,getYearAsInt()+1);
     }
     public Boolean isLeapYear(int year){
         boolean isLeapYear;

@@ -41,6 +41,10 @@ public class AXHandshake {
         dripper.setLimis(n);
         return this;
     }
+
+    public void setUser_name(String user_name) {
+        this.user_name = user_name;
+    }
     // getters
 
     public String getUser_name() {

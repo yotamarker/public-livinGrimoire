@@ -1949,14 +1949,14 @@ class TrgArgue:
             return 0
         if self.contextCommands.contains(s1):
             if self.trgTolerance:
-                self._counter +=1
+                self._counter += 1
             self.trgTolerance = True
             return 1
         if self.trgTolerance:
             if not self.commands.strContainsResponse(s1):
                 self.trgTolerance = False
                 self._counter = 0
-                return  0
+                return 0
             else:
                 self._counter += 1
                 return 2
@@ -1965,3 +1965,139 @@ class TrgArgue:
     def disable(self):
         # context commands are disabled till next engagement with a command
         self.trgTolerance = False
+
+
+class Magic8Ball:
+    def __init__(self):
+        self.__questions: Responder = Responder()
+        self.__answers: Responder = Responder()
+        # answers:
+        # Affirmative answers
+        self.__answers.addResponse("It is certain")
+        self.__answers.addResponse("It is decidedly so")
+        self.__answers.addResponse("Without a doubt")
+        self.__answers.addResponse("Yes definitely")
+        self.__answers.addResponse("You may rely on it")
+        self.__answers.addResponse("As I see it, yes")
+        self.__answers.addResponse("Most likely")
+        self.__answers.addResponse("Outlook good")
+        self.__answers.addResponse("Yes")
+        self.__answers.addResponse("Signs point to yes")
+        # Non – Committal answers
+        self.__answers.addResponse("Reply hazy, try again")
+        self.__answers.addResponse("Ask again later")
+        self.__answers.addResponse("Better not tell you now")
+        self.__answers.addResponse("Cannot predict now")
+        self.__answers.addResponse("Concentrate and ask again")
+        # Negative answers
+        self.__answers.addResponse("Don’t count on it")
+        self.__answers.addResponse("My reply is no")
+        self.__answers.addResponse("My sources say no")
+        self.__answers.addResponse("Outlook not so good")
+        self.__answers.addResponse("Very doubtful")
+        # questions:
+        self.__questions = Responder("will i", "can i expect", "should i", "may i", "is it a good idea",
+                                     "will it be a good idea for me to", "is it possible", "future hold",
+                                     "will there be")
+
+    def setQuestions(self, q: Responder):
+        self.__questions = q
+
+    def setAnswers(self, answers: Responder):
+        self.__answers = answers
+
+    def getQuestions(self) -> Responder:
+        return self.__questions
+
+    def getAnswers(self) -> Responder:
+        return self.__answers
+
+    def engage(self, ear: str) -> bool:
+        if len(ear) == 0:
+            return False
+        if self.__questions.strContainsResponse(ear):
+            return True
+        return False
+
+    def reply(self) -> str:
+        return self.__answers.getAResponse()
+
+
+class AXShoutOut:
+    def __init__(self):
+        self.__isActive: bool = False
+        self.handshake: Responder = Responder()
+
+    def activate(self):
+        # make engage-able
+        self.__isActive = True
+
+    def engage(self, ear: str) -> bool:
+        if len(ear) == 0:
+            return False
+        if self.__isActive:
+            if self.handshake.strContainsResponse(ear):
+                self.__isActive = False;
+                return True  # shout out was replied!
+
+        # unrelated reply to shout out, shout out context is outdated
+        self.__isActive = False
+        return False
+
+
+class AXHandshake:
+    def __init__(self):
+        self.__trgTime: TrgTime = TrgTime()
+        self.__trgTolerance: TrgTolerance = TrgTolerance(10)
+        self.__shoutout: AXShoutOut = AXShoutOut()
+        # default handshakes (valid reply to shout out)
+        self.__shoutout.handshake = Responder("what", "yes", "i am here")
+        self.__user_name: str = ""
+        self.__dripper: PercentDripper = PercentDripper()
+
+    # setters
+    def setTimeStamp(self, time_stamp: str) -> AXHandshake:
+        # when will the shout out happen?
+        # example time stamp: 9:15
+        self.__trgTime.setTime(time_stamp)
+        return self
+
+    def setShoutOutLim(self, lim: int) -> AXHandshake:
+        # how many times should user be called for, per shout out?
+        self.__trgTolerance.setMaxRepeats(lim)
+        return self
+
+    def setHandShake(self, responder: Responder) -> AXHandshake:
+        # which responses would acknowledge the shout-out?
+        # such as *see default handshakes for examples suggestions
+        self.__shoutout.handshake = responder
+        return self
+
+    def setDripperPercent(self, n: int) -> AXHandshake:
+        # hen shout out to user how frequent will it be?
+        self.__dripper.setLimit(n)
+        return self
+
+    def setUser_name(self, user_name: str) -> AXHandshake:
+        self.__user_name = user_name
+        return self
+
+    # getters
+    def getUser_name(self) -> str:
+        return self.__user_name
+
+    def engage(self, ear: str) -> bool:
+        if self.__trgTime.alarm():
+            self.__trgTolerance.reset()
+        # stop shout out
+        if self.__shoutout.engage(ear):
+            self.__trgTolerance.disable()
+            return True
+        return False
+
+    def trigger(self) -> bool:
+        if self.__trgTolerance.trigger():
+            if self.__dripper.drip():
+                self.__shoutout.activate()
+                return True
+        return False

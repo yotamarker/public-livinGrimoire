@@ -437,3 +437,15 @@ class ShBrain(Brain):
             super().doIt(ear, skin, eye)
             return
         self.hardwareChobit.think(self._temp, skin, eye)
+
+
+class DiMagic8Ball(DiSkillV2):
+    def __init__(self):
+        super().__init__()
+        self.magic8Ball: Magic8Ball = Magic8Ball()
+
+    # Override
+    def input(self, ear: str, skin: str, eye: str):
+        # skill logic:
+        if self.magic8Ball.engage(ear):
+            self.setVerbatimAlg(4, self.magic8Ball.reply())

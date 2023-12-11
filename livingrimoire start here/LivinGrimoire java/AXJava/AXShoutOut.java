@@ -4,7 +4,7 @@ public class AXShoutOut {
     private Boolean isActive = false;
     public Responder handshake = new Responder();
     public void activate(){
-        // make engagable
+        // make engage-able
         isActive = true;
     }
     public Boolean engage(String ear){

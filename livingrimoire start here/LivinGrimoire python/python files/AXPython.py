@@ -2046,6 +2046,14 @@ class AXShoutOut:
 
 
 class AXHandshake:
+    """
+    example use:
+            if self.__handshake.engage(ear): # ear reply like: what do you want?/yes
+            self.setVerbatimAlg(4, "now I know you are here")
+            return
+        if self.__handshake.trigger():
+            self.setVerbatimAlg(4, self.__handshake.getUser_name()) # user, user!
+    """
     def __init__(self):
         self.__trgTime: TrgTime = TrgTime()
         self.__trgTolerance: TrgTolerance = TrgTolerance(10)

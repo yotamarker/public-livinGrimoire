@@ -424,10 +424,39 @@ class PlayGround:
         timezone = int(str(right_now.astimezone())[-6:-3])
         return timezone
 
+    def getCurrentMonthName(self) -> str:
+        month: int = self.getMonthAsInt()
+        match month:
+            case 1:
+                return "january"
+            case 2:
+                return "february"
+            case 3:
+                return "march"
+            case 4:
+                return "april"
+            case 5:
+                return "may"
+            case 6:
+                return "june"
+            case 7:
+                return "july"
+            case 8:
+                return "august"
+            case 9:
+                return "november"
+            case 10:
+                return "october"
+            case 11:
+                return "november"
+            case 12:
+                return "december"
+        return ""
+
     @staticmethod
     def getLocal() -> str:
         """This method returns the local time zone"""
-        return datetime.datetime.now(datetime.timezone.utc).astimezone().tzinfo
+        return f'{datetime.datetime.now(datetime.timezone.utc).astimezone().tzinfo}'
 
     @staticmethod
     def findDay(month: int, day: int, year: int) -> str:
@@ -452,7 +481,7 @@ class PlayGround:
         # get the weekday on the next dayOfMonth
         today: int = PlayGround().getDayOfTheMonthAsInt()
         if today <= dayOfMonth:
-            return PlayGround.findDay(PlayGround().getMonthAsInt() , dayOfMonth, PlayGround().getYearAsInt())
+            return PlayGround.findDay(PlayGround().getMonthAsInt(), dayOfMonth, PlayGround().getYearAsInt())
         elif not (PlayGround().getMonthAsInt() == 12):
             return PlayGround.findDay(PlayGround().getMonthAsInt() + 1, dayOfMonth, PlayGround().getYearAsInt())
         return PlayGround.findDay(1, dayOfMonth, PlayGround().getYearAsInt() + 1)
@@ -577,6 +606,16 @@ class DiSkillV2:
             temp.append(sayThis[i])
         self._outAlg = self._diSkillUtils.simpleVerbatimAlgorithm(temp)
         self._outpAlgPriority = priority  # 1->5 1 is the highest algorithm priority
+
+    def setSimpleAlg(self, *sayThis: str):
+        # based on the setVerbatimAlg method
+        # build a simple output algorithm to speak string by string per think cycle
+        # uses varargs param
+        temp: list[str] = []
+        for i in range(0, len(sayThis)):
+            temp.append(sayThis[i])
+        self._outAlg = self._diSkillUtils.simpleVerbatimAlgorithm(temp)
+        self._outpAlgPriority = 4  # 1->5 1 is the highest algorithm priority
 
     def setVebatimAlgFromList(self, priority: int, sayThis: list[str]):
         # build a simple output algorithm to speak string by string per think cycle

@@ -449,3 +449,87 @@ class DiMagic8Ball(DiSkillV2):
         # skill logic:
         if self.magic8Ball.engage(ear):
             self.setVerbatimAlg(4, self.magic8Ball.reply())
+
+
+class DiTime(DiSkillV2):
+    def __init__(self):
+        super().__init__()
+        self.__pl: PlayGround = PlayGround()
+
+    # Override
+    def input(self, ear: str, skin: str, eye: str):
+        match ear:
+            case "what is the time":
+                self.setVerbatimAlg(4, self.__pl.getCurrentTimeStamp())
+            case "which day is it":
+                self.setVerbatimAlg(4, self.__pl.getDayOfDWeek())
+            case "good morning", "good night", "good afternoon", "good evening":
+                self.setVerbatimAlg(4, f'good {self.__pl.partOfDay()}')  # fstring
+            case "which month is it":
+                self.setVerbatimAlg(4, self.__pl.getCurrentMonthName())
+            case "which year is it":
+                self.setVerbatimAlg(4, f'{self.__pl.getYearAsInt()}')
+            case "what is your time zone":
+                self.setVerbatimAlg(4, self.__pl.getLocal())
+            case "when is the first":
+                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(1))
+            case "when is the second":
+                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(2))
+            case "when is the third":
+                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(3))
+            case "when is the fourth":
+                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(4))
+            case "when is the fifth":
+                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(5))
+            case "when is the sixth":
+                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(6))
+            case "when is the seventh":
+                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(7))
+            case "when is the eighth":
+                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(8))
+            case "when is the ninth":
+                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(9))
+            case "when is the tenth":
+                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(10))
+            case "when is the eleventh":
+                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(11))
+            case "when is the twelfth":
+                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(12))
+            case "when is the thirteenth":
+                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(13))
+            case "when is the fourteenth":
+                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(14))
+            case "when is the fifteenth":
+                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(15))
+            case "when is the sixteenth":
+                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(16))
+            case "when is the seventeenth":
+                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(17))
+            case "when is the eighteenth":
+                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(18))
+            case "when is the nineteenth":
+                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(19))
+            case "when is the twentieth":
+                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(20))
+            case "when is the twenty first":
+                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(21))
+            case "when is the twenty second":
+                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(22))
+            case "when is the twenty third":
+                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(23))
+            case "when is the twenty fourth":
+                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(24))
+            case "when is the twenty fifth":
+                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(25))
+            case "when is the twenty sixth":
+                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(26))
+            case "when is the twenty seventh":
+                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(27))
+            case "when is the twenty eighth":
+                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(28))
+            case "when is the twenty ninth":
+                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(29) if (self.__pl.nxtDayOnDate(29) != "") else "never")
+            case "when is the thirtieth":
+                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(30) if (self.__pl.nxtDayOnDate(30) != "") else "never")
+            case "when is the thirty first":
+                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(31) if (self.__pl.nxtDayOnDate(31) != "") else "never")

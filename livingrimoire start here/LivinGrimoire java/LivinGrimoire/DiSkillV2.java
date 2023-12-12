@@ -33,6 +33,13 @@ public class DiSkillV2 {
         this.outAlg = this.diSkillUtils.simpleVerbatimAlgorithm(sayThis);
         this.outpAlgPriority = priority; // 1->5 1 is the highest algorithm priority
     }
+    protected void setSimpleAlg(String... sayThis){
+        // based on the setVerbatimAlg method
+        // build a simple output algorithm to speak string by string per think cycle
+        // uses varargs param
+        this.outAlg = this.diSkillUtils.simpleVerbatimAlgorithm(sayThis);
+        this.outpAlgPriority = 4; // 1->5 1 is the highest algorithm priority
+    }
     protected void setVerbatimAlgFromList(int priority, ArrayList<String> sayThis){
         // build a simple output algorithm to speak string by string per think cycle
         // uses list param

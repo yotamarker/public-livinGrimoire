@@ -451,4 +451,7 @@ public class PlayGround {
         // divisible by 4, not by 100, or divisible by 400
         return isLeapYear && (year % 100 != 0 || year % 400 == 0);
     }
+    public String getCurrentMonthName(){
+        return translateMonth(getMonthAsInt()+1);
+    }
 }

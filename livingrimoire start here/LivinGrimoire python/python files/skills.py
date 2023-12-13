@@ -533,3 +533,141 @@ class DiTime(DiSkillV2):
                 self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(30) if (self.__pl.nxtDayOnDate(30) != "") else "never")
             case "when is the thirty first":
                 self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(31) if (self.__pl.nxtDayOnDate(31) != "") else "never")
+
+
+class DiCron(DiSkillV2):
+    def __init__(self):
+        super().__init__()
+        self.__sound: str = "snore"
+        self.__cron: Cron = Cron("12:05", 40, 2)
+
+    # setters
+    def setSound(self, sound: str) -> DiCron:
+        self.__sound = sound
+        return self
+
+    def setCron(self, cron: Cron) -> DiCron:
+        self.__cron = cron
+        return self
+
+    # Override
+    def input(self, ear: str, skin: str, eye: str):
+        if self.__cron.trigger():
+            self.setSimpleAlg(self.__sound)
+
+
+class DiBlabber(DiSkillV2):
+    def __init__(self, skill_name: str):
+        super().__init__()
+        # skill toggle
+        self.__isActive: bool = True
+        self.skillToggler: AXContextCmd = AXContextCmd()
+        self.skillToggler.contextCommands.insert(f'toggle {skill_name}')
+        self.skillToggler.commands.insert("again")
+        self.skillToggler.commands.insert("repeat")
+        # chat mode select
+        self.modeSwitch: AXContextCmd = AXContextCmd()
+        self.modeSwitch.contextCommands.insert(f'switch {skill_name} mode')
+        self.modeSwitch.commands.insert("again")
+        self.modeSwitch.commands.insert("repeat")
+        self._mode: Cycler = Cycler(1)
+        self._mode.setToZero()  # default mode : pal chatbot (chatbot1)
+        # engage chatbot
+        self.engage: AXContextCmd = AXContextCmd()
+        self.engage.contextCommands.insert(f'engage {skill_name}')
+        self.engage.commands.insert("talk to me")
+        self.engage.commands.insert("again")
+        self.engage.commands.insert("repeat")
+        # chatbots
+        self.chatbot1: AXNPC2 = AXNPC2(30, 90)  # pal mode chat module
+        self.chatbot2: AXNPC2 = AXNPC2(30, 90)  # discreet mode chat module
+        # auto mode
+        self.__autoEngage: Responder = Responder("engage automatic mode", "automatic mode", "auto mode")
+        self.__shutUp: Responder = Responder("stop", "shut up", "silence", "be quite", "be silent")
+        self.__tg: TimeGate = TimeGate(5)
+        self.__nPCPlus: int = 5  # increase rate of output in self auto reply mode
+        self.__nPCNeg: int = -10  # decrease rate of output in self auto reply mode
+
+    # Override
+    def input(self, ear: str, skin: str, eye: str):
+        # skill toggle:
+        if self.skillToggler.engageCommand(ear):
+            self.__isActive = not self.__isActive
+        if not self.__isActive:
+            return
+        # chatbot mode: switch mode
+        if self.modeSwitch.engageCommand(ear):
+            self._mode.cycleCount()
+            self.setSimpleAlg(self.talkMode())
+            return
+        match self._mode.getMode():
+            case 0:
+                self.mode0(ear)
+            case 1:
+                self.mode1(ear)
+
+    def talkMode(self) -> str:
+        match self._mode.getMode():
+            case 0:
+                return "friend mode"
+            case 1:
+                return "discreet mode"
+        return "mode switched"
+
+    # chat module common tasks
+    def NPCUtilization(self, npc: AXNPC2, ear: str):
+        result: str = ""
+        # engage
+        if self.engage.engageCommand(ear):
+            result = npc.respond()
+            if not result == "":
+                self.setSimpleAlg(result)
+                return
+        # str engage
+        result = npc.strRespond(ear)
+        if not result == "":
+            self.setSimpleAlg(result)
+        # forced learn (say n)
+        if not npc.learn(ear):
+            # str learn
+            npc.strLearn(ear)
+
+    def mode0(self, ear: str):
+        if not len(super().getKokoro().toHeart.get("diblabber", "")) == 0:
+            super().getKokoro().toHeart["diblabber"] = ""
+            self.setSimpleAlg(self.chatbot1.forceRespond())
+            return
+        self.NPCUtilization(self.chatbot1, ear)
+
+    def mode1(self, ear: str):
+        # auto engage:
+        if self.__autoEngage.responsesContainsStr(ear):
+            self.__tg.open(self.__tg.pause)
+            self.setSimpleAlg("auto NPC mode engaged")
+            return
+        if self.__shutUp.responsesContainsStr(ear):
+            self.__tg.close()
+            self.setSimpleAlg("auto NPC mode disengaged")
+            return
+        if self.__tg.isOpen():
+            plus: int = self.__nPCNeg
+            if not (len(ear) == 0):
+                plus = self.__nPCPlus
+            result: str = self.chatbot2.respondPlus(plus)
+            if not (len(result) == 0):
+                self.setSimpleAlg(result)
+                return
+        # end auto engage code snippet
+        self.NPCUtilization(self.chatbot2, ear)
+
+    # auto mode setters
+    def setNPCTimeSpan(self, n: int):
+        self.__tg.setPause(n)
+
+    def setNPCNeg(self, n: int):
+        # lower NPC auto output chance
+        self.__nPCNeg = n
+
+    def setNPCPlus(self, n: int):
+        # increase NPC auto output chance
+        self.__nPCPlus = n

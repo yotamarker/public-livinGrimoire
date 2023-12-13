@@ -252,6 +252,8 @@ class UniqueItemsPriorityQue(LGFIFO):
 
     def strContainsResponse(self, item: str) -> bool:
         for response in self.queue:
+            if len(response) == 0:
+                continue
             if item.__contains__(response):
                 return True
         return False
@@ -625,6 +627,8 @@ class Responder:
 
     def strContainsResponse(self, item: str) -> bool:
         for response in self.responses:
+            if len(response) == 0:
+                continue
             if item.__contains__(response):
                 return True
         return False

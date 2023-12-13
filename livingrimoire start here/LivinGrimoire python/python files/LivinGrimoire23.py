@@ -597,6 +597,9 @@ class DiSkillV2:
         # use this for telepathic communication between different chobits objects
         self._kokoro = kokoro
 
+    def getKokoro(self):
+        return self._kokoro
+
     # in skill algorithm building shortcut methods:
     def setVerbatimAlg(self, priority: int, *sayThis: str):
         # build a simple output algorithm to speak string by string per think cycle
@@ -840,10 +843,10 @@ class TimeGate:
             pass
 
     def isClosed(self) -> bool:
-        return (self.openedGate < datetime.datetime.now())
+        return self.openedGate < datetime.datetime.now()
 
     def isOpen(self) -> bool:
-        return (not (self.openedGate < datetime.datetime.now()))
+        return not (self.openedGate < datetime.datetime.now())
 
     def open(self, minutes: int):
         now: datetime.date = datetime.datetime.now()
@@ -865,6 +868,9 @@ class TimeGate:
         now: datetime.date = datetime.datetime.now()
         diff: datetime.timedelta = self.checkPoint - now
         return diff.total_seconds()
+
+    def close(self):
+        self.openedGate: datetime.date = datetime.datetime.now()
 
 
 ''' CERABELLUM CLASS '''

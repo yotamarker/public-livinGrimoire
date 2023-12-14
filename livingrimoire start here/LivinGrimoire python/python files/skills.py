@@ -671,3 +671,90 @@ class DiBlabber(DiSkillV2):
     def setNPCPlus(self, n: int):
         # increase NPC auto output chance
         self.__nPCPlus = n
+
+
+class DiEngager(DiSkillV2):
+    def __init__(self, burps_per_hour: int, skillToEngage: str):
+        self._burpsPerHour = 2
+        if 60 > burps_per_hour > 0:
+            self._burpsPerHour = burps_per_hour
+        self._trgMinute: TrgMinute = TrgMinute()
+        self._trgMinute.setMinute(0)
+        self._draw: DrawRndDigits = DrawRndDigits()
+        self._burpMinutes: LGFIFO = LGFIFO()
+        self._pl: PlayGround = PlayGround()
+        self._skillToEngage: str = skillToEngage
+        for i in range(1, 60):
+            self._draw.addElement(i)
+        for i in range(0, burps_per_hour):
+            self._burpMinutes.insert(self._draw.drawAndRemove())
+        super().__init__()
+
+    def setSkillToEngage(self, skillToEngage: str) -> DiEngager:
+        self._skillToEngage = skillToEngage
+        return self
+
+    # Override
+    def input(self, ear: str, skin: str, eye: str):
+        # night? do not burp
+        if self._pl.partOfDay() == "night":
+            return
+        # reset burps
+        if self._trgMinute.trigger():
+            self._burpMinutes.clear()
+            self._draw.reset()
+            for i in range(0, self._burpsPerHour):
+                self._burpMinutes.insert(self._draw.drawAndRemove())
+            return
+        # burp
+        now_minutes: int = self._pl.getMinutesAsInt()
+        if self._burpMinutes.contains(now_minutes):
+            self._burpMinutes.removeItem(now_minutes)
+            self.getKokoro().toHeart[self._skillToEngage] = "engage"
+
+
+class GamificationP(DiSkillV2):
+    # the grind side of the game, see GamificationN for the reward side
+    def __init__(self, skill: DiSkillV2):
+        self._gain: int = 1
+        self._skill: DiSkillV2 = skill
+        self._axGamification: AXGamification = AXGamification()
+
+    def setGain(self, gain):
+        if gain > 0:
+            self._gain = gain
+
+    def getAxGamification(self) -> AXGamification:
+        # shallow ref
+        return self._axGamification
+
+    def input(self, ear, skin, eye):
+        self._skill.input(ear, skin, eye)
+
+    def output(self, noiron):
+        # skill activation increases gaming credits
+        if self._skill.pendingAlgorithm():
+            self._axGamification.incrementBy(self._gain)
+        self._skill.output(noiron)
+
+
+class GamificationN(DiSkillV2):
+    def __init__(self, skill: DiSkillV2, rewardBank: GamificationP):
+        self._axGamification: AXGamification = rewardBank.getAxGamification()
+        self._cost: int = 3
+        self._skill = skill
+
+    def setCost(self, cost: int):
+        self._cost = cost
+        return self
+
+    def input(self, ear, skin, eye):
+        # engage skill only if a reward is possible
+        if self._axGamification.surplus(self._cost):
+            self._skill.input(ear, skin, eye)
+
+    def output(self, noiron):
+        # charge reward if an algorithm is pending
+        if self._skill.pendingAlgorithm():
+            self._axGamification.reward(self._cost)
+            self._skill.output(noiron)

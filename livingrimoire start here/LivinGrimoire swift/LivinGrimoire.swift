@@ -426,6 +426,36 @@ class PlayGround {
         isLeapYear = (year % 4 == 0)
         return isLeapYear && (year % 100 != 0 || year % 400 == 0)
     }
+    func getCurrentMonthName() -> String {
+        switch (getMonthAsInt()){
+                    case 1:
+                        return "january"
+                    case 2:
+                        return "february"
+                    case 3:
+                        return "march"
+                    case 4:
+                        return "april"
+                    case 5:
+                        return "may"
+                    case 6:
+                        return "june"
+                    case 7:
+                        return "july"
+                    case 8:
+                        return "august"
+                    case 9:
+                        return "november"
+                    case 10:
+                        return "october"
+                    case 11:
+                        return "november"
+                    case 12:
+                        return "december"
+                    default:
+                        return ""
+        }
+    }
 }
                       
 extension Date {
@@ -653,6 +683,16 @@ open class DiSkillV2{
             temp.append(strTemp)
         }
         setVerbatimAlgFromList(priority: priority, sayThis: temp)
+    }
+    func setSimpleAlg(sayThis:String...) {
+        // based on the setVerbatimAlg method
+        // build a simple output algorithm to speak string by string per think cycle
+        // uses varargs param
+        var temp: Array<String> = [String]()
+        for strTemp in sayThis{
+            temp.append(strTemp)
+        }
+        setVerbatimAlgFromList(priority: 4, sayThis: temp)
     }
     func algPartsFusion(priority:Int, algParts: Mutatable...) {
         var algParts1: Array<Mutatable> = [Mutatable]()

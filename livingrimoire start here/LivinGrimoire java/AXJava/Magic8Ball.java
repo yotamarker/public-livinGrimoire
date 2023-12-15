@@ -54,8 +54,6 @@ public class Magic8Ball {
     public Boolean engage(String ear){
         if (ear.isEmpty()){return  false;}
         if (questions.strContainsResponse(ear)){return true;}
-//        String temp = new RegexUtil().firstWord(ear);
-//        if (temp.equals("does")||temp.equals("is")){return true;}
         return false;
     }
     public String reply(){return answers.getAResponse();}

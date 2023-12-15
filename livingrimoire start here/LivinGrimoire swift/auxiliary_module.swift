@@ -178,6 +178,16 @@ class Responder{
         return responses.contains(str)
     }
     func addResponse(s1:String){self.responses.append(s1)}
+    func strContainsResponse(ear:String) -> Bool {
+        var result:Bool = false
+        for tempStr:String in responses{
+            if ear.contains(tempStr){
+                result = true
+                break
+            }
+        }
+        return result
+    }
 }
 // TRIGGERS
 public class TrGEV3 {
@@ -1749,5 +1759,163 @@ class TrgArgue{
     func disable(){
         // context commands are disabled till next engagement with a command
         trgTolerance = false
+    }
+}
+class Magic8Ball {
+    private var questions:Responder = Responder()
+    private var answers:Responder = Responder()
+    
+    func setQuestions(_ questions: Responder) {
+        self.questions = questions
+    }
+    
+    func setAnswers(_ answers: Responder) {
+        self.answers = answers
+    }
+    
+    func getQuestions() -> Responder {
+        return questions
+    }
+    
+    func getAnswers() -> Responder {
+        return answers
+    }
+    
+    init() {
+        // answers :
+        // Affirmative Answers
+        answers.addResponse(s1: "It is certain")
+        answers.addResponse(s1: "It is decidedly so")
+        answers.addResponse(s1: "Without a doubt")
+        answers.addResponse(s1: "Yes definitely")
+        answers.addResponse(s1: "You may rely on it")
+        answers.addResponse(s1: "As I see it, yes")
+        answers.addResponse(s1: "Most likely")
+        answers.addResponse(s1: "Outlook good")
+        answers.addResponse(s1: "Yes")
+        answers.addResponse(s1: "Signs point to yes")
+        // Non – Committal Answers
+        answers.addResponse(s1: "Reply hazy, try again")
+        answers.addResponse(s1: "Ask again later")
+        answers.addResponse(s1: "Better not tell you now")
+        answers.addResponse(s1: "Cannot predict now")
+        answers.addResponse(s1: "Concentrate and ask again")
+        // Negative Answers
+        answers.addResponse(s1: "Don’t count on it")
+        answers.addResponse(s1: "My reply is no")
+        answers.addResponse(s1: "My sources say no")
+        answers.addResponse(s1: "Outlook not so good")
+        answers.addResponse(s1: "Very doubtful")
+        // questions :
+        questions = Responder("will i", "can i expect", "should i", "may i","is it a good idea","will it be a good idea for me to","is it possible","future hold","will there be")
+    }
+    
+    func engage(_ ear: String) -> Bool {
+        if ear.isEmpty {
+            return false
+        }
+        if questions.strContainsResponse(ear: ear) {
+            return true
+        }
+        return false
+    }
+    
+    func reply() -> String {
+        return answers.getAResponse()
+    }
+}
+class AXShoutOut {
+    private var isActive: Bool = false
+    var handshake:Responder = Responder()
+    
+    func activate() {
+        // make engage-able
+        isActive = true
+    }
+    
+    func engage(ear: String) -> Bool {
+        if ear.isEmpty {
+            return false
+        }
+        
+        if isActive {
+            if handshake.strContainsResponse(ear: ear) {
+                isActive = false
+                return true // shout out was replied!
+            }
+        }
+        // unrelated reply to shout out, shout out context is outdated
+        isActive = false
+        return false
+    }
+}
+class AXHandshake {
+    private var trgTime:TrgTime = TrgTime()
+    private var trgTolerance:TrgTolerance = TrgTolerance(maxRepeats: 10)
+    private var shoutOut:AXShoutOut = AXShoutOut()
+    private var user_name:String = "user"
+    private var dripper:PercentDripper = PercentDripper()
+    
+    init() {
+        // default handshakes (valid reply to shout out)
+        shoutOut.handshake = Responder("what", "yes", "i am here")
+    }
+    // setters
+    func setTimeStamp(_ time_stamp: String) -> AXHandshake {
+        // when will the shout-out happen?
+        // example time stamp: 9:15
+        trgTime.setTime(v1: time_stamp)
+        return self
+    }
+    
+    func setShoutOutLim(_ lim: Int) -> AXHandshake {
+        // how many times should user be called for, per shout out?
+        trgTolerance.setMaxRepeats(maxRepeats: lim)
+        return self
+    }
+    
+    func setHandShake(_ responder: Responder) -> AXHandshake {
+        // which responses would acknowledge the shout-out?
+        // such as *see default handshakes for examples suggestions
+        shoutOut.handshake = responder
+        return self
+    }
+    
+    func setDripperPercent(_ n: Int) -> AXHandshake {
+        // when shout out to user how frequent will it be?
+        dripper.setLimis(n)
+        return self
+    }
+    
+    func setUser_name(_ user_name: String) {
+        self.user_name = user_name
+    }
+    // getters
+    func getUser_name() -> String {
+        return user_name
+    }
+    
+    func engage(_ ear: String) -> Bool {
+        if trgTime.trigger() {
+            trgTolerance.reset()
+        }
+        // stop shout out
+        if shoutOut.engage(ear: ear) {
+            trgTolerance.disable()
+            return true
+        }
+        
+        return false
+    }
+    
+    func trigger() -> Bool {
+        if trgTolerance.trigger() {
+            if dripper.drip() {
+                shoutOut.activate()
+                return true
+            }
+        }
+        
+        return false
     }
 }

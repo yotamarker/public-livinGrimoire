@@ -19,7 +19,7 @@ public class DiTime extends DiSkillV2 {
                 setVerbatimAlg(4, "good " + pl.partOfDay());
                 return;
             case "which month is it":
-                setVerbatimAlg(4, pl.translateMonth(pl.getMonthAsInt()));
+                setSimpleAlg(pl.translateMonth(pl.getMonthAsInt()));
                 return;
             case "which year is it":
                 setVerbatimAlg(4, pl.getYearAsInt()+"");
@@ -119,6 +119,9 @@ public class DiTime extends DiSkillV2 {
                 return;
             case "when is the thirty first":
                 setVerbatimAlg(4, pl.nxtDayOnDate(31) == "" ? "never":pl.nxtDayOnDate(31));
+                return;
+            case "incantation 0":
+                setSimpleAlg("fly","bless of magic caster","infinity wall", "magic ward holy","life essence");
                 return;
             default:
                 // code block

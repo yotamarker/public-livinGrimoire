@@ -1149,7 +1149,7 @@ class Fusion {
         for i in 1...5{
             if !CeraArr[i-1].isActive(){
                 if let temp:Algorithm = neuron.getAlg(defcon: i){
-                    CeraArr[i].setAlgorithm(algorithm: temp)
+                    CeraArr[i-1].setAlgorithm(algorithm: temp)
                 }
             }
         }

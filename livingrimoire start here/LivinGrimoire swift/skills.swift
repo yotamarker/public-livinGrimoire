@@ -133,3 +133,52 @@ class DiTime:DiSkillV2{
         }
     }
 }
+class DiMagic8Ball: DiSkillV2 {
+    public var magic8Ball = Magic8Ball()
+    // skill toggle params:
+    public var skillToggler = AXContextCmd()
+    private var isActive = true
+    
+    override init() {
+        skillToggler.contextCommands.input(in1: "toggle eliza")
+        skillToggler.contextCommands.input(in1: "toggle magic 8 ball")
+        skillToggler.contextCommands.input(in1: "toggle magic eight ball")
+        skillToggler.commands.input(in1: "again")
+        skillToggler.commands.input(in1: "repeat")
+    }
+    
+    override func input(ear: String, skin: String, eye: String) {
+        // toggle the skill off/on
+        if skillToggler.engageCommand(ear: ear) {
+            isActive = !isActive
+            setSimpleAlg(sayThis: isActive ? "skill activated" : "skill inactivated")
+            return
+        }
+        
+        if !isActive {
+            return
+        }
+        // skill logic:
+        if magic8Ball.engage(ear) {
+            setSimpleAlg(sayThis: magic8Ball.reply())
+        }
+    }
+}
+class DiCron:DiSkillV2{
+    private var sound:String = "snore"
+    private var cron:Cron = Cron(startTime: "12:05", minutes: 40, limit: 2)
+    // setters
+    func setSound(sound:String) -> DiCron {
+        self.sound = sound
+        return self
+    }
+    func setCron(cron:Cron) -> DiCron {
+        self.cron = cron
+        return self
+    }
+    override func input(ear: String, skin: String, eye: String) {
+        if cron.trigger(){
+            setSimpleAlg(sayThis: sound)
+        }
+    }
+}

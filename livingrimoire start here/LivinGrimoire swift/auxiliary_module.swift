@@ -1732,6 +1732,7 @@ class TrgArgue{
     func getCounter() -> Int {
         return counter
     }
+    @discardableResult
     func engageCommand(ear:String) -> Int {
         // 0-> no engagement
         // 1-> engaged boolean gate (request made)
@@ -1861,26 +1862,27 @@ class AXHandshake {
         shoutOut.handshake = Responder("what", "yes", "i am here")
     }
     // setters
+    @discardableResult
     func setTimeStamp(_ time_stamp: String) -> AXHandshake {
         // when will the shout-out happen?
         // example time stamp: 9:15
         trgTime.setTime(v1: time_stamp)
         return self
     }
-    
+    @discardableResult
     func setShoutOutLim(_ lim: Int) -> AXHandshake {
         // how many times should user be called for, per shout out?
         trgTolerance.setMaxRepeats(maxRepeats: lim)
         return self
     }
-    
+    @discardableResult
     func setHandShake(_ responder: Responder) -> AXHandshake {
         // which responses would acknowledge the shout-out?
         // such as *see default handshakes for examples suggestions
         shoutOut.handshake = responder
         return self
     }
-    
+    @discardableResult
     func setDripperPercent(_ n: Int) -> AXHandshake {
         // when shout out to user how frequent will it be?
         dripper.setLimis(n)

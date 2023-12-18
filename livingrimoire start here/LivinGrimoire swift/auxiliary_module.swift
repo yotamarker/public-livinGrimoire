@@ -1922,3 +1922,33 @@ class AXHandshake {
         return false
     }
 }
+class DrawRndDigits {
+    // draw a random integer, than takes said element out
+    private var strings:Array<Int> = [Int]()
+    private var stringsSource:Array<Int> = [Int]()
+    init(_ values:Int...) {
+        for temp in values {
+            strings.append(temp)
+            stringsSource.append(temp)
+        }
+    }
+    func draw() -> Int {
+        if strings.isEmpty {return -1}
+        let x:Int = Int.random(in: 0..<strings.count)
+        let element:Int = strings[x]
+        strings.remove(at: x)
+        return element
+    }
+    func reset(){
+        let dc:DeepCopier = DeepCopier()
+        strings = dc.copyListOfInts(original: stringsSource)
+    }
+    func getSimpleRNDNum(bound:Int)->Int{
+        // return 0->bound-1
+        return Int.random(in: 0...bound-1)
+    }
+    func addElement(element:Int) {
+        strings.append(element)
+        stringsSource.append(element)
+    }
+}

@@ -323,3 +323,51 @@ class DIBlabber: DiSkillV2 {
         }
     }
 }
+class DiEngager: DiSkillV2 {
+    private var burpsPerHour = 2
+    private var trgMinute = TrgMinute(minute: 0)
+    private var skillToEngage = "unknown"
+    private var draw = DrawRndDigits()
+    private var burpMinutes:Array<Int> = [Int]()
+    private var pl = PlayGround()
+    
+    init(burpsPerHour: Int, skillToEngage: String) {
+        super.init()
+        if burpsPerHour > 0 && burpsPerHour < 60 {
+            self.burpsPerHour = burpsPerHour
+        }
+        for i in 1..<60 {
+            draw.addElement(element: i)
+        }
+        for _ in 0..<burpsPerHour {
+            burpMinutes.append(draw.draw())
+        }
+        self.skillToEngage = skillToEngage
+    }
+    
+    func setSkillToEngage(skillToEngage: String) {
+        self.skillToEngage = skillToEngage
+    }
+    
+    override func input(ear: String, skin: String, eye: String) {
+        if pl.partOfDay() == "night" {
+            return
+        }
+        
+        if trgMinute.trigger() {
+            burpMinutes.removeAll()
+            draw.reset()
+            for _ in 0..<burpsPerHour {
+                burpMinutes.append(draw.draw())
+            }
+            return
+        }
+        
+        let nowMinutes = pl.getMinutesAsInt()
+        if burpMinutes.contains(nowMinutes) {
+            // snippet of code : remove item from array list
+            burpMinutes.removeAll {value in return value == nowMinutes}
+            self.kokoro.toHeart[skillToEngage] = "engage"
+        }
+    }
+}

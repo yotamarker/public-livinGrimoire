@@ -616,6 +616,7 @@ class Cycler{
     func setLimit(limit:Int){
         self.limit = limit
     }
+    @discardableResult
     func cycleCount()->Int{
         cycler-=1
         if(cycler < 0){

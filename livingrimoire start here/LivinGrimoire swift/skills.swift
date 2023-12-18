@@ -182,4 +182,144 @@ class DiCron:DiSkillV2{
         }
     }
 }
-
+class DIBlabber: DiSkillV2 {
+    private var isActive: Bool = true // skill toggler
+    var skillToggler: AXContextCmd = AXContextCmd()
+    // chat mode select
+    var modeSwitch: AXContextCmd = AXContextCmd()
+    var mode: Cycler = Cycler(limit: 1)
+    // engage chatbot
+    var engage: AXContextCmd = AXContextCmd()
+    // chatbots
+    var chatbot1: AXNPC2 = AXNPC2(replyStockLim: 30, outputChance: 90) // pal mode chat module
+    var chatbot2: AXNPC2 = AXNPC2(replyStockLim: 30, outputChance: 90) // discreet mode chat module
+    // auto mode
+    private var autoEngage: Responder = Responder("engage automatic mode", "automatic mode", "auto mode")
+    private var shutUp: Responder = Responder("stop", "shut up", "silence", "be quite", "be silent")
+    private var tg: TimeGate = TimeGate(pause: 5)
+    private var nPCPlus: Int = 5 // increase rate of output in self auto reply mode
+    private var nPCNeg: Int = -10 // decrease rate of output in self auto reply mode
+    
+    init(skill_name: String) {
+        skillToggler.contextCommands.input(in1: "toggle \(skill_name)")
+        skillToggler.commands.input(in1: "again")
+        skillToggler.commands.input(in1: "repeat")
+        modeSwitch.contextCommands.input(in1: "switch \(skill_name) mode")
+        modeSwitch.commands.input(in1: "again")
+        modeSwitch.commands.input(in1: "repeat")
+        engage.contextCommands.input(in1: "engage \(skill_name)")
+        engage.commands.input(in1: "talk")
+        engage.commands.input(in1: "talk to me")
+        engage.commands.input(in1: "again")
+        engage.commands.input(in1: "repeat")
+        mode.setToZero()
+    }
+    
+    override func input(ear: String, skin: String, eye: String) {
+        // skill toggle:
+        if skillToggler.engageCommand(ear: ear) {
+            isActive = !isActive
+        }
+        if !isActive {
+            return
+        }
+        // chat-bot mode switch mode
+        if modeSwitch.engageCommand(ear: ear) {
+            mode.cycleCount()
+            setSimpleAlg(sayThis: talkMode())
+            return
+        }
+        
+        switch mode.getMode() {
+        case 0:
+            mode0(ear)
+        case 1:
+            mode1(ear)
+        default:
+            break
+        }
+    }
+    
+    private func mode0(_ ear: String) {
+        if !kokoro.toHeart["diblabber", default: ""].isEmpty {
+            kokoro.toHeart["diblabber"] = ""
+            setSimpleAlg(sayThis: chatbot1.forceRespond())
+            return
+        }
+        NPCUtilization(chatbot1, ear)
+    }
+    
+    private func mode1(_ ear: String) {
+        // auto engage
+        if autoEngage.strContainsResponse(ear: ear) {
+            tg.openGate()
+            setSimpleAlg(sayThis: "auto NPC mode engaged")
+            return
+        }
+        if shutUp.strContainsResponse(ear:ear) {
+            tg.closeGate()
+            setSimpleAlg(sayThis:  "auto NPC mode disengaged")
+            return
+        }
+        if tg.isOpen() {
+            var plus = nPCNeg
+            if !ear.isEmpty {
+                plus = nPCPlus
+            }
+            let result = chatbot2.respondPlus(plus: plus)
+            if !result.isEmpty {
+                setSimpleAlg(sayThis: result)
+                return
+            }
+        }
+        // end auto engage code snippet
+        NPCUtilization(chatbot2, ear)
+    }
+    
+    private func talkMode() -> String {
+        switch mode.getMode() {
+        case 0:
+            return "friend mode"
+        case 1:
+            return "discreet mode"
+        default:
+            return "mode switched"
+        }
+    }
+    // auto mode setters
+    func setNPCTimeSpan(_ n: Int) {
+        tg.setPause(pause: n)
+    }
+    
+    func setNPCNeg(_ n: Int) {
+        // lower NPC auto output chance
+        nPCNeg = n
+    }
+    
+    func setNPCPlus(_ n: Int) {
+        // increase NPC auto output chance
+        nPCPlus = n
+    }
+    // chat module common tasks
+    private func NPCUtilization(_ npc: AXNPC2, _ ear: String) {
+        var result = ""
+        // engage
+        if engage.engageCommand(ear: ear) {
+            result = npc.respond()
+            if !result.isEmpty {
+                setSimpleAlg(sayThis: result)
+                return
+            }
+        }
+        // str engage
+        result = npc.strRespond(ear: ear)
+        if !result.isEmpty {
+            setSimpleAlg(sayThis: result)
+        }
+        // forced learn (say n)
+        if !npc.learn(ear: ear) {
+            // strlearn
+            npc.strLearn(ear: ear)
+        }
+    }
+}

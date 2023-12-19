@@ -371,3 +371,66 @@ class DiEngager: DiSkillV2 {
         }
     }
 }
+class GamificationP: DiSkillV2 {
+    // the grind side of the game, see GamificationN for the reward side
+    private var gain = 1
+    private var skill: DiSkillV2
+    private var axGamification = AXGamification()
+    
+    init(skill: DiSkillV2) {
+        self.skill = skill
+    }
+    
+    func setGain(gain: Int) {
+        if gain > 0 {
+            self.gain = gain
+        }
+    }
+    
+    func getAxGamification() -> AXGamification {
+        // shallow ref
+        return axGamification
+    }
+    
+    override func input(ear: String, skin: String, eye: String) {
+        skill.input(ear: ear, skin: skin, eye: eye)
+    }
+    
+    override func output(noiron: Neuron) {
+        // skill activation increases gaming credits
+        if skill.pendingAlgorithm() {
+            axGamification.incrementBy(amount: gain)
+        }
+        skill.output(noiron: noiron)
+    }
+}
+class GamificationN: DiSkillV2 {
+    private var axGamification: AXGamification
+    private var cost = 3
+    private var skill: DiSkillV2
+    
+    init(skill: DiSkillV2, rewardBank: GamificationP) {
+        self.skill = skill
+        axGamification = rewardBank.getAxGamification()
+    }
+    
+    func setCost(_ cost: Int) -> GamificationN {
+        self.cost = cost
+        return self
+    }
+    
+    override func input(ear: String, skin: String, eye: String) {
+        // engage skill only if a reward is possible
+        if axGamification.surplus(cost: cost) {
+            skill.input(ear: ear, skin: skin, eye: eye)
+        }
+    }
+    
+    override func output(noiron: Neuron) {
+        // charge reward if an algorithm is pending
+        if skill.pendingAlgorithm() {
+            axGamification.reward(cost: cost)
+            skill.output(noiron: noiron)
+        }
+    }
+}

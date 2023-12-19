@@ -928,6 +928,7 @@ class AXGamification{
             max = counter
         }
     }
+    @discardableResult
     func reward(cost:Int)->Bool{
         // game grind points used for rewards
         // consumables, items or upgrades this makes games fun

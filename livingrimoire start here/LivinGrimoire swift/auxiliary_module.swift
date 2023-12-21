@@ -414,6 +414,10 @@ class DrawRnd {
     func drawAsInt()->Int{
         return tc.convertToInt(v1: draw())
     }
+    func addElement(_ element:String) {
+        strings.append(element)
+        stringsSource.append(element)
+    }
 }
 class LGTypeConverter{
     func convertToInt(v1:String)->Int{

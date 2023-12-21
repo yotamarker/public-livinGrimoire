@@ -563,6 +563,8 @@ class DrawRnd:
         self._stringsSource.append(element)
 
     def drawAndRemove(self) -> str:
+        if len(self.strings.queue) ==0:
+            return ""
         temp: str = self.strings.getRNDElement()
         self.strings.removeItem(temp)
         return temp

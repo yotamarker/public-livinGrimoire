@@ -40,6 +40,11 @@ class DiBurper(DiSkillV2):
             self._burpMinutes.insert(self._draw.drawAndRemove())
         super().__init__()
 
+    def setBurps(self, burpings: Responder) -> DiBurper:
+        # set sounds of burp events
+        self._responder1 = burpings
+        return self
+
     # Override
     def input(self, ear: str, skin: str, eye: str):
         # night? do not burp
@@ -533,6 +538,9 @@ class DiTime(DiSkillV2):
                 self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(30) if (self.__pl.nxtDayOnDate(30) != "") else "never")
             case "when is the thirty first":
                 self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(31) if (self.__pl.nxtDayOnDate(31) != "") else "never")
+            case "incantation 0":
+                self.setVerbatimAlg(5, "fly", "bless of magic caster", "infinity wall", "magic ward holy",
+                                    "life essence")
 
 
 class DiCron(DiSkillV2):

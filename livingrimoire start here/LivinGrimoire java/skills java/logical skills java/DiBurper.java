@@ -29,6 +29,11 @@ public class DiBurper extends DiSkillV2 {
         }
     }
 
+    public void setResponder1(Responder responder1) {
+        // set sounds on burp event
+        this.responder1 = responder1;
+    }
+
     @Override
     public void input(String ear, String skin, String eye) {
         // night? do not burp
@@ -48,8 +53,7 @@ public class DiBurper extends DiSkillV2 {
         int nowMinutes = pl.getMinutesAsInt();
         if(burpMinutes.contains(nowMinutes)){
             burpMinutes.removeItem(nowMinutes);
-            this.outAlg = this.diSkillUtils.simpleVerbatimAlgorithm("burp",responder1.getAResponse());
-            return;
+            setSimpleAlg(responder1.getAResponse());
         }
     }
 }

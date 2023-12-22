@@ -480,3 +480,188 @@ class DiBurper: DiSkillV2 {
         }
     }
 }
+class DiHabit: DiSkillV2 {
+    private var habitsPositive = UniqueItemSizeLimitedPriorityQueue()
+    private var habitP = AXCmdBreaker(conjuration: "i should")
+    private var temp = ""
+    
+    private var habitsNegative = UniqueItemSizeLimitedPriorityQueue()
+    private var habitN = AXCmdBreaker(conjuration: "i must not")
+    
+    private var dailies = UniqueItemSizeLimitedPriorityQueue()
+    private var dailyCmdBreaker = AXCmdBreaker(conjuration: "i out to")
+    
+    private var weekends = UniqueItemSizeLimitedPriorityQueue()
+    private var weekendCmdBreaker = AXCmdBreaker(conjuration: "i have to")
+    
+    private var expirations = UniqueItemSizeLimitedPriorityQueue()
+    private var expirationsCmdBreaker = AXCmdBreaker(conjuration: "i got to")
+    
+    private var todo = TODOListManager(todoLim: 5)
+    private var toDoCmdBreaker = AXCmdBreaker(conjuration: "i need to")
+    private var clearCmdBreaker = AXCmdBreaker(conjuration: "clear")
+    
+    private var getterCmdBreaker = AXCmdBreaker(conjuration: "random")
+    private var strOrDefault = AXStrOrDefault()
+    
+    private var gamification = AXGamification()
+    private var punishments = AXGamification()
+    
+    override init() {
+        habitsPositive.setLimit(lim: 15)
+        habitsNegative.setLimit(lim: 5)
+        dailies.setLimit(lim: 3)
+        weekends.setLimit(lim: 3)
+        expirations.setLimit(lim: 3)
+    }
+    
+    func getGamification() -> AXGamification {
+        return gamification
+    }
+    
+    func getPunishments() -> AXGamification {
+        return punishments
+    }
+    
+    override func input(ear: String, skin: String, eye: String) {
+        if ear.isEmpty { return }
+        
+        if ear.contains("i") {
+            temp = habitP.extractCmdParam(s1: ear)
+            if !temp.isEmpty {
+                habitsPositive.input(in1: temp)
+                temp = ""
+                setSimpleAlg(sayThis: "habit registered")
+                return
+            }
+            temp = habitN.extractCmdParam(s1: ear)
+            if !temp.isEmpty {
+                habitsNegative.input(in1: temp)
+                temp = ""
+                setSimpleAlg(sayThis: "bad habit registered")
+                return
+            }
+            temp = dailyCmdBreaker.extractCmdParam(s1: ear)
+            if !temp.isEmpty {
+                dailies.input(in1: temp)
+                temp = ""
+                setSimpleAlg(sayThis: "daily registered")
+                return
+            }
+            temp = weekendCmdBreaker.extractCmdParam(s1: ear)
+            if !temp.isEmpty {
+                weekends.input(in1: temp)
+                temp = ""
+                setSimpleAlg(sayThis: "prep registered")
+                return
+            }
+            temp = expirationsCmdBreaker.extractCmdParam(s1: ear)
+            if !temp.isEmpty {
+                expirations.input(in1: temp)
+                temp = ""
+                setSimpleAlg(sayThis: "expiration registered")
+                return
+            }
+            temp = toDoCmdBreaker.extractCmdParam(s1: ear)
+            if !temp.isEmpty {
+                todo.addTask(e1: temp)
+                temp = ""
+                setSimpleAlg(sayThis: "task registered")
+                return
+            }
+        }
+        
+        temp = getterCmdBreaker.extractCmdParam(s1: ear)
+        if !temp.isEmpty {
+            switch temp {
+            case "habit":
+                setSimpleAlg(sayThis: AXStrOrDefault().getOrDefault(str1: habitsPositive.getRndItem(), default1: "no habits registered"))
+                return
+            case "bad habit":
+                setSimpleAlg(sayThis: AXStrOrDefault().getOrDefault(str1: habitsNegative.getRndItem(), default1: "no bad habits registered"))
+                return
+            case "daily":
+                setSimpleAlg(sayThis: AXStrOrDefault().getOrDefault(str1: dailies.getRndItem(), default1: "no dailies registered"))
+                return
+            case "weekend", "prep":
+                setSimpleAlg(sayThis: AXStrOrDefault().getOrDefault(str1: weekends.getRndItem(), default1: "no preps registered"))
+                return
+            case "expirations", "expiration":
+                if expirations.getAsList().isEmpty {
+                    setSimpleAlg(sayThis: "no expirations registered")
+                    return
+                }
+                setVerbatimAlgFromList(priority: 4, sayThis: expirations.getAsList())
+                return
+            case "task":
+                setSimpleAlg(sayThis: AXStrOrDefault().getOrDefault(str1: todo.getTask(), default1: "no new tasks registered"))
+                return
+            case "to do":
+                setSimpleAlg(sayThis: AXStrOrDefault().getOrDefault(str1: todo.getOldTask(), default1: "no tasks registered"))
+                return
+            default:
+                break
+            }
+        }
+        
+        if ear.contains("completed") {
+            if !diSkillUtills.stringContainsListElement(str1: ear, items: habitsPositive.getAsList()).isEmpty {
+                gamification.increment()
+                setSimpleAlg(sayThis: "good boy")
+                return
+            }
+            if !diSkillUtills.stringContainsListElement(str1: ear, items: habitsNegative.getAsList()).isEmpty {
+                punishments.increment()
+                setSimpleAlg(sayThis: "bad boy")
+                return
+            }
+            if !diSkillUtills.stringContainsListElement(str1:ear, items: dailies.getAsList()).isEmpty {
+                gamification.increment()
+                setSimpleAlg(sayThis: "daily engaged")
+                return
+            }
+            if !diSkillUtills.stringContainsListElement(str1:ear, items:weekends.getAsList()).isEmpty {
+                setSimpleAlg(sayThis: "prep engaged")
+                return
+            }
+        }
+        
+        switch ear {
+        case "clear habits":
+            habitsPositive.clearData()
+            setSimpleAlg(sayThis: "habits cleared")
+        case "clear bad habits":
+            habitsNegative.clearData()
+            setSimpleAlg(sayThis: "bad habits cleared")
+        case "clear dailies":
+            dailies.clearData()
+            setSimpleAlg(sayThis: "dailies cleared")
+        case "clear preps", "clear weekends":
+            weekends.clearData()
+            setSimpleAlg(sayThis: "preps cleared")
+        case "clear expirations":
+            expirations.clearData()
+            setSimpleAlg(sayThis: "expirations cleared")
+        case "clear tasks", "clear task", "clear to do":
+            todo.clearAllTasks()
+            setSimpleAlg(sayThis: "tasks cleared")
+        case "clear all habits":
+            habitsPositive.clearData()
+            habitsNegative.clearData()
+            dailies.clearData()
+            weekends.clearData()
+            expirations.clearData()
+            todo.clearAllTasks()
+            setSimpleAlg(sayThis: "all habits cleared")
+        default:
+            if ear.contains("clear") {
+                temp = clearCmdBreaker.extractCmdParam(s1: ear)
+                if todo.containsTask(task: temp) {
+                    todo.clearTask(temp)
+                    setSimpleAlg(sayThis: temp + " task cleared")
+                    temp = ""
+                }
+            }
+        }
+    }
+}

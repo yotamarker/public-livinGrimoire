@@ -802,7 +802,7 @@ class TODOListManager{
         if !temp.isEmpty {backup.input(in1: temp)}
         return temp
     }
-    func getOldAnTask()->String{
+    func getOldTask()->String{
         // task graveyard (tasks you've tackled already)
         return backup.getRndItem()
     }
@@ -812,6 +812,10 @@ class TODOListManager{
     }
     func containsTask(task:String) -> Bool {
         return backup.contains(str: task)
+    }
+    func clearTask(_ task:String) {
+        q1.deleteStr(str1: task)
+        backup.deleteStr(str1: task)
     }
 }
 class PersistentQuestion{
@@ -1260,7 +1264,7 @@ class Cron:TrGEV3{
     }
 }
 class AXStrOrDefault{
-    func gerOrDefault(str1:String, default1:String) -> String {
+    func getOrDefault(str1:String, default1:String) -> String {
         return str1.isEmpty ? default1 : str1
     }
 }

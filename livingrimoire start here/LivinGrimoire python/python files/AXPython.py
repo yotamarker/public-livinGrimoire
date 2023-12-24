@@ -563,7 +563,7 @@ class DrawRnd:
         self._stringsSource.append(element)
 
     def drawAndRemove(self) -> str:
-        if len(self.strings.queue) ==0:
+        if len(self.strings.queue) == 0:
             return ""
         temp: str = self.strings.getRNDElement()
         self.strings.removeItem(temp)
@@ -2060,6 +2060,7 @@ class AXHandshake:
         if self.__handshake.trigger():
             self.setVerbatimAlg(4, self.__handshake.getUser_name()) # user, user!
     """
+
     def __init__(self):
         self.__trgTime: TrgTime = TrgTime()
         self.__trgTolerance: TrgTolerance = TrgTolerance(10)
@@ -2115,3 +2116,39 @@ class AXHandshake:
                 self.__shoutout.activate()
                 return True
         return False
+
+
+class RailChatBot:
+    def __init__(self):
+        self.dic = {}
+        self.context = "default"
+        self.dic[self.context] = RefreshQ(5)
+
+    def setContext(self, context):
+        if context == "":
+            return
+        self.context = context
+
+    def respond(self, ear):
+        if ear == "":
+            return ""
+        if ear not in self.dic:
+            self.dic[ear] = RefreshQ(5)
+        temp = self.dic[ear].getRNDElement()
+        if temp != "":
+            self.context = temp
+        return temp
+
+    def learn(self, ear):
+        if ear == "":
+            return
+        if ear not in self.dic:
+            self.dic[ear] = RefreshQ(5)
+            self.dic[self.context].insert(ear)
+            self.context = ear
+            return
+        self.dic[self.context].insert(ear)
+        self.context = ear
+
+    def monolog(self):
+        return self.respond(self.context)

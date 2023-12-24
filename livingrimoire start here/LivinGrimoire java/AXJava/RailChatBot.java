@@ -1,0 +1,43 @@
+package AXJava;
+
+import java.util.Hashtable;
+
+public class RailChatBot {
+    private Hashtable<String,RefreshQ> dic = new Hashtable<>();
+    private String context = "default";
+
+    public RailChatBot() {
+        this.dic.put(context,new RefreshQ());
+    }
+
+    public void setContext(String context) {
+        if (context.isEmpty()) {return;}
+        this.context = context;
+    }
+    public String respond(String ear){
+        // recommended use of filter for the output results
+        if (ear.isEmpty()){return "";}
+        if (!dic.containsKey(ear)){
+            dic.put(ear,new RefreshQ());
+        }
+        String temp = dic.get(ear).getRNDElement();
+        if (!temp.isEmpty()){context = temp;}
+        return temp;
+    }
+    public void learn(String ear){
+        // use per each think cycle
+        if (ear.isEmpty()){return;}
+        if (!dic.containsKey(ear)){
+            dic.put(ear,new RefreshQ());
+            dic.get(context).add(ear);
+            context = ear;
+            return ;
+        }
+        dic.get(context).add(ear);
+        context = ear;
+    }
+    public String monolog(){
+        // succession of outputs without input involved
+        return respond(context);
+    }
+}

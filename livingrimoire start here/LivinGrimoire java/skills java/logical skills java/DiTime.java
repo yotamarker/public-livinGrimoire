@@ -9,6 +9,10 @@ public class DiTime extends DiSkillV2 {
     @Override
     public void input(String ear, String skin, String eye) {
         switch(ear) {
+            case "what is the date":
+                String message = String.format("it is the %s, %s %s", pl.getCurrentMonthDay(), pl.getCurrentMonthName(), pl.getYearAsInt());
+                setVerbatimAlg(4, message);
+                return;
             case "what is the time":
                 setVerbatimAlg(4, pl.getCurrentTimeStamp());
                 return;

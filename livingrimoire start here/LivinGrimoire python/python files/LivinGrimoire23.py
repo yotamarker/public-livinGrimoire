@@ -453,6 +453,9 @@ class PlayGround:
                 return "december"
         return ""
 
+    def getCurrentMonthDay(self):
+        return self.dayOfMonth.get(self.getDayOfTheMonthAsInt(), "")
+
     @staticmethod
     def getLocal() -> str:
         """This method returns the local time zone"""

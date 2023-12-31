@@ -464,6 +464,8 @@ class DiTime(DiSkillV2):
     # Override
     def input(self, ear: str, skin: str, eye: str):
         match ear:
+            case "what is the date":
+                self.setVerbatimAlg(4, f'{self.__pl.getCurrentMonthDay()} {self.__pl.getCurrentMonthName()} {self.__pl.getYearAsInt()}')
             case "what is the time":
                 self.setVerbatimAlg(4, self.__pl.getCurrentTimeStamp())
             case "which day is it":

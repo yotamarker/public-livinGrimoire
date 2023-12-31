@@ -454,4 +454,7 @@ public class PlayGround {
     public String getCurrentMonthName(){
         return translateMonth(getMonthAsInt()+1);
     }
+    public String getCurrentMonthDay(){
+        return translateMonthDay(getDayOfTheMonthAsInt());
+    }
 }

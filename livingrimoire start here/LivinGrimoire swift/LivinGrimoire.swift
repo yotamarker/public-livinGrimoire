@@ -208,11 +208,8 @@ class PlayGround {
 
     func translateMonthDay(_ day_num:Int) -> String {
        // '''This method returns the current day of the month as a word (first_of, ...)'''
-        right_now = Date()
-        let currentDay_number = calendar.component(.day, from: right_now)
-        let currentDay_string = dayOfMonth[currentDay_number] ?? "?"
+        let currentDay_string = dayOfMonth[day_num] ?? "?"
         return currentDay_string
-        
     }
 
     func getSpecificTime(time_variable: enumTimes) -> String {
@@ -222,7 +219,7 @@ class PlayGround {
        let enum_temp = time_variable
         switch enum_temp {
         case .date:
-            return translateMonthDay() + " " + (right_now.month() ?? "/") + " " + (right_now.year() ?? "/")
+            return getCurrentMonthDay() + " " + (right_now.month() ?? "/") + " " + (right_now.year() ?? "/")
         case .hour:
             return right_now.hour() ?? "/"
         case .minutes:
@@ -516,6 +513,11 @@ extension PlayGround {
         dateComponent = DateComponents()
       dateComponent.day = -1
         return Calendar.current.date(byAdding: dateComponent, to: right_now) ?? Date()
+    }
+    func getCurrentMonthDay() -> String {
+        right_now = Date()
+        let currentDay_number = calendar.component(.day, from: right_now)
+        return translateMonthDay(currentDay_number)
     }
     
 }

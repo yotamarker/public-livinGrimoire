@@ -12,6 +12,8 @@ class DiTime:DiSkillV2{
     // hello world skill for testing purposes
     override func input(ear: String, skin: String, eye: String) {
         switch (ear)  {
+          case "what is the date":
+            setVerbatimAlg(priority: 4, sayThis: "\(pl.getCurrentMonthDay()) \(pl.getCurrentMonthName()) \(pl.getYearAsInt())")
           case "what is the time":
 //            setVerbatimAlg(priority: 3, sayThis: pl.getCurrentTimeStamp())
             setSimpleAlg(sayThis: pl.getCurrentTimeStamp())

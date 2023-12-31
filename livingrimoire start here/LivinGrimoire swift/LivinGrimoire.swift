@@ -206,7 +206,7 @@ class PlayGround {
         return right_now.dayOfWeek()!
     }
 
-    func translateMonthDay() -> String {
+    func translateMonthDay(_ day_num:Int) -> String {
        // '''This method returns the current day of the month as a word (first_of, ...)'''
         right_now = Date()
         let currentDay_number = calendar.component(.day, from: right_now)

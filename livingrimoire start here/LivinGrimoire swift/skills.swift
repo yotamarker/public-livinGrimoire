@@ -667,3 +667,15 @@ class DiHabit: DiSkillV2 {
         }
     }
 }
+class DiSayer: DiSkillV2 {
+    var cmdBreaker = AXCmdBreaker(conjuration: "say")
+    var command = ""
+
+    override func input(ear: String, skin: String, eye: String) {
+        command = cmdBreaker.extractCmdParam(s1: ear)
+        if !command.isEmpty {
+            setSimpleAlg(sayThis: command)
+            command = ""
+        }
+    }
+}

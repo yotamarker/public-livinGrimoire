@@ -726,6 +726,7 @@ class DiEngager(DiSkillV2):
 class GamificationP(DiSkillV2):
     # the grind side of the game, see GamificationN for the reward side
     def __init__(self, skill: DiSkillV2):
+        super().__init__()
         self._gain: int = 1
         self._skill: DiSkillV2 = skill
         self._axGamification: AXGamification = AXGamification()
@@ -750,6 +751,7 @@ class GamificationP(DiSkillV2):
 
 class GamificationN(DiSkillV2):
     def __init__(self, skill: DiSkillV2, rewardBank: GamificationP):
+        super().__init__()
         self._axGamification: AXGamification = rewardBank.getAxGamification()
         self._cost: int = 3
         self._skill = skill
@@ -768,3 +770,17 @@ class GamificationN(DiSkillV2):
         if self._skill.pendingAlgorithm():
             self._axGamification.reward(self._cost)
             self._skill.output(noiron)
+
+
+class DiSayer(DiSkillV2):
+    def __init__(self):
+        super().__init__()
+        self.cmdBreaker = AXCmdBreaker("say")
+        self.command = ""
+
+    def input(self, ear, skin, eye):
+        self.command = self.cmdBreaker.extractCmdParam(ear)
+        if self.command:
+            self.setSimpleAlg(self.command)
+            self.command = ""
+

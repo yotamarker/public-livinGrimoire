@@ -62,4 +62,5 @@ public class SkillHubAlgDispenser {
             activeSkill = 0;
         }
     }
+    public int getSize(){return skills.size();}
 }

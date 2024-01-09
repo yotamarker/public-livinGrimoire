@@ -47,4 +47,8 @@ public class AXLearnability {
         // ^ negative result, mutate the alg if this occures too much
         return false;
     }
+    public void resetTolerance(){
+        // use when you run code to change algorithms regardless of learnability
+        trgTolerance.reset();
+    }
 }

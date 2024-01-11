@@ -679,3 +679,59 @@ class DiSayer: DiSkillV2 {
         }
     }
 }
+class DiSmoothie0: DiSkillV2 {
+    private var draw = DrawRnd("grapefruits", "oranges",  "apples", "peaches", "melons", "pears", "carrot")
+    private var cmd = AXContextCmd()
+
+    override init() {
+        super.init()
+        cmd.contextCommands.input(in1: "recommend a smoothie")
+        cmd.commands.input(in1: "yuck")
+        cmd.commands.input(in1: "lame")
+        cmd.commands.input(in1: "nah")
+        cmd.commands.input(in1: "no")
+    }
+
+    override func input(ear: String, skin: String, eye: String) {
+        if cmd.engageCommand(ear: ear) {
+            setSimpleAlg(sayThis: "\(draw.draw()) and \(draw.draw())")
+            draw.reset()
+        }
+    }
+}
+class DiSmoothie1: DiSkillV2 {
+    private var base = Responder("grapefruits", "oranges",  "apples", "peaches", "melons", "pears", "carrot")
+    private var thickeners = DrawRnd("bananas", "mango", "strawberry", "pineapple", "dates")
+    private var cmd = AXContextCmd()
+
+    override init() {
+        super.init()
+        cmd.contextCommands.input(in1: "recommend a smoothie")
+        cmd.commands.input(in1: "yuck")
+        cmd.commands.input(in1: "lame")
+        cmd.commands.input(in1: "nah")
+        cmd.commands.input(in1: "no")
+    }
+
+    override func input(ear: String, skin: String, eye: String) {
+        if cmd.engageCommand(ear: ear) {
+            setSimpleAlg(sayThis: "use \(base.getAResponse()) as a base than add \(thickeners.draw()) and \(thickeners.draw())")
+            thickeners.reset()
+        }
+    }
+}
+class DiJumbler: DiSkillV2{
+    private var cmdBreaker = AXCmdBreaker(conjuration: "jumble the name")
+        private var temp = ""
+    override func input(ear: String, skin: String, eye: String) {
+        temp = cmdBreaker.extractCmdParam(s1: ear)
+        if temp.isEmpty {return}
+        setSimpleAlg(sayThis: jumbleString(input: temp))
+        temp = ""
+    }
+    func jumbleString(input: String) -> String {
+        var characters = Array(input)
+        characters.shuffle()
+        return String(characters)
+    }
+}

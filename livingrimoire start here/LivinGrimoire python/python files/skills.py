@@ -465,7 +465,8 @@ class DiTime(DiSkillV2):
     def input(self, ear: str, skin: str, eye: str):
         match ear:
             case "what is the date":
-                self.setVerbatimAlg(4, f'{self.__pl.getCurrentMonthDay()} {self.__pl.getCurrentMonthName()} {self.__pl.getYearAsInt()}')
+                self.setVerbatimAlg(4,
+                                    f'{self.__pl.getCurrentMonthDay()} {self.__pl.getCurrentMonthName()} {self.__pl.getYearAsInt()}')
             case "what is the time":
                 self.setVerbatimAlg(4, self.__pl.getCurrentTimeStamp())
             case "which day is it":
@@ -784,3 +785,41 @@ class DiSayer(DiSkillV2):
             self.setSimpleAlg(self.command)
             self.command = ""
 
+
+# the smoothie skills are simple skills for testing purposes,
+# such as testing the BranchSkill. but they have their own merit
+# in suggesting smoothies and have a good alg base for other recipe skills
+class DiSmoothie0(DiSkillV2):
+    def __init__(self):
+        super().__init__()
+        self.draw = DrawRnd("grapefruits", "oranges", "apples", "peaches", "melons", "pears", "carrot")
+        self.cmd = AXContextCmd()
+        self.cmd.contextCommands.insert("recommend a smoothie")
+        self.cmd.commands.insert("yuck")
+        self.cmd.commands.insert("lame")
+        self.cmd.commands.insert("nah")
+        self.cmd.commands.insert("no")
+
+    def input(self, ear, skin, eye):
+        if self.cmd.engageCommand(ear):
+            self.setSimpleAlg(f"{self.draw.drawAndRemove()} and {self.draw.drawAndRemove()}")
+            self.draw.reset()
+
+
+class DiSmoothie1(DiSkillV2):
+    def __init__(self):
+        super().__init__()
+        self.base = Responder("grapefruits", "oranges", "apples", "peaches", "melons", "pears", "carrot")
+        self.thickeners = DrawRnd("bananas", "mango", "strawberry", "pineapple", "dates")
+        self.cmd = AXContextCmd()
+        self.cmd.contextCommands.insert("recommend a smoothie")
+        self.cmd.commands.insert("yuck")
+        self.cmd.commands.insert("lame")
+        self.cmd.commands.insert("nah")
+        self.cmd.commands.insert("no")
+
+    def input(self, ear, skin, eye):
+        if self.cmd.engageCommand(ear):
+            self.setSimpleAlg(
+                f"use {self.base.getAResponse()} as a base than add {self.thickeners.drawAndRemove()}\n and {self.thickeners.drawAndRemove()}")
+            self.thickeners.reset()

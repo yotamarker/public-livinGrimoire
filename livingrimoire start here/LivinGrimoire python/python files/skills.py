@@ -823,3 +823,31 @@ class DiSmoothie1(DiSkillV2):
             self.setSimpleAlg(
                 f"use {self.base.getAResponse()} as a base than add {self.thickeners.drawAndRemove()}\n and {self.thickeners.drawAndRemove()}")
             self.thickeners.reset()
+
+
+class DiJumbler(DiSkillV2):
+    # jumble a string
+    def __init__(self):
+        super().__init__()
+        self.cmdBreaker:AXCmdBreaker = AXCmdBreaker("jumble the name")
+        self.__temp: str = ""
+
+    def input(self, ear, skin, eye):
+        temp = self.cmdBreaker.extractCmdParam(ear)
+        if not temp:  # In Python, an empty string is considered False in a boolean context
+            return
+        self.setSimpleAlg(self.jumble_string(temp))
+        temp = ""
+
+    @staticmethod
+    def jumble_string(s: str) -> str:
+        # Convert the string to a list (because strings in Python are immutable)
+        list_s = list(s)
+
+        # Use random.shuffle() to shuffle the list
+        random.shuffle(list_s)
+
+        # Convert the list back to a string
+        jumbled_s = ''.join(list_s)
+
+        return jumbled_s

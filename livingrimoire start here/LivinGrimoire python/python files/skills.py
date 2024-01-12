@@ -829,7 +829,7 @@ class DiJumbler(DiSkillV2):
     # jumble a string
     def __init__(self):
         super().__init__()
-        self.cmdBreaker:AXCmdBreaker = AXCmdBreaker("jumble the name")
+        self.cmdBreaker: AXCmdBreaker = AXCmdBreaker("jumble the name")
         self.__temp: str = ""
 
     def input(self, ear, skin, eye):
@@ -851,3 +851,58 @@ class DiJumbler(DiSkillV2):
         jumbled_s = ''.join(list_s)
 
         return jumbled_s
+
+
+class SkillBranch(DiSkillV2):
+    # unique skill used to bind similar skills
+    """
+    * contains collection of skills
+    * mutates active skill if detects conjuration
+    * mutates active skill if algorithm results in
+    * negative feedback
+    * positive feedback negates active skill mutation
+    * """
+
+    def __init__(self, tolerance):
+        super().__init__()
+        self._skillRef: dict[str, int] = {}
+        self._skillHub: SkillHubAlgDispenser = SkillHubAlgDispenser()
+        self._ml: AXLearnability = AXLearnability(tolerance)
+        self._priority: int = 4  # algPriority
+
+    def setBranchAlgPriority(self, algPriority):
+        self._priority = algPriority
+
+    def input(self, ear, skin, eye):
+        # conjuration alg morph
+        if ear in self._skillRef:
+            self._skillHub.setActiveSkillWithMood(self._skillRef[ear])
+            self.setSimpleAlg("hmm")
+        # machine learning alg morph
+        if self._ml.mutateAlg(ear):
+            self._skillHub.cycleActiveSkill()
+            self.setSimpleAlg("hmm")
+        # alg engage
+        self.setOutalg(self._skillHub.dispenseAlgorithm(ear, skin, eye))
+        if self.getOutAlg() is not None:
+            self._ml.pendAlg()
+            self.setOutAlgPriority(self._priority)
+
+    def addSkill(self, skill):
+        self._skillHub.addSkill(skill)
+
+    def addReferencedSkill(self, skill, conjuration):
+        # the conjuration string will engage it's respective skill
+        self._skillHub.addSkill(skill)
+        self._skillRef[conjuration] = self._skillHub.getSize()
+
+    # learnability params
+    def addDefcon(self, defcon):
+        self._ml.defcons.insert(defcon)
+
+    def addGoal(self, goal):
+        self._ml.defcons.insert(goal)
+
+    # while alg is pending, cause alg mutation ignoring learnability tolerance:
+    def addDefconLV5(self, defcon5):
+        self._ml.defcons.insert(defcon5)

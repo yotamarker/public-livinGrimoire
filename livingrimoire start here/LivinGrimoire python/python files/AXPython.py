@@ -100,6 +100,9 @@ class SkillHubAlgDispenser:
         if self._activeSkill == len(self._skills):
             self._activeSkill = 0
 
+    def getSize(self) -> int:
+        return len(self._skills)
+
 
 class TrGEV3:
     # advanced boolean gates with internal logic
@@ -349,6 +352,10 @@ class AXLearnability:
             return mutate
         # ^ negative result, mutate the alg if this occures too much
         return False
+
+    def resetTolerance(self):
+        # use when you run code to change algorithms regardless of learnability
+        self.trgTolerance.reset()
 
 
 class AXNightRider:

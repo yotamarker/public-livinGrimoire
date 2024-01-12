@@ -582,8 +582,17 @@ class DiSkillV2:
         # The variables start with an underscore (_) because they are protected
         self._kokoro = Kokoro(AbsDictionaryDB())  # consciousness, shallow ref class to enable interskill communications
         self._diSkillUtils = DISkillUtils()
-        self._outAlg = None  # skills output
+        self._outAlg: Algorithm = None  # skills output
         self._outpAlgPriority: int = -1  # defcon 1->5
+
+    def setOutalg(self, alg: Algorithm):
+        self._outAlg = alg
+
+    def getOutAlg(self) -> Algorithm:
+        return self._outAlg
+
+    def setOutAlgPriority(self, priority):
+        self._outpAlgPriority = priority
 
     # skill triggers and algorithmic logic
     def input(self, ear: str, skin: str, eye: str):

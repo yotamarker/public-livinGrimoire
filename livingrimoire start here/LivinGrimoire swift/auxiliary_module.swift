@@ -54,6 +54,7 @@ class SkillHubAlgDispenser {
             self.skills.append(skill)
         }
     }
+    @discardableResult
     func addSkill(skill:DiSkillV2) -> SkillHubAlgDispenser {
         self.skills.append(skill)
         return self
@@ -74,6 +75,9 @@ class SkillHubAlgDispenser {
     func cycleAlg(){
         activeSkill += 1
         if activeSkill == skills.count {activeSkill = 0}
+    }
+    func getSize() -> Int {
+        return skills.count
     }
 }
 // DETECTORS
@@ -464,6 +468,10 @@ class AXLearnability {
         if defcons.contains(str: input){algSent = false;return trg.countDown()}
         // negative result, mutate the alg if this occures too much
         return false
+    }
+    func resetTolerance() {
+        // use when you run code to change algorithms regardless of learnability
+        trg.reset()
     }
 }
 class SpiderSense {

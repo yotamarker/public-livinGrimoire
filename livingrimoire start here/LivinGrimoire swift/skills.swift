@@ -735,3 +735,58 @@ class DiJumbler: DiSkillV2{
         return String(characters)
     }
 }
+class SkillBranch: DiSkillV2 {
+    // unique skill used to bind similar skills
+    /*
+    * contains collection of skills
+    * mutates active skill if detects conjuration
+    * mutates active skill if algorithm results in
+    * negative feedback
+    * positive feedback negates active skill mutation
+    * */
+    private var skillRef:[String:Int] = [:]
+    private var skillHub:SkillHubAlgDispenser = SkillHubAlgDispenser()
+    private var ml: AXLearnability
+    private var algPriority:Int = 4
+
+    func setAlgPriority(_ algPriority: Int) {
+        self.algPriority = algPriority
+    }
+
+    init(tolerance: Int) {
+        ml = AXLearnability()
+        ml.trg.maxCount = tolerance
+    }
+
+    override func input(ear: String, skin: String, eye: String) {
+        // conjuration alg morph
+        if skillRef.keys.contains(ear){
+            skillHub.moodAlg(mood: skillRef[ear]!)
+            setSimpleAlg(sayThis: "hmm")
+        }
+        // machine learning alg morph
+        if ml.mutateAlg(input: ear){
+            skillHub.cycleAlg()
+            setSimpleAlg(sayThis: "hmm")
+        }
+        // alg engage
+        outAlg = skillHub.dispenseAlgorithm(ear: ear, skin: skin, eye: eye)
+        if outAlg != nil {
+            ml.pendAlg()
+            outpAlgPriority = algPriority
+        }
+    }
+    func addSkill(_ skill: DiSkillV2){
+        skillHub.addSkill(skill: skill)
+    }
+    func addReferencedSkill(_ skill: DiSkillV2, conjuration: String){
+        // the conjuration string will engage it's respective skill
+        skillHub.addSkill(skill: skill)
+        skillRef[conjuration] = skillHub.getSize()
+    }
+    // learnability params
+    func addDefcon(_ defcon: String){ml.defcons.input(in1: defcon)}
+    func addGoal(_ goal: String){ml.defcons.input(in1: goal)}
+    // while alg is pending, cause alg mutation ignoring learnability tolerance:
+    func addDefconLV5(_ defcon5: String){ml.defcons.input(in1: defcon5)}
+}

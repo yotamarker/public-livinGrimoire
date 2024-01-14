@@ -2159,3 +2159,72 @@ class RailChatBot:
 
     def monolog(self):
         return self.respond(self.context)
+
+
+class Eliza:
+    reflections = {
+        "am": "are",
+        "was": "were",
+        "i": "you",
+        "i'd": "you would",
+        "i've": "you have",
+        "my": "your",
+        "are": "am",
+        "you've": "I have",
+        "you'll": "I will",
+        "your": "my",
+        "yours": "mine",
+        "you": "i",
+        "me": "you"
+    }
+
+    class PhraseMatcher:
+        def __init__(self, matcher, responses):
+            self.matcher = re.compile(matcher)
+            self.responses = responses
+            self.context: str = ""  # last speech context (subject or pattern)
+            # example: i need (.*)
+            self.param: str = ""  # last param extracted
+            # example : water (for input: i need water)
+            self.infoRequest: str = ""  # request more info on input
+            # example: Why do you need {0}
+
+        def matches(self, str):
+            return self.matcher.match(str) is not None
+
+        def respond(self, str):
+            m = self.matcher.match(str)
+            self.context = self.matcher.pattern  # context
+            p = self.random_phrase()
+            for i in range(len(m.groups())):
+                s = self.reflect(m.group(i + 1))
+                self.param = s  # param
+                self.infoRequest = p  # more info request
+                p = p.replace("{" + f'{i}' + "}", s)
+            return p
+
+        @staticmethod
+        def reflect(s):
+            words = s.split(" ")
+            for i in range(len(words)):
+                if words[i] in Eliza.reflections:
+                    words[i] = Eliza.reflections[words[i]]
+            return " ".join(words)
+
+        def random_phrase(self):
+            return self.responses[abs(random.randint(0, len(self.responses) - 1))]
+
+        def __str__(self):
+            return self.matcher.pattern + ":" + str(self.responses)
+
+    babble = [
+        PhraseMatcher("i need (.*)", ["Why do you need {0}?",
+                                      "Would it really help you to get {0}?",
+                                      "Are you sure you need {0}?"])
+    ]
+
+    def respond(self, msg):
+        for pm in self.babble:
+            if pm.matches(msg):
+                return pm.respond(msg.lower())
+        return ""

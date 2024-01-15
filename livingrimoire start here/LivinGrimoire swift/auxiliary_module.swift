@@ -1969,3 +1969,94 @@ class DrawRndDigits {
         stringsSource.append(element)
     }
 }
+
+class Eliza {
+    static let reflections = [
+        "am": "are",
+        "was": "were",
+        "i": "you",
+        "i'd": "you would",
+        "i've": "you have",
+        "my": "your",
+        "are": "am",
+        "you've": "I have",
+        "you'll": "I will",
+        "your": "my",
+        "yours": "mine",
+        "you": "i",
+        "me": "you"
+    ]
+
+    class PhraseMatcher {
+        let matcher: NSRegularExpression
+        let responses: [String]
+        var context: String = ""  // last speech context (subject or pattern)
+        var param: String = ""  // last param extracted
+        var infoRequest: String = ""  // request more info on input
+
+        init(matcher: String, responses: [String]) {
+            self.matcher = try! NSRegularExpression(pattern: matcher, options: [])
+            self.responses = responses
+        }
+
+        func matches(_ str: String) -> Bool {
+            let range = NSRange(location: 0, length: str.utf16.count)
+            return matcher.firstMatch(in: str, options: [], range: range) != nil
+        }
+
+        func respond(_ str: String) -> String {
+            let range = NSRange(location: 0, length: str.utf16.count)
+            guard let m = matcher.firstMatch(in: str, options: [], range: range) else { return "" }
+            context = matcher.pattern  // context
+            var p = randomPhrase()
+            for i in 0..<m.numberOfRanges {
+                let s = reflect(getParam(string2: str, string1: context))
+                param = s  // param
+                infoRequest = p  // more info request
+                p = p.replacingOccurrences(of: "{\(i)}", with: s)
+            }
+            return p
+        }
+        func getParam(string2:String,string1:String) -> String {
+
+            let words1 = string1.split(separator: " ").map(String.init)
+            let words2 = string2.split(separator: " ").map(String.init)
+
+            let difference = words2.filter { !words1.contains($0) }
+            let differenceAsString = difference.joined(separator: " ")
+            return differenceAsString
+        }
+        func reflect(_ s: String) -> String {
+            var words = s.split(separator: " ")
+            for i in 0..<words.count {
+                if let reflection = Eliza.reflections[String(words[i])] {
+                    words[i] = Substring(reflection)
+                }
+            }
+            return words.joined(separator: " ")
+        }
+
+        func randomPhrase() -> String {
+            return responses[Int.random(in: 0..<responses.count)]
+        }
+
+        var description: String {
+            return "\(matcher.pattern): \(responses)"
+        }
+    }
+
+    var babble = [
+        PhraseMatcher(matcher: "i need (.*)", responses: ["Why do you need {0}?",
+                                                          "Would it really help you to get {0}?",
+                                                          "Are you sure you need {0}?"])
+    ]
+
+    func respond(_ msg: String) -> String {
+        for pm in babble {
+            if pm.matches(msg) {
+                return pm.respond(msg.lowercased())
+            }
+        }
+        return ""
+    }
+}

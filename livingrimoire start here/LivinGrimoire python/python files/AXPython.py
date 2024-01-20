@@ -2223,11 +2223,32 @@ class Eliza:
                                       "Are you sure you need {0}?"])
     ]
     babble.insert(len(babble), PhraseMatcher("why don'?t you ([^\\?]*)\\??", ["Do you really think I don't {0}?",
-                                                        "Perhaps eventually I will {0}.",
-                                                        "Do you really want me to {0}?"]))
+                                                                              "Perhaps eventually I will {0}.",
+                                                                              "Do you really want me to {0}?"]))
 
     def respond(self, msg):
         for pm in self.babble:
             if pm.matches(msg):
                 return pm.respond(msg.lower())
         return ""
+
+
+class TextEditingSeries:
+    @staticmethod
+    def add_new_lines(text: str, n1: int):
+        words = text.split(' ')
+        lines = []
+        current_line = []
+        current_length = 0
+
+        for word in words:
+            if current_length + len(word) + len(current_line) > n1:
+                lines.append(' '.join(current_line))
+                current_line = [word]
+                current_length = len(word)
+            else:
+                current_line.append(word)
+                current_length += len(word)
+
+        lines.append(' '.join(current_line))
+        return '\n'.join(lines)

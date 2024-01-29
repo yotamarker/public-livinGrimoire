@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 public class Chobits extends thinkable {
-    protected ArrayList<DiSkillV2> dClasses = new ArrayList<>();;
+    protected ArrayList<DiSkillV2> dClasses = new ArrayList<>();
     protected Fusion fusion;
     protected Neuron noiron;
     protected Kokoro kokoro = new Kokoro(new AbsDictionaryDB()); // consciousness

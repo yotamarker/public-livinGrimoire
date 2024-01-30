@@ -1145,3 +1145,94 @@ class DiBlabberV3(DiSkillV2):
     def setNPCPlus(self, n: int):
         # increase NPC auto output chance
         self.__nPCPlus = n
+
+
+class DiActivity(DiSkillV2):
+    def __init__(self):
+        super().__init__()
+        self.activities: list[DrawRnd] = []
+        self.index = -1
+        self.start = "start activity"
+        self.stop = "stop"
+        self.skip = Responder("skip", "next", "ok")
+        self.doNext = ""
+
+    def setStart(self, start):
+        self.start = start
+
+    def setStop(self, stop):
+        self.stop = stop
+
+    def setSkip(self, skip):
+        self.skip = skip
+
+    def addActivity(self, drawRnd):
+        self.activities.append(drawRnd)
+
+    def input(self, ear, skin, eye):
+        if ear == self.start:
+            self.index = 0
+            for i in range(len(self.activities)):
+                self.activities[i].reset()
+        if self.index > -1:
+            if ear == self.stop:
+                self.index = -1
+                return
+            elif self.skip.responsesContainsStr(ear) or self.activities[self.index].isEmptied():
+                self.index += 1
+            if self.index > len(self.activities) - 1:
+                self.index = -1
+                return
+            self.doNext = self.activities[self.index].drawAndRemove()
+        if self.doNext == "":
+            return
+        else:
+            self.setSimpleAlg(self.doNext)
+            self.doNext = ""
+
+
+class DiHuggyWuggy:
+    def __init__(self):
+        self.o1 = DiActivity()
+        self.o1.addActivity(DrawRnd("approaches you", "wide grin"))
+        self.o1.addActivity(DrawRnd("hugs you"))
+        self.o1.addActivity(DrawRnd("hugs you tighter", "nuzzles", "snuggles", "plays with your hair"))
+
+    def retSkill(self):
+        return self.o1
+
+
+class DiArguer(DiSkillV2):
+    def __init__(self):
+        super().__init__()
+        self.argue = TrgArgue()
+        self.r1 = Responder()  # replies against argument
+        self.r2 = Responder()  # replies for insistence
+        self.finale = "number"  # replies after argueLim insistances
+        self.argueLim = 13
+
+    def setArgue(self, argue):
+        self.argue = argue
+
+    def setR1(self, r1):
+        self.r1 = r1
+
+    def setR2(self, r2):
+        self.r2 = r2
+
+    def setFinale(self, finale):
+        self.finale = finale
+
+    def setArgueLim(self, argueLim):
+        self.argueLim = argueLim
+
+    def input(self, ear, skin, eye):
+        if self.argue.engageCommand(ear) == 0:
+            return
+        elif self.argue.engageCommand(ear) == 1:
+            self.setSimpleAlg(self.r1.getAResponse())
+        else:
+            if self.argueLim < self.argue.getCounter() < self.argueLim + 5:
+                self.setSimpleAlg(self.finale.replace("number", str(self.argue.getCounter() + 5)))
+                return
+            self.setSimpleAlg(self.r2.getAResponse())

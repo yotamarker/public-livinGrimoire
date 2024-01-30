@@ -36,7 +36,7 @@ public class DiArguer extends DiSkillV2 {
         if (argue.engageCommand(ear)== 0){return;}
         if (argue.engageCommand(ear) == 1){setSimpleAlg(r1.getAResponse());}
         else {
-            if(argue.getCounter() > argueLim){setSimpleAlg(finale.replace("number",argue.getCounter()+ ""));return;}
+            if((argue.getCounter() > argueLim) && (argue.getCounter() < argueLim + 5)){setSimpleAlg(finale.replace("number",argue.getCounter() + 5 + ""));return;}
             setSimpleAlg(r2.getAResponse());
         }
     }

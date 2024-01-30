@@ -591,6 +591,9 @@ class DrawRnd:
         for t in self._stringsSource:
             self.strings.insert(t)
 
+    def isEmptied(self) -> bool:
+        return self.strings.size() == 0
+
 
 class DrawRndDigits:
     # draw a random integer, then take said element out

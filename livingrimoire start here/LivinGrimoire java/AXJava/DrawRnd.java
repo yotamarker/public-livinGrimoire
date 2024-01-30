@@ -45,4 +45,5 @@ public class DrawRnd {
         DeepCopier dc = new DeepCopier();
         strings = dc.copyList(stringsSource);
     }
+    public boolean isEmptied(){return strings.isEmpty();}
 }

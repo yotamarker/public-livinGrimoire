@@ -1236,3 +1236,42 @@ class DiArguer(DiSkillV2):
                 self.setSimpleAlg(self.finale.replace("number", str(self.argue.getCounter() + 5)))
                 return
             self.setSimpleAlg(self.r2.getAResponse())
+
+
+class DiRailChatBot(DiSkillV2):
+    def __init__(self):
+        super().__init__()
+        self.rcb: RailChatBot = RailChatBot()
+        self.dialog: AXCmdBreaker = AXCmdBreaker("babe")
+        self.filter: UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue(5)
+        self.bads: AXCmdBreaker = AXCmdBreaker("is bad")
+        self.goods: AXCmdBreaker = AXCmdBreaker("is good")
+        self.filterTemp: str = ""
+
+    def setQueLim(self, lim):
+        self.filter.setLimit(lim)
+
+    def input(self, ear, skin, eye):
+        # filter learn:
+        self.filterTemp = self.bads.extractCmdParam(ear)
+        if self.filterTemp:
+            self.filter.insert(self.filterTemp)
+            self.filterTemp = ""
+            self.setSimpleAlg("i will keep that in mind")
+            return
+        self.filterTemp = self.goods.extractCmdParam(ear)
+        if self.filterTemp:
+            self.filter.removeItem(self.filterTemp)
+            self.filterTemp = ""
+            self.setSimpleAlg("understood")
+            return
+        if self.filter.strContainsResponse(ear):
+            return  # filter in
+        temp = self.dialog.extractCmdParam(ear)
+        if temp:
+            result = self.rcb.respondDialog(temp)
+            if self.filter.strContainsResponse(result):
+                return  # filter out
+            self.setSimpleAlg(Eliza.PhraseMatcher.reflect(result))
+            return
+        self.rcb.learn(ear)

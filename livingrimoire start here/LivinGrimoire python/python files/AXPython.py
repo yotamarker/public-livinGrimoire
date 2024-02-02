@@ -2139,7 +2139,9 @@ class RailChatBot:
             return
         self.context = context
 
-    def respond(self, ear):
+    def respondMonolog(self, ear):
+        # monolog mode
+        # recommended use of filter for the output results
         if ear == "":
             return ""
         if ear not in self.dic:
@@ -2161,7 +2163,18 @@ class RailChatBot:
         self.context = ear
 
     def monolog(self):
-        return self.respond(self.context)
+        # succession of outputs without input involved
+        return self.respondMonolog(self.context)
+
+    def respondDialog(self, ear):
+        # dialog mode
+        # recommended use of filter for the output results
+        if ear == "":
+            return ""
+        if ear not in self.dic:
+            self.dic[ear] = RefreshQ(5)
+        temp = self.dic[ear].getRNDElement()
+        return temp
 
 
 class Eliza:

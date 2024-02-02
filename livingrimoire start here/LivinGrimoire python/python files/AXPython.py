@@ -2255,3 +2255,32 @@ class TextEditingSeries:
 
         lines.append(' '.join(current_line))
         return '\n'.join(lines)
+
+
+class OnOffSwitch:
+    def __init__(self):
+        self._mode = False
+        self._timeGate: TimeGate = TimeGate(5)
+        self._on = Responder("on", "talk to me")
+        self._off = Responder("off", "stop", "shut up", "shut it", "whatever", "whateva")
+
+    def setPause(self, minutes):
+        self._timeGate.setPause(minutes)
+
+    def setOn(self, on):
+        self._on = on
+
+    def setOff(self, off):
+        self._off = off
+
+    def getMode(self, ear):
+        if self._on.responsesContainsStr(ear):
+            self._timeGate.openForPauseMinutes()
+            self._mode = True
+            return True
+        elif self._off.responsesContainsStr(ear):
+            self._timeGate.close()
+            self._mode = False
+        if self._timeGate.isClosed():
+            self._mode = False
+        return self._mode

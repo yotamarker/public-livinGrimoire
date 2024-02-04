@@ -422,6 +422,9 @@ class DrawRnd {
         strings.append(element)
         stringsSource.append(element)
     }
+    func isEmptied() -> Bool {
+        return self.strings.count == 0
+    }
 }
 class LGTypeConverter{
     func convertToInt(v1:String)->Int{
@@ -2058,5 +2061,84 @@ class Eliza {
             }
         }
         return ""
+    }
+}
+class RailChatBot {
+    private var dic: [String: RefreshQ] = [:]
+    private var context: String = "default"
+
+    init() {
+        self.dic[context] = RefreshQ()
+    }
+
+    func setContext(context: String) {
+        if context.isEmpty { return }
+        self.context = context
+    }
+
+    func respondMonolog(ear: String) -> String {
+        if ear.isEmpty { return "" }
+        if dic[ear] == nil {
+            dic[ear] = RefreshQ()
+        }
+        let temp: String = dic[ear]?.getRndItem() ?? ""
+        if !temp.isEmpty { context = temp }
+        return temp
+    }
+
+    func learn(ear: String) {
+        if ear.isEmpty { return }
+        if dic[ear] == nil {
+            dic[ear] = RefreshQ()
+            dic[context]?.input(in1: ear)
+            context = ear
+            return
+        }
+        dic[context]?.input(in1: ear)
+        context = ear
+    }
+
+    func monolog() -> String {
+        return respondMonolog(ear: context)
+    }
+
+    func respondDialog(ear: String) -> String {
+        if ear.isEmpty { return "" }
+        if dic[ear] == nil {
+            dic[ear] = RefreshQ()
+        }
+        let temp: String = dic[ear]?.getRndItem() ?? ""
+        return temp
+    }
+}
+class OnOffSwitch {
+    private var mode: Bool = false
+    private var timeGate: TimeGate = TimeGate(pause: 5)
+    private var on: Responder = Responder("on","talk to me")
+    private var off: Responder = Responder("off","stop","shut up", "shut it","whatever","whateva")
+
+    func setPause(minutes: Int) {
+        self.timeGate.setPause(pause: minutes)
+    }
+
+    func setOn(on: Responder) {
+        self.on = on
+    }
+
+    func setOff(off: Responder) {
+        self.off = off
+    }
+
+    func getMode(ear: String) -> Bool {
+        if on.contains(str: ear) {
+            timeGate.openGate()
+            mode = true
+            return true
+        } else if off.contains(str: ear) {
+            timeGate.closeGate()
+            mode = false
+        }
+        if timeGate.isClosed() { mode = false }
+        return mode
     }
 }

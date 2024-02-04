@@ -2012,7 +2012,7 @@ class Magic8Ball:
         self.__answers.addResponse("Outlook not so good")
         self.__answers.addResponse("Very doubtful")
         # questions:
-        self.__questions = Responder("will i", "can i expect", "should i", "may i", "is it a good idea",
+        self.__questions = Responder("will i", "can i expect", "should i", "is it a good idea",
                                      "will it be a good idea for me to", "is it possible", "future hold",
                                      "will there be")
 

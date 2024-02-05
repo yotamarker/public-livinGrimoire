@@ -17,6 +17,14 @@ def chi_speech_pattern(input_string):
     return transformed_string
 
 
+def uwu_converter(text):
+    text = text.replace('r', 'w')
+    text = text.replace('l', 'w')
+    text = text.replace('R', 'W')
+    text = text.replace('L', 'W')
+    return text
+
+
 def g_dropping_dialect(input_string):
     # Replace 'ing' with 'in''
     input_string = input_string.replace('ing ', 'in\' ')

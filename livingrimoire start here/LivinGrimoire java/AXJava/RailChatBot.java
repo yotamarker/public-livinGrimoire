@@ -14,7 +14,8 @@ public class RailChatBot {
         if (context.isEmpty()) {return;}
         this.context = context;
     }
-    public String respond(String ear){
+    public String respondMonolog(String ear){
+        // monolog mode
         // recommended use of filter for the output results
         if (ear.isEmpty()){return "";}
         if (!dic.containsKey(ear)){
@@ -38,6 +39,17 @@ public class RailChatBot {
     }
     public String monolog(){
         // succession of outputs without input involved
-        return respond(context);
+        return respondMonolog(context);
+    }
+    public String respondDialog(String ear){
+        // dialog mode
+        // recommended use of filter for the output results
+        if (ear.isEmpty()){return "";}
+        if (!dic.containsKey(ear)){
+            dic.put(ear,new RefreshQ());
+        }
+        String temp = dic.get(ear).getRNDElement();
+//        if (!temp.isEmpty()){context = temp;}
+        return temp;
     }
 }

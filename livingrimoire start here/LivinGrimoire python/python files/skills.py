@@ -470,7 +470,8 @@ class DiTime(DiSkillV2):
             case "what is the time":
                 self.setVerbatimAlg(4, self.__pl.getCurrentTimeStamp())
             case "i am sleepy":
-                self.setSimpleAlg("“Chi… Chi knows it’s late. Sleep, sleep is good. When you sleep, you can dream. Dreams, dreams are nice. Tomorrow, lots to do. If sleep now, can do best tomorrow. So, let’s sleep. Good night… zzz…”")
+                self.setSimpleAlg(
+                    "Chi… Chi knows it’s late. Sleep, sleep is good. When you sleep, you can dream. Dreams, dreams are nice. Tomorrow, lots to do. If sleep now, can do best tomorrow. So, let’s sleep. Good night… zzz…")
             case "which day is it":
                 self.setVerbatimAlg(4, self.__pl.getDayOfDWeek())
             case "good morning", "good night", "good afternoon", "good evening":
@@ -1279,3 +1280,98 @@ class DiRailChatBot(DiSkillV2):
             self.setSimpleAlg(Eliza.PhraseMatcher.reflect(result))
             return
         self.rcb.learn(ear)
+
+
+class DiBlueCrystal(DiSkillV2):
+    def __init__(self):
+        super().__init__()
+        # language learning game skill
+        self._categories: list[dict[str, str]] = []
+        self._quiz: DrawRnd = DrawRnd()
+        self._keyList: list[str] = []
+        self._categoryIndex: int = 0
+        self._teach: AXContextCmd = AXContextCmd()
+        self._quizMe: AXContextCmd = AXContextCmd()
+        self._expectedSolution: str = ""
+        self._itMeans: AXCmdBreaker = AXCmdBreaker("it means")
+        self._score: int = 0
+        self._lvUpAt: int = 10
+
+        self._teach.contextCommands.insert("teach")
+        self._teach.commands.insert("more")
+        self._teach.commands.insert("next")
+        self._teach.commands.insert("again")
+        self._quizMe.contextCommands.insert("quiz")
+        self._quizMe.commands.insert("more")
+        self._quizMe.commands.insert("next")
+        self._quizMe.commands.insert("again")
+
+    def setLvUpAt(self, lvUpAt: int):
+        self._lvUpAt = lvUpAt
+
+    def addCategory(self, category: dict[str, str]):
+        # at least one category should be added
+        self._categories.append(category)
+        if len(self._categories) > 1:
+            return
+        self._keyList = list(self._categories[0].keys())
+
+    def input(self, ear: str, skin: str, eye: str):
+        if not ear:
+            return
+        # get word gem
+        if self._teach.engageCommand(ear):
+            randomIndex = random.randint(0, len(self._keyList) - 1)
+            wordGem = self._keyList[randomIndex]
+            translation = self._categories[self._categoryIndex][wordGem]
+            self._quiz.addElement(wordGem)
+            self.setSimpleAlg(f"{wordGem} means {translation}")
+            return
+        # manual category change:
+        if ear == "next category":
+            self._nxtCategory()
+            self.setSimpleAlg("ok")
+            return
+        # quiz user
+        if self._quizMe.engageCommand(ear):
+            question = self._quiz.drawAndRemove()
+            if not question:
+                question = self._keyList[random.randint(0, len(self._keyList) - 1)]
+            self.setSimpleAlg(f"what does {question} mean")
+            self._expectedSolution = "it means " + self._categories[self._categoryIndex][question]
+            return
+        # get score
+        if ear == "score":
+            self.setSimpleAlg(f"your score is {self._score} of {self._lvUpAt}")
+            return
+        # get current level
+        if ear == "level":
+            self.setSimpleAlg(f"your level is {self._categoryIndex}")
+            return
+        # answer
+        if "it means" in ear and self._expectedSolution:
+            if ear == self._expectedSolution:
+                self._expectedSolution = ""
+                # correct solution
+                self._score += 1
+                # level up?
+                if self._score == self._lvUpAt:
+                    self._score = 0
+                    self._nxtCategory()
+                    self.setSimpleAlg("leveled up")
+                else:
+                    self.setSimpleAlg("correct")
+            else:
+                self._expectedSolution = ""
+                self._score = 0
+                self.setSimpleAlg("bu bu wrong answer")
+            return
+
+    def _nxtCategory(self):
+        self._score = 0
+        self._categoryIndex += 1
+        if self._categoryIndex == len(self._categories):
+            self._categoryIndex = 0
+        if len(self._categories) == 0:
+            return
+        self._keyList = list(self._categories[self._categoryIndex].keys())

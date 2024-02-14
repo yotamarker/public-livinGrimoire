@@ -546,6 +546,8 @@ class DiTime(DiSkillV2):
             case "incantation 0":
                 self.setVerbatimAlg(5, "fly", "bless of magic caster", "infinity wall", "magic ward holy",
                                     "life essence")
+            case "evil laugh":
+                self.setSimpleAlg("bwahaha mwahaha")
 
 
 class DiCron(DiSkillV2):

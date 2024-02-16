@@ -2280,7 +2280,7 @@ class OnOffSwitch:
     def setPause(self, minutes):
         self._timeGate.setPause(minutes)
 
-    def setOn(self, on):
+    def setOn(self, on: Responder):
         self._on = on
 
     def setOff(self, off):

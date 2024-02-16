@@ -1375,3 +1375,37 @@ class DiBlueCrystal(DiSkillV2):
         if len(self._categories) == 0:
             return
         self._keyList = list(self._categories[self._categoryIndex].keys())
+
+
+class DiHoneyBunny(DiSkillV2):
+    def __init__(self):
+        super().__init__()  # Call the parent class constructor
+        self.regex_util: RegexUtil = RegexUtil()
+        self.on_off_switch: OnOffSwitch = OnOffSwitch()
+        self.on_off_switch.setOn(Responder("honey bunny"))
+        self.user = "user"
+        self.drip: PercentDripper = PercentDripper()
+        self.responses: Responder = Responder("user", "i love you user", "hadouken", "shoryuken",
+                                              "user is a honey bunny", "hadoken user", "shoryukens user",
+                                              "i demand attention", "hey user", "uwu")
+        self._buffer = 10
+        self._buffer_counter = 0
+        self._bool1: bool = False
+
+    def set_buffer(self, buffer):
+        self._buffer = buffer
+
+    def input(self, ear, skin, eye):
+        if len(ear) > 0:
+            self._buffer_counter = 0
+            temp = self.regex_util.extractRegex(r'(?<=my name is\s)(.*)', ear)
+            if temp:
+                self.user = temp
+                self.setSimpleAlg(f"got it {self.user}")
+                return
+        elif self._bool1 and self._buffer_counter < self._buffer:
+            self._buffer_counter += 1
+        self._bool1 = self.on_off_switch.getMode(ear)
+        if self._bool1 and self.drip.drip():
+            if self._buffer_counter > self._buffer - 1:
+                self.setSimpleAlg(self.responses.getAResponse().replace("user", self.user))

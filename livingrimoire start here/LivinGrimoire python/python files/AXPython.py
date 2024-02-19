@@ -1549,16 +1549,23 @@ class Cron(TrGEV3):
     def getCounter(self) -> int:
         return self._counter
 
-    def setMinutes(self, minutes: int):
-        if minutes > -1:
-            self._minutes = minutes
-
     # override
     def trigger(self) -> bool:
         # delete counter = 0 if you don't want the trigger to work the next day
         if self._counter == self._limit:
             self._trgTime.setTime(self._initislTimeStamp)
             self._counter = 0
+            return False
+        if self._trgTime.alarm():
+            self._timeStamp = self._playGround.getFutureInXMin(self._minutes)
+            self._trgTime.setTime(self._timeStamp)
+            self._counter += 1
+            return True
+        return False
+
+    def triggerWithoutRenewal(self) -> bool:
+        if self._counter == self._limit:
+            self._trgTime.setTime(self._initislTimeStamp)
             return False
         if self._trgTime.alarm():
             self._timeStamp = self._playGround.getFutureInXMin(self._minutes)
@@ -1577,6 +1584,9 @@ class Cron(TrGEV3):
         self._timeStamp = t1
         self._trgTime.setTime(t1)
         self._counter = 0
+
+    def turnOff(self):
+        self._counter = self._limit
 
 
 ''' PRIORITYQUEUE CLASS '''

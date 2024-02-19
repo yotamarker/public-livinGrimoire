@@ -1409,3 +1409,30 @@ class DiHoneyBunny(DiSkillV2):
         if self._bool1 and self.drip.drip():
             if self._buffer_counter > self._buffer - 1:
                 self.setSimpleAlg(self.responses.getAResponse().replace("user", self.user))
+
+
+class DiAlarmer(DiSkillV2):
+    def __init__(self):
+        super().__init__()
+        self.off: Responder = Responder("off", "stop", "shut up", "shut it", "alarm off", "cancel alarm")
+        self.regexUtil: RegexUtil = RegexUtil()
+        self._cron: Cron = Cron("", 3, 3)
+
+    def setCron(self, cron):
+        self._cron = cron
+
+    def input(self, ear, skin, eye):
+        # Turn off alarm
+        if self.off.responsesContainsStr(ear):
+            self._cron.turnOff()
+            self.setSimpleAlg("alarm is now off")
+            return
+
+        temp = self.regexUtil.extractRegex(r"(?<=set alarm to\s)([0-9]{1,2}:[0-9]{1,2})", ear)
+        if not len(temp) == 0:
+            self._cron.setStartTime(temp)
+            self.setSimpleAlg(f"alarm set to {temp}")
+            return
+
+        if self._cron.triggerWithoutRenewal():
+            self.setSimpleAlg("beep")

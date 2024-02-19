@@ -54,6 +54,17 @@ public class Cron extends TrGEV3{
         }
         return false;
     }
+    public Boolean triggerWithoutRenewal() {
+        // delete counter = 0 if you don't want the trigger to work the next day
+        if (counter == limit) {trgTime.setTime(initialTimeStamp);return false;}
+        if (trgTime.alarm()){
+            timeStamp = pl.getFutureInXMin(minutes);
+            trgTime.setTime(timeStamp);
+            counter++;
+            return true;
+        }
+        return false;
+    }
     @Override
     public void reset() {
         // manual trigger reset
@@ -64,5 +75,8 @@ public class Cron extends TrGEV3{
         timeStamp = t1;
         trgTime.setTime(t1);
         counter = 0;
+    }
+    public void turnOff(){
+        counter = limit;
     }
 }

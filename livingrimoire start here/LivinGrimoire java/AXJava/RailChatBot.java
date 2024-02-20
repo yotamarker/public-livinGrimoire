@@ -37,6 +37,16 @@ public class RailChatBot {
         dic.get(context).add(ear);
         context = ear;
     }
+    public void learnKeyValue(String context, String reply){
+        // learn questions and answers/ key values
+        if(!dic.containsKey(context)){
+            dic.put(context,new RefreshQ());
+        }
+        if(!dic.containsKey(reply)){
+            dic.put(reply,new RefreshQ());
+        }
+        dic.get(context).add(reply);
+    }
     public String monolog(){
         // succession of outputs without input involved
         return respondMonolog(context);

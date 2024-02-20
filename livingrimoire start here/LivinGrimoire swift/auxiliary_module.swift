@@ -1263,6 +1263,19 @@ class Cron:TrGEV3{
         }
         return false
     }
+    func triggerWithoutRenewal() -> Bool {
+        if counter == limit{
+            trgTime.setTime(v1: initialTimeStamp)
+            return false
+        }
+        if trgTime.trigger() {
+            timeStamp = pl.getFutureInXMin(extra_minutes: minutes)
+            trgTime.setTime(v1: timeStamp)
+            counter += 1
+            return true
+        }
+        return false
+    }
     override func reset() {
         // manual trigger reset
         counter = 0
@@ -1272,6 +1285,9 @@ class Cron:TrGEV3{
         timeStamp = t1
         trgTime.setTime(v1: t1)
         counter = 0
+    }
+    func turnOff() {
+        counter = limit
     }
 }
 class AXStrOrDefault{

@@ -340,7 +340,8 @@ class RussianWordGems:
             "масло": "butter",
             "салат": "salad"
         }
-        self._o1.setLvUpAt(3)
+        self._o1.addCategory(map)
+        self._o1.setLvUpAt(9)
 
     def retSkill(self) -> DiBlueCrystal:  # method with return type annotation
         return self._o1

@@ -1332,6 +1332,10 @@ class DiBlueCrystal(DiSkillV2):
             self._nxtCategory()
             self.setSimpleAlg("ok")
             return
+        if ear == "randomize category":
+            self._rndCategory()
+            self.setSimpleAlg("category randomized")
+            return
         # quiz user
         if self._quizMe.engageCommand(ear):
             question = self._quiz.drawAndRemove()
@@ -1372,6 +1376,13 @@ class DiBlueCrystal(DiSkillV2):
         self._categoryIndex += 1
         if self._categoryIndex == len(self._categories):
             self._categoryIndex = 0
+        if len(self._categories) == 0:
+            return
+        self._keyList = list(self._categories[self._categoryIndex].keys())
+
+    def _rndCategory(self):
+        self._score = 0
+        self._categoryIndex = DrawRnd().getSimpleRNDNum(len(self._categories))
         if len(self._categories) == 0:
             return
         self._keyList = list(self._categories[self._categoryIndex].keys())

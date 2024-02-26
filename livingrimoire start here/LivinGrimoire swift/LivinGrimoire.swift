@@ -1314,6 +1314,7 @@ class Brain {
     init() {
         self.logicChobit = Chobits()
         self.hardwareChobit = Chobits()
+        self.hardwareChobit.kokoro = self.logicChobit.kokoro
     }
     func doIt(ear:String, skin:String, eye:String) {
         if !bodyInfo.isEmpty{

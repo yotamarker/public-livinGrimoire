@@ -1372,6 +1372,7 @@ class DiBlueCrystal(DiSkillV2):
             return
 
     def _nxtCategory(self):
+        self._quiz = DrawRnd()
         self._score = 0
         self._categoryIndex += 1
         if self._categoryIndex == len(self._categories):
@@ -1381,6 +1382,7 @@ class DiBlueCrystal(DiSkillV2):
         self._keyList = list(self._categories[self._categoryIndex].keys())
 
     def _rndCategory(self):
+        self._quiz = DrawRnd()
         self._score = 0
         self._categoryIndex = DrawRnd().getSimpleRNDNum(len(self._categories))
         if len(self._categories) == 0:

@@ -77,6 +77,7 @@ public class Brain {
     public Brain() {
         logicChobit = new Chobits();
         hardwareChobit = new Chobits();
+        hardwareChobit.setKokoro(logicChobit.getKokoro());
     }
     public void doIt(String ear, String skin, String eye) {
         if (!bodyInfo.isEmpty()){
@@ -86,6 +87,7 @@ public class Brain {
             logicChobitOutput = logicChobit.think(ear,skin,eye);
         }
         emotion = logicChobit.getSoulEmotion();
+        // case: hardware skill wishes to pass info to logical chobit
         bodyInfo = hardwareChobit.think(logicChobitOutput,skin,eye);
     }
 }

@@ -1039,6 +1039,7 @@ class Brain:
         self._logicChobitOutput: str = ""
         self.logicChobit: Chobits = Chobits()
         self.hardwareChobit: Chobits = Chobits()
+        self.hardwareChobit.setKokoro(self.logicChobit.getKokoro())
 
     def getEmotion(self) -> str:
         return self._emotion

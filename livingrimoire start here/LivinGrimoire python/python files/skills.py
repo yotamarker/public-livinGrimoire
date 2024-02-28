@@ -469,6 +469,8 @@ class DiTime(DiSkillV2):
                                     f'{self.__pl.getCurrentMonthDay()} {self.__pl.getCurrentMonthName()} {self.__pl.getYearAsInt()}')
             case "what is the time":
                 self.setVerbatimAlg(4, self.__pl.getCurrentTimeStamp())
+            case"honey bunny":
+                self.setVerbatimAlg(4, "bunny honey")
             case "i am sleepy":
                 self.setSimpleAlg(
                     "Chi… Chi knows it’s late. Sleep, sleep is good. When you sleep, you can dream. Dreams, dreams are nice. Tomorrow, lots to do. If sleep now, can do best tomorrow. So, let’s sleep. Good night… zzz…")
@@ -1449,3 +1451,33 @@ class DiAlarmer(DiSkillV2):
 
         if self._cron.triggerWithoutRenewal():
             self.setSimpleAlg("beep")
+
+
+class DiMemoryGame(DiSkillV2):
+    def __init__(self):
+        super().__init__()
+        self.score = 0
+        self.game_on = False
+        self.game_str = ""
+        self.game_chars: Responder = Responder("r", "g", "b", "y")
+        self.regexUtil: RegexUtil = RegexUtil()
+
+    def input(self, ear, skin, eye):
+        if ear == "memory game on":
+            self.game_on = True
+            self.score = 0
+            self.game_str = self.game_chars.getAResponse()
+            self.setSimpleAlg(self.game_str)
+
+        if self.game_on:
+            temp = self.regexUtil.extractRegex("^[rgby]+$", ear)
+            if temp:
+                if temp == self.game_str:
+                    temp = self.game_chars.getAResponse()
+                    self.game_str += temp
+                    self.score += 1
+                    self.setSimpleAlg(temp)
+                else:
+                    self.game_on = False
+                    self.setSimpleAlg(f"you scored {self.score}")
+                    self.score = 0

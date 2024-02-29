@@ -469,7 +469,7 @@ class DiTime(DiSkillV2):
                                     f'{self.__pl.getCurrentMonthDay()} {self.__pl.getCurrentMonthName()} {self.__pl.getYearAsInt()}')
             case "what is the time":
                 self.setVerbatimAlg(4, self.__pl.getCurrentTimeStamp())
-            case"honey bunny":
+            case "honey bunny":
                 self.setVerbatimAlg(4, "bunny honey")
             case "i am sleepy":
                 self.setSimpleAlg(
@@ -1481,3 +1481,46 @@ class DiMemoryGame(DiSkillV2):
                     self.game_on = False
                     self.setSimpleAlg(f"you scored {self.score}")
                     self.score = 0
+
+
+class DiOneWorder(DiSkillV2):
+    def __init__(self):
+        super().__init__()  # Call the superclass constructor
+        self.cry: str = "chi "
+        self.toggler: str = "chi"
+        self.drip: PercentDripper = PercentDripper()  # Assuming PercentDripper is implemented
+        self.mode: bool = False
+
+    def set_cry(self, cry):
+        self.cry = cry + " "
+
+    def set_toggler(self, toggler):
+        self.toggler = toggler
+
+    def input(self, ear, skin, eye):
+        if not ear:
+            return
+        if ear == self.toggler:
+            self.mode = not self.mode
+            self.setSimpleAlg("toggled")
+            return
+        if self.mode and self.drip.drip():
+            self.setSimpleAlg(self.convert_to_chi(ear))
+
+    def convert_to_chi(self, input_str):
+        # Split the input string into words
+        words = input_str.split()
+
+        # Initialize an empty result string
+        result = ""
+
+        # Iterate through each word
+        for word in words:
+            # Append "chi" to the result
+            result += self.cry
+
+        # Remove the trailing space
+        if result:
+            result = result[:-1]
+
+        return result

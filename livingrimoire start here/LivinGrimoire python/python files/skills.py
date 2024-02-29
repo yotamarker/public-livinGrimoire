@@ -1497,6 +1497,9 @@ class DiOneWorder(DiSkillV2):
     def set_toggler(self, toggler):
         self.toggler = toggler
 
+    def set_drip_percent(self, n: int):
+        self.drip.setLimit(n)
+
     def input(self, ear, skin, eye):
         if not ear:
             return

@@ -20,6 +20,9 @@ public class DiOneWorder extends DiSkillV2 {
     public void setToggler(String toggler) {
         this.toggler = toggler;
     }
+    public void setDripPercent(int n){
+        drip.setLimis(n);
+    }
 
     @Override
     public void input(String ear, String skin, String eye) {

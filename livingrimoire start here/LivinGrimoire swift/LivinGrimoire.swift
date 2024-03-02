@@ -1244,6 +1244,13 @@ class Chobits:Thinkable {
     func getFusion() -> Fusion {
         return self.fusion
     }
+    func getSkillList() -> [String] {
+        var result: [String] = []
+        for skill in self.dClasses {
+            result.append(String(describing: type(of: skill)))
+        }
+        return result
+    }
 }
 /* Brain class
  *********

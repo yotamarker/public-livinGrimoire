@@ -1527,3 +1527,24 @@ class DiOneWorder(DiSkillV2):
             result = result[:-1]
 
         return result
+
+
+class DiAware(DiSkillV2):
+    def __init__(self, chobit: Chobits, name: str, summoner="user"):
+        super().__init__()
+        self.chobit: Chobits = chobit
+        self.name: str = name
+        self.summoner: str = summoner
+        self.skills: list[str] = []
+
+    def input(self, ear, skin, eye):
+        match ear:
+            case "list skills":
+                self.skills = self.chobit.get_skill_list()
+                self.setVebatimAlgFromList(4, self.skills)
+            case "what is your name":
+                self.setSimpleAlg(self.name)
+            case "name summoner":
+                self.setSimpleAlg(self.summoner)
+            case "how do you feel":
+                self.getKokoro().toHeart["last_ap"] = self.chobit.getSoulEmotion()

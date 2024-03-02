@@ -71,4 +71,11 @@ public class Chobits extends thinkable {
     public Fusion getFusion() {
         return fusion;
     }
+    public ArrayList<String> getSkillList(){
+        ArrayList<String> result = new ArrayList<String>();
+        for (DiSkillV2 skill: this.dClasses) {
+            result.add(skill.getClass().getSimpleName());
+        }
+        return result;
+    }
 }

@@ -790,3 +790,32 @@ class SkillBranch: DiSkillV2 {
     // while alg is pending, cause alg mutation ignoring learnability tolerance:
     func addDefconLV5(_ defcon5: String){ml.defcons.input(in1: defcon5)}
 }
+class DiAware: DiSkillV2 {
+    private var chobit: Chobits
+    private var name: String
+    private var summoner: String = "user"
+    private var skills: [String] = []
+
+    init(chobit: Chobits, name: String, summoner: String) {
+        self.chobit = chobit
+        self.name = name
+        self.summoner = summoner
+    }
+
+    override func input(ear: String, skin: String, eye: String) {
+        switch ear {
+            case "list skills":
+                skills = chobit.getSkillList()
+                setVerbatimAlgFromList(priority: 4, sayThis: skills)
+            case "what is your name":
+            setSimpleAlg(sayThis: name)
+            case "name summoner":
+            setSimpleAlg(sayThis: summoner)
+            case "how do you feel":
+                // handle in hardware skill in hardwer chobit
+                kokoro.toHeart["last_ap"] = chobit.getSoulEmotion()
+            default:
+                break
+        }
+    }
+}

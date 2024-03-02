@@ -1123,3 +1123,9 @@ class Chobits(Thinkable):
 
     def getFusion(self) -> Fusion:
         return self._fusion
+
+    def get_skill_list(self) -> list[str]:
+        result: list[str] = []
+        for skill in self._dClasses:
+            result.append(skill.__class__.__name__)
+        return result

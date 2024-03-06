@@ -476,7 +476,13 @@ class DiTime(DiSkillV2):
                     "Chi… Chi knows it’s late. Sleep, sleep is good. When you sleep, you can dream. Dreams, dreams are nice. Tomorrow, lots to do. If sleep now, can do best tomorrow. So, let’s sleep. Good night… zzz…")
             case "which day is it":
                 self.setVerbatimAlg(4, self.__pl.getDayOfDWeek())
-            case "good morning", "good night", "good afternoon", "good evening":
+            case "good morning":
+                self.setVerbatimAlg(4, f'good {self.__pl.partOfDay()}')  # fstring
+            case"good night":
+                self.setVerbatimAlg(4, f'good {self.__pl.partOfDay()}')  # fstring
+            case "good afternoon":
+                self.setVerbatimAlg(4, f'good {self.__pl.partOfDay()}')  # fstring
+            case "good evening":
                 self.setVerbatimAlg(4, f'good {self.__pl.partOfDay()}')  # fstring
             case "which month is it":
                 self.setVerbatimAlg(4, self.__pl.getCurrentMonthName())

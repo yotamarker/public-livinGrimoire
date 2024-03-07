@@ -37,8 +37,7 @@ class AbsDictionaryDB:
         pass
 
     def load(self, key: str) -> str:
-        """TODO set to return null as default if key not found !!!"""
-        pass
+        return "null"
 
 
 ''' MUTATABLE CLASS '''

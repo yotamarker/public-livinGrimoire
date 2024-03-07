@@ -793,8 +793,15 @@ class DiSayer(DiSkillV2):
         self.command = ""
 
     def input(self, ear, skin, eye):
+        if len(ear) == 0:
+            return
+        if ear == "say something":
+            self.setSimpleAlg(self.getKokoro().grimoireMemento.simpleLoad(f'disayer'))
+            return
+
         self.command = self.cmdBreaker.extractCmdParam(ear)
         if self.command:
+            self.getKokoro().grimoireMemento.simpleSave(f'disayer', self.command)
             self.setSimpleAlg(self.command)
             self.command = ""
 

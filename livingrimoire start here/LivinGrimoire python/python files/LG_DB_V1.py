@@ -1,7 +1,4 @@
 import os
-
-import pandas as pd
-
 from LivinGrimoire23 import AbsDictionaryDB
 
 '''

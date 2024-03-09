@@ -1724,6 +1724,9 @@ class AXNPC:
     def setConjuration(self, conjuration: str):
         self.cmdBreaker.conjuration = conjuration
 
+    def forceLearn(self,ear):
+        self.responder.insert(ear)
+
 
 class ChatBot:
     """
@@ -1949,11 +1952,13 @@ class AXNPC2(AXNPC):
         super().__init__(replyStockLim, outputChance)
         self.annoyedQue: AnnoyedQ = AnnoyedQ(5)
 
-    def strLearn(self, ear: str):
+    def strLearn(self, ear: str)-> bool:
         # learns inputs containing strings that are repeatedly used by others
         self.annoyedQue.learn(ear)
         if self.annoyedQue.isAnnoyed(ear):
             self.responder.insert(ear)
+            return True
+        return False
 
 
 class TrgArgue:

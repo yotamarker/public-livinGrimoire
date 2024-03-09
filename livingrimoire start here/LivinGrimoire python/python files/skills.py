@@ -478,7 +478,7 @@ class DiTime(DiSkillV2):
                 self.setVerbatimAlg(4, self.__pl.getDayOfDWeek())
             case "good morning":
                 self.setVerbatimAlg(4, f'good {self.__pl.partOfDay()}')  # fstring
-            case"good night":
+            case "good night":
                 self.setVerbatimAlg(4, f'good {self.__pl.partOfDay()}')  # fstring
             case "good afternoon":
                 self.setVerbatimAlg(4, f'good {self.__pl.partOfDay()}')  # fstring
@@ -795,7 +795,7 @@ class DiSayer(DiSkillV2):
     def input(self, ear, skin, eye):
         if len(ear) == 0:
             return
-        if ear == "say something":
+        if ear == "say it":
             self.setSimpleAlg(self.getKokoro().grimoireMemento.simpleLoad(f'disayer'))
             return
 
@@ -1561,3 +1561,27 @@ class DiAware(DiSkillV2):
                 self.setSimpleAlg(self.summoner)
             case "how do you feel":
                 self.getKokoro().toHeart["last_ap"] = self.chobit.getSoulEmotion()
+
+
+class DiBlabberV3(DiSkillV2):
+    def __init__(self, memory_size: int = 9, reply_chance: int = 90):
+        super().__init__()
+        self.npc: AXNPC2 = AXNPC2(memory_size, reply_chance)
+        self._temp_str: str = ""
+        self.splitter: AXStringSplit = AXStringSplit()
+        self._initialized: bool = False
+
+    def input(self, ear: str, skin: str, eye: str):
+        if len(ear) == 0:
+            return
+        if not self._initialized:
+            self.npc.responder.queue = self.splitter.split(self.getKokoro().grimoireMemento.simpleLoad("blabberv3"))
+            self._initialized = True
+        self._temp_str = self.npc.strRespond(ear)
+        if len(self._temp_str) > 0:
+            self.setSimpleAlg(Eliza.PhraseMatcher.reflect(self.npc.forceRespond()))
+        if not self.npc.learn(ear):
+            # str learn
+            if not self.npc.strLearn(ear):
+                return
+        self.getKokoro().grimoireMemento.simpleSave("blabberv3", self.splitter.stringBuilder(self.npc.responder.queue))

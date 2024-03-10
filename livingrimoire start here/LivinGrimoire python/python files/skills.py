@@ -1585,3 +1585,48 @@ class DiBlabberV3(DiSkillV2):
             if not self.npc.strLearn(ear):
                 return
         self.getKokoro().grimoireMemento.simpleSave("blabberv3", self.splitter.stringBuilder(self.npc.responder.queue))
+
+
+class DiBlabberV4(DiSkillV2):
+    def __init__(self, responder: Responder, memory_size: int = 15, reply_chance: int = 90, ):
+        super().__init__()
+        self.npc: AXNPC2 = AXNPC2(memory_size, reply_chance)
+        self._temp_str: str = ""
+        self.splitter: AXStringSplit = AXStringSplit()
+        self._initialized: bool = False
+        self.filter: Responder = responder
+        self._autoTalk: OnOffSwitch = OnOffSwitch()
+        self._autoTalk.setOn(Responder("auto talk"))
+
+    def input(self, ear: str, skin: str, eye: str):
+        if not self._initialized:
+            self.npc.responder.queue = self.splitter.split(self.getKokoro().grimoireMemento.simpleLoad("blabberv4"))
+            self._initialized = True
+        # talk to me
+        if self._autoTalk.getMode(ear):
+            t = self.npc.respond()
+            if len(t) > 0:
+                self.setSimpleAlg(t)
+                return
+        if len(ear) == 0:
+            return
+        # auto
+        if not len(super().getKokoro().toHeart.get("diblabber", "")) == 0:
+            super().getKokoro().toHeart["diblabber"] = ""
+            t = self.npc.forceRespond()
+            if len(t) == 0:
+                t = "hadouken"
+            self.setSimpleAlg(t)
+            return
+        # filter escape
+        if not self.filter.strContainsResponse(ear):
+            return
+        # blabber
+        self._temp_str = self.npc.strRespond(ear)
+        if len(self._temp_str) > 0:
+            self.setSimpleAlg(Eliza.PhraseMatcher.reflect(self.npc.forceRespond()))
+        if not self.npc.learn(ear):
+            # str learn
+            if not self.npc.strLearn(ear):
+                return
+        self.getKokoro().grimoireMemento.simpleSave("blabberv4", self.splitter.stringBuilder(self.npc.responder.queue))

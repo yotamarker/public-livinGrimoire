@@ -1442,7 +1442,7 @@ class DiHoneyBunny(DiSkillV2):
 class DiAlarmer(DiSkillV2):
     def __init__(self):
         super().__init__()
-        self.off: Responder = Responder("off", "stop", "shut up", "shut it", "alarm off", "cancel alarm")
+        self.off: Responder = Responder("alarm off", "cancel alarm")
         self.regexUtil: RegexUtil = RegexUtil()
         self._cron: Cron = Cron("", 3, 3)
 
@@ -1630,3 +1630,43 @@ class DiBlabberV4(DiSkillV2):
             if not self.npc.strLearn(ear):
                 return
         self.getKokoro().grimoireMemento.simpleSave("blabberv4", self.splitter.stringBuilder(self.npc.responder.queue))
+
+
+class DiBlabberV5(DiSkillV2):
+    def __init__(self, memory_size: int = 15, reply_chance: int = 90):
+        super().__init__()
+        self.npc: AXNPC2 = AXNPC2(memory_size, reply_chance)
+        self.npc.cmdBreaker = AXCmdBreaker("tell me")
+        self._temp_str: str = ""
+        self._autoTalk: OnOffSwitch = OnOffSwitch()
+        self._autoTalk.setOn(Responder("filth on"))
+        self._funnel: str = ""
+
+    def addResponses(self, *responses: str) -> DiBlabberV5:
+        for str1 in responses:
+            self.npc.responder.queue.insert(str1)
+        return self
+
+    def setResponses(self, *responses: str) -> DiBlabberV5:
+        self.npc.responder.queue = []
+        for str1 in responses:
+            self.npc.responder.queue.insert(str1)
+        return self
+
+    def input(self, ear: str, skin: str, eye: str):
+        # auto talk mode
+        if self._autoTalk.getMode(ear):
+            t = self.npc.respond()
+            if len(t) > 0:
+                self.setSimpleAlg(Eliza.PhraseMatcher.reflect(t))
+                return
+        if len(ear) == 0:
+            return
+        # funnel
+        self._funnel = ear.replace("tell me how", "tell me")
+        self._funnel = self._funnel.replace("tell me to", "tell me")
+        # blabber
+        self._temp_str = self.npc.strRespond(self._funnel)
+        if len(self._temp_str) > 0:
+            self.setSimpleAlg(Eliza.PhraseMatcher.reflect(self.npc.forceRespond()))
+        self.npc.learn(self._funnel)

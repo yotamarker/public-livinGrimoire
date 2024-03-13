@@ -1641,6 +1641,11 @@ class DiBlabberV5(DiSkillV2):
         self._autoTalk: OnOffSwitch = OnOffSwitch()
         self._autoTalk.setOn(Responder("filth on"))
         self._funnel: str = ""
+        self.cntxtcmd:AXContextCmd = AXContextCmd()
+        self.cntxtcmd.contextCommands.insert("princess")
+        self.cntxtcmd.commands.insert("more")
+        self.cntxtcmd.commands.insert("again")
+        self.cntxtcmd.commands.insert("please")
 
     def addResponses(self, *responses: str) -> DiBlabberV5:
         for str1 in responses:
@@ -1661,6 +1666,9 @@ class DiBlabberV5(DiSkillV2):
                 self.setSimpleAlg(Eliza.PhraseMatcher.reflect(t))
                 return
         if len(ear) == 0:
+            return
+        if self.cntxtcmd.engageCommand(ear):
+            self.setSimpleAlg(Eliza.PhraseMatcher.reflect(self.npc.respond()))
             return
         # funnel
         self._funnel = ear.replace("tell me how", "tell me")

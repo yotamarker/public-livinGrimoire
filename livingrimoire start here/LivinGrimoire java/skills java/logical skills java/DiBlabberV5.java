@@ -9,18 +9,25 @@ public class DiBlabberV5 extends DiSkillV2 {
     private String tempStr = "";
     private OnOffSwitch autoTalk = new OnOffSwitch();
     private String funnel = "";
+    public AXContextCmd cntxtcmd = new AXContextCmd();
 
     public DiBlabberV5(int memorySize, int replyChance) {
         super();
         this.npc = new AXNPC2(memorySize, replyChance);
         this.npc.cmdBreaker = new AXCmdBreaker("tell me");
         this.autoTalk.setOn(new Responder("filth on"));
+        cntxtcmd.contextCommands.add("princess");
+        cntxtcmd.commands.add("more");
+        cntxtcmd.commands.add("again");
     }
     public DiBlabberV5() {
         super();
         this.npc = new AXNPC2(9, 90);
         this.npc.cmdBreaker = new AXCmdBreaker("tell me");
         this.autoTalk.setOn(new Responder("filth on"));
+        cntxtcmd.contextCommands.add("princess");
+        cntxtcmd.commands.add("more");
+        cntxtcmd.commands.add("again");
     }
 
     public DiBlabberV5 addResponses(String... responses) {
@@ -48,6 +55,10 @@ public class DiBlabberV5 extends DiSkillV2 {
             }
         }
         if (ear.isEmpty()) {
+            return;
+        }
+        if (cntxtcmd.engageCommand(ear)){
+            this.setSimpleAlg(Eliza.PhraseMatcher.reflect(this.npc.respond()));
             return;
         }
         // funnel

@@ -6,7 +6,7 @@ import LivinGrimoire.DiSkillV2;
 import LivinGrimoire.RegexUtil;
 
 public class DiAlarmer extends DiSkillV2 {
-    private Responder off = new Responder("off","stop","shut up", "shut it","alarm off","cancel alarm");
+    private Responder off = new Responder("alarm off","cancel alarm");
     private RegexUtil regexUtil = new RegexUtil();
     private Cron cron = new Cron("", 3,3);
 

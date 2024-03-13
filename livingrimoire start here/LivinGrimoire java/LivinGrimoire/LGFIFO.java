@@ -58,4 +58,7 @@ public class LGFIFO <T>{
     public ArrayList<T> getElements() {
         return elements;
     }
+    public void setElements(ArrayList<T> elements) {
+        this.elements = elements;
+    }
 }

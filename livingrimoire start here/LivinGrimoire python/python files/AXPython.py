@@ -1724,7 +1724,7 @@ class AXNPC:
     def setConjuration(self, conjuration: str):
         self.cmdBreaker.conjuration = conjuration
 
-    def forceLearn(self,ear):
+    def forceLearn(self, ear):
         self.responder.insert(ear)
 
 
@@ -1952,7 +1952,7 @@ class AXNPC2(AXNPC):
         super().__init__(replyStockLim, outputChance)
         self.annoyedQue: AnnoyedQ = AnnoyedQ(5)
 
-    def strLearn(self, ear: str)-> bool:
+    def strLearn(self, ear: str) -> bool:
         # learns inputs containing strings that are repeatedly used by others
         self.annoyedQue.learn(ear)
         if self.annoyedQue.isAnnoyed(ear):
@@ -2312,3 +2312,29 @@ class OnOffSwitch:
         if self._timeGate.isClosed():
             self._mode = False
         return self._mode
+
+
+class AXFunnel:
+    # funnel all sorts of strings to fewer or other strings
+    def __init__(self):
+        self.dic: dict[str, str] = {}
+        self.default: str = "default"
+
+    def setDefault(self, default: str):
+        self.default = default
+
+    def addKV(self, key: str, value: str) -> AXFunnel:
+        # add key value pair
+        self.dic[key] = value
+        return self
+
+    def addK(self, key: str) -> AXFunnel:
+        # add key default pair
+        self.dic[key] = self.default
+        return self
+
+    def funnel(self, key: str) -> str:
+        # dictionary get or default
+        if not key in self.dic:
+            return key
+        return self.dic[key]

@@ -2158,3 +2158,38 @@ class OnOffSwitch {
         return mode
     }
 }
+class AXFunnel {
+    // Funnel many inputs to fewer or one input
+    // Allows using command variations in skills
+
+    private var dic: [String: String]
+    private var defaultStr: String
+
+    init() {
+        dic = [:]
+        defaultStr = "default"
+    }
+
+    func setDefault(_ defaultStr: String) {
+        self.defaultStr = defaultStr
+    }
+
+    @discardableResult
+    func addKV(key: String, value: String) -> Self {
+        // Add key-value pair
+        dic[key] = value
+        return self
+    }
+
+    @discardableResult
+    func addK(key: String) -> Self {
+        // Add key with default value
+        dic[key] = defaultStr
+        return self
+    }
+
+    func funnel(_ key: String) -> String {
+        // Get value from dictionary or return the key itself as default
+        return dic[key] ?? key
+    }
+}

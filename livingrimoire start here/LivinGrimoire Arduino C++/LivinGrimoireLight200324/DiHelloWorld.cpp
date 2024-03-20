@@ -32,7 +32,7 @@ DiHelloWorld::DiHelloWorld(Led l1)
 {
   _l1 = l1;_l1.init();
 }
-void DiHelloWorld::inOut()
+void DiHelloWorld::inOut(byte ear, byte skin, byte eye)
 { 
       // turn the LED on (HIGH is the voltage level)
  _l1.on();

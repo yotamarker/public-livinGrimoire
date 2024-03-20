@@ -1,0 +1,40 @@
+import serial
+import time
+ 
+def print_hi(name):
+    # Use a breakpoint in the code line below to debug your script.
+    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+ 
+ 
+# Press the green button in the gutter to run the script.
+if __name__ == '__main__':
+    ser = serial.Serial("COM4", 9600,timeout=1.0)  # com3 for Raspberry Pi
+    time.sleep(3)
+    ser.reset_input_buffer()
+    ser.write(b'T')
+    print("ok")
+    time.sleep(2)
+    ser.close()
+
+run in command line:
+pip3 install pyserial
+than restart pycharm
+it should now recognize Serial in the code line:
+serial.Serial("COM4", 9600,timeout=1.0)
+
+Arduino code:
+
+int ledPin = 13;
+ 
+void setup() {
+  Serial.begin(9600);
+  pinMode(ledPin,OUTPUT);
+  digitalWrite(ledPin,LOW);
+}
+ 
+void loop() { 
+    if (Serial.read() == 'T'){
+      digitalWrite(ledPin,HIGH);}
+}
+
+run the pycharm code and the default led(13) should light up

@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "LivinGrimoireLight.h"
 // Skill class
-void Skill::inOut() 
+void Skill::inOut(byte ear, byte skin, byte eye) 
 {
   // override me
 }
@@ -30,6 +30,6 @@ void Chobit::think(byte ear, byte skin, byte eye)
   {
     for(int i=0;i<dSkills->length;i++)
     {
-      dSkills->data[i]->inOut();
+      dSkills->data[i]->inOut(ear, skin, eye);
     }
   }

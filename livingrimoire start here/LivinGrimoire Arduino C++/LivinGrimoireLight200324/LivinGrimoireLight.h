@@ -5,7 +5,7 @@
 class Skill {
     public:
     Skill(){}
-    virtual void inOut() ;
+    virtual void inOut(byte ear, byte skin, byte eye) ;
 };
 // list of Skill objects
 // only the Chobit cls uses it

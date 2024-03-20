@@ -25,6 +25,6 @@ class DiHelloWorld : public Skill {
     Led _l1;
     public:
     DiHelloWorld(Led l1);
-    virtual void inOut();
+    virtual void inOut(byte ear, byte skin, byte eye);
 };
 #endif

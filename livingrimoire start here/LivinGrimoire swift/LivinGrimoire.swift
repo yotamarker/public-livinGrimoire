@@ -1091,9 +1091,6 @@ class Cerabellum{
     func isActive() -> Bool {
         return isActive1
     }
-    func setActive(isActive:Bool) {
-        self.isActive1 = isActive
-    }
     func act(ear: String, skin: String, eye: String) -> String {
         if !isActive1 {return ""}
         var axnStr:String = ""

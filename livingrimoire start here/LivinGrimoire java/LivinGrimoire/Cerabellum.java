@@ -43,13 +43,6 @@ public class Cerabellum {
         return isActive;
     }
 
-    public boolean setActive(Boolean b1) {
-        return isActive = b1;
-    }
-    public void setActive(boolean isActive) {
-        this.isActive = isActive;
-    }
-
     public String act(String ear, String skin, String eye) {
         String axnStr = "";
         if (!isActive) {

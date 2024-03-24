@@ -1,0 +1,165 @@
+*** varargs
+***********
+*variables*
+***********
+Dim age As Integer = 0
+Dim isComplete as Boolean = False
+Dim str1 As String= "morning"
+Const num As Integer = 2
+*********
+*strings*
+*********
+Dim name As String = "John"
+Dim age As Integer = 30
+Dim result As String = String.Format("Hello, {0}. You are {1} years old.", name, age)
+*********
+*classes*
+*********
+' Base class: Payroll
+Public Class Payroll
+    Public Sub PayEmployee(employeeName As String)
+        Console.WriteLine($"Paying employee {employeeName}...")
+        ' Logic for paying the employee goes here.
+    End Sub
+End Class
+
+' Derived class: BonusPayroll (inherits from Payroll)
+Public Class BonusPayroll
+    Inherits Payroll
+
+    ' Override the PayEmployee method
+    Public Overrides Sub PayEmployee(employeeName As String)
+        Console.WriteLine($"Paying bonus to employee {employeeName}...")
+        ' Additional logic specific to bonus payments.
+    End Sub
+End Class
+
+Module Module1
+    Sub Main()
+        Dim regularPayroll As New Payroll()
+        Dim bonusPayroll As New BonusPayroll()
+
+        ' Pay regular employee
+        regularPayroll.PayEmployee("John Doe")
+
+        ' Pay employee with a bonus
+        bonusPayroll.PayEmployee("Jane Smith")
+    End Sub
+*********
+*methods*
+*********
+Public Function myMethod() As Boolean
+    Return True
+End Function
+
+Public Function methodWithParams(ByVal a As Integer, ByVal b As Integer) As Integer
+    Return a + b
+End Function
+*********
+*varargs*
+*********
+Public Function Sum1(ByVal numbers() As Integer) As Integer
+    Dim total As Integer = 0
+    For Each number As Integer In numbers
+        total += number
+    Next
+    Return total
+End Function
+
+Dim test As Integer = Sum1(New Integer() {1, 2, 3})
+Console.WriteLine(test)
+***********
+*arraylist*
+***********
+Dim dClasses As New List(Of DiSkillV2)
+Dim websites As New List(Of String) From {"yotamarker", "livingrimoire"}
+*******
+*array*
+*******
+' Declare a generic list
+Dim elements As New List(Of T)
+' Declare an integer list with initial values
+Dim numbers As New List(Of Integer) From {2, 4, 6, 8}
+' Declare an empty integer list
+Dim value As New List(Of Integer)
+' Declare a string list with initial values
+Dim languages As New List(Of String) From {"Swift", "Java", "C++"}
+' Access element at index 0
+Console.WriteLine(languages(0)) ' Outputs: Swift
+************
+*dictionary*
+************
+Dim dic1 As New Dictionary(Of String, Integer)
+dic1("one") = 1
+dic1.Add("three", 3)
+dic1("two") = 2
+For Each kvp As KeyValuePair(Of String, Integer) In dic1
+    Console.WriteLine("{0}{1}", kvp.Key, kvp.Value)
+Next
+Dim value As int = dic1("one")
+n = dic1.GetValueOrDefault("cat")
+dic1.Remove("yourKey")
+****
+*if*
+****
+If True Then
+    Console.WriteLine("True")
+Else
+    Console.WriteLine("False")
+End If
+' ternary operator:
+Dim result = If(condition, expression1, expression2)
+*******
+*loops*
+*******
+For i As Integer = 0 To 2
+    Console.WriteLine("hi")
+Next
+For i As Integer = 0 To 4
+    Console.WriteLine(i)
+Next
+For i As Integer = 0 To a.Count - 1
+    ' Your code here
+Next
+For Each site As String In websites
+    Console.WriteLine(site)
+Next
+While [Bool]
+    ' Your code here
+End While
+Dim index As Integer = 0
+Do
+    Console.WriteLine(index)
+    index += 1
+Loop Until index > 10
+*************
+*select case*
+*************
+Dim number As Integer = 8
+Select Case number
+    Case 1 To 5
+        Debug.WriteLine("Between 1 and 5, inclusive")
+        ' The following is the only Case clause that evaluates to True.
+    Case 6, 7, 8
+        Debug.WriteLine("Between 6 and 8, inclusive")
+    Case 9 To 10
+        Debug.WriteLine("Equal to 9 or 10")
+    Case 11
+	Debug.WriteLine("11")
+    Case Else
+        Debug.WriteLine("Not between 1 and 10, inclusive")
+End Select
+************
+*randomizer*
+************
+Dim Generator As New System.Random()
+' Generate a random integer between 1 and 10
+Dim randomNumber As Integer = Generator.Next(1, 11)
+Console.WriteLine(randomNumber)
+**********************
+*N-dimensional arrays*
+**********************
+' Declare a three-dimensional array
+Dim cinemas(2, 4, 4) As Integer
+' Assign a value to the specified element
+cinemas(1, 2, 3) = 1

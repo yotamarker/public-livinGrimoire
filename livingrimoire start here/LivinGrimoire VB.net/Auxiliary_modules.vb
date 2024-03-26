@@ -524,4 +524,169 @@ Module Auxiliary_modules
             Return TranslateMonthDay(getDayOfTheMonthAsInt)
         End Function
     End Class
+    Public Class AlgDispenser
+        ' Super class to output an algorithm out of a selection of algorithms
+        Private algs As New List(Of Algorithm)()
+        Private activeAlg As Integer = 0
+        Private rand As New Random()
+
+        Public Sub New(ParamArray algorithms As Algorithm())
+            For Each alg As Algorithm In algorithms
+                algs.Add(alg)
+            Next
+        End Sub
+
+        Public Function AddAlgorithm(alg As Algorithm) As AlgDispenser
+            ' Builder pattern
+            algs.Add(alg)
+            Return Me
+        End Function
+
+        Public Function DispenseAlgorithm() As Algorithm
+            Return algs(activeAlg)
+        End Function
+
+        Public Function RndAld() As Algorithm
+            ' Return a random algorithm
+            Return algs(rand.Next(algs.Count))
+        End Function
+
+        Public Sub MoodAlg(mood As Integer)
+            ' Set output algorithm based on number representing mood
+            If mood >= 0 AndAlso mood < algs.Count Then
+                activeAlg = mood
+            End If
+        End Sub
+
+        Public Sub AlgUpdate(mood As Integer, alg As Algorithm)
+            ' Update an algorithm
+            If mood >= 0 AndAlso mood < algs.Count Then
+                algs(mood) = alg
+            End If
+        End Sub
+
+        Public Sub AlgRemove(mood As Integer)
+            ' Remove an algorithm
+            If mood >= 0 AndAlso mood < algs.Count Then
+                algs.RemoveAt(mood)
+            End If
+        End Sub
+
+        Public Sub CycleAlg()
+            activeAlg += 1
+            If activeAlg = algs.Count Then
+                activeAlg = 0
+            End If
+        End Sub
+    End Class
+    ' A priority queue without repeating elements
+    Public Class UniqueItemsPriorityQue
+        Inherits LGFIFO(Of String)
+
+        Public Overloads Sub Add(item As String)
+            If Not MyBase.Contains(item) Then
+                MyBase.Add(item)
+            End If
+        End Sub
+
+        Public Function Peak() As String
+            Dim temp As String = MyBase.Peek()
+            If temp Is Nothing Then
+                Return ""
+            End If
+            Return temp
+        End Function
+
+        Public Function StrContainsResponse(str As String) As Boolean
+            Dim result As Boolean = False
+            For Each tempStr As String In Me.getElements
+                If str.Contains(tempStr) Then
+                    result = True
+                    Exit For
+                End If
+            Next
+            Return result
+        End Function
+    End Class
+    ' Items in the queue are unique and do not repeat
+    ' The size of the queue is limited
+    Public Class UniqueItemSizeLimitedPriorityQueue
+        Inherits UniqueItemsPriorityQue
+
+        Private _limit As Integer = 5
+
+        Public Property Limit As Integer
+            Get
+                Return _limit
+            End Get
+            Set(value As Integer)
+                _Limit = value
+            End Set
+        End Property
+
+        Public Overloads Sub Add(item As String)
+            If MyBase.Size = limit Then
+                MyBase.Poll()
+            End If
+            MyBase.Add(item)
+        End Sub
+
+        Public Overloads Function Poll() As String
+            Dim temp As String = MyBase.Poll()
+            If temp Is Nothing Then
+                Return ""
+            End If
+            Return temp
+        End Function
+
+        Public Function GetRNDElement() As String
+            Dim temp As String = MyBase.GetRandomElement
+            If temp Is Nothing Then
+                Return ""
+            End If
+            Return temp
+        End Function
+
+        Public Function GetAsList() As List(Of String)
+            Return getElements()
+        End Function
+    End Class
+    ' A priority queue without repeating elements
+    ' The size of the queue is limited
+    Public Class RefreshQ
+        Inherits UniqueItemSizeLimitedPriorityQueue
+
+        Public Overloads Sub RemoveItem(item As String)
+            MyBase.getElements.Remove(item)
+        End Sub
+
+        Public Overloads Sub Add(item As String)
+            ' FILO
+            If MyBase.Contains(item) Then
+                RemoveItem(item)
+            End If
+            MyBase.Add(item)
+        End Sub
+    End Class
+    Public Class AnnoyedQue
+        Private q1 As New RefreshQ()
+        Private q2 As New RefreshQ()
+
+        Public Sub New(queLim As Integer)
+            q1.Limit = queLim
+            q2.Limit = queLim
+        End Sub
+
+        Public Sub Learn(ear As String)
+            If q1.Contains(ear) Then
+                q2.Add(ear)
+                Return
+            End If
+            q1.Add(ear)
+        End Sub
+
+        Public Function IsAnnoyed(ear As String) As Boolean
+            Return q2.StrContainsResponse(ear)
+        End Function
+    End Class
 End Module

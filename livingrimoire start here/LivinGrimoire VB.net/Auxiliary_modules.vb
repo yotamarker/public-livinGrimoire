@@ -689,4 +689,370 @@ Module Auxiliary_modules
             Return q2.StrContainsResponse(ear)
         End Function
     End Class
+    Public Class AXCmdBreaker
+        ' Separate command parameter from the command
+        Public conjuration As String
+
+        Public Sub New(ByVal conjuration As String)
+            Me.conjuration = conjuration
+        End Sub
+
+        Public Function ExtractCmdParam(ByVal s1 As String) As String
+            If s1.Contains(conjuration) Then
+                Return s1.Replace(conjuration, "").Trim()
+            End If
+            Return ""
+        End Function
+    End Class
+    Public Class AXFunnel
+        ' funnel many inputs to fewer or one input
+        ' allows using command variations in skills
+        Private dic As New Dictionary(Of String, String)()
+        Private defaultStr As String = "default"
+
+        Public Sub New()
+            ' Constructor initializes the dictionary and default value
+            dic = New Dictionary(Of String, String)()
+            defaultStr = "default"
+        End Sub
+
+        Public Sub SetDefault(ByVal defaultStr As String)
+            ' Set the default value
+            Me.defaultStr = defaultStr
+        End Sub
+
+        Public Function AddKV(ByVal key As String, ByVal value As String) As AXFunnel
+            ' Add key-value pair to the dictionary
+            dic(key) = value
+            Return Me
+        End Function
+
+        Public Function AddK(ByVal key As String) As AXFunnel
+            ' Add key with default value to the dictionary
+            dic(key) = defaultStr
+            Return Me
+        End Function
+
+        Public Function Funnel(ByVal key As String) As String
+            ' Get value from dictionary or return the key itself as default
+            Return If(dic.ContainsKey(key), dic(key), key)
+        End Function
+    End Class
+    Public Class AXGamification
+        ' This auxiliary module can add fun to tasks, skills, and abilities simply by
+        ' tracking their usage and maximum use count.
+        Private counter As Integer = 0
+        Private max As Integer = 0
+
+        Public Function GetCounter() As Integer
+            Return counter
+        End Function
+
+        Public Function GetMax() As Integer
+            Return max
+        End Function
+
+        Public Sub ResetCount()
+            counter = 0
+        End Sub
+
+        Public Sub ResetAll()
+            max = 0
+            counter = 0
+        End Sub
+
+        Public Sub Increment()
+            counter += 1
+            If counter > max Then
+                max = counter
+            End If
+        End Sub
+
+        Public Sub IncrementBy(ByVal n As Integer)
+            counter += n
+            If counter > max Then
+                max = counter
+            End If
+        End Sub
+
+        Public Function Reward(ByVal cost As Integer) As Boolean
+            ' Game grind points used for rewards
+            ' Consumables, items, or upgrades – this makes games fun
+            If cost > counter Then
+                Return False
+            End If
+            counter -= cost
+            Return True
+        End Function
+
+        Public Function Surplus(ByVal cost As Integer) As Boolean
+            ' Has surplus for reward?
+            If cost > counter Then
+                Return False
+            End If
+            Return True
+        End Function
+    End Class
+    Public Class AXKeyValuePair
+        Private key As String = ""
+        Private value As String = ""
+
+        Public Function GetKey() As String
+            Return key
+        End Function
+
+        Public Sub SetKey(ByVal key As String)
+            Me.key = key
+        End Sub
+
+        Public Function GetValue() As String
+            Return value
+        End Function
+
+        Public Sub SetValue(ByVal value As String)
+            Me.value = value
+        End Sub
+    End Class
+    Public Class TrGEV3
+        ' Advanced boolean gates with internal logic.
+        ' These ease connecting common logic patterns, acting as triggers.
+
+        Public Sub Reset()
+            ' Reset logic gate state.
+            ' Implement your reset logic here.
+        End Sub
+
+        Public Sub Input(ByVal ear As String, ByVal skin As String, ByVal eye As String)
+            ' Process input data.
+            ' Implement your input logic here.
+        End Sub
+
+        Public Function Trigger() As Boolean
+            ' Determine whether the trigger condition is met.
+            ' Implement your trigger logic here.
+            Return False
+        End Function
+    End Class
+    Public Class TrgTolerance
+        Inherits TrGEV3
+        ' This boolean gate will return true until depletion or reset.
+        Private repeats As Integer = 0
+        Private maxrepeats As Integer ' Recommended value: 2
+
+        Public Sub New(ByVal maxrepeats As Integer)
+            Me.maxrepeats = maxrepeats
+        End Sub
+
+        Public Sub SetMaxrepeats(ByVal maxrepeats As Integer)
+            Me.maxrepeats = maxrepeats
+            Reset()
+        End Sub
+
+        Public Overloads Sub Reset()
+            ' Refill trigger
+            repeats = maxrepeats
+        End Sub
+
+        Public Overloads Function Trigger() As Boolean
+            ' Will return true until depletion or reset.
+            repeats -= 1
+            If repeats > 0 Then
+                Return True
+            End If
+            Return False
+        End Function
+
+        Public Sub Disable()
+            repeats = 0
+        End Sub
+    End Class
+    Public Class AXLearnability
+        Private algSent As Boolean = False
+        Public defcons As New UniqueItemSizeLimitedPriorityQueue() ' Default size = 5
+        Public defcon5 As New UniqueItemSizeLimitedPriorityQueue()
+        Public goals As New UniqueItemSizeLimitedPriorityQueue()
+        Public trgTolerance As TrgTolerance
+
+        Public Sub New(ByVal tolerance As Integer)
+            Me.trgTolerance = New TrgTolerance(tolerance)
+            trgTolerance.Reset()
+        End Sub
+
+        Public Sub PendAlg()
+            algSent = True
+            trgTolerance.Trigger()
+        End Sub
+
+        Public Sub PendAlgWithoutConfirmation()
+            algSent = True
+        End Sub
+
+        Public Function MutateAlg(ByVal input As String) As Boolean
+            If Not algSent Then
+                Return False ' No alg sent => no reason to mutate
+            End If
+            If goals.Contains(input) Then
+                trgTolerance.Reset()
+                algSent = False
+                Return False
+            End If
+            If defcon5.Contains(input) Then
+                trgTolerance.Reset()
+                algSent = False
+                Return True
+            End If
+            If defcons.Contains(input) Then
+                algSent = False
+                Dim mutate As Boolean = Not trgTolerance.Trigger()
+                If mutate Then
+                    trgTolerance.Reset()
+                End If
+                Return mutate
+            End If
+            Return False
+        End Function
+
+        Public Sub ResetTolerance()
+            trgTolerance.Reset()
+        End Sub
+    End Class
+    Public Class AXLHousing
+        Public Function Decorate(ByVal str1 As String) As String
+            ' Override me
+            Return ""
+        End Function
+    End Class
+    Public Class LGTypeConverter
+        Private r1 As New RegexUtil()
+
+        Public Function ConvertToInt(ByVal v1 As String) As Integer
+            Dim temp As String = r1.ExtractRegex(enumRegexGrimoire.int, v1)
+            If temp = "" Then
+                Return 0
+            End If
+            Return Integer.Parse(temp)
+        End Function
+
+        Public Function ConvertToDouble(ByVal v1 As String) As Double
+            Dim temp As String = r1.ExtractRegex(enumRegexGrimoire.double_num, v1)
+            If temp = "" Then
+                Return 0.0
+            End If
+            Return Double.Parse(temp)
+        End Function
+    End Class
+    Public Class DrawRnd
+        ' Draw a random element, then remove said element.
+        Private strings As New List(Of String)()
+        Private stringsSource As New List(Of String)()
+        Private rand As New Random()
+
+        Public Sub New(ParamArray values As String())
+            For Each value As String In values
+                strings.Add(value)
+                stringsSource.Add(value)
+            Next
+        End Sub
+
+        Public Sub AddElement(ByVal element As String)
+            strings.Add(element)
+            stringsSource.Add(element)
+        End Sub
+
+        Public Function Draw() As String
+            If strings.Count = 0 Then
+                Return ""
+            End If
+
+            Dim x As Integer = rand.Next(strings.Count)
+            Dim element As String = strings(x)
+            strings.RemoveAt(x)
+            Return element
+        End Function
+
+        Public Function GetSimpleRNDNum(ByVal bound As Integer) As Integer
+            ' Return 0 to bound-1
+            Return rand.Next(bound)
+        End Function
+
+        Private tc As New LGTypeConverter()
+
+        Public Function DrawAsInt() As Integer
+            If strings.Count = 0 Then
+                Return 0
+            End If
+
+            Dim x As Integer = rand.Next(strings.Count)
+            Dim element As String = strings(x)
+            strings.RemoveAt(x)
+            Return tc.ConvertToInt(element)
+        End Function
+
+        Public Sub Reset()
+            Dim dc As New DeepCopier()
+            strings = dc.DeepCopyStringList(stringsSource)
+        End Sub
+
+        Public Function IsEmptied() As Boolean
+            Return strings.Count = 0
+        End Function
+    End Class
+    Public Class Responder
+        ' Simple random response dispenser
+        Private responses As New List(Of String)()
+        Private rand As New Random()
+
+        Public Sub New(ParamArray replies As String())
+            For Each reply As String In replies
+                responses.Add(reply)
+            Next
+        End Sub
+
+        Public Function GetAResponse() As String
+            If responses.Count = 0 Then
+                Return ""
+            End If
+            Return responses(rand.Next(responses.Count))
+        End Function
+
+        Public Function ResponsesContainsStr(ByVal str As String) As Boolean
+            Return responses.Contains(str)
+        End Function
+
+        Public Function StrContainsResponse(ByVal str As String) As Boolean
+            Dim result As Boolean = False
+            For Each tempStr As String In responses
+                If str.Contains(tempStr) Then
+                    result = True
+                    Exit For
+                End If
+            Next
+            Return result
+        End Function
+
+        Public Sub AddResponse(ByVal s1 As String)
+            responses.Add(s1)
+        End Sub
+    End Class
+    Public Class AXNeuroSama
+        Private nyaa As New Responder(" heart", " heart", " wink", " heart heart heart")
+        Private rnd As New DrawRnd()
+        Private rate As Integer
+
+        Public Sub New(ByVal rate As Integer)
+            ' The higher the rate, the less likely to decorate outputs
+            Me.rate = rate
+        End Sub
+
+        Public Function Decorate(ByVal output As String) As String
+            If output = "" Then
+                Return output
+            End If
+            If rnd.GetSimpleRNDNum(rate) = 0 Then
+                Return output & nyaa.GetAResponse()
+            End If
+            Return output
+        End Function
+    End Class
+
 End Module

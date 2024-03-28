@@ -1,5 +1,7 @@
 ﻿Imports System.Text.RegularExpressions
 Imports System.Collections.Generic
+Imports System.Text
+
 Module Auxiliary_modules
     Public Enum enumRegexGrimoire
         email
@@ -620,12 +622,12 @@ Module Auxiliary_modules
                 Return _limit
             End Get
             Set(value As Integer)
-                _Limit = value
+                _limit = value
             End Set
         End Property
 
         Public Overloads Sub Add(item As String)
-            If MyBase.Size = limit Then
+            If MyBase.Size = Limit Then
                 MyBase.Poll()
             End If
             MyBase.Add(item)
@@ -1052,6 +1054,410 @@ Module Auxiliary_modules
                 Return output & nyaa.GetAResponse()
             End If
             Return output
+        End Function
+    End Class
+    Public Class PercentDripper
+        Private dr As New DrawRnd()
+        Private limis As Integer = 35
+
+        Public Sub setLimis(ByVal limis As Integer)
+            Me.limis = limis
+        End Sub
+
+        Public Function drip() As Boolean
+            Return dr.GetSimpleRNDNum(100) < limis
+        End Function
+
+        Public Function dripPlus(ByVal plus As Integer) As Boolean
+            Return dr.GetSimpleRNDNum(100) < limis + plus
+        End Function
+    End Class
+    Public Class AXNPC
+        Public responder As New RefreshQ()
+        Public dripper As New PercentDripper()
+        Public cmdBreaker As New AXCmdBreaker("say")
+
+        Public Sub New(replyStockLim As Integer, outputChance As Integer)
+            responder.Limit = replyStockLim
+            If outputChance > 0 AndAlso outputChance < 101 Then
+                dripper.setLimis(outputChance)
+            End If
+        End Sub
+
+        Public Function respond() As String
+            If dripper.drip() Then
+                Return responder.GetRNDElement()
+            End If
+            Return ""
+        End Function
+
+        Public Function respondPlus(plus As Integer) As String
+            ' Increase rate of output
+            If dripper.dripPlus(plus) Then
+                Return responder.GetRNDElement()
+            End If
+            Return ""
+        End Function
+
+        Public Function learn(ear As String) As Boolean
+            ' Say hello there: hello there is learned
+            Dim temp As String = cmdBreaker.ExtractCmdParam(ear)
+            If temp = "" Then
+                Return False
+            End If
+            responder.Add(temp)
+            Return True
+        End Function
+
+        Public Function strRespond(ear As String) As String
+            ' Respond if ear contains a learned input
+            If ear = "" Then
+                Return ""
+            End If
+            If dripper.drip() AndAlso responder.StrContainsResponse(ear) Then
+                Return responder.GetRNDElement()
+            End If
+            Return ""
+        End Function
+
+        Public Function forceRespond() As String
+            Return responder.GetRNDElement()
+        End Function
+
+        Public Sub setConjuration(conjuration As String)
+            cmdBreaker.conjuration = conjuration
+        End Sub
+    End Class
+    Public Class AXNPC2
+        Inherits AXNPC
+
+        Public annoyedQue As New AnnoyedQue(5)
+
+        Public Sub New(replyStockLim As Integer, outputChance As Integer)
+            MyBase.New(replyStockLim, outputChance)
+        End Sub
+
+        Public Sub strLearn(ear As String)
+            ' Learns inputs containing strings that are repeatedly used by others
+            annoyedQue.Learn(ear)
+            If annoyedQue.IsAnnoyed(ear) Then
+                Me.responder.Add(ear)
+            End If
+        End Sub
+    End Class
+    Public Class AXPassword
+        ' code # to open the gate
+        'while gate Is open, code can be changed with: code new_number
+        Private isOpen As Boolean = False
+        Private maxAttempts As Integer = 3
+        Private loginAttempts As Integer = maxAttempts
+        Private regexUtil As New RegexUtil()
+        Private code As Integer = 0
+        Public Function codeUpdate(ear As String) As Boolean
+            ' while the gate is toggled on, the password code can be changed
+            If Not isOpen Then
+                Return False
+            End If
+            If ear.Contains("code") Then
+                Dim temp As String = regexUtil.ExtractRegex(enumRegexGrimoire.int, ear)
+                If Not temp = "" Then
+                    code = Integer.Parse(temp)
+                    Return True
+                End If
+            End If
+            Return False
+        End Function
+
+        Public Sub openGate(ear As String)
+            If ear.Contains("code") AndAlso (loginAttempts > 0) Then
+                Dim noCode As String = regexUtil.ExtractRegex(enumRegexGrimoire.int, ear)
+                If noCode = "" Then
+                    Return
+                End If
+                Dim tempCode As Integer = Integer.Parse(noCode)
+                If tempCode = code Then
+                    loginAttempts = maxAttempts
+                    isOpen = True
+                Else
+                    loginAttempts -= 1
+                End If
+            End If
+        End Sub
+
+        Public Function isGateOpen() As Boolean
+            Return isOpen
+        End Function
+
+        Public Sub resetAttempts()
+            ' should happen once a day or hour to prevent hacking
+            loginAttempts = maxAttempts
+        End Sub
+
+        Public Function getLoginAttempts() As Integer
+            ' return remaining login attempts
+            Return loginAttempts
+        End Function
+
+        Public Sub closeGate()
+            isOpen = False
+        End Sub
+
+        Public Sub closeGate(ear As String)
+            If ear.Contains("close") Then
+                isOpen = False
+            End If
+        End Sub
+
+        Public Sub setMaxAttempts(maxAttempts As Integer)
+            Me.maxAttempts = maxAttempts
+        End Sub
+
+        Public Function getCode() As Integer
+            If isOpen Then
+                Return code
+            End If
+            Return -1
+        End Function
+
+        Public Sub randomizeCode(lim As Integer, minimumLim As Integer)
+            code = New DrawRnd().GetSimpleRNDNum(lim) + minimumLim
+        End Sub
+
+        Public Function getCodeEvent() As Integer
+            ' event feature
+            ' get the code during weekly/monthly event after it has been randomized
+            Return code
+        End Function
+    End Class
+    Public Class Prompt
+        Private regexUtil As New RegexUtil()
+        Public kv As New AXKeyValuePair()
+        Private prompt As String = ""
+        Private regex As String = ""
+
+        Public Sub New()
+            kv.SetKey("default")
+        End Sub
+
+        Public Function getPrompt() As String
+            Return prompt
+        End Function
+
+        Public Sub setPrompt(prompt As String)
+            Me.prompt = prompt
+        End Sub
+
+        Public Function process(in1 As String) As Boolean
+            kv.SetValue(regexUtil.ExtractRegex(regex, in1))
+            Return kv.GetValue() = "" ' Is prompt still active?
+        End Function
+
+        Public Function getKv() As AXKeyValuePair
+            Return kv
+        End Function
+
+        Public Sub setRegex(regex As String)
+            Me.regex = regex
+        End Sub
+    End Class
+    Public Class AXPrompt
+        Private isActive As Boolean = False
+        Private index As Integer = 0
+        Private prompts As New List(Of Prompt)()
+        Private kv As AXKeyValuePair = Nothing
+
+        Public Sub addPrompt(p1 As Prompt)
+            prompts.Add(p1)
+        End Sub
+
+        Public Function getPrompt() As String
+            If prompts.Count = 0 Then
+                Return ""
+            End If
+            Return prompts(index).getPrompt()
+        End Function
+
+        Public Sub process(in1 As String)
+            If prompts.Count = 0 OrElse Not isActive Then
+                Return
+            End If
+            Dim b1 As Boolean = prompts(index).process(in1)
+            If Not b1 Then
+                kv = prompts(index).getKv()
+                index += 1
+            End If
+            If index = prompts.Count Then
+                isActive = False
+            End If
+        End Sub
+
+        Public Function getActive() As Boolean
+            Return isActive
+        End Function
+
+        Public Function getKv() As AXKeyValuePair
+            If kv Is Nothing Then
+                Return Nothing
+            End If
+            Dim temp As New AXKeyValuePair()
+            temp.SetKey(kv.GetKey())
+            temp.SetValue(kv.GetValue())
+            kv = Nothing
+            Return temp
+        End Function
+
+        Public Sub activate()
+            ' Reset
+            isActive = True
+            index = 0
+        End Sub
+
+        Public Sub deactivate()
+            ' Reset
+            isActive = False
+            index = 0
+        End Sub
+    End Class
+    Public Class AXShoutOut
+        Private isActive As Boolean = False
+        Public handshake As New Responder()
+
+        Public Sub activate()
+            ' Make engage-able
+            isActive = True
+        End Sub
+
+        Public Function engage(ear As String) As Boolean
+            If ear = "" Then
+                Return False
+            End If
+            If isActive Then
+                If handshake.StrContainsResponse(ear) Then
+                    isActive = False
+                    Return True ' Shout out was replied!
+                End If
+            End If
+            ' Unrelated reply to shout out, shout out context is outdated
+            isActive = False
+            Return False
+        End Function
+    End Class
+    Public Class Strategy
+        Private activeStrategy As UniqueItemSizeLimitedPriorityQueue ' Active strategic options
+        Private allStrategies As DrawRnd ' Bank of all strategies. Out of this pool, active strategies are pulled
+
+        Public Sub New(allStrategies As DrawRnd)
+            ' Create the Strategy Object with a bank of options
+            Me.allStrategies = allStrategies
+            Me.activeStrategy = New UniqueItemSizeLimitedPriorityQueue()
+        End Sub
+
+        Public Sub evolveStrategies(strategiesLimit As Integer)
+            ' Add N strategic options to the active strategies bank from the total strategy bank
+            activeStrategy.Limit = strategiesLimit
+            Dim temp As String = allStrategies.Draw()
+            For i As Integer = 0 To strategiesLimit - 1
+                If temp = "" Then
+                    Exit For
+                End If
+                activeStrategy.Add(temp)
+                temp = allStrategies.Draw()
+            Next
+            allStrategies.Reset()
+        End Sub
+
+        Public Function getStrategy() As String
+            Return Me.activeStrategy.GetRNDElement()
+        End Function
+    End Class
+    Public Class AXStrategy
+        ' This auxiliary module is used to output strategies based on context.
+        ' It can be used for battles and games.
+        ' Upon pain/loss, use the evolve method to update to different new active strategies.
+        ' Check for battle state end externally (opponent state/hits on rival counter).
+        ' A dictionary of strategies.
+
+        Private lim As Integer
+        Private strategies As New Dictionary(Of String, Strategy)()
+
+        Public Sub New(lim As Integer)
+            ' Limit of active strategies (pulled from all available strategies).
+            Me.lim = lim
+        End Sub
+
+        Public Sub addStrategy(context As String, techniques As DrawRnd)
+            ' Add strategies per context.
+            Dim temp As New Strategy(techniques)
+            temp.evolveStrategies(lim)
+            Me.strategies.Add(context, temp)
+        End Sub
+
+        Public Sub evolve()
+            ' Replace active strategies.
+            For Each kvp As KeyValuePair(Of String, Strategy) In Me.strategies
+                Dim key As String = kvp.Key
+                Me.strategies(key).evolveStrategies(lim)
+            Next
+        End Sub
+
+        Public Function process(context As String) As String
+            ' Process input and return action based on game context now.
+            If Me.strategies.ContainsKey(context) Then
+                Return Me.strategies(context).getStrategy()
+            End If
+            Return ""
+        End Function
+    End Class
+    Public Class AXStringSplit
+        ' May be used to prepare data before saving or after loading.
+        ' The advantage is fewer data fields. For example: {skills: s1_s2_s3}
+        Private spChar As String = "_"
+
+        Public Sub setSpChar(spChar As String)
+            Me.spChar = spChar
+        End Sub
+
+        Public Function split(s1 As String) As String()
+            Return s1.Split(spChar)
+        End Function
+
+        Public Function stringBuilder(sArr As String()) As String
+            Dim sb As New StringBuilder()
+            For i As Integer = 0 To sArr.Length - 2
+                sb.Append(sArr(i))
+                sb.Append(Me.spChar)
+            Next
+            sb.Append(sArr(sArr.Length - 1))
+            Return sb.ToString()
+        End Function
+    End Class
+    Public Class AXStrOrDefault
+        Public Shared Function getOrDefault(str1 As String, default1 As String) As String
+            Return If(String.IsNullOrEmpty(str1), default1, str1)
+        End Function
+    End Class
+    Public Class TrgTime
+        Private t As String = "null"
+        Private regexUtil As New RegexUtil()
+        Private pl As New TimeUtils
+        Private alarm As Boolean = True
+
+        Public Sub setTime(v1 As String)
+            t = regexUtil.ExtractRegex(enumRegexGrimoire.simpleTimeStamp, v1)
+        End Sub
+
+        Public Function checkAlarm() As Boolean
+            Dim now As String = pl.getCurrentTimeStamp()
+            If alarm Then
+                If now = t Then
+                    alarm = False
+                    Return True
+                End If
+            End If
+            If now <> t Then
+                alarm = True
+            End If
+            Return False
         End Function
     End Class
 

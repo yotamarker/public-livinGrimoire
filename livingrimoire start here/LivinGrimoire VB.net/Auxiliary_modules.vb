@@ -1751,5 +1751,107 @@ Module Auxiliary_modules
             Return New AXKeyValuePair()
         End Function
     End Class
+    Public Class Magic8Ball
+        Private questions As Responder = New Responder()
+        Private answers As Responder = New Responder()
+
+        Public Sub SetQuestions(questions As Responder)
+            Me.questions = questions
+        End Sub
+
+        Public Sub SetAnswers(answers As Responder)
+            Me.answers = answers
+        End Sub
+
+        Public Function GetQuestions() As Responder
+            Return questions
+        End Function
+
+        Public Function GetAnswers() As Responder
+            Return answers
+        End Function
+
+        Public Sub New()
+            ' Answers
+            answers.AddResponse("It is certain")
+            answers.AddResponse("It is decidedly so")
+            answers.AddResponse("Without a doubt")
+            answers.AddResponse("Yes definitely")
+            answers.AddResponse("You may rely on it")
+            answers.AddResponse("As I see it, yes")
+            answers.AddResponse("Most likely")
+            answers.AddResponse("Outlook good")
+            answers.AddResponse("Yes")
+            answers.AddResponse("Signs point to yes")
+            answers.AddResponse("Reply hazy, try again")
+            answers.AddResponse("Ask again later")
+            answers.AddResponse("Better not tell you now")
+            answers.AddResponse("Cannot predict now")
+            answers.AddResponse("Concentrate and ask again")
+            answers.AddResponse("Don’t count on it")
+            answers.AddResponse("My reply is no")
+            answers.AddResponse("My sources say no")
+            answers.AddResponse("Outlook not so good")
+            answers.AddResponse("Very doubtful")
+
+            ' Questions
+            questions = New Responder("will i", "can i expect", "should i", "may i", "is it a good idea", "will it be a good idea for me to", "is it possible", "future hold", "will there be")
+        End Sub
+
+        Public Function Engage(ear As String) As Boolean
+            If String.IsNullOrEmpty(ear) Then
+                Return False
+            End If
+            If questions.StrContainsResponse(ear) Then
+                Return True
+            End If
+            Return False
+        End Function
+
+        Public Function Reply() As String
+            Return answers.GetAResponse()
+        End Function
+    End Class
+    ' Define the OnOffSwitch class
+    Class OnOffSwitch
+        Private mode As Boolean
+        Private timeGate As TimeGate
+        Private turnOn As Responder
+        Private off As Responder
+
+        Public Sub New()
+            mode = False
+            timeGate = New TimeGate(5)
+            turnOn = New Responder("on", "talk to me")
+            off = New Responder("off", "stop", "shut up", "shut it", "whatever", "whateva")
+        End Sub
+
+        Public Sub SetPause(minutes As Integer)
+            Me.timeGate.SetPause(minutes)
+        End Sub
+
+        Public Sub SetOn(onResponder As Responder)
+            Me.turnOn = onResponder
+        End Sub
+
+        Public Sub SetOff(offResponder As Responder)
+            Me.off = offResponder
+        End Sub
+
+        Public Function GetMode(ear As String) As Boolean
+            If Me.turnOn.ResponsesContainsStr(ear) Then
+                Me.timeGate.OpenGate()
+                Me.mode = True
+                Return True
+            ElseIf Me.off.ResponsesContainsStr(ear) Then
+                Me.timeGate.Close()
+                Me.mode = False
+            End If
+            If Me.timeGate.IsClosed() Then
+                Me.mode = False
+            End If
+            Return Me.mode
+        End Function
+    End Class
 
 End Module

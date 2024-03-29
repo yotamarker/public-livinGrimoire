@@ -1853,5 +1853,491 @@ Module Auxiliary_modules
             Return Me.mode
         End Function
     End Class
+    Public Class RailChatBot
+        Private dic As New Dictionary(Of String, RefreshQ)()
+        Private context As String = "default"
 
+        Public Sub New()
+            dic.Add(context, New RefreshQ())
+        End Sub
+
+        Public Sub SetContext(context As String)
+            If Not String.IsNullOrEmpty(context) Then
+                Me.context = context
+            End If
+        End Sub
+
+        Public Function RespondMonolog(ear As String) As String
+            ' Monolog mode
+            ' Recommended use of filter for the output results
+            If String.IsNullOrEmpty(ear) Then
+                Return ""
+            End If
+            If Not dic.ContainsKey(ear) Then
+                dic.Add(ear, New RefreshQ())
+            End If
+            Dim temp As String = dic(ear).GetRNDElement()
+            If Not String.IsNullOrEmpty(temp) Then
+                context = temp
+            End If
+            Return temp
+        End Function
+
+        Public Sub Learn(ear As String)
+            ' Use per each think cycle
+            If String.IsNullOrEmpty(ear) Then
+                Return
+            End If
+            If Not dic.ContainsKey(ear) Then
+                dic.Add(ear, New RefreshQ())
+                dic(context).Add(ear)
+                context = ear
+                Return
+            End If
+            dic(context).Add(ear)
+            context = ear
+        End Sub
+
+        Public Sub LearnKeyValue(context As String, reply As String)
+            ' Learn questions and answers/key values
+            If Not dic.ContainsKey(context) Then
+                dic.Add(context, New RefreshQ())
+            End If
+            If Not dic.ContainsKey(reply) Then
+                dic.Add(reply, New RefreshQ())
+            End If
+            dic(context).Add(reply)
+        End Sub
+
+        Public Function Monolog() As String
+            ' Succession of outputs without input involved
+            Return RespondMonolog(context)
+        End Function
+
+        Public Function RespondDialog(ear As String) As String
+            ' Dialog mode
+            ' Recommended use of filter for the output results
+            If String.IsNullOrEmpty(ear) Then
+                Return ""
+            End If
+            If Not dic.ContainsKey(ear) Then
+                dic.Add(ear, New RefreshQ())
+            End If
+            Dim temp As String = dic(ear).GetRNDElement()
+            Return temp
+        End Function
+    End Class
+    Public Class SkillHubAlgDispenser
+        Private skills As New List(Of DiSkillV2)()
+        Private activeSkill As Integer = 0
+        Private tempN As New Neuron()
+        Private rand As New Random()
+
+        Public Sub New(ParamArray skillsParams As DiSkillV2())
+            For Each skill As DiSkillV2 In skillsParams
+                skills.Add(skill)
+            Next
+        End Sub
+
+        Public Function AddSkill(skill As DiSkillV2) As SkillHubAlgDispenser
+            ' Builder pattern
+            skills.Add(skill)
+            Return Me
+        End Function
+
+        Public Function DispenseAlgorithm(ear As String, skin As String, eye As String) As Algorithm
+            ' Return value to outAlg param of (external) summoner DiskillV2
+            skills(activeSkill).Input(ear, skin, eye)
+            skills(activeSkill).Output(tempN)
+            For i As Integer = 1 To 5
+                Dim temp As Algorithm = tempN.GetAlg(i)
+                If temp IsNot Nothing Then
+                    Return temp
+                End If
+            Next
+            Return Nothing
+        End Function
+
+        Public Sub RandomizeActiveSkill()
+            activeSkill = rand.Next(skills.Count)
+        End Sub
+
+        Public Sub SetActiveSkillWithMood(mood As Integer)
+            ' Mood integer represents active skill
+            ' Different mood = different behavior
+            If mood >= 0 AndAlso mood < skills.Count Then
+                activeSkill = mood
+            End If
+        End Sub
+
+        Public Sub CycleActiveSkill()
+            ' Changes active skill
+            ' I recommend this method be triggered with a Learnability or SpiderSense object
+            activeSkill += 1
+            If activeSkill = skills.Count Then
+                activeSkill = 0
+            End If
+        End Sub
+
+        Public Function GetSize() As Integer
+            Return skills.Count
+        End Function
+    End Class
+    Public Class SpiderSense
+        ' Enables event prediction
+        Private spiderSense As Boolean = False
+        Private events As New UniqueItemSizeLimitedPriorityQueue()
+        Private alerts As New UniqueItemSizeLimitedPriorityQueue()
+        Private prev As String = ""
+
+        Public Function AddEvent([event] As String) As SpiderSense
+            ' Builder pattern
+            events.Add([event])
+            Return Me
+        End Function
+
+        ' Input param can be run through an input filter prior to this function
+        ' Weather-related data (sky state) only for example for weather events predictions
+        Public Sub Learn(in1 As String)
+            ' Simple prediction of an event from the events queue:
+            If alerts.Contains(in1) Then
+                spiderSense = True
+                Return
+            End If
+            ' Event has occurred, remember what led to it
+            If events.Contains(in1) Then
+                alerts.Add(prev)
+                Return
+            End If
+            ' Nothing happened
+            prev = in1
+        End Sub
+
+        Public Function GetSpiderSense() As Boolean
+            ' Spider sense is tingling? Event predicted?
+            Dim temp As Boolean = spiderSense
+            spiderSense = False
+            Return temp
+        End Function
+
+        Public Function GetAlertsShallowCopy() As List(Of String)
+            ' Return shallow copy of alerts list
+            Return alerts.getElements()
+        End Function
+
+        Public Function GetAlertsClone() As List(Of String)
+            ' Return deep copy of alerts list
+            Dim dc As New DeepCopier()
+            Return dc.DeepCopyStringList(alerts.getElements())
+        End Function
+
+        Public Sub ClearAlerts()
+            ' This can, for example, prevent war because, say, once a month or a year you stop
+            ' being on alert against a rival
+            alerts.Clear()
+        End Sub
+
+        ' Side note:
+        ' Use separate spider sense for data learned by hearsay in contrast to actual experience
+        ' as well as lies (false predictions)
+    End Class
+    Public Class TimeAccumulator
+        ' Accumulator ++ each tick minutes interval
+        Private timeGate As New TimeGate(5)
+        Private accumulator As Integer = 0
+
+        Public Sub SetTick(tick As Integer)
+            timeGate.SetPause(tick)
+        End Sub
+
+        Public Sub New(tick As Integer)
+            ' Accumulation ticker
+            Me.timeGate = New TimeGate(tick)
+            timeGate.OpenGate()
+        End Sub
+
+        Public Function GetAccumulator() As Integer
+            Return accumulator
+        End Function
+
+        Public Sub Tick()
+            If timeGate.IsClosed() Then
+                timeGate.OpenGate()
+                accumulator += 1
+            End If
+        End Sub
+
+        Public Sub Reset()
+            accumulator = 0
+        End Sub
+
+        Public Sub DecAccumulator()
+            If accumulator > 0 Then
+                accumulator -= 1
+            End If
+        End Sub
+    End Class
+    Public Class TODOListManager
+        ' Manages to-do tasks.
+        ' q1 tasks are mentioned once and forgotten.
+        ' backup tasks are the memory of recently mentioned tasks.
+        Private q1 As New UniqueItemSizeLimitedPriorityQueue()
+        Private backup As New UniqueItemSizeLimitedPriorityQueue()
+
+        Public Sub New(todoLim As Integer)
+            q1.Limit = todoLim
+            backup.Limit = todoLim
+        End Sub
+
+        Public Sub AddTask(e1 As String)
+            q1.Add(e1)
+        End Sub
+
+        Public Function GetTask() As String
+            Dim temp As String = q1.Poll()
+            If Not temp = "" Then
+                backup.Add(temp)
+            End If
+            Return temp
+        End Function
+
+        Public Function GetOldTask() As String
+            ' Task graveyard (tasks you've tackled already)
+            Return backup.GetRNDElement()
+        End Function
+
+        Public Sub ClearAllTasks()
+            q1.Clear()
+            backup.Clear()
+        End Sub
+
+        Public Sub ClearTask(task As String)
+            q1.RemoveItem(task)
+            backup.RemoveItem(task)
+        End Sub
+
+        Public Function ContainsTask(task As String) As Boolean
+            Return backup.Contains(task)
+        End Function
+    End Class
+    Public Class TrgArgue
+        Public commands As New UniqueItemSizeLimitedPriorityQueue()
+        Public contextCommands As New UniqueItemSizeLimitedPriorityQueue()
+        Private trgTolerance As Boolean = False
+        Private counter As Integer = 0 ' Count argues/requests made in succession
+        ' (Breaking point of argument can be established (argue till counter == N))
+
+        Public Function GetCounter() As Integer
+            Return counter
+        End Function
+
+        Public Function EngageCommand(s1 As String) As Integer
+            ' 0 -> no engagement
+            ' 1 -> engaged boolean gate (request made)
+            ' 2 -> engaged argument: consecutive request made (request in succession after a previous request)
+            If String.IsNullOrEmpty(s1) Then
+                Return 0
+            End If
+            If contextCommands.Contains(s1) Then
+                If trgTolerance Then
+                    counter += 1
+                End If
+                trgTolerance = True
+                Return 1
+            End If
+            If trgTolerance Then
+                If Not commands.StrContainsResponse(s1) Then
+                    trgTolerance = False
+                    counter = 0
+                    Return 0
+                Else
+                    counter += 1
+                    Return 2
+                End If
+            End If
+            Return 0
+        End Function
+
+        Public Sub Disable()
+            ' Context commands are disabled until the next engagement with a command
+            trgTolerance = False
+        End Sub
+    End Class
+    Public Class TrgEveryNMinutes
+        Inherits TrGEV3
+        ' Trigger returns true every minutes interval, post start time
+        Private minutes As Integer ' Minute interval between triggerings
+        Private trgTime As TrgTime
+        Private timeStamp As String = ""
+
+        Public Sub New(startTime As String, minutes As Integer)
+            Me.minutes = minutes
+            Me.timeStamp = startTime
+            trgTime = New TrgTime()
+            trgTime.setTime(startTime)
+        End Sub
+
+        Public Sub SetMinutes(minutes As Integer)
+            If minutes > -1 Then
+                Me.minutes = minutes
+            End If
+        End Sub
+
+        Public Overloads Function Trigger() As Boolean
+            If trgTime.checkAlarm Then
+                timeStamp = TimeUtils.getFutureInXMin(minutes)
+                trgTime.setTime(timeStamp)
+                Return True
+            End If
+            Return False
+        End Function
+
+        Public Overloads Sub Reset()
+            timeStamp = TimeUtils.getCurrentTimeStamp()
+        End Sub
+    End Class
+    Public Class TrgMinute
+        Inherits TrGEV3
+        ' Trigger returns true at minute once per hour
+        Private hour1 As Integer = -1
+        Private minute As Integer
+        Private rand As New Random()
+
+        Public Sub New()
+            minute = rand.Next(60)
+        End Sub
+
+        Public Sub New(minute As Integer)
+            Me.minute = minute
+        End Sub
+
+        Public Overloads Function Trigger() As Boolean
+            Dim tempHour As Integer = TimeUtils.getHoursAsInt()
+            If tempHour <> hour1 Then
+                If TimeUtils.getMinutesAsInt() = minute Then
+                    hour1 = tempHour
+                    Return True
+                End If
+            End If
+            Return False
+        End Function
+
+        Public Overloads Sub Reset()
+            hour1 = -1
+        End Sub
+    End Class
+    Public Class TrgSnooze
+        Inherits TrGEV3
+        ' This boolean gate will return true per minute interval
+        ' max repeats times.
+        Private repeats As Integer = 0
+        Private maxrepeats As Integer ' 2 recommended
+        Private snooze As Boolean = True
+        Private snoozeInterval As Integer = 5
+
+        Public Sub New(maxrepeats As Integer)
+            Me.maxrepeats = maxrepeats
+        End Sub
+
+        Public Sub SetSnoozeInterval(snoozeInterval As Integer)
+            If snoozeInterval > 1 AndAlso snoozeInterval < 11 Then
+                Me.snoozeInterval = snoozeInterval
+            End If
+        End Sub
+
+        Public Sub SetMaxrepeats(maxrepeats As Integer)
+            Me.maxrepeats = maxrepeats
+            Reset()
+        End Sub
+
+        Public Overloads Sub Reset()
+            ' Refill trigger
+            ' Engage this code when an alarm clock was engaged to enable snoozing
+            repeats = maxrepeats
+        End Sub
+
+        Public Overloads Function Trigger() As Boolean
+            ' Trigger a snooze alarm?
+            Dim minutes As Integer = TimeUtils.getMinutesAsInt()
+            If minutes Mod snoozeInterval <> 0 Then
+                snooze = True
+                Return False
+            End If
+            If repeats > 0 AndAlso snooze Then
+                snooze = False
+                repeats -= 1
+                Return True
+            End If
+            Return False
+        End Function
+
+        Public Sub Disable()
+            ' Engage this method to stop the snoozing
+            repeats = 0
+        End Sub
+    End Class
+    Public Class AXContextCmd
+        ' Engage on commands
+        ' When commands are engaged, context commands can also engage
+        Public commands As New UniqueItemSizeLimitedPriorityQueue()
+        Public contextCommands As New UniqueItemSizeLimitedPriorityQueue()
+        Public trgTolerance As Boolean = False
+
+        Public Function EngageCommand(s1 As String) As Boolean
+            If String.IsNullOrEmpty(s1) Then
+                Return False
+            End If
+            If contextCommands.Contains(s1) Then
+                trgTolerance = True
+                Return True
+            End If
+            If trgTolerance AndAlso Not commands.Contains(s1) Then
+                trgTolerance = False
+                Return False
+            End If
+            Return trgTolerance
+        End Function
+
+        Public Sub Disable()
+            ' Context commands are disabled till next engagement with a command
+            trgTolerance = False
+        End Sub
+    End Class
+    Public Class AXConvince
+        Private req As AXContextCmd
+        Private reset As New Responder("reset")
+        Private min As Integer = 3 ' Minimum requests till agreement
+        Private max As Integer = 6
+        Private rnd As New DrawRnd()
+        Private counter As Integer = 0
+        Private mode As Boolean = False
+
+        Public Sub New(req As AXContextCmd)
+            Me.req = req
+        End Sub
+
+        Public Function Engage(ear As String) As Integer
+            ' 0: nothing, 1: no, 2: yes, 3: just been reset to no again
+            If reset.ResponsesContainsStr(ear) Then
+                counter = 0
+                mode = False
+                min += rnd.GetSimpleRNDNum(max)
+                Return 3
+            End If
+            If req.EngageCommand(ear) Then
+                counter += 1
+                If counter < min Then
+                    Return 1
+                Else
+                    mode = True
+                    Return 2 ' Convinced
+                End If
+            End If
+            Return 0
+        End Function
+
+        Public Function IsConvinced() As Boolean
+            Return mode
+        End Function
+    End Class
 End Module

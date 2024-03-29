@@ -999,6 +999,44 @@ Module Auxiliary_modules
             Return strings.Count = 0
         End Function
     End Class
+    Public Class DrawRndDigits
+        Private strings As New List(Of Integer)()
+        Private stringsSource As New List(Of Integer)()
+        Private rand As New Random()
+
+        Public Sub New(ParamArray values As Integer())
+            For Each value As Integer In values
+                strings.Add(value)
+                stringsSource.Add(value)
+            Next
+        End Sub
+
+        Public Sub AddElement(element As Integer)
+            strings.Add(element)
+            stringsSource.Add(element)
+        End Sub
+
+        Public Function Draw() As Integer
+            If strings.Count = 0 Then
+                Return -1
+            End If
+
+            Dim x As Integer = rand.Next(strings.Count)
+            Dim element As Integer = strings(x)
+            strings.RemoveAt(x)
+            Return element
+        End Function
+
+        Public Function GetSimpleRNDNum(bound As Integer) As Integer
+            ' Return a random integer in the range 0 to bound-1
+            Return rand.Next(bound)
+        End Function
+
+        Public Sub Reset()
+            Dim dc As New DeepCopier()
+            strings = dc.DeepCopyIntList(stringsSource)
+        End Sub
+    End Class
     Public Class Responder
         ' Simple random response dispenser
         Private responses As New List(Of String)()
@@ -1458,6 +1496,259 @@ Module Auxiliary_modules
                 alarm = True
             End If
             Return False
+        End Function
+    End Class
+    Public Class Cron
+        Inherits TrGEV3
+        ' triggers true, limit times, after initial time, and every minutes interval
+        ' counter resets at initial time, assuming trigger method was run
+        Private minutes As Integer ' Minute interval between triggerings
+        Private trgTime As TrgTime
+        Private timeStamp As String = ""
+        Private initialTimeStamp As String = ""
+        Private limit As Integer
+        Private counter As Integer = 0
+
+        Public Sub New(ByVal startTime As String, ByVal minutes As Integer, ByVal limit As Integer)
+            Me.minutes = minutes
+            Me.timeStamp = startTime
+            Me.initialTimeStamp = startTime
+            trgTime = New TrgTime()
+            trgTime.setTime(startTime)
+            Me.limit = limit
+            If limit < 0 Then
+                Me.limit = 1
+            End If
+        End Sub
+
+        Public Function GetLimit() As Integer
+            Return limit
+        End Function
+
+        Public Sub SetLimit(ByVal limit As Integer)
+            If limit > -1 Then
+                Me.limit = limit
+            End If
+        End Sub
+
+        Public Function GetCounter() As Integer
+            Return counter
+        End Function
+
+        Public Sub SetMinutes(ByVal minutes As Integer)
+            If minutes > -1 Then
+                Me.minutes = minutes
+            End If
+        End Sub
+
+        Public Overloads Function Trigger() As Boolean
+            ' delete counter = 0 if you don't want the trigger to work the next day
+            If counter = limit Then
+                trgTime.setTime(initialTimeStamp)
+                counter = 0
+                Return False
+            End If
+            If trgTime.checkAlarm Then
+                timeStamp = TimeUtils.getFutureInXMin(minutes)
+                trgTime.setTime(timeStamp)
+                counter += 1
+                Return True
+            End If
+            Return False
+        End Function
+
+        Public Function TriggerWithoutRenewal() As Boolean
+            ' delete counter = 0 if you don't want the trigger to work the next day
+            If counter = limit Then
+                trgTime.setTime(initialTimeStamp)
+                Return False
+            End If
+            If trgTime.checkAlarm Then
+                timeStamp = TimeUtils.getFutureInXMin(minutes)
+                trgTime.setTime(timeStamp)
+                counter += 1
+                Return True
+            End If
+            Return False
+        End Function
+
+        Public Overloads Sub Reset()
+            ' manual trigger reset
+            counter = 0
+        End Sub
+
+        Public Sub SetStartTime(ByVal t1 As String)
+            initialTimeStamp = t1
+            timeStamp = t1
+            trgTime.setTime(t1)
+            counter = 0
+        End Sub
+
+        Public Sub TurnOff()
+            counter = limit
+        End Sub
+    End Class
+    Public Class Cycler
+        Private cycler As Integer = 0
+        Private limit As Integer
+
+        Public Sub New(ByVal limit As Integer)
+            Me.limit = limit
+            cycler = limit
+        End Sub
+
+        Public Function GetLimit() As Integer
+            Return limit
+        End Function
+
+        Public Sub SetLimit(ByVal limit As Integer)
+            Me.limit = limit
+        End Sub
+
+        Public Function CycleCount() As Integer
+            cycler -= 1
+            If cycler < 0 Then
+                cycler = limit
+            End If
+            Return cycler
+        End Function
+
+        Public Sub Reset()
+            cycler = limit
+        End Sub
+
+        Public Sub SetToZero()
+            cycler = 0
+        End Sub
+
+        Public Sub Sync(ByVal n As Integer)
+            If n < -1 OrElse n > limit Then
+                Return
+            End If
+            cycler = n
+        End Sub
+
+        Public Function GetMode() As Integer
+            Return cycler
+        End Function
+    End Class
+    Public Class Differ
+        Private powerLevel As Integer = 90
+        Private difference As Integer = 0
+
+        Public Function GetPowerLevel() As Integer
+            Return powerLevel
+        End Function
+
+        Public Function GetDifference() As Integer
+            Return difference
+        End Function
+
+        Public Sub ClearPowerLVDifference()
+            difference = 0
+        End Sub
+
+        Public Sub SamplePowerLV(ByVal pl As Integer)
+            ' pl is the current power level
+            difference = pl - powerLevel
+            powerLevel = pl
+        End Sub
+    End Class
+    Public Class Eliza
+        Private Shared reflections As New Dictionary(Of String, String)() From {
+        {"am", "are"},
+        {"was", "were"},
+        {"i", "you"},
+        {"i'd", "you would"},
+        {"i've", "you have"},
+        {"my", "your"},
+        {"are", "am"},
+        {"you've", "I have"},
+        {"you'll", "I will"},
+        {"your", "my"},
+        {"yours", "mine"},
+        {"you", "i"},
+        {"me", "you"}
+    }
+
+        Public Class PhraseMatcher
+            Private matcher As Regex
+            Private responses As List(Of String)
+            Public context As String = ""
+            Public param As String = ""
+            Public infoRequest As String = ""
+
+            Public Sub New(ByVal matcher As String, ByVal responses As List(Of String))
+                Me.matcher = New Regex(matcher)
+                Me.responses = responses
+            End Sub
+
+            Public Function Matches(ByVal s As String) As Boolean
+                Return Me.matcher.IsMatch(s)
+            End Function
+
+            Public Function Respond(ByVal s As String) As String
+                Dim m As Match = Me.matcher.Match(s)
+                Me.context = Me.matcher.ToString() ' context
+                Dim p As String = Me.RandomPhrase()
+                For i As Integer = 0 To m.Groups.Count - 2
+                    Dim groupValue As String = Me.Reflect(m.Groups(i + 1).Value)
+                    Me.param = groupValue ' param
+                    Me.infoRequest = p ' more info request
+                    p = p.Replace("{" & i & "}", groupValue)
+                Next
+                Return p
+            End Function
+
+            Public Shared Function Reflect(ByVal s As String) As String
+                Dim words As String() = s.Split(" ")
+                For i As Integer = 0 To words.Length - 1
+                    If Eliza.reflections.ContainsKey(words(i)) Then
+                        words(i) = Eliza.reflections(words(i))
+                    End If
+                Next
+                Return String.Join(" ", words)
+            End Function
+
+            Public Function RandomPhrase() As String
+                Dim rand As New Random()
+                Dim randomIndex As Integer = Math.Abs(rand.Next(0, Me.responses.Count))
+                Return Me.responses(randomIndex)
+            End Function
+
+            Public Overrides Function ToString() As String
+                Return Me.matcher.ToString() & ":" & String.Join(", ", Me.responses)
+            End Function
+        End Class
+
+        Public babble As New List(Of PhraseMatcher)() From {
+        New PhraseMatcher("i need (.*)", New List(Of String)() From {
+            "Why do you need {0}?",
+            "Would it really help you to get {0}?",
+            "Are you sure you need {0}?"
+        })
+    }
+
+        Public Function Respond(ByVal msg As String) As String
+            For Each pm As PhraseMatcher In Me.babble
+                If pm.Matches(msg) Then
+                    Return pm.Respond(msg.ToLower())
+                End If
+            Next
+            Return ""
+        End Function
+    End Class
+    Public Class InputFilter
+        ' Filter out non-relevant input or filter in relevant data
+
+        Public Function Filter(ByVal ear As String, ByVal skin As String, ByVal eye As String) As String
+            ' Override me
+            Return ""
+        End Function
+
+        Public Function Filter(ByVal ear As String) As AXKeyValuePair
+            ' Override me: key = context/category, value: param
+            Return New AXKeyValuePair()
         End Function
     End Class
 

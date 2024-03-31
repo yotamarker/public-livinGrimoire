@@ -1,0 +1,20 @@
+            Brain brain = new Brain();
+            brain.logicChobit.AddSkill(new DiHelloWorld());
+            brain.logicChobit.AddSkill(new DiTime());
+            brain.hardwareChobit.AddSkill(new DiPrinter());
+
+            // Engage the "incantation 0" command
+            brain.DoIt("incantation 0", "", "");
+
+            // Other interactions (empty for now)
+            brain.DoIt("", "", "");
+            brain.DoIt("", "", "");
+            brain.DoIt("what is the time", "", "");
+            brain.DoIt("", "", "");
+            brain.DoIt("", "", "");
+            brain.DoIt("", "", "");
+            brain.DoIt("", "", "");
+            brain.DoIt("", "", "");
+            brain.DoIt("", "", "");
+
+            Console.ReadLine();

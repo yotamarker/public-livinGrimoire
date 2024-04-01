@@ -1,0 +1,309 @@
+*** varargs
+***********
+*variables*
+***********
+int age = 0;
+bool isComplete = false;
+string str1 = "morning";
+const int num = 2;
+*********
+*strings*
+*********
+string name = "John";
+int age = 30;
+string result = string.Format("Hello, {0}. You are {1} years old.", name, age);
+*********
+*classes*
+*********
+using System;
+
+// Base class: Payroll
+public class Payroll
+{
+    public void PayEmployee(string employeeName)
+    {
+        Console.WriteLine($"Paying employee {employeeName}...");
+        // Logic for paying the employee goes here.
+    }
+}
+
+// Derived class: BonusPayroll (inherits from Payroll)
+public class BonusPayroll : Payroll
+{
+    // Override the PayEmployee method
+    public override void PayEmployee(string employeeName)
+    {
+        Console.WriteLine($"Paying bonus to employee {employeeName}...");
+        // Additional logic specific to bonus payments.
+    }
+}
+*********
+*methods*
+*********
+using System;
+
+public class Program
+{
+    public static bool MyMethod()
+    {
+        return true;
+    }
+
+    public static int MethodWithParams(int a, int b)
+    {
+        return a + b;
+    }
+
+    public static void Main()
+    {
+        // Example usage
+        bool result1 = MyMethod();
+        int result2 = MethodWithParams(10, 20);
+
+        Console.WriteLine($"MyMethod result: {result1}");
+        Console.WriteLine($"MethodWithParams result: {result2}");
+    }
+}
+
+*********
+*varargs*
+*********
+public int Sum1(int[] numbers)
+{
+    int total = 0;
+    foreach (int number in numbers)
+    {
+        total += number;
+    }
+    return total;
+}
+
+int test = Sum1(new int[] { 1, 2, 3 });
+Console.WriteLine(test);
+***********
+*arraylist*
+***********
+int[] numbers = { 1, 2, 3 };
+int test = Sum1(numbers);
+Console.WriteLine(test);
+*******
+*array*
+*******
+using System;
+
+namespace ArrayExamples
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // Declare and initialize an integer array
+            int[] numbers = { 1, 2, 3, 4 };
+
+            // Access array elements
+            Console.WriteLine($"First element: {numbers[0]}"); // Outputs: 1
+
+            // Modify an array element
+            numbers[1] = 10; // Changes the second element to 10
+
+            // Get the length of the array
+            Console.WriteLine($"Array length: {numbers.Length}"); // Outputs: 4
+
+            // Declare and initialize a string array
+            string[] cars = { "Volvo", "BMW", "Ford", "Mazda" };
+
+            // Print all car names
+            Console.WriteLine("Car names:");
+            foreach (string car in cars)
+            {
+                Console.WriteLine(car);
+            }
+
+            // Declare an empty double array
+            double[] prices = new double[3];
+
+            // Assign values to the double array
+            prices[0] = 19.99;
+            prices[1] = 29.99;
+            prices[2] = 39.99;
+
+            // Calculate the total price
+            double totalPrice = 0;
+            foreach (double price in prices)
+            {
+                totalPrice += price;
+            }
+            Console.WriteLine($"Total price: ${totalPrice}");
+
+            // Initialize an array with specific values
+            char[] vowels = new char[] { 'a', 'e', 'i', 'o', 'u' };
+
+            // Display the vowels
+            Console.WriteLine("Vowels:");
+            foreach (char vowel in vowels)
+            {
+                Console.Write(vowel + " ");
+            }
+        }
+    }
+}
+************
+*dictionary*
+************
+using System;
+using System.Collections.Generic;
+
+namespace DictionaryExample
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // Create a dictionary with string keys and integer values
+            Dictionary<string, int> dic1 = new Dictionary<string, int>();
+
+            // Add key-value pairs
+            dic1["one"] = 1;
+            dic1.Add("three", 3);
+            dic1["two"] = 2;
+
+            // Print key-value pairs
+            foreach (KeyValuePair<string, int> kvp in dic1)
+            {
+                Console.WriteLine($"{kvp.Key}: {kvp.Value}");
+            }
+
+            // Access a specific value by key
+            int value = dic1["one"];
+            Console.WriteLine($"Value for 'one': {value}");
+
+            // Access a non-existent key (returns default value)
+            int n = dic1.GetValueOrDefault("cat");
+            Console.WriteLine($"Value for 'cat': {n}");
+
+            // Remove a key-value pair
+            dic1.Remove("yourKey");
+        }
+    }
+}
+****
+*if*
+****
+using System;
+
+namespace ConditionalExamples
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // Using "if" statement
+            if (true)
+            {
+                Console.WriteLine("True");
+            }
+            else
+            {
+                Console.WriteLine("False");
+            }
+
+            // Using ternary operator (conditional expression)
+            bool condition = true;
+            string expression1 = "True";
+            string expression2 = "False";
+            string result = condition ? expression1 : expression2;
+            Console.WriteLine($"Result: {result}");
+        }
+    }
+}
+*******
+*loops*
+*******
+for (int i = 0; i < 5; i++)
+{
+    Console.WriteLine($"Iteration {i}");
+}
+// foreach
+string[] fruits = { "Apple", "Banana", "Orange" };
+foreach (string fruit in fruits)
+{
+    Console.WriteLine(fruit);
+}
+int count = 0;
+while (count < 3)
+{
+    Console.WriteLine($"Count: {count}");
+    count++;
+}
+int num = 5;
+do
+{
+    Console.WriteLine($"Number: {num}");
+    num--;
+} while (num > 0);
+*************
+*select case*
+*************
+int day = 4;
+switch (day)
+{
+    case 6:
+        Console.WriteLine("Today is Saturday.");
+        break;
+    case 7:
+        Console.WriteLine("Today is Sunday.");
+        break;
+    default:
+        Console.WriteLine("Looking forward to the Weekend.");
+        break;
+}
+// Outputs "Looking forward to the Weekend."
+************
+*randomizer*
+************
+Random rnd = new Random();
+int num = rnd.Next(); // Get a random integer
+Console.WriteLine(num);
+rnd.NextDouble() // double rnd 0->1
+// byte rnd
+byte[] randomBytes = new byte[4];
+rnd.NextBytes(randomBytes);
+foreach (byte val in randomBytes)
+{
+    Console.WriteLine(val);
+}
+**********************
+*N-dimensional arrays*
+**********************
+// Example: Creating a 2D array of integers
+int[,] matrix = new int[3, 3]; // A 3x3 matrix
+
+// Initializing values in the 2D array
+matrix[0, 0] = 1;
+matrix[0, 1] = 4;
+matrix[0, 2] = 2;
+matrix[1, 0] = 3;
+matrix[1, 1] = 6;
+matrix[1, 2] = 8;
+
+// Accessing elements of the 2D array
+Console.WriteLine(matrix[0, 2]); // Outputs 2
+
+// Changing the value of an element
+matrix[0, 0] = 5; // Change value to 5
+Console.WriteLine(matrix[0, 0]); // Outputs 5 instead of 1
+
+// Looping through the elements of the 2D array
+foreach (int value in matrix)
+{
+    Console.WriteLine(value);
+}
+
+// Alternatively, using a for loop
+for (int i = 0; i < matrix.GetLength(0); i++)
+{
+    for (int j = 0; j < matrix.GetLength(1); j++)
+    {
+        Console.WriteLine(matrix[i, j]);
+    }
+}

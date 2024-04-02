@@ -2193,3 +2193,37 @@ class AXFunnel {
         return dic[key] ?? key
     }
 }
+class ChangeDetector {
+    private var A: String
+    private var B: String
+    private var prev: Int = -1
+
+    init(a: String, b: String) {
+        A = a
+        B = b
+    }
+
+    func detectChange(ear: String) -> Int {
+        // a->b return 2; b->a return 1; else return 0
+        if ear.isEmpty {
+            return 0
+        }
+        var current: Int = -1
+        if ear.contains(A) {
+            current = 1
+        } else if ear.contains(B) {
+            current = 2
+        } else {
+            return 0
+        }
+        var result: Int = 0
+        if current == 1 && prev == 2 {
+            result = 1
+        }
+        if current == 2 && prev == 1 {
+            result = 2
+        }
+        prev = current
+        return result
+    }
+}

@@ -2340,4 +2340,41 @@ Module Auxiliary_modules
             Return mode
         End Function
     End Class
+    Class ChangeDetector
+        Private A As String
+        Private B As String
+        Private prev As Integer = -1
+
+        Public Sub New(ByVal a As String, ByVal b As String)
+            Me.A = a
+            Me.B = b
+        End Sub
+
+        Public Function DetectChange(ByVal ear As String) As Integer
+            ' a->b return 2; b->a return 1; else return 0
+            If String.IsNullOrEmpty(ear) Then
+                Return 0
+            End If
+
+            Dim current As Integer = -1
+            If ear.Contains(A) Then
+                current = 1
+            ElseIf ear.Contains(B) Then
+                current = 2
+            Else
+                Return 0
+            End If
+
+            Dim result As Integer = 0
+            If current = 1 AndAlso prev = 2 Then
+                result = 1
+            End If
+            If current = 2 AndAlso prev = 1 Then
+                result = 2
+            End If
+
+            prev = current
+            Return result
+        End Function
+    End Class
 End Module

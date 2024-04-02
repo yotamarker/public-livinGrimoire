@@ -2846,3 +2846,51 @@ public class AXConvince
         return mode;
     }
 }
+public class ChangeDetector
+{
+    private string A;
+    private string B;
+    private int prev = -1;
+
+    public ChangeDetector(string a, string b)
+    {
+        A = a;
+        B = b;
+    }
+
+    public int DetectChange(string ear)
+    {
+        // a->b return 2; b->a return 1; else return 0
+        if (string.IsNullOrEmpty(ear))
+        {
+            return 0;
+        }
+
+        int current = -1;
+        if (ear.Contains(A))
+        {
+            current = 1;
+        }
+        else if (ear.Contains(B))
+        {
+            current = 2;
+        }
+        else
+        {
+            return 0;
+        }
+
+        int result = 0;
+        if (current == 1 && prev == 2)
+        {
+            result = 1;
+        }
+        if (current == 2 && prev == 1)
+        {
+            result = 2;
+        }
+
+        prev = current;
+        return result;
+    }
+}

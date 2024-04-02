@@ -2338,3 +2338,29 @@ class AXFunnel:
         if not key in self.dic:
             return key
         return self.dic[key]
+
+
+class ChangeDetector:
+    def __init__(self, a, b):
+        self.A = a
+        self.B = b
+        self.prev = -1
+
+    def detect_change(self, ear):
+        # a->b return 2; b->a return 1; else return 0
+        if not ear:
+            return 0
+        current = -1
+        if self.A in ear:
+            current = 1
+        elif self.B in ear:
+            current = 2
+        else:
+            return 0
+        result = 0
+        if (current == 1) and (self.prev == 2):
+            result = 1
+        if (current == 2) and (self.prev == 1):
+            result = 2
+        self.prev = current
+        return result

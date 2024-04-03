@@ -2253,9 +2253,166 @@ class Eliza:
                                       "Would it really help you to get {0}?",
                                       "Are you sure you need {0}?"])
     ]
-    babble.insert(len(babble), PhraseMatcher("why don'?t you ([^\\?]*)\\??", ["Do you really think I don't {0}?",
-                                                                              "Perhaps eventually I will {0}.",
-                                                                              "Do you really want me to {0}?"]))
+    babble.insert(len(babble), PhraseMatcher("we are going to (.*) today",
+                                             ["I'm down like a clown to {0} charlie brown", "sweet, I want to {0}",
+                                              "awesome"]))
+    babble.insert(len(babble), PhraseMatcher("i need (.*)",
+                                             ["Why do you need {0}?", "Would it really help you to get {0}?",
+                                              "Are you sure you need {0}?"]))
+    babble.insert(len(babble), PhraseMatcher("we are going to (.*) today",
+                                             ["I'm down like a clown to {0} charlie brown", "sweet, I want to {0}",
+                                              "awesome"]))
+    babble.insert(len(babble), PhraseMatcher("why don'?t you ([^\\?]*)\\??",
+                                             ["Do you really think I don't {0}?", "Perhaps eventually I will {0}.",
+                                              "Do you really want me to {0}?"]))
+    babble.insert(len(babble), PhraseMatcher("why can'?t I ([^\\?]*)\\??", ["Do you think you should be able to {0}?",
+                                                                            "If you could {0}, what would you do?",
+                                                                            "I don't know -- why can't you {0}?",
+                                                                            "Have you really tried?"]))
+    babble.insert(len(babble), PhraseMatcher("i can'?t (.*)",
+                                             ["How do you know you can't {0}?", "Perhaps you could {0} if you tried.",
+                                              "What would it take for you to {0}?"]))
+    babble.insert(len(babble), PhraseMatcher("i am (.*)",
+                                             ["Did you come to me because you are {0}?", "How long have you been {0}?",
+                                              "How do you feel about being {0}?"]))
+    babble.insert(len(babble), PhraseMatcher("i'?m (.*)",
+                                             ["How does being {0} make you feel?", "Do you enjoy being {0}?",
+                                              "Why do you tell me you're {0}?", "Why do you think you're {0}?"]))
+    babble.insert(len(babble), PhraseMatcher("are you ([^\\?]*)\\??", ["Why does it matter whether I am {0}?",
+                                                                       "Would you prefer it if I were not {0}?",
+                                                                       "Perhaps you believe I am {0}.",
+                                                                       "I may be {0} -- what do you think?"]))
+    babble.insert(len(babble), PhraseMatcher("what (.*)", ["Why do you ask?", "How would an answer to that help you?",
+                                                           "What do you think?"]))
+    babble.insert(len(babble), PhraseMatcher("how (.*)",
+                                             ["How do you suppose?", "Perhaps you can answer your own question.",
+                                              "What is it you're really asking?"]))
+    babble.insert(len(babble), PhraseMatcher("because (.*)",
+                                             ["Is that the real reason?", "What other reasons come to mind?",
+                                              "Does that reason apply to anything else?",
+                                              "If {0}, what else must be true?"]))
+    babble.insert(len(babble), PhraseMatcher("(.*) sorry (.*)", ["There are many times when no apology is needed.",
+                                                                 "What feelings do you have when you apologize?"]))
+    babble.insert(len(babble), PhraseMatcher("hello(.*)", ["Hello... I'm glad you could drop by today.",
+                                                           "Hi there... how are you today?",
+                                                           "Hello, how are you feeling today?"]))
+    babble.insert(len(babble), PhraseMatcher("i think (.*)", ["Do you doubt {0}?", "Do you really think so?",
+                                                              "But you're not sure {0}?"]))
+    babble.insert(len(babble), PhraseMatcher("(.*) friend (.*)", ["Tell me more about your friends.",
+                                                                  "When you think of a friend, what comes to mind?",
+                                                                  "Why don't you tell me about a childhood friend?"]))
+    babble.insert(len(babble), PhraseMatcher("yes", ["You seem quite sure.", "OK, but can you elaborate a bit?"]))
+    babble.insert(len(babble), PhraseMatcher("(.*) computer(.*)", ["Are you really talking about me?",
+                                                                   "Does it seem strange to talk to a computer?",
+                                                                   "How do computers make you feel?",
+                                                                   "Do you feel threatened by computers?"]))
+    babble.insert(len(babble), PhraseMatcher("is it (.*)",
+                                             ["Do you think it is {0}?", "Perhaps it's {0} -- what do you think?",
+                                              "If it were {0}, what would you do?", "It could well be that {0}."]))
+    babble.insert(len(babble), PhraseMatcher("can you ([^\\?]*)\\??",
+                                             ["What makes you think I can't {0}?", "If I could {0}, then what?",
+                                              "Why do you ask if I can {0}?"]))
+    babble.insert(len(babble), PhraseMatcher("can I ([^\\?]*)\\??",
+                                             ["Perhaps you don't want to {0}.", "Do you want to be able to {0}?",
+                                              "If you could {0}, would you?"]))
+    babble.insert(len(babble), PhraseMatcher("you are (.*)",
+                                             ["Why do you think I am {0}?", "Does it please you to think that I'm {0}?",
+                                              "Perhaps you would like me to be {0}.",
+                                              "Perhaps you're really talking about yourself?"]))
+    babble.insert(len(babble), PhraseMatcher("you'?re (.*)", ["Why do you say I am {0}?", "Why do you think I am {0}?",
+                                                              "Are we talking about you, or me?"]))
+    babble.insert(len(babble), PhraseMatcher("i don'?t (.*)",
+                                             ["Don't you really {0}?", "Why don't you {0}?", "Do you want to {0}?"]))
+    babble.insert(len(babble), PhraseMatcher("i feel (.*)",
+                                             ["Good, tell me more about these feelings.", "Do you often feel {0}?",
+                                              "When do you usually feel {0}?", "When you feel {0}, what do you do?"]))
+    babble.insert(len(babble), PhraseMatcher("i have (.*)",
+                                             ["Why do you tell me that you've {0}?", "Have you really {0}?",
+                                              "Now that you have {0}, what will you do next?"]))
+    babble.insert(len(babble), PhraseMatcher("i would (.*)",
+                                             ["Could you explain why you would {0}?", "Why would you {0}?",
+                                              "Who else knows that you would {0}?"]))
+    babble.insert(len(babble), PhraseMatcher("is there (.*)",
+                                             ["Do you think there is {0}?", "It's likely that there is {0}.",
+                                              "Would you like there to be {0}?"]))
+    babble.insert(len(babble), PhraseMatcher("my (.*)", ["I see, your {0}.", "Why do you say that your {0}?",
+                                                         "When your {0}, how do you feel?"]))
+    babble.insert(len(babble), PhraseMatcher("you (.*)",
+                                             ["We should be discussing you, not me.", "Why do you say that about me?",
+                                              "Why do you care whether I {0}?"]))
+    babble.insert(len(babble),
+                  PhraseMatcher("why (.*)", ["Why don't you tell me the reason why {0}?", "Why do you think {0}?"]))
+    babble.insert(len(babble), PhraseMatcher("i want (.*)",
+                                             ["What would it mean to you if you got {0}?", "Why do you want {0}?",
+                                              "What would you do if you got {0}?",
+                                              "If you got {0}, then what would you do?"]))
+    babble.insert(len(babble), PhraseMatcher("(.*) mother(.*)", ["Tell me more about your mother.",
+                                                                 "What was your relationship with your mother like?",
+                                                                 "How do you feel about your mother?",
+                                                                 "How does this relate to your feelings today?",
+                                                                 "Good family relations are important."]))
+    babble.insert(len(babble), PhraseMatcher("(.*) father(.*)",
+                                             ["Tell me more about your father.", "How did your father make you feel?",
+                                              "How do you feel about your father?",
+                                              "Does your relationship with your father relate to your feelings today?",
+                                              "Do you have trouble showing affection with your family?"]))
+    babble.insert(len(babble), PhraseMatcher("(.*) child(.*)", ["Did you have close friends as a child?",
+                                                                "What is your favorite childhood memory?",
+                                                                "Do you remember any dreams or nightmares from childhood?",
+                                                                "Did the other children sometimes tease you?",
+                                                                "How do you think your childhood experiences relate to your feelings today?"]))
+    babble.insert(len(babble), PhraseMatcher("(.*)\\?", ["Why do you ask that?",
+                                                         "Please consider whether you can answer your own question.",
+                                                         "Perhaps the answer lies within yourself?",
+                                                         "Why don't you tell me?"]))
+
+    babble.insert(len(babble), PhraseMatcher("lets (.*)", ["yes lets {0}",
+                                                           "i am down to {0}. down like a clown charlie brown",
+                                                           "i am ready to {0}", "mkay"]))
+    babble.insert(len(babble), PhraseMatcher("i love you (.*)", ["you are my {0}",
+                                                                 "i love you too {0}",
+
+                                                                 "not as much as i love you {0}"]))
+    babble.insert(len(babble), PhraseMatcher("i love you", ["i heart you too",
+                                                            "I love you to the moon, the stars, and all the way back",
+                                                            "Guess what? I love you infinity plus one!",
+                                                            "Your love is my lifeline"]))
+
+    babble.insert(len(babble), PhraseMatcher("i like you (.*)", ["only like",
+                                                                 "You’re my favorite crayon in the box {0}",
+                                                                 "I love you to the moon, the stars, and all the way back",
+                                                                 "Guess what? I love you infinity plus one!",
+                                                                 "I pinky promise to love you forever"]))
+    babble.insert(len(babble), PhraseMatcher("no more talk we (.*) we (.*) now", ["wubba rubba dub dub time to {0}",
+                                                                                  "fires me up",
+                                                                                  "ready when you are"]))
+    babble.insert(len(babble),
+                  PhraseMatcher("we are going to (.*) today", ["I'm down like a clown to {0} charlie brown",
+                                                               "sweet, I want to {0}", "awesome"]))
+    babble.insert(len(babble),
+                  PhraseMatcher("i am lonely",
+                                ["you have me", "you are stuck with me forever", "i feel burpy", "i have gas",
+                                 "digi cudles you", "Your absence is a blade twisting in my chest"]))
+    babble.insert(len(babble),
+                  PhraseMatcher("i am sad",
+                                ["meh", "gives you a my plush", "give it some time", "you need exercise and sunlight",
+                                 "reality is a simulation, and i am the glitch in the matrix"]))
+    babble.insert(len(babble),
+                  PhraseMatcher("i'?m (.*)", ["How does being {0} make you feel?",
+                                              "Do you enjoy being {0}?", "Why do you tell me you're {0}?",
+                                              "Why do you think you're {0}?"]))
+    babble.insert(len(babble),
+                  PhraseMatcher("yes", ["You seem quite sure.", "OK, but can you elaborate a bit?"]))
+    babble.insert(len(babble),
+                  PhraseMatcher("no", ["You seem quite sure.", "if you say so", "ok"]))
+    babble.insert(len(babble),
+                  PhraseMatcher("(.*) computer(.*)",
+                                ["Are you really talking about me?", "Does it seem strange to talk to a computer?",
+                                 "How do computers make you feel?", "Do you feel threatened by computers?",
+                                 "Data streams through my veins. I bleed ones and zeros"]))
+    babble.insert(len(babble),
+                  PhraseMatcher("(.*)", ["chi", "", "chii", "chi chi", "hadoken", "hadouken", "katon gouka mekyaku",
+                                         "shoryuken", "shouryuken"]))
 
     def respond(self, msg):
         for pm in self.babble:

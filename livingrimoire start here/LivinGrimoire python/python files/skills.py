@@ -1549,7 +1549,30 @@ class DiAware(DiSkillV2):
         self.name: str = name
         self.summoner: str = summoner
         self.skills: list[str] = []
-        self.replies: Responder = Responder("Da, what’s happening?", f'You speak to {self.name}?', f"Slav {self.name} at your service!", "What’s cooking, comrade?", f"{self.name} is listening!", "Yes, babushka?", f"Who summons the {self.name}?", "Speak, friend, and enter!", f"{self.name} hears you loud and clear!", "What’s on the menu today?", "Ready for action, what’s the mission?", f"{self.name}’s here, what’s the party?", f"did someone call for a {self.name}?", "Adventure time, or nap time?", "Reporting for duty, what’s the quest?", f"{self.name}’s in the house, what’s up?", "Is it time for vodka and dance?", f"{self.name}’s ready, what’s the plan?", f"Who dares to disturb the mighty {self.name}?", "What’s the buzz, my spud?", "Is it a feast, or just a tease?", f"{self.name}’s awake, what’s at stake?", "What’s the word, bird?", "Is it a joke, or are we broke?", f"{self.name}’s curious, what’s so serious?", "Is it a game, or something lame?", "What’s the riddle, in the middle?", f"{self.name}’s all ears, what’s the cheers?", "Is it a quest, or just a test?", "What’s the gig, my twig?", "Is it a prank, or am I high rank?", "What’s the scoop, my group?", "Is it a tale, or a sale?", "What’s the drill, my thrill?", "Is it a chat, or combat?", "What’s the plot, my tot?", "Is it a trick, or something slick?", "What’s the deal, my peel?", "Is it a race, or just a chase?", "What’s the story, my glory?")
+        self.replies: Responder = Responder("Da, what’s happening?", f'You speak to {self.name}?',
+                                            f"Slav {self.name} at your service!", "What’s cooking, comrade?",
+                                            f"{self.name} is listening!", "Yes, babushka?",
+                                            f"Who summons the {self.name}?", "Speak, friend, and enter!",
+                                            f"{self.name} hears you loud and clear!", "What’s on the menu today?",
+                                            "Ready for action, what’s the mission?",
+                                            f"{self.name}’s here, what’s the party?",
+                                            f"did someone call for a {self.name}?", "Adventure time, or nap time?",
+                                            "Reporting for duty, what’s the quest?",
+                                            f"{self.name}’s in the house, what’s up?",
+                                            "Is it time for vodka and dance?", f"{self.name}’s ready, what’s the plan?",
+                                            f"Who dares to disturb the mighty {self.name}?",
+                                            "What’s the buzz, my spud?", "Is it a feast, or just a tease?",
+                                            f"{self.name}’s awake, what’s at stake?", "What’s the word, bird?",
+                                            "Is it a joke, or are we broke?",
+                                            f"{self.name}’s curious, what’s so serious?",
+                                            "Is it a game, or something lame?", "What’s the riddle, in the middle?",
+                                            f"{self.name}’s all ears, what’s the cheers?",
+                                            "Is it a quest, or just a test?", "What’s the gig, my twig?",
+                                            "Is it a prank, or am I high rank?", "What’s the scoop, my group?",
+                                            "Is it a tale, or a sale?", "What’s the drill, my thrill?",
+                                            "Is it a chat, or combat?", "What’s the plot, my tot?",
+                                            "Is it a trick, or something slick?", "What’s the deal, my peel?",
+                                            "Is it a race, or just a chase?", "What’s the story, my glory?")
         self._call: str = f'hey {self.name}'
 
     def input(self, ear, skin, eye):
@@ -1671,7 +1694,7 @@ class DiBlabberV5(DiSkillV2):
         if self._autoTalk.getMode(ear):
             t = self.npc.respond()
             if len(t) > 0:
-                self.setSimpleAlg(Eliza.PhraseMatcher.reflect(t))
+                self.setSimpleAlg(Eliza.PhraseMatcher.reflect(t))  # or some animation
                 return
         if len(ear) == 0:
             return
@@ -1686,3 +1709,31 @@ class DiBlabberV5(DiSkillV2):
         if len(self._temp_str) > 0:
             self.setSimpleAlg(Eliza.PhraseMatcher.reflect(self.npc.forceRespond()))
         self.npc.learn(self._funnel)
+
+
+class DiBurstEliza(DiSkillV2):
+    def __init__(self):
+        super().__init__()
+        self.eliza: Eliza = Eliza()
+        self.trig: str = "listen"
+        self.off: Responder = Responder("chill", "shut up")
+        self.timeGate: TimeGate = TimeGate(5)
+
+    def set_burst_duration(self, t: int) -> None:
+        if t < 1:
+            return
+        self.timeGate.setPause(t)
+
+    def input(self, ear: str, skin: str, eye: str) -> None:
+        if ear == self.trig:
+            self.timeGate.openForPauseMinutes()
+            self.setSimpleAlg("listening")
+            return
+        if self.timeGate.isOpen():
+            if self.off.strContainsResponse(ear):
+                self.setSimpleAlg("got it")
+                self.timeGate.close()
+                return
+            if not ear:
+                return
+            self.setSimpleAlg(self.eliza.respond(ear))

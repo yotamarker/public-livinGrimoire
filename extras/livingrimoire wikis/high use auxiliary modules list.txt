@@ -46,3 +46,4 @@
 46. TrgSnooze
 47. AXContextCmd
 48. AXConvince
+49. AXChangeDetector

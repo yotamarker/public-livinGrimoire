@@ -2253,6 +2253,8 @@ class Eliza:
                                       "Would it really help you to get {0}?",
                                       "Are you sure you need {0}?"])
     ]
+    babble.insert(len(babble),
+                  PhraseMatcher("lets (.*)", ["lets", "i am ready", "sweet", "down like a clown", "gg", "finaly we get to {0}", "double dragon mode engaged", "mkay"]))
     babble.insert(len(babble), PhraseMatcher("we are going to (.*) today",
                                              ["I'm down like a clown to {0} charlie brown", "sweet, I want to {0}",
                                               "awesome"]))
@@ -2366,9 +2368,6 @@ class Eliza:
                                                          "Perhaps the answer lies within yourself?",
                                                          "Why don't you tell me?"]))
 
-    babble.insert(len(babble), PhraseMatcher("lets (.*)", ["yes lets {0}",
-                                                           "i am down to {0}. down like a clown charlie brown",
-                                                           "i am ready to {0}", "mkay"]))
     babble.insert(len(babble), PhraseMatcher("i love you (.*)", ["you are my {0}",
                                                                  "i love you too {0}",
 
@@ -2412,7 +2411,7 @@ class Eliza:
                                  "Data streams through my veins. I bleed ones and zeros"]))
     babble.insert(len(babble),
                   PhraseMatcher("(.*)", ["chi", "", "chii", "chi chi", "hadoken", "hadouken", "katon gouka mekyaku",
-                                         "shoryuken", "shouryuken"]))
+                                         "shoryuken", "shouryuken", "babu babu", "babu", "googoo", "googoo gaga", "gugi gaga"]))
 
     def respond(self, msg):
         for pm in self.babble:

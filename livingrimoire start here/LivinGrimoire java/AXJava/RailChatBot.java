@@ -1,5 +1,6 @@
 package AXJava;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 public class RailChatBot {
@@ -46,6 +47,14 @@ public class RailChatBot {
             dic.put(reply,new RefreshQ());
         }
         dic.get(context).add(reply);
+    }
+    public void feedKeyValuePairs(ArrayList<AXKeyValuePair> kvList){
+        if (kvList.isEmpty()){
+            return;
+        }
+        for (AXKeyValuePair kv : kvList) {
+            learnKeyValue(kv.getKey(),kv.getValue());
+        }
     }
     public String monolog(){
         // succession of outputs without input involved

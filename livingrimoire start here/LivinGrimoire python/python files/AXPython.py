@@ -74,7 +74,8 @@ class SkillHubAlgDispenser:
         self._skills.append(skill)
         return self
 
-    def dispenseAlgorithm(self, ear: str, skin: str, eye: str) -> Algorithm:
+    def dispenseAlgorithm(self, ear: str, skin: str, eye: str):
+        # returns Algorithm? (or None)
         # return value to outAlg param of (external) summoner DiskillV2
         self._skills[self._activeSkill].input(ear, skin, eye)
         self._skills[self._activeSkill].output(self._tempN)
@@ -412,6 +413,19 @@ class LGTypeConverter:
             return 0.0
         return float(temp)
 
+    def convertToFloat(self, v1: str) -> float:
+        temp: str = self._regexUtil.extractEnumRegex(enumRegexGrimoire.double_num, v1)
+        if temp == "":
+            return 0
+        return float(temp)
+
+    def convertToFloatV2(self, v1: str, precision: int) -> float:
+        # precision: how many numbers after the .
+        temp: str = self._regexUtil.extractEnumRegex(enumRegexGrimoire.double_num, v1)
+        if temp == "":
+            return 0
+        return round(float(temp), precision)
+
 
 class AXPassword:
     """ code # to open the gate
@@ -462,7 +476,7 @@ class AXPassword:
     def closeGate(self):
         self._isOpen = False
 
-    def closeGate(self, ear: str):
+    def closeGateV2(self, ear: str):
         if ear.__contains__("close"):
             self._isOpen = False
 
@@ -518,7 +532,7 @@ class CombinatoricalUtils:
         self.result = []
         self._generatePermutations(lists, self.result, 0, "")
 
-    def generatePermutations(self, *lists: list[list[str]]):
+    def generatePermutations_V2(self, *lists: list[list[str]]):
         # this is the varargs vertion of this function
         # example method call: cu.generatePermutations(l1,l2)
         temp_lists: list[list[str]] = []
@@ -1069,34 +1083,24 @@ class AXGamification:
 
 
 class AXKeyValuePair:
-    def __init__(self):
-        self.key: str = ""
-        self.value: str = ""
+    def __init__(self, key: str = "", value: str = "") -> None:
+        self.key: str = key
+        self.value: str = value
 
+    def get_key(self) -> str:
+        return self.key
 
-class LGTypeConverter:
-    # converts strings types to number typed variables
-    def __init__(self):
-        self.r1: RegexUtil = RegexUtil()
+    def set_key(self, key: str) -> None:
+        self.key = key
 
-    def convertToInt(self, v1: str) -> int:
-        temp: str = self.r1.extractEnumRegex(enumRegexGrimoire.integer, v1)
-        if temp == "":
-            return 0
-        return int(temp)
+    def get_value(self) -> str:
+        return self.value
 
-    def convertToFloat(self, v1: str) -> int:
-        temp: str = self.r1.extractEnumRegex(enumRegexGrimoire.double_num, v1)
-        if temp == "":
-            return 0
-        return float(temp)
+    def set_value(self, value: str) -> None:
+        self.value = value
 
-    def convertToFloat(self, v1: str, precision: int) -> int:
-        # precision: how many numbers after the .
-        temp: str = self.r1.extractEnumRegex(enumRegexGrimoire.double_num, v1)
-        if temp == "":
-            return 0
-        return round(float(temp), precision)
+    def __str__(self) -> str:
+        return f"{self.key};{self.value}"
 
 
 class TODOListManager:
@@ -1112,7 +1116,7 @@ class TODOListManager:
         self._q1.insert(e1)
 
     def getTask(self) -> str:
-        temp: str = self._q1.poll()
+        temp: str = str(self._q1.poll())
         if not temp == "":
             self._backup.insert(temp)
         return temp
@@ -1325,9 +1329,9 @@ class PersistentQuestion:
         if mode in self.dic:
             self._mode = mode
 
-    def setPause(self):
+    def setPause(self,pause:int):
         # set pause between question to wait for answer
-        self._outputDripper.setLimit()
+        self._outputDripper.setLimit(pause)
 
 
 class Differ:
@@ -1800,7 +1804,7 @@ for i in range(1, 10):
         if kv.getKey() not in self.wordToList:
             temp = RefreshQ(self.paramLim)
             self.wordToList[kv.getKey()] = temp
-        self.wordToList[kv.getKey()].add(kv.getValue())
+        self.wordToList[kv.getKey()].insert(kv.getValue())
         self.allParamRef[kv.getValue()] = kv.getKey()
 
     def addSubject(self, category, value):
@@ -1846,7 +1850,7 @@ for i in range(1, 10):
     def addParamFromAXPrompt(self, kv):
         if kv.getKey() not in self.wordToList:
             return
-        self.wordToList[kv.getKey()].add(kv.getValue())
+        self.wordToList[kv.getKey()].insert(kv.getValue())
         self.allParamRef[kv.getValue()] = kv.getKey()
 
     def addRefreshQ(self, category, q1: RefreshQ):
@@ -1870,7 +1874,7 @@ class Prompt:
     def getPrompt(self):
         return self.prompt
 
-    def setPrompt(self, prompt) -> str:
+    def setPrompt(self, prompt):
         self.prompt = prompt
 
     def process(self, in1) -> bool:
@@ -1889,14 +1893,15 @@ class AXPrompt:
         self.isActive: bool = False
         self.index = 0
         self.prompts: list[Prompt] = []
-        self.kv: AXKeyValuePair = None
+        self.kv: AXKeyValuePair = AXKeyValuePair()
 
     def addPrompt(self, p1):
         self.prompts.append(p1)
 
-    def getPrompt(self) -> Prompt:
+    def getPrompt(self) -> str:
         if len(self.prompts) == 0:
             return ""
+        # return self.prompts[self.index].getPrompt()
         return self.prompts[self.index].getPrompt()
 
     def process(self, in1):
@@ -2068,7 +2073,7 @@ class AXShoutOut:
             return False
         if self.__isActive:
             if self.handshake.strContainsResponse(ear):
-                self.__isActive = False;
+                self.__isActive = False
                 return True  # shout out was replied!
 
         # unrelated reply to shout out, shout out context is outdated
@@ -2144,10 +2149,11 @@ class AXHandshake:
 
 
 class RailChatBot:
-    def __init__(self):
+    def __init__(self, limit=5):
         self.dic = {}
         self.context = "default"
-        self.dic[self.context] = RefreshQ(5)
+        self.dic[self.context] = RefreshQ(limit)
+        self._limit = limit
 
     def setContext(self, context):
         if context == "":
@@ -2160,7 +2166,7 @@ class RailChatBot:
         if ear == "":
             return ""
         if ear not in self.dic:
-            self.dic[ear] = RefreshQ(5)
+            self.dic[ear] = RefreshQ(self._limit)
         temp = self.dic[ear].getRNDElement()
         if temp != "":
             self.context = temp
@@ -2170,7 +2176,7 @@ class RailChatBot:
         if ear == "":
             return
         if ear not in self.dic:
-            self.dic[ear] = RefreshQ(5)
+            self.dic[ear] = RefreshQ(self._limit)
             self.dic[self.context].insert(ear)
             self.context = ear
             return
@@ -2187,9 +2193,23 @@ class RailChatBot:
         if ear == "":
             return ""
         if ear not in self.dic:
-            self.dic[ear] = RefreshQ(5)
+            self.dic[ear] = RefreshQ(self._limit)
         temp = self.dic[ear].getRNDElement()
         return temp
+
+    def learn_key_value(self, context: str, reply: str) -> None:
+        # Learn questions and answers/key values
+        if context not in self.dic:
+            self.dic[context] = RefreshQ(self._limit)
+        if reply not in self.dic:
+            self.dic[reply] = RefreshQ(self._limit)
+        self.dic[context].insert(reply)
+
+    def feed_key_value_pairs(self, kv_list: list[AXKeyValuePair]) -> None:
+        if not kv_list:
+            return
+        for kv in kv_list:
+            self.learn_key_value(kv.get_key(), kv.get_value())
 
 
 class Eliza:
@@ -2254,7 +2274,9 @@ class Eliza:
                                       "Are you sure you need {0}?"])
     ]
     babble.insert(len(babble),
-                  PhraseMatcher("lets (.*)", ["lets", "i am ready", "sweet", "down like a clown", "gg", "finaly we get to {0}", "double dragon mode engaged", "mkay"]))
+                  PhraseMatcher("lets (.*)",
+                                ["lets", "i am ready", "sweet", "down like a clown", "gg", "finaly we get to {0}",
+                                 "double dragon mode engaged", "mkay"]))
     babble.insert(len(babble), PhraseMatcher("we are going to (.*) today",
                                              ["I'm down like a clown to {0} charlie brown", "sweet, I want to {0}",
                                               "awesome"]))
@@ -2411,7 +2433,8 @@ class Eliza:
                                  "Data streams through my veins. I bleed ones and zeros"]))
     babble.insert(len(babble),
                   PhraseMatcher("(.*)", ["chi", "", "chii", "chi chi", "hadoken", "hadouken", "katon gouka mekyaku",
-                                         "shoryuken", "shouryuken", "babu babu", "babu", "googoo", "googoo gaga", "gugi gaga"]))
+                                         "shoryuken", "shouryuken", "babu babu", "babu", "googoo", "googoo gaga",
+                                         "gugi gaga"]))
 
     def respond(self, msg):
         for pm in self.babble:
@@ -2520,3 +2543,79 @@ class ChangeDetector:
             result = 2
         self.prev = current
         return result
+
+
+class PhraseMatcher:
+    def __init__(self, matcher: str, responses: list[AXKeyValuePair]) -> None:
+        self.matcher: Pattern = re.compile(matcher)
+        self.responses: list[AXKeyValuePair] = responses
+
+    def matches(self, str: str) -> bool:
+        m: Match = self.matcher.match(str)
+        return m is not None
+
+    def respond(self, str: str, reflections: dict[str, str]) -> list[AXKeyValuePair]:
+        m: Match = self.matcher.match(str)
+        result: list[AXKeyValuePair] = []
+        if m:
+            tmp: int = len(m.groups())
+            for kv in self.responses:
+                temp_kv: AXKeyValuePair = AXKeyValuePair(kv.get_key(), kv.get_value())
+                for i in range(tmp):
+                    s: str = self.reflect(m.group(i + 1), i, reflections)
+                    temp_kv.set_key(temp_kv.get_key().replace(f"{{{i}}}", s).lower())
+                    temp_kv.set_value(temp_kv.get_value().replace(f"{{{i}}}", s).lower())
+                result.append(temp_kv)
+        return result
+
+    def reflect(self, s, index, reflections: dict[str, str]):
+        sa = s.split(" ")
+        if sa[index] in reflections:
+            sa[index] = reflections[sa[index]]
+        return sa[index]
+
+
+class ElizaDeducer:
+    def __init__(self) -> None:
+        # Initialize values in a subclass
+        # Refer to ElizaDeducerInitializer for an example
+        # Example input/output based on ElizaDeducerInitializer values:
+        # elizaDeducer.respond("a is a b")
+        # Output: [what is a a;a is a b, explain a;a is a b]
+        self.reflections: dict[str, str] = {}
+        self.babble2: list[PhraseMatcher] = []
+
+    def respond(self, msg: str) -> list[AXKeyValuePair]:
+        for pm in self.babble2:
+            if pm.matches(msg):
+                return pm.respond(msg, self.reflections)
+        return []
+
+
+class ElizaDeducerInitializer(ElizaDeducer):
+    def __init__(self) -> None:
+        super().__init__()
+        self.ref: dict[str, str] = {
+            "am": "are",
+            "was": "were",
+            "i": "you",
+            "i'd": "you would",
+            "i've": "you have",
+            "my": "your",
+            "are": "am",
+            "you've": "I have",
+            "you'll": "I will",
+            "your": "my",
+            "yours": "mine",
+            "you": "i",
+            "me": "you"
+        }
+        self.reflections = self.ref  # Assuming reflections is a direct reference to ref
+
+        babble_tmp: list[PhraseMatcher] = []
+        kvs: list[AXKeyValuePair] = [
+            AXKeyValuePair("what is a {0}", "{0} is a {1}"),
+            AXKeyValuePair("explain {0}", "{0} is a {1}")
+        ]
+        babble_tmp.append(PhraseMatcher("(.*) is (.*)", kvs))
+        self.babble2 = babble_tmp

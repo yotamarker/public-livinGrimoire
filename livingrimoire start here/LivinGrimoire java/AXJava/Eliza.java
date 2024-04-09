@@ -34,6 +34,8 @@ public class Eliza {
         ArrayList<PhraseMatcher> babbleTmp = new ArrayList<PhraseMatcher>();
         babbleTmp.add(new PhraseMatcher("i need (.*)", new String[] { "Why do you need {0}?",
                 "Would it really help you to get {0}?", "Are you sure you need {0}?" }));
+        babbleTmp.add(new PhraseMatcher("we are going to (.*) today", new String[] { "I'm down like a clown to {0} charlie brown",
+                "sweet, I want to {0}", "awesome" }));
         babbleTmp.add(
                 new PhraseMatcher("why don'?t you ([^\\?]*)\\??", new String[] { "Do you really think I don't {0}?",
                         "Perhaps eventually I will {0}.", "Do you really want me to {0}?" }));
@@ -163,7 +165,7 @@ public class Eliza {
 
         public String respond(String str) {
             Matcher m = matcher.matcher(str);
-            m.find();
+            if(m.find()){}
             String p = randomPhrase();
             int tmp = m.groupCount();
             for (int i = 0; i < tmp; i++) {

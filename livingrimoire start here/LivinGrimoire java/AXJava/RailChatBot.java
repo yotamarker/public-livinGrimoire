@@ -71,4 +71,8 @@ public class RailChatBot {
 //        if (!temp.isEmpty()){context = temp;}
         return temp;
     }
+    public void learnV2(String ear, ElizaDeducer elizaDeducer){
+        feedKeyValuePairs(elizaDeducer.respond(ear));
+        learn(ear);
+    }
 }

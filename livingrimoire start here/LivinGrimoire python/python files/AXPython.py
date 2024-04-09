@@ -2211,6 +2211,10 @@ class RailChatBot:
         for kv in kv_list:
             self.learn_key_value(kv.get_key(), kv.get_value())
 
+    def learnV2(self, ear, eliza_deducer):
+        self.feed_key_value_pairs(eliza_deducer.respond(ear))
+        self.learn(ear)
+
 
 class Eliza:
     reflections = {

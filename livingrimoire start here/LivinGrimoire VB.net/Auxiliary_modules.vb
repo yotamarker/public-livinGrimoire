@@ -799,6 +799,14 @@ Module Auxiliary_modules
         Private key As String = ""
         Private value As String = ""
 
+        Public Sub New()
+        End Sub
+
+        Public Sub New(ByVal key As String, ByVal value As String)
+            Me.key = key
+            Me.value = value
+        End Sub
+
         Public Function GetKey() As String
             Return key
         End Function
@@ -814,6 +822,10 @@ Module Auxiliary_modules
         Public Sub SetValue(ByVal value As String)
             Me.value = value
         End Sub
+
+        Public Overrides Function ToString() As String
+            Return key & ";" & value
+        End Function
     End Class
     Public Class TrGEV3
         ' Advanced boolean gates with internal logic.
@@ -1926,6 +1938,18 @@ Module Auxiliary_modules
             Dim temp As String = dic(ear).GetRNDElement()
             Return temp
         End Function
+        Public Sub FeedKeyValuePairs(ByVal kvList As List(Of AXKeyValuePair))
+            If kvList.Count = 0 Then
+                Return
+            End If
+            For Each kv As AXKeyValuePair In kvList
+                LearnKeyValue(kv.GetKey, kv.GetValue)
+            Next
+        End Sub
+        Public Sub LearnV2(ByVal ear As String, ByVal eliza_deducer As ElizaDeducer)
+            FeedKeyValuePairs(eliza_deducer.Respond(ear))
+            Learn(ear)
+        End Sub
     End Class
     Public Class SkillHubAlgDispenser
         Private skills As New List(Of DiSkillV2)()
@@ -2376,5 +2400,96 @@ Module Auxiliary_modules
             prev = current
             Return result
         End Function
+    End Class
+    Public Class ElizaDeducer
+        Public reflections As New Dictionary(Of String, String)()
+        Public babble2 As New List(Of PhraseMatcher)()
+        Public ref As New Dictionary(Of String, String)()
+
+        Public Sub New()
+            ' init values in subclass
+            ' see ElizaDeducerInitializer for example
+            ' example input ountput based on ElizaDeducerInitializer values :
+            ' elizaDeducer.respond("a is a b")
+            ' [what is a a;a is a b, explain a;a is a b]
+
+        End Sub
+
+        Public Function Respond(ByVal msg As String) As List(Of AXKeyValuePair)
+            For Each pm As PhraseMatcher In babble2
+                If pm.Matches(msg) Then
+                    Return pm.Respond(msg, Me)
+                End If
+            Next
+            Return New List(Of AXKeyValuePair)()
+        End Function
+
+        Public Class PhraseMatcher
+            Public ReadOnly matcher As Regex
+            Public ReadOnly responses As List(Of AXKeyValuePair)
+
+            Public Sub New(ByVal matcher As String, ByVal responses As List(Of AXKeyValuePair))
+                Me.matcher = New Regex(matcher)
+                Me.responses = responses
+            End Sub
+
+            Public Function Matches(ByVal str As String) As Boolean
+                Dim m As Match = matcher.Match(str)
+                Return m.Success
+            End Function
+
+            Public Function Respond(ByVal str As String, ByVal ed As ElizaDeducer) As List(Of AXKeyValuePair)
+                Dim m As Match = matcher.Match(str)
+                If m.Success Then
+                    Dim result As New List(Of AXKeyValuePair)()
+                    Dim tmp As Integer = m.Groups.Count
+                    For Each kv As AXKeyValuePair In responses
+                        Dim tempKV As New AXKeyValuePair(kv.GetKey, kv.GetValue)
+                        For i As Integer = 0 To tmp - 1
+                            Dim s As String = Reflect(m.Groups(i + 1).Value, ed)
+                            tempKV.SetKey(tempKV.GetKey.Replace("{" & i & "}", s).ToLower())
+                            tempKV.SetValue(tempKV.GetValue.Replace("{" & i & "}", s).ToLower())
+                        Next
+                        result.Add(tempKV)
+                    Next
+                    Return result
+                End If
+                Return New List(Of AXKeyValuePair)()
+            End Function
+
+            Public Function Reflect(ByVal s As String, ByVal ed As ElizaDeducer) As String
+                Dim sa As String() = s.Split(" ")
+                If ed.reflections.ContainsKey(s) Then
+                    Return ed.reflections(s)
+                End If
+                Return s
+            End Function
+        End Class
+    End Class
+    Public Class ElizaDeducerInitializer
+        Inherits ElizaDeducer
+
+        Public Sub New()
+            ref.Add("am", "are")
+            ref.Add("was", "were")
+            ref.Add("i", "you")
+            ref.Add("i'd", "you would")
+            ref.Add("i've", "you have")
+            ref.Add("my", "your")
+            ref.Add("are", "am")
+            ref.Add("you've", "I have")
+            ref.Add("you'll", "I will")
+            ref.Add("your", "my")
+            ref.Add("yours", "mine")
+            ref.Add("you", "I")
+            ref.Add("me", "you")
+            reflections = ref
+            Dim babbleTmp As New List(Of PhraseMatcher)()
+            Dim kvs As New List(Of AXKeyValuePair)()
+            kvs.Add(New AXKeyValuePair("what is a {0}", "{0} is a {1}"))
+            kvs.Add(New AXKeyValuePair("explain {0}", "{0} is a {1}"))
+            babbleTmp.Add(New PhraseMatcher("(.*) is a (.*)", kvs))
+            babble2 = babbleTmp
+        End Sub
     End Class
 End Module

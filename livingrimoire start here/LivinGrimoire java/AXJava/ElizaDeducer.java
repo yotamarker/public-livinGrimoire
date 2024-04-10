@@ -25,7 +25,7 @@ public class ElizaDeducer {
     public ArrayList<AXKeyValuePair> respond(String msg) {
         for (PhraseMatcher pm : babble2) {
             if (pm.matches(msg)) {
-                return pm.respond(msg.toLowerCase());
+                return pm.respond(msg);
             }
         }
         return new ArrayList<AXKeyValuePair>();

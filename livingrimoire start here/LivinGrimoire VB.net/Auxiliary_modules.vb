@@ -2458,7 +2458,6 @@ Module Auxiliary_modules
             End Function
 
             Public Function Reflect(ByVal s As String, ByVal ed As ElizaDeducer) As String
-                Dim sa As String() = s.Split(" ")
                 If ed.reflections.ContainsKey(s) Then
                     Return ed.reflections(s)
                 End If

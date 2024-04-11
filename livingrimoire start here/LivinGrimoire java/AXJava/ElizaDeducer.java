@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
 
 public class ElizaDeducer {
     public  List<PhraseMatcher> babble2;
-    public HashMap<String, String> ref = new HashMap<String, String>();
     public ElizaDeducer() {
         // init values in subclass
         // see ElizaDeducerInitializer for example

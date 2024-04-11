@@ -2402,9 +2402,7 @@ Module Auxiliary_modules
         End Function
     End Class
     Public Class ElizaDeducer
-        Public reflections As New Dictionary(Of String, String)()
         Public babble2 As New List(Of PhraseMatcher)()
-        Public ref As New Dictionary(Of String, String)()
 
         Public Sub New()
             ' init values in subclass
@@ -2418,7 +2416,7 @@ Module Auxiliary_modules
         Public Function Respond(ByVal msg As String) As List(Of AXKeyValuePair)
             For Each pm As PhraseMatcher In babble2
                 If pm.Matches(msg) Then
-                    Return pm.Respond(msg, Me)
+                    Return pm.Respond(msg)
                 End If
             Next
             Return New List(Of AXKeyValuePair)()
@@ -2438,7 +2436,7 @@ Module Auxiliary_modules
                 Return m.Success
             End Function
 
-            Public Function Respond(ByVal str As String, ByVal ed As ElizaDeducer) As List(Of AXKeyValuePair)
+            Public Function Respond(ByVal str As String) As List(Of AXKeyValuePair)
                 Dim m As Match = matcher.Match(str)
                 If m.Success Then
                     Dim result As New List(Of AXKeyValuePair)()
@@ -2446,7 +2444,7 @@ Module Auxiliary_modules
                     For Each kv As AXKeyValuePair In responses
                         Dim tempKV As New AXKeyValuePair(kv.GetKey, kv.GetValue)
                         For i As Integer = 0 To tmp - 1
-                            Dim s As String = Reflect(m.Groups(i + 1).Value, ed)
+                            Dim s As String = m.Groups(i + 1).Value
                             tempKV.SetKey(tempKV.GetKey.Replace("{" & i & "}", s).ToLower())
                             tempKV.SetValue(tempKV.GetValue.Replace("{" & i & "}", s).ToLower())
                         Next
@@ -2456,38 +2454,17 @@ Module Auxiliary_modules
                 End If
                 Return New List(Of AXKeyValuePair)()
             End Function
-
-            Public Function Reflect(ByVal s As String, ByVal ed As ElizaDeducer) As String
-                If ed.reflections.ContainsKey(s) Then
-                    Return ed.reflections(s)
-                End If
-                Return s
-            End Function
         End Class
     End Class
     Public Class ElizaDeducerInitializer
         Inherits ElizaDeducer
 
         Public Sub New()
-            ref.Add("am", "are")
-            ref.Add("was", "were")
-            ref.Add("i", "you")
-            ref.Add("i'd", "you would")
-            ref.Add("i've", "you have")
-            ref.Add("my", "your")
-            ref.Add("are", "am")
-            ref.Add("you've", "I have")
-            ref.Add("you'll", "I will")
-            ref.Add("your", "my")
-            ref.Add("yours", "mine")
-            ref.Add("you", "I")
-            ref.Add("me", "you")
-            reflections = ref
             Dim babbleTmp As New List(Of PhraseMatcher)()
             Dim kvs As New List(Of AXKeyValuePair)()
-            kvs.Add(New AXKeyValuePair("what is a {0}", "{0} is a {1}"))
-            kvs.Add(New AXKeyValuePair("explain {0}", "{0} is a {1}"))
-            babbleTmp.Add(New PhraseMatcher("(.*) is a (.*)", kvs))
+            kvs.Add(New AXKeyValuePair("what is a {0}", "{0} is {1}"))
+            kvs.Add(New AXKeyValuePair("explain {0}", "{0} is {1}"))
+            babbleTmp.Add(New PhraseMatcher("(.*) is (.*)", kvs))
             babble2 = babbleTmp
         End Sub
     End Class

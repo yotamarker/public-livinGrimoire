@@ -2273,9 +2273,7 @@ class ChangeDetector {
     }
 }
 class ElizaDeducer {
-    var reflections: [String: String]
     var babble2: [PhraseMatcher]
-    var ref: [String: String] = [:]
 
     init() {
         // init values in subclass
@@ -2283,14 +2281,13 @@ class ElizaDeducer {
         // example input ountput based on ElizaDeducerInitializer values :
         // elizaDeducer.respond("a is a b")
         // [what is a a;a is a b, explain a;a is a b]
-        self.reflections = [:]
         self.babble2 = []
     }
 
     func respond(_ msg: String) -> [AXKeyValuePair] {
         for pm in babble2 {
             if pm.matches(msg) {
-                return pm.respond(msg, self)
+                return pm.respond(msg)
             }
         }
         return []
@@ -2339,7 +2336,7 @@ class ElizaDeducer {
                 return ""
             }
         }
-        func respond(_ str: String,_ ed:ElizaDeducer) -> [AXKeyValuePair] {
+        func respond(_ str: String) -> [AXKeyValuePair] {
             var result: [AXKeyValuePair] = []
             for kv in responses {
                 let tempKV = AXKeyValuePair(key: kv.key, value: kv.value)
@@ -2347,40 +2344,18 @@ class ElizaDeducer {
                 let sa = s1.split(separator: "_").map { String($0) }
                 for i in 0..<sa.count {
                         let s = sa[i]
-                        let reflectedValue = reflect(s, ed)
-                        tempKV.key = tempKV.key.replacingOccurrences(of: "{\(i)}", with: reflectedValue.lowercased())
-                        tempKV.value = tempKV.value.replacingOccurrences(of: "{\(i)}", with: reflectedValue.lowercased())
+                        tempKV.key = tempKV.key.replacingOccurrences(of: "{\(i)}", with: s.lowercased())
+                        tempKV.value = tempKV.value.replacingOccurrences(of: "{\(i)}", with: s.lowercased())
                     }
                 result.append(tempKV)
             }
             return result
-        }
-
-        func reflect(_ s: String, _ ed:ElizaDeducer) -> String {
-            if let reflectedValue = ed.reflections[s] {
-                return reflectedValue
-            }
-            return s
         }
     }
 }
 class ElizaDeducerInitializer: ElizaDeducer {
     override init() {
         super.init()
-        ref["am"] = "are"
-        ref["was"] = "were"
-        ref["i"] = "you"
-        ref["i'd"] = "you would"
-        ref["i've"] = "you have"
-        ref["my"] = "your"
-        ref["are"] = "am"
-        ref["you've"] = "I have"
-        ref["you'll"] = "I will"
-        ref["your"] = "my"
-        ref["yours"] = "mine"
-        ref["you"] = "I"
-        ref["me"] = "you"
-        reflections = ref
         var babbleTmp: [PhraseMatcher] = []
         var kvs: [AXKeyValuePair] = []
         kvs.append(AXKeyValuePair(key: "what is a {0}", value: "{0} is {1}"))

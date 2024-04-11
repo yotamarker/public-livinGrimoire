@@ -2558,24 +2558,19 @@ class PhraseMatcher:
         m: Match = self.matcher.match(str1)
         return m is not None
 
-    def respond(self, str: str, reflections: dict[str, str]) -> list[AXKeyValuePair]:
-        m: Match = self.matcher.match(str)
+    def respond(self, str1: str) -> list[AXKeyValuePair]:
+        m: Match = self.matcher.match(str1)
         result: list[AXKeyValuePair] = []
         if m:
             tmp: int = len(m.groups())
             for kv in self.responses:
                 temp_kv: AXKeyValuePair = AXKeyValuePair(kv.get_key(), kv.get_value())
                 for i in range(tmp):
-                    s: str = self.reflect(m.group(i + 1), reflections)
+                    s: str = m.group(i + 1)
                     temp_kv.set_key(temp_kv.get_key().replace(f"{{{i}}}", s).lower())
                     temp_kv.set_value(temp_kv.get_value().replace(f"{{{i}}}", s).lower())
                 result.append(temp_kv)
         return result
-
-    def reflect(self, s, reflections: dict[str, str]):
-        if s in reflections:
-            s = reflections[s]
-        return s
 
 
 class ElizaDeducer:
@@ -2591,30 +2586,13 @@ class ElizaDeducer:
     def respond(self, msg: str) -> list[AXKeyValuePair]:
         for pm in self.babble2:
             if pm.matches(msg):
-                return pm.respond(msg, self.reflections)
+                return pm.respond(msg)
         return []
 
 
 class ElizaDeducerInitializer(ElizaDeducer):
     def __init__(self) -> None:
         super().__init__()
-        self.ref: dict[str, str] = {
-            "am": "are",
-            "was": "were",
-            "i": "you",
-            "i'd": "you would",
-            "i've": "you have",
-            "my": "your",
-            "are": "am",
-            "you've": "I have",
-            "you'll": "I will",
-            "your": "my",
-            "yours": "mine",
-            "you": "i",
-            "me": "you"
-        }
-        self.reflections = self.ref  # Assuming reflections is a direct reference to ref
-
         babble_tmp: list[PhraseMatcher] = []
         kvs: list[AXKeyValuePair] = [
             AXKeyValuePair("what is a {0}", "{0} is {1}"),
@@ -2627,6 +2605,6 @@ class ElizaDeducerInitializer(ElizaDeducer):
         ]))
         babble_tmp.append(PhraseMatcher("if (.*) than (.*)", [
             AXKeyValuePair("{0}", "{1}"),
-            AXKeyValuePair("{0}", "than {0} I guess")
+            AXKeyValuePair("{0}", "than {1} I guess")
         ]))
         self.babble2 = babble_tmp

@@ -11,7 +11,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ElizaDeducer {
-    public  Map<String, String> reflections;
     public  List<PhraseMatcher> babble2;
     public HashMap<String, String> ref = new HashMap<String, String>();
     public ElizaDeducer() {
@@ -52,20 +51,13 @@ public class ElizaDeducer {
             for (AXKeyValuePair kv : this.responses) {
                 AXKeyValuePair tempKV= new AXKeyValuePair(kv.getKey(),kv.getValue());
                 for (int i = 0; i < tmp; i++) {
-                    String s = reflect(m.group(i + 1),i);
+                    String s = m.group(i + 1);
                     tempKV.setKey(tempKV.getKey().replace("{" + i + "}", s).toLowerCase());
                     tempKV.setValue(tempKV.getValue().replace("{" + i + "}", s).toLowerCase());
                 }
                 result.add(tempKV);
             }
             return result;
-        }
-
-        public String reflect(String s, int index) {
-            if (reflections.containsKey(s)) {
-                return reflections.get(s);
-            }
-            return s;
         }
     }
 }

@@ -2927,9 +2927,7 @@ public class ChangeDetector
 }
 public class ElizaDeducer
 {
-    public Dictionary<string, string> reflections = new Dictionary<string, string>();
     public List<PhraseMatcher> babble2 = new List<PhraseMatcher>();
-    public Dictionary<string, string> @ref = new Dictionary<string, string>();
 
     public ElizaDeducer()
     {
@@ -2946,7 +2944,7 @@ public class ElizaDeducer
         {
             if (pm.Matches(msg))
             {
-                return pm.Respond(msg, this);
+                return pm.Respond(msg);
             }
         }
         return new List<AXKeyValuePair>();
@@ -2969,7 +2967,7 @@ public class ElizaDeducer
             return m.Success;
         }
 
-        public List<AXKeyValuePair> Respond(string str, ElizaDeducer ed)
+        public List<AXKeyValuePair> Respond(string str)
         {
             Match m = matcher.Match(str);
             if (m.Success)
@@ -2981,7 +2979,7 @@ public class ElizaDeducer
                     AXKeyValuePair tempKV = new AXKeyValuePair(kv.GetKey(), kv.GetValue());
                     for (int i = 0; i < tmp - 1; i++)
                     {
-                        string s = Reflect(m.Groups[i + 1].Value, ed);
+                        string s = m.Groups[i + 1].Value;
                         tempKV.SetKey(tempKV.GetKey().Replace("{" + i + "}", s).ToLower());
                         tempKV.SetValue(tempKV.GetValue().Replace("{" + i + "}", s).ToLower());
                     }
@@ -2991,36 +2989,12 @@ public class ElizaDeducer
             }
             return new List<AXKeyValuePair>();
         }
-
-        public string Reflect(string s, ElizaDeducer ed)
-        {
-            if (ed.reflections.ContainsKey(s))
-            {
-                return ed.reflections[s];
-            }
-            return s;
-        }
     }
 }
 public class ElizaDeducerInitializer : ElizaDeducer
 {
     public ElizaDeducerInitializer()
     {
-        @ref.Add("am", "are");
-        @ref.Add("was", "were");
-        @ref.Add("i", "you");
-        @ref.Add("i'd", "you would");
-        @ref.Add("i've", "you have");
-        @ref.Add("my", "your");
-        @ref.Add("are", "am");
-        @ref.Add("you've", "I have");
-        @ref.Add("you'll", "I will");
-        @ref.Add("your", "my");
-        @ref.Add("yours", "mine");
-        @ref.Add("you", "I");
-        @ref.Add("me", "you");
-        reflections = @ref;
-
         List<PhraseMatcher> babbleTmp = new List<PhraseMatcher>();
         List<AXKeyValuePair> kvs = new List<AXKeyValuePair>();
         kvs.Add(new AXKeyValuePair("what is a {0}", "{0} is a {1}"));

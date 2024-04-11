@@ -62,11 +62,10 @@ public class ElizaDeducer {
         }
 
         public String reflect(String s, int index) {
-            String[] sa = s.split(" ");
-            if (reflections.containsKey(sa[index])) {
-                sa[index] = reflections.get(sa[index]);
+            if (reflections.containsKey(s)) {
+                return reflections.get(s);
             }
-            return sa[index];
+            return s;
         }
     }
 }

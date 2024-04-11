@@ -2328,7 +2328,7 @@ class ElizaDeducer {
                 for match in matches {
                     for i in 1..<match.numberOfRanges {
                         if let range = Range(match.range(at: i), in: input) {
-                            result += input[range] + " "
+                            result += input[range] + "_"
                         }
                     }
                 }
@@ -2344,7 +2344,7 @@ class ElizaDeducer {
             for kv in responses {
                 let tempKV = AXKeyValuePair(key: kv.key, value: kv.value)
                 let s1: String = getMatchedString(for: self.regex, in: str)
-                let sa = s1.split(separator: " ").map { String($0) }
+                let sa = s1.split(separator: "_").map { String($0) }
                 for i in 0..<sa.count {
                         let s = sa[i]
                         let reflectedValue = reflect(s, ed)
@@ -2383,9 +2383,9 @@ class ElizaDeducerInitializer: ElizaDeducer {
         reflections = ref
         var babbleTmp: [PhraseMatcher] = []
         var kvs: [AXKeyValuePair] = []
-        kvs.append(AXKeyValuePair(key: "what is a {0}", value: "{0} is a {1}"))
-        kvs.append(AXKeyValuePair(key: "explain {0}", value: "{0} is a {1}"))
-        babbleTmp.append(PhraseMatcher(matcher: "(.*) is a (.*)", responses: kvs))
+        kvs.append(AXKeyValuePair(key: "what is a {0}", value: "{0} is {1}"))
+        kvs.append(AXKeyValuePair(key: "explain {0}", value: "{0} is {1}"))
+        babbleTmp.append(PhraseMatcher(matcher: "(.*) is (.*)", responses: kvs))
         babble2 = babbleTmp
     }
 }

@@ -2554,8 +2554,8 @@ class PhraseMatcher:
         self.matcher: Pattern = re.compile(matcher)
         self.responses: list[AXKeyValuePair] = responses
 
-    def matches(self, str: str) -> bool:
-        m: Match = self.matcher.match(str)
+    def matches(self, str1: str) -> bool:
+        m: Match = self.matcher.match(str1)
         return m is not None
 
     def respond(self, str: str, reflections: dict[str, str]) -> list[AXKeyValuePair]:
@@ -2566,17 +2566,16 @@ class PhraseMatcher:
             for kv in self.responses:
                 temp_kv: AXKeyValuePair = AXKeyValuePair(kv.get_key(), kv.get_value())
                 for i in range(tmp):
-                    s: str = self.reflect(m.group(i + 1), i, reflections)
+                    s: str = self.reflect(m.group(i + 1), reflections)
                     temp_kv.set_key(temp_kv.get_key().replace(f"{{{i}}}", s).lower())
                     temp_kv.set_value(temp_kv.get_value().replace(f"{{{i}}}", s).lower())
                 result.append(temp_kv)
         return result
 
-    def reflect(self, s, index, reflections: dict[str, str]):
-        sa = s.split(" ")
-        if sa[index] in reflections:
-            sa[index] = reflections[sa[index]]
-        return sa[index]
+    def reflect(self, s, reflections: dict[str, str]):
+        if s in reflections:
+            s = reflections[s]
+        return s
 
 
 class ElizaDeducer:
@@ -2618,8 +2617,16 @@ class ElizaDeducerInitializer(ElizaDeducer):
 
         babble_tmp: list[PhraseMatcher] = []
         kvs: list[AXKeyValuePair] = [
-            AXKeyValuePair("what is a {0}", "{0} is a {1}"),
-            AXKeyValuePair("explain {0}", "{0} is a {1}")
+            AXKeyValuePair("what is a {0}", "{0} is {1}"),
+            AXKeyValuePair("explain {0}", "{0} is {1}")
         ]
         babble_tmp.append(PhraseMatcher("(.*) is (.*)", kvs))
+        babble_tmp.append(PhraseMatcher("if (.*) or (.*) than (.*)", [
+            AXKeyValuePair("{0}", "{2}"),
+            AXKeyValuePair("{1}", "{2}")
+        ]))
+        babble_tmp.append(PhraseMatcher("if (.*) than (.*)", [
+            AXKeyValuePair("{0}", "{1}"),
+            AXKeyValuePair("{0}", "than {0} I guess")
+        ]))
         self.babble2 = babble_tmp

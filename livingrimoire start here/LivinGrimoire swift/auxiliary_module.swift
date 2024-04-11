@@ -108,13 +108,34 @@ class EmoRecognizer {
     }
 }
 // (*) input filters
-class AXKeyValuePair{
-    private var key:String = ""
-    private var value:String = ""
-    func getKey()->String{return key}
-    func getValue()->String{return value}
-    func setKey(key:String){self.key = key}
-    func setValue(value:String){self.value = value}
+class AXKeyValuePair {
+    var key: String
+    var value: String
+
+    init(key: String = "", value: String = "") {
+        self.key = key
+        self.value = value
+    }
+
+    func getKey() -> String {
+        return key
+    }
+
+    func setKey(_ key: String) {
+        self.key = key
+    }
+
+    func getValue() -> String {
+        return value
+    }
+
+    func setValue(_ value: String) {
+        self.value = value
+    }
+
+    var description: String {
+        return "\(key);\(value)"
+    }
 }
 class InputFilter{
     // filter out non-relevant input
@@ -1575,7 +1596,7 @@ class Prompt {
     var regex:String = ""
     
     init() {
-        kv.setKey(key: "default")
+        kv.setKey("default")
     }
     
     func getPrompt() -> String {
@@ -1587,7 +1608,7 @@ class Prompt {
     }
     
     func process(in1: String) -> Bool {
-        kv.setValue(value: regexUtil.regexChecker(theRegex: regex, str2Check: in1))
+        kv.setValue(regexUtil.regexChecker(theRegex: regex, str2Check: in1))
         return kv.getValue().isEmpty
     }
     
@@ -1639,8 +1660,8 @@ class AXPrompt {
             return nil
         }
         let temp = AXKeyValuePair()
-        temp.setKey(key: kv!.getKey())
-        temp.setValue(value: kv!.getValue())
+        temp.setKey(kv!.getKey())
+        temp.setValue(kv!.getValue())
         kv = nil
         return temp
     }
@@ -2126,6 +2147,30 @@ class RailChatBot {
         let temp: String = dic[ear]?.getRndItem() ?? ""
         return temp
     }
+    func learnKeyValue(context: String, reply: String) {
+        // Learn questions and answers/key values
+        if dic[context] == nil {
+            dic[context] = RefreshQ()
+        }
+        if dic[reply] == nil {
+            dic[reply] = RefreshQ()
+        }
+        dic[context]!.input(in1: reply)
+    }
+
+    func feedKeyValuePairs(_ kvList: [AXKeyValuePair]) {
+        guard !kvList.isEmpty else {
+            return
+        }
+        
+        for kv in kvList {
+            learnKeyValue(context: kv.key, reply: kv.value)
+        }
+    }
+    func learnV2(_ ear: String, _ elizaDeducer: ElizaDeducer) {
+        feedKeyValuePairs(elizaDeducer.respond(ear))
+        learn(ear: ear)
+    }
 }
 class OnOffSwitch {
     private var mode: Bool = false
@@ -2225,5 +2270,122 @@ class ChangeDetector {
         }
         prev = current
         return result
+    }
+}
+class ElizaDeducer {
+    var reflections: [String: String]
+    var babble2: [PhraseMatcher]
+    var ref: [String: String] = [:]
+
+    init() {
+        // init values in subclass
+        // see ElizaDeducerInitializer for example
+        // example input ountput based on ElizaDeducerInitializer values :
+        // elizaDeducer.respond("a is a b")
+        // [what is a a;a is a b, explain a;a is a b]
+        self.reflections = [:]
+        self.babble2 = []
+    }
+
+    func respond(_ msg: String) -> [AXKeyValuePair] {
+        for pm in babble2 {
+            if pm.matches(msg) {
+                return pm.respond(msg, self)
+            }
+        }
+        return []
+    }
+
+    class PhraseMatcher {
+        let matcher: NSRegularExpression
+        let responses: [AXKeyValuePair]
+        let regex: String
+
+        init(matcher: String, responses: [AXKeyValuePair]) {
+            do {
+                self.matcher = try NSRegularExpression(pattern: matcher, options: [])
+            } catch {
+                fatalError("Error creating regular expression: \(error)")
+            }
+            self.responses = responses
+            self.regex = matcher
+        }
+
+        func matches(_ str: String) -> Bool {
+            let range = NSRange(location: 0, length: str.utf16.count)
+            return matcher.firstMatch(in: str, options: [], range: range) != nil
+        }
+        func getMatchedString(for pattern: String, in input: String) -> String {
+            do {
+                // Create an NSRegularExpression instance
+                let regex = try NSRegularExpression(pattern: pattern, options: [])
+
+                // Find all matches in the input string
+                let matches = regex.matches(in: input, options: [], range: NSRange(location: 0, length: input.utf16.count))
+
+                // Extract and concatenate the matched substrings
+                var result = ""
+                for match in matches {
+                    for i in 1..<match.numberOfRanges {
+                        if let range = Range(match.range(at: i), in: input) {
+                            result += input[range] + " "
+                        }
+                    }
+                }
+                result = String(result.dropLast()) // Remove the trailing space
+                return result
+            } catch {
+                print("Error creating regular expression: \(error)")
+                return ""
+            }
+        }
+        func respond(_ str: String,_ ed:ElizaDeducer) -> [AXKeyValuePair] {
+            var result: [AXKeyValuePair] = []
+            for kv in responses {
+                let tempKV = AXKeyValuePair(key: kv.key, value: kv.value)
+                let s1: String = getMatchedString(for: self.regex, in: str)
+                let sa = s1.split(separator: " ").map { String($0) }
+                for i in 0..<sa.count {
+                        let s = sa[i]
+                        let reflectedValue = reflect(s, ed)
+                        tempKV.key = tempKV.key.replacingOccurrences(of: "{\(i)}", with: reflectedValue.lowercased())
+                        tempKV.value = tempKV.value.replacingOccurrences(of: "{\(i)}", with: reflectedValue.lowercased())
+                    }
+                result.append(tempKV)
+            }
+            return result
+        }
+
+        func reflect(_ s: String, _ ed:ElizaDeducer) -> String {
+            if let reflectedValue = ed.reflections[s] {
+                return reflectedValue
+            }
+            return s
+        }
+    }
+}
+class ElizaDeducerInitializer: ElizaDeducer {
+    override init() {
+        super.init()
+        ref["am"] = "are"
+        ref["was"] = "were"
+        ref["i"] = "you"
+        ref["i'd"] = "you would"
+        ref["i've"] = "you have"
+        ref["my"] = "your"
+        ref["are"] = "am"
+        ref["you've"] = "I have"
+        ref["you'll"] = "I will"
+        ref["your"] = "my"
+        ref["yours"] = "mine"
+        ref["you"] = "I"
+        ref["me"] = "you"
+        reflections = ref
+        var babbleTmp: [PhraseMatcher] = []
+        var kvs: [AXKeyValuePair] = []
+        kvs.append(AXKeyValuePair(key: "what is a {0}", value: "{0} is a {1}"))
+        kvs.append(AXKeyValuePair(key: "explain {0}", value: "{0} is a {1}"))
+        babbleTmp.append(PhraseMatcher(matcher: "(.*) is a (.*)", responses: kvs))
+        babble2 = babbleTmp
     }
 }

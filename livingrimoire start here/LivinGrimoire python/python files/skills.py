@@ -1,5 +1,5 @@
 from __future__ import annotations
-from LivinGrimoire23 import *
+# from LivinGrimoire23 import *
 from AXPython import *
 
 
@@ -321,7 +321,7 @@ class DiHabit(DiSkillV2):
                 return
             case _:
                 if ear.__contains__("clear"):
-                    self._temp = self._clearCmdBreaker(ear)
+                    self._temp = self._clearCmdBreaker.extractCmdParam(ear)
                     if self._todo.containsTask(self._temp):
                         self._todo.clearTask(self._temp)
                         self.setVerbatimAlg(4, f'{self._temp} task cleared')
@@ -373,7 +373,8 @@ class TheShell(DiSkillV2):
                 self.logicChobit.removeSkill(ref)
                 return 1  # logic skill has been uninstalled
             return 2  # logic skill is not installed
-        ref: DiSkillV2 = self.hardwareChobit[skillKey]
+        ref: DiSkillV2 = self.hardwareSkills[skillKey]
+        # ref: DiSkillV2 = self.hardwareChobit[skillKey]
         if self.hardwareChobit.containsSkill(ref):
             self.hardwareChobit.removeSkill(ref)
             return 3  # hardware skill has been uninstalled
@@ -1737,3 +1738,43 @@ class DiBurstEliza(DiSkillV2):
             if not ear:
                 return
             self.setSimpleAlg(self.eliza.respond(ear))
+
+
+class DiDeducer(DiSkillV2):
+    def __init__(self, deducer: ElizaDeducer):
+        super().__init__()
+        self.rcb: RailChatBot = RailChatBot()
+        self.dialog: AXCmdBreaker = AXCmdBreaker("babe")
+        self.filter: UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue(5)
+        self.bads: AXCmdBreaker = AXCmdBreaker("is bad")
+        self.goods: AXCmdBreaker = AXCmdBreaker("is good")
+        self.filterTemp: str = ""
+        self.elizaDeducer: ElizaDeducer = deducer
+
+    def setQueLim(self, lim):
+        self.filter.setLimit(lim)
+
+    def input(self, ear, skin, eye):
+        # filter learn:
+        self.filterTemp = self.bads.extractCmdParam(ear)
+        if self.filterTemp:
+            self.filter.insert(self.filterTemp)
+            self.filterTemp = ""
+            self.setSimpleAlg("i will keep that in mind")
+            return
+        self.filterTemp = self.goods.extractCmdParam(ear)
+        if self.filterTemp:
+            self.filter.removeItem(self.filterTemp)
+            self.filterTemp = ""
+            self.setSimpleAlg("understood")
+            return
+        if self.filter.strContainsResponse(ear):
+            return  # filter in
+        temp = self.dialog.extractCmdParam(ear)
+        if temp:
+            result = self.rcb.respondDialog(temp)
+            if self.filter.strContainsResponse(result):
+                return  # filter out
+            self.setSimpleAlg(Eliza.PhraseMatcher.reflect(result))
+            return
+        self.rcb.learnV2(ear, self.elizaDeducer)

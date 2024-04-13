@@ -2211,7 +2211,7 @@ class RailChatBot:
         for kv in kv_list:
             self.learn_key_value(kv.get_key(), kv.get_value())
 
-    def learnV2(self, ear, eliza_deducer):
+    def learnV2(self, ear, eliza_deducer:ElizaDeducer):
         self.feed_key_value_pairs(eliza_deducer.respond(ear))
         self.learn(ear)
 
@@ -2595,16 +2595,24 @@ class ElizaDeducerInitializer(ElizaDeducer):
         super().__init__()
         babble_tmp: list[PhraseMatcher] = []
         kvs: list[AXKeyValuePair] = [
-            AXKeyValuePair("what is a {0}", "{0} is {1}"),
+            AXKeyValuePair("what is {0}", "{0} is {1}"),
             AXKeyValuePair("explain {0}", "{0} is {1}")
         ]
-        babble_tmp.append(PhraseMatcher("(.*) is (.*)", kvs))
+        babble_tmp.append(PhraseMatcher("(.*) is (.*) than (.*)", [
+            AXKeyValuePair("who is {1} {0} or {2}", "{0}"),
+            AXKeyValuePair("who is {1} {2} or {0}", "{0} is}")
+        ]))  # comparison
+        babble_tmp.append(PhraseMatcher("(.*) is (.*)", kvs))  # description
         babble_tmp.append(PhraseMatcher("if (.*) or (.*) than (.*)", [
             AXKeyValuePair("{0}", "{2}"),
             AXKeyValuePair("{1}", "{2}")
-        ]))
+        ]))  # or
         babble_tmp.append(PhraseMatcher("if (.*) than (.*)", [
             AXKeyValuePair("{0}", "{1}"),
             AXKeyValuePair("{0}", "than {1} I guess")
-        ]))
+        ]))  # if
+        babble_tmp.append(PhraseMatcher("(.*) if (.*)", [
+            AXKeyValuePair("{1}", "{0}"),
+            AXKeyValuePair("{1}", "than {0} I guess")
+        ]))  # reverse if
         self.babble2 = babble_tmp

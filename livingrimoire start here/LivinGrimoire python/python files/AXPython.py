@@ -1329,7 +1329,7 @@ class PersistentQuestion:
         if mode in self.dic:
             self._mode = mode
 
-    def setPause(self,pause:int):
+    def setPause(self, pause: int):
         # set pause between question to wait for answer
         self._outputDripper.setLimit(pause)
 
@@ -2211,7 +2211,7 @@ class RailChatBot:
         for kv in kv_list:
             self.learn_key_value(kv.get_key(), kv.get_value())
 
-    def learnV2(self, ear, eliza_deducer:ElizaDeducer):
+    def learnV2(self, ear, eliza_deducer: ElizaDeducer):
         self.feed_key_value_pairs(eliza_deducer.respond(ear))
         self.learn(ear)
 
@@ -2602,11 +2602,27 @@ class ElizaDeducerInitializer(ElizaDeducer):
             AXKeyValuePair("who is {1} {0} or {2}", "{0}"),
             AXKeyValuePair("who is {1} {2} or {0}", "{0} is}")
         ]))  # comparison
+        babble_tmp.append(PhraseMatcher("(.*) because (.*)", [
+            AXKeyValuePair("tell me why {0}", "{1}"),
+            AXKeyValuePair("tell me why {0}", "{0} because {1}"), AXKeyValuePair("explain why {0}", "{0} because {1}")
+        ]))  # why
         babble_tmp.append(PhraseMatcher("(.*) is (.*)", kvs))  # description
+        babble_tmp.append(PhraseMatcher("if (.*) or (.*) or (.*) than (.*)", [
+            AXKeyValuePair("{0}", "{3}"),
+            AXKeyValuePair("{1}", "{3}"), AXKeyValuePair("{2}", "{3}")
+        ]))  # triple or
         babble_tmp.append(PhraseMatcher("if (.*) or (.*) than (.*)", [
             AXKeyValuePair("{0}", "{2}"),
             AXKeyValuePair("{1}", "{2}")
         ]))  # or
+        babble_tmp.append(PhraseMatcher("to (.*) simply (.*)", [
+            AXKeyValuePair("explain how to {0}", "{1}"),
+            AXKeyValuePair("tell me how to {0}", "{1}")
+        ]))  # how
+        babble_tmp.append(PhraseMatcher("if (.*) xor (.*) than (.*)", [
+            AXKeyValuePair("{0} and not {1}", "{2}"),
+            AXKeyValuePair("{1} and not {0}", "{2}")
+        ]))  # xor
         babble_tmp.append(PhraseMatcher("if (.*) than (.*)", [
             AXKeyValuePair("{0}", "{1}"),
             AXKeyValuePair("{0}", "than {1} I guess")
@@ -2615,4 +2631,39 @@ class ElizaDeducerInitializer(ElizaDeducer):
             AXKeyValuePair("{1}", "{0}"),
             AXKeyValuePair("{1}", "than {0} I guess")
         ]))  # reverse if
+        babble_tmp.append(PhraseMatcher("(.*) (?:like|likes) (.*)", [
+            AXKeyValuePair("what does {0} like", "{0} likes {1}"),
+            AXKeyValuePair("what do {0} like", "{0} like {1}")
+        ]))  # likes
         self.babble2 = babble_tmp
+
+
+def negate(sentence):
+    # Check if the sentence contains "not"
+    if "not" in sentence:
+        return sentence.replace("not", "").strip()
+    else:
+        # Replace specific words with their negative forms
+        replacements = {
+            "i ": "i do ",
+            "he ": "he does ",
+            " it ": " it does ",
+            "is": "is not",
+            " am": " am not",
+            " are": " are not",
+            "does": "does not",
+            "do ": "do not ",
+            "may": "may not",
+            "might": "might not",
+            "could": "could not",
+            "would": "would not",
+            "will": "will not",
+            "has ": "has not ",
+            "have ": "have not "
+        }
+        for word, replacement in replacements.items():
+            sentence = sentence.replace(word, replacement)
+        if not "not" in sentence:
+            return "not " + sentence
+
+    return sentence

@@ -1574,6 +1574,7 @@ class DiAware(DiSkillV2):
                                             "Is it a chat, or combat?", "What’s the plot, my tot?",
                                             "Is it a trick, or something slick?", "What’s the deal, my peel?",
                                             "Is it a race, or just a chase?", "What’s the story, my glory?")
+        self.ggReplies:Responder = Responder("meow", "oooweee","chi", "yes i am", "nuzzles you","thanks")
         self._call: str = f'hey {self.name}'
 
     def input(self, ear, skin, eye):
@@ -1591,6 +1592,8 @@ class DiAware(DiSkillV2):
                 self.setSimpleAlg(self.replies.getAResponse())
             case "test":
                 self.setSimpleAlg(self.replies.getAResponse())
+            case "good girl":
+                self.setSimpleAlg(self.ggReplies.getAResponse())
             case self._call:
                 self.setSimpleAlg(self.replies.getAResponse())
 

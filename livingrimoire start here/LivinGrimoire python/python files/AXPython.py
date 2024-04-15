@@ -2598,10 +2598,14 @@ class ElizaDeducerInitializer(ElizaDeducer):
             AXKeyValuePair("what is {0}", "{0} is {1}"),
             AXKeyValuePair("explain {0}", "{0} is {1}")
         ]
-        babble_tmp.append(PhraseMatcher("(.*) is (.*) than (.*)", [
+        babble_tmp.append(PhraseMatcher("(.*) are (.*) than (.*)", [
             AXKeyValuePair("who is {1} {0} or {2}", "{0}"),
             AXKeyValuePair("who is {1} {2} or {0}", "{0} is}")
         ]))  # comparison
+        babble_tmp.append(PhraseMatcher("(.*) is (.*) than (.*)", [
+            AXKeyValuePair("who is {1} {0} or {2}", "{0}"),
+            AXKeyValuePair("who is {1} {2} or {0}", "{0} is")
+        ]))  # comparison2
         babble_tmp.append(PhraseMatcher("(.*) because (.*)", [
             AXKeyValuePair("tell me why {0}", "{1}"),
             AXKeyValuePair("tell me why {0}", "{0} because {1}"), AXKeyValuePair("explain why {0}", "{0} because {1}")

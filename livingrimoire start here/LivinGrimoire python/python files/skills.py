@@ -1574,11 +1574,13 @@ class DiAware(DiSkillV2):
                                             "Is it a chat, or combat?", "What’s the plot, my tot?",
                                             "Is it a trick, or something slick?", "What’s the deal, my peel?",
                                             "Is it a race, or just a chase?", "What’s the story, my glory?")
-        self.ggReplies:Responder = Responder("meow", "oooweee","chi", "yes i am", "nuzzles you","thanks")
+        self.ggReplies: Responder = Responder("meow", "oooweee","chi", "yes i am", "nuzzles you","thanks", "prrr")
         self._call: str = f'hey {self.name}'
+        self._ggFunnel: AXFunnel = AXFunnel("good girl")
+        self._ggFunnel.addK("you are a good girl").addK("such a good girl").addK("you are my good girl")
 
     def input(self, ear, skin, eye):
-        match ear:
+        match self._ggFunnel.funnel(ear):
             case "list skills":
                 self.skills = self.chobit.get_skill_list()
                 self.setVebatimAlgFromList(4, self.skills)

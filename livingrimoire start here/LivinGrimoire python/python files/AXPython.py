@@ -2499,9 +2499,9 @@ class OnOffSwitch:
 
 class AXFunnel:
     # funnel all sorts of strings to fewer or other strings
-    def __init__(self):
+    def __init__(self, default: str = "default"):
         self.dic: dict[str, str] = {}
-        self.default: str = "default"
+        self.default: str = default
 
     def setDefault(self, default: str):
         self.default = default
@@ -2629,7 +2629,7 @@ class ElizaDeducerInitializer(ElizaDeducer):
         ]))  # xor
         babble_tmp.append(PhraseMatcher("if (.*) than (.*)", [
             AXKeyValuePair("{0}", "{1}"),
-            AXKeyValuePair("{0}", "than {1} I guess")
+            AXKeyValuePair("{0}", "than {1}")
         ]))  # if
         babble_tmp.append(PhraseMatcher("(.*) if (.*)", [
             AXKeyValuePair("{1}", "{0}"),
@@ -2671,3 +2671,29 @@ def negate(sentence):
             return "not " + sentence
 
     return sentence
+
+
+class AXFunnelResponder:
+    def __init__(self):
+        self.dic: dict[str, Responder] = {}
+
+    def add_kv(self, key: str, value: Responder) -> None:
+        # Add key-value pair
+        self.dic[key] = value
+
+    def add_kv_builder_pattern(self, key: str, value: Responder) -> AXFunnelResponder:
+        # Add key-value pair
+        self.dic[key] = value
+        return self
+
+    def funnel(self, key: str) -> str:
+        # Default funnel = key
+        if key in self.dic:
+            return self.dic[key].getAResponse()
+        return key
+
+    def funnel_or_nothing(self, key: str) -> str:
+        # Default funnel = ""
+        if key in self.dic:
+            return self.dic[key].getAResponse()
+        return ""

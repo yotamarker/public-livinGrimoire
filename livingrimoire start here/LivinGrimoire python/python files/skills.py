@@ -1574,7 +1574,7 @@ class DiAware(DiSkillV2):
                                             "Is it a chat, or combat?", "What’s the plot, my tot?",
                                             "Is it a trick, or something slick?", "What’s the deal, my peel?",
                                             "Is it a race, or just a chase?", "What’s the story, my glory?")
-        self.ggReplies: Responder = Responder("meow", "oooweee","chi", "yes i am", "nuzzles you","thanks", "prrr")
+        self.ggReplies: Responder = Responder("meow", "oooweee", "chi", "yes i am", "nuzzles you", "thanks", "prrr")
         self._call: str = f'hey {self.name}'
         self._ggFunnel: AXFunnel = AXFunnel("good girl")
         self._ggFunnel.addK("you are a good girl").addK("such a good girl").addK("you are my good girl")
@@ -1783,3 +1783,14 @@ class DiDeducer(DiSkillV2):
             self.setSimpleAlg(Eliza.PhraseMatcher.reflect(result))
             return
         self.rcb.learnV2(ear, self.elizaDeducer)
+
+
+class DiBlabberV6(DiSkillV2):
+    def __init__(self, funnel: AXFunnelResponder):
+        super().__init__()
+        self.funnel: AXFunnelResponder = funnel
+
+    def input(self, ear: str, skin: str, eye: str):
+        # walrus operator:
+        if n := self.funnel.funnel_walrus_operator(ear):
+            self.setSimpleAlg(n)

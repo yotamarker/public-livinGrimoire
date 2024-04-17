@@ -2697,3 +2697,9 @@ class AXFunnelResponder:
         if key in self.dic:
             return self.dic[key].getAResponse()
         return ""
+
+    def funnel_walrus_operator(self, key: str):
+        # Default funnel = None
+        if key in self.dic:
+            return self.dic[key].getAResponse()
+        return None

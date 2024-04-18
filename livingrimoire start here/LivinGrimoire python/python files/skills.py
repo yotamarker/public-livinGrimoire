@@ -1498,10 +1498,10 @@ class DiMemoryGame(DiSkillV2):
 
 
 class DiOneWorder(DiSkillV2):
-    def __init__(self):
+    def __init__(self, phrase: str = "chi"):
         super().__init__()  # Call the superclass constructor
-        self.cry: str = "chi "
-        self.toggler: str = "chi"
+        self.cry: str = f'{phrase} '
+        self.toggler: str = phrase
         self.drip: PercentDripper = PercentDripper()  # Assuming PercentDripper is implemented
         self.mode: bool = False
 

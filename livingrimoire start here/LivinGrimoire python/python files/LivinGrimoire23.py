@@ -1093,6 +1093,8 @@ class Chobits(Thinkable):
             self._dClasses.append(skill)
 
     def removeSkill(self, skill: DiSkillV2):
+        if skill not in self._dClasses:
+            return
         self._dClasses.remove(skill)
 
     def containsSkill(self, skill: DiSkillV2) -> bool:

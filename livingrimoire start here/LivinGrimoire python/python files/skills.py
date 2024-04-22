@@ -1794,3 +1794,27 @@ class DiBlabberV6(DiSkillV2):
         # walrus operator:
         if n := self.funnel.funnel_walrus_operator(ear):
             self.setSimpleAlg(n)
+
+
+class DiNoteTaker(DiSkillV2):
+    def __init__(self):
+        super().__init__()
+        self.notes: Notes = Notes()
+
+    # Override
+    def input(self, ear: str, skin: str, eye: str):
+        if len(ear) == 0:
+            return
+        match ear:
+            case "get note":
+                self.setSimpleAlg(self.notes.getNote())
+            case "clear notes":
+                self.notes.clear()
+                self.setSimpleAlg("notes cleared")
+            case "next note":
+                self.setSimpleAlg(self.notes.get_next_note())
+
+        first_word = ear.partition(' ')[0]
+        if first_word == "note":
+            self.notes.add(ear.replace("note", ""))
+            self.setSimpleAlg("noted")

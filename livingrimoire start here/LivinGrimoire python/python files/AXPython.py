@@ -2703,3 +2703,28 @@ class AXFunnelResponder:
         if key in self.dic:
             return self.dic[key].getAResponse()
         return None
+
+
+class Notes:
+    def __init__(self):
+        self._log: list[str] = []
+        self._index: int = 0
+
+    def add(self, s1: str):
+        self._log.append(s1)
+
+    def clear(self):
+        self._log.clear()
+
+    def getNote(self) -> str:
+        if len(self._log) == 0:
+            return "zero notes"
+        return self._log[self._index]
+
+    def get_next_note(self) -> str:
+        if len(self._log) == 0:
+            return "zero notes"
+        self._index += 1
+        if self._index == len(self._log):
+            self._index = 0
+        return self._log[self._index]

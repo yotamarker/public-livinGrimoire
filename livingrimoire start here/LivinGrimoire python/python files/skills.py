@@ -1643,7 +1643,7 @@ class DiBlabberV4(DiSkillV2):
         if self._autoTalk.getMode(ear):
             t = self.npc.respond()
             if len(t) > 0:
-                self.setSimpleAlg(t)
+                self.algPartsFusion(4, APMad(t))
                 return
         if len(ear) == 0:
             return
@@ -1653,7 +1653,7 @@ class DiBlabberV4(DiSkillV2):
             t = self.npc.forceRespond()
             if len(t) == 0:
                 t = "hadouken"
-            self.setSimpleAlg(t)
+            self.algPartsFusion(4, APMad(t))
             return
         # filter escape
         if not self.filter.strContainsResponse(ear):
@@ -1661,7 +1661,7 @@ class DiBlabberV4(DiSkillV2):
         # blabber
         self._temp_str = self.npc.strRespond(ear)
         if len(self._temp_str) > 0:
-            self.setSimpleAlg(Eliza.PhraseMatcher.reflect(self.npc.forceRespond()))
+            self.algPartsFusion(4, APMad(Eliza.PhraseMatcher.reflect(self.npc.forceRespond())))
         if not self.npc.learn(ear):
             # str learn
             if not self.npc.strLearn(ear):
@@ -1818,3 +1818,188 @@ class DiNoteTaker(DiSkillV2):
         if first_word == "note":
             self.notes.add(ear.replace("note", ""))
             self.setSimpleAlg("noted")
+
+
+class APMad(Mutatable):
+    """this algorithm part says each past param verbatim"""
+
+    def __init__(self, *args) -> None:
+        super().__init__()
+        self.sentences: list[str] = []
+        self.at = 0
+
+        try:
+            if isinstance(args[0], list):
+                self.sentences = args[0]
+                if 0 == len(self.sentences):
+                    self.at = 30
+            else:
+                for i in range(len(args)):
+                    self.sentences.append(args[i])
+        except:
+            self.at = 30
+
+    # Override
+    def action(self, ear: str, skin: str, eye: str) -> str:
+        axnStr = ""
+        if self.at < len(self.sentences):
+            axnStr = self.sentences[self.at]
+            self.at += 1
+        return axnStr
+
+    # Override
+    def completed(self) -> bool:
+        return self.at >= len(self.sentences)
+
+    # Override
+    def clone(self) -> Mutatable:
+        return APMad(DeepCopier().copyList(self.sentences))
+
+
+class APShy(Mutatable):
+    """this algorithm part says each past param verbatim"""
+
+    def __init__(self, *args) -> None:
+        super().__init__()
+        self.sentences: list[str] = []
+        self.at = 0
+
+        try:
+            if isinstance(args[0], list):
+                self.sentences = args[0]
+                if 0 == len(self.sentences):
+                    self.at = 30
+            else:
+                for i in range(len(args)):
+                    self.sentences.append(args[i])
+        except:
+            self.at = 30
+
+    # Override
+    def action(self, ear: str, skin: str, eye: str) -> str:
+        axnStr = ""
+        if self.at < len(self.sentences):
+            axnStr = self.sentences[self.at]
+            self.at += 1
+        return axnStr
+
+    # Override
+    def completed(self) -> bool:
+        return self.at >= len(self.sentences)
+
+    # Override
+    def clone(self) -> Mutatable:
+        return APShy(DeepCopier().copyList(self.sentences))
+
+
+class APHappy(Mutatable):
+    """this algorithm part says each past param verbatim"""
+
+    def __init__(self, *args) -> None:
+        super().__init__()
+        self.sentences: list[str] = []
+        self.at = 0
+
+        try:
+            if isinstance(args[0], list):
+                self.sentences = args[0]
+                if 0 == len(self.sentences):
+                    self.at = 30
+            else:
+                for i in range(len(args)):
+                    self.sentences.append(args[i])
+        except:
+            self.at = 30
+
+    # Override
+    def action(self, ear: str, skin: str, eye: str) -> str:
+        axnStr = ""
+        if self.at < len(self.sentences):
+            axnStr = self.sentences[self.at]
+            self.at += 1
+        return axnStr
+
+    # Override
+    def completed(self) -> bool:
+        return self.at >= len(self.sentences)
+
+    # Override
+    def clone(self) -> Mutatable:
+        return APHappy(DeepCopier().copyList(self.sentences))
+
+
+class APSad(Mutatable):
+    """this algorithm part says each past param verbatim"""
+
+    def __init__(self, *args) -> None:
+        super().__init__()
+        self.sentences: list[str] = []
+        self.at = 0
+
+        try:
+            if isinstance(args[0], list):
+                self.sentences = args[0]
+                if 0 == len(self.sentences):
+                    self.at = 30
+            else:
+                for i in range(len(args)):
+                    self.sentences.append(args[i])
+        except:
+            self.at = 30
+
+    # Override
+    def action(self, ear: str, skin: str, eye: str) -> str:
+        axnStr = ""
+        if self.at < len(self.sentences):
+            axnStr = self.sentences[self.at]
+            self.at += 1
+        return axnStr
+
+    # Override
+    def completed(self) -> bool:
+        return self.at >= len(self.sentences)
+
+    # Override
+    def clone(self) -> Mutatable:
+        return APSad(DeepCopier().copyList(self.sentences))
+
+
+class DiBurperV2(DiSkillV2):
+    def __init__(self, burps_per_hour: int = 3):
+        self._burpsPerHour = 2
+        if 60 > burps_per_hour > 0:
+            self._burpsPerHour = burps_per_hour
+        self._trgMinute: TrgMinute = TrgMinute()
+        self._trgMinute.setMinute(0)
+        self._responder1: Responder = Responder("burp", "burp2", "burp3")
+        self._draw: DrawRndDigits = DrawRndDigits()
+        self._burpMinutes: LGFIFO = LGFIFO()
+        self._pl: PlayGround = PlayGround()
+        for i in range(1, 60):
+            self._draw.addElement(i)
+        for i in range(0, burps_per_hour):
+            self._burpMinutes.insert(self._draw.drawAndRemove())
+        super().__init__()
+
+    def setBurps(self, burpings: Responder) -> DiBurperV2:
+        # set sounds of burp events
+        self._responder1 = burpings
+        return self
+
+    # Override
+    def input(self, ear: str, skin: str, eye: str):
+        # night? do not burp
+        if self._pl.partOfDay() == "night":
+            return
+        # reset burps
+        if self._trgMinute.trigger():
+            self._burpMinutes.clear()
+            self._draw.reset()
+            for i in range(0, self._burpsPerHour):
+                self._burpMinutes.insert(self._draw.drawAndRemove())
+            return
+        # burp
+        now_minutes: int = self._pl.getMinutesAsInt()
+        if self._burpMinutes.contains(now_minutes):
+            self._burpMinutes.removeItem(now_minutes)
+            self.algPartsFusion(4, APShy(self._responder1.getAResponse()))

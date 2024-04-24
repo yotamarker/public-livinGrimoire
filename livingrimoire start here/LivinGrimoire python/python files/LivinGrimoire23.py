@@ -639,7 +639,10 @@ class DiSkillV2:
 
     def algPartsFusion(self, priority: int, *algParts: Mutatable):
         # build a custom algorithm out of a chain of algorithm parts(actions)
-        self._outAlg = self._diSkillUtils.algBuilder(algParts)
+        algParts1: list[Mutatable] = []
+        for i in range(0, len(algParts)):
+            algParts1.append(algParts[i])
+        self._outAlg = Algorithm(algParts1)
         self._outpAlgPriority = priority  # 1->5 1 is the highest algorithm priority
 
     def pendingAlgorithm(self) -> bool:

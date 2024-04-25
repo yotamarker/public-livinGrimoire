@@ -1430,14 +1430,14 @@ class DiHoneyBunny(DiSkillV2):
             temp = self.regex_util.extractRegex(r'(?<=my name is\s)(.*)', ear)
             if temp:
                 self.user = temp
-                self.setSimpleAlg(f"got it {self.user}")
+                self.algPartsFusion(4, APHappy(f"got it {self.user}"))
                 return
         elif self._bool1 and self._buffer_counter < self._buffer:
             self._buffer_counter += 1
         self._bool1 = self.on_off_switch.getMode(ear)
         if self._bool1 and self.drip.drip():
             if self._buffer_counter > self._buffer - 1:
-                self.setSimpleAlg(self.responses.getAResponse().replace("user", self.user))
+                self.algPartsFusion(4, APSad(self.responses.getAResponse().replace("user", self.user)))
 
 
 class DiAlarmer(DiSkillV2):
@@ -1700,12 +1700,12 @@ class DiBlabberV5(DiSkillV2):
         if self._autoTalk.getMode(ear):
             t = self.npc.respond()
             if len(t) > 0:
-                self.setSimpleAlg(Eliza.PhraseMatcher.reflect(t))  # or some animation
+                self.algPartsFusion(4, APShy(Eliza.PhraseMatcher.reflect(t)))
                 return
         if len(ear) == 0:
             return
         if self.cntxtcmd.engageCommand(ear):
-            self.setSimpleAlg(Eliza.PhraseMatcher.reflect(self.npc.respond()))
+            self.algPartsFusion(4, APShy(Eliza.PhraseMatcher.reflect(self.npc.respond())))
             return
         # funnel
         self._funnel = ear.replace("tell me how", "tell me")
@@ -1713,7 +1713,7 @@ class DiBlabberV5(DiSkillV2):
         # blabber
         self._temp_str = self.npc.strRespond(self._funnel)
         if len(self._temp_str) > 0:
-            self.setSimpleAlg(Eliza.PhraseMatcher.reflect(self.npc.forceRespond()))
+            self.algPartsFusion(4, APShy(Eliza.PhraseMatcher.reflect(self.npc.forceRespond())))
         self.npc.learn(self._funnel)
 
 
@@ -2002,4 +2002,4 @@ class DiBurperV2(DiSkillV2):
         now_minutes: int = self._pl.getMinutesAsInt()
         if self._burpMinutes.contains(now_minutes):
             self._burpMinutes.removeItem(now_minutes)
-            self.algPartsFusion(4, APShy(self._responder1.getAResponse()))
+            self.algPartsFusion(4, APHappy(self._responder1.getAResponse()))

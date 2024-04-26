@@ -1595,7 +1595,7 @@ class DiAware(DiSkillV2):
             case "test":
                 self.setSimpleAlg(self.replies.getAResponse())
             case "good girl":
-                self.setSimpleAlg(self.ggReplies.getAResponse())
+                self.algPartsFusion(4, APHappy(self.ggReplies.getAResponse()))
             case self._call:
                 self.setSimpleAlg(self.replies.getAResponse())
 

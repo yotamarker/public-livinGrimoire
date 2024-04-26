@@ -1854,9 +1854,6 @@ for i in range(1, 10):
         self.allParamRef[kv.getValue()] = kv.getKey()
 
     def addRefreshQ(self, category, q1: RefreshQ):
-        if category not in self.wordToList:
-            temp = RefreshQ(1)
-            return
         self.wordToList[category] = q1
 
     def getALoggedParam(self):

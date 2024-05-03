@@ -1634,8 +1634,13 @@ class DiBlabberV4(DiSkillV2):
         self.filter: Responder = responder
         self._autoTalk: OnOffSwitch = OnOffSwitch()
         self._autoTalk.setOn(Responder("auto talk"))
+        self._excluder:Excluder = Excluder()
+        self._excluder.add_starts_with("tell me")
+        self._excluder.add_ends_with("over")
 
     def input(self, ear: str, skin: str, eye: str):
+        if self._excluder.exclude(ear):
+            return
         if not self._initialized:
             self.npc.responder.queue = self.splitter.split(self.getKokoro().grimoireMemento.simpleLoad("blabberv4"))
             self._initialized = True

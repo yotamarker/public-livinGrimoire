@@ -2727,3 +2727,42 @@ class Notes:
         if self._index == len(self._log):
             self._index = 0
         return self._log[self._index]
+
+
+class Excluder:
+    '''
+    exclude will return true if the string starts with or ends with the defined starts or ends or strings
+    this helps exclude input from certain skills so as to not overlap with other skills
+    e1: Excluder = Excluder()
+    e1.add_starts_with("tell me")
+    e1.add_ends_with("over")
+    e1.add_ends_with("babe")
+    print(e1.exclude("tell me hello"))
+    print(e1.exclude("tell me"))
+    print(e1.exclude("hello world")) # only false example
+    print(e1.exclude("hello babe"))
+    print(e1.exclude("hello over"))
+    print(e1.exclude("tell me something babe"))'''
+    def __init__(self):
+        self._starts_with: list[str] = []
+        self._ends_with: list[str] = []
+
+    def add_starts_with(self, s1: str):
+        if self._starts_with.__contains__(f'^({s1}).*'):
+            return
+        self._starts_with.append(f'^({s1}).*')
+
+    def add_ends_with(self, s1: str):
+        if self._ends_with.__contains__(f'(.*)(?={s1})'):
+            return
+        self._ends_with.append(f'(.*)(?={s1})')
+
+    def exclude(self, ear: str) -> bool:
+        r1: RegexUtil = RegexUtil()
+        for temp_str in self._starts_with:
+            if len(r1.extractRegex(temp_str, ear)) > 0:
+                return True
+        for temp_str in self._ends_with:
+            if len(r1.extractRegex(temp_str, ear)) > 0:
+                return True
+        return False

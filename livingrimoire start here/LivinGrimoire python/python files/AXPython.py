@@ -2730,7 +2730,7 @@ class Notes:
 
 
 class Excluder:
-    '''
+    """
     exclude will return true if the string starts with or ends with the defined starts or ends or strings
     this helps exclude input from certain skills so as to not overlap with other skills
     e1: Excluder = Excluder()
@@ -2742,7 +2742,8 @@ class Excluder:
     print(e1.exclude("hello world")) # only false example
     print(e1.exclude("hello babe"))
     print(e1.exclude("hello over"))
-    print(e1.exclude("tell me something babe"))'''
+    print(e1.exclude("tell me something babe"))"""
+
     def __init__(self):
         self._starts_with: list[str] = []
         self._ends_with: list[str] = []
@@ -2766,3 +2767,57 @@ class Excluder:
             if len(r1.extractRegex(temp_str, ear)) > 0:
                 return True
         return False
+
+
+class TimedMessages:
+    """
+        check for new messages if you get any input, and it feels like
+        the code was waiting for you to tell you something.
+        tm = TimedMessages()
+        # Print the initial message status (should be False)
+        print(tm.getMsg())
+        # Add reminders
+        tm.addMSG("remind me to work out at 1:24")
+        tm.addMSG("remind me to drink water at 11:25")
+        # Check if any reminders match the current time
+        tm.tick()
+        # make sure a fresh new message was loaded before using it
+        print(tm.getMsg())
+        # Get the last reminder message
+        print(tm.getLastMSG())
+        # tick each think cycle to load new reminders
+        tm.tick()
+        print(tm.getMsg()) # becomes true after .getLastMSG
+        # Get the last reminder message again
+        print(tm.getLastMSG())
+    """
+    def __init__(self) -> None:
+        self.messages: dict[str, str] = {}
+        self.playGround: PlayGround = PlayGround()  # Assuming PlayGround is defined elsewhere
+        self.lastMSG: str = "nothing"
+        self.msg: bool = False
+
+    def addMSG(self, ear: str) -> None:
+        ru1: RegexUtil = RegexUtil()
+        tempMSG: str = ru1.extractRegex(r"(?<=remind me to).*?(?=at)", ear)
+        if tempMSG:
+            timeStamp: str = ru1.extractEnumRegex(enumRegexGrimoire.simpleTimeStamp, ear)
+            if timeStamp:
+                self.messages[timeStamp] = tempMSG
+
+    def clear(self):
+        self.messages.clear()
+
+    def tick(self) -> None:
+        now: str = self.playGround.getCurrentTimeStamp()
+        if now in self.messages:
+            if self.lastMSG != self.messages[now]:
+                self.lastMSG = self.messages[now]
+                self.msg = True
+
+    def getLastMSG(self) -> str:
+        self.msg = False
+        return self.lastMSG
+
+    def getMsg(self) -> bool:
+        return self.msg

@@ -55,5 +55,13 @@ public class TimeGate {
         calendar.add(Calendar.MINUTE, minutes);
         return calendar.getTime();
     }
-
+    private Date addSecondsToJavaUtilDate(Date date, int seconds) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.SECOND, seconds);
+        return calendar.getTime();
+    }
+    public void openGateforNSeconds(int n){
+        this.openedGate = addSecondsToJavaUtilDate(new Date(), n);
+    }
 }

@@ -866,6 +866,10 @@ class TimeGate:
         now: datetime.date = datetime.datetime.now()
         self.openedGate = now + timedelta(minutes=minutes)
 
+    def open_for_n_seconds(self, seconds: int):
+        now: datetime.date = datetime.datetime.now()
+        self.openedGate = now + timedelta(seconds=seconds)
+
     def openForPauseMinutes(self):
         now: datetime.date = datetime.datetime.now()
         self.openedGate = now + timedelta(minutes=self.pause)

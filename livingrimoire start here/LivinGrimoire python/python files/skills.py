@@ -1634,7 +1634,7 @@ class DiBlabberV4(DiSkillV2):
         self.filter: Responder = responder
         self._autoTalk: OnOffSwitch = OnOffSwitch()
         self._autoTalk.setOn(Responder("auto talk"))
-        self._excluder:Excluder = Excluder()
+        self._excluder: Excluder = Excluder()
         self._excluder.add_starts_with("tell me")
         self._excluder.add_ends_with("over")
 
@@ -2008,3 +2008,20 @@ class DiBurperV2(DiSkillV2):
         if self._burpMinutes.contains(now_minutes):
             self._burpMinutes.removeItem(now_minutes)
             self.algPartsFusion(4, APHappy(self._responder1.getAResponse()))
+
+
+class DiBicameral(DiSkillV2):
+    def __init__(self):
+        super().__init__()
+        self.msgCol:TimedMessages = TimedMessages()
+
+    def input(self, ear, skin, eye):
+        self.msgCol.tick()
+        if self.getKokoro().toHeart.get("dibicameral", "null") != "null":
+            self.getKokoro().toHeart["dibicameral"] = "null"
+        if self.msgCol.getMsg():
+            temp = self.msgCol.getLastMSG()
+            if "#" not in temp:
+                self.setSimpleAlg(temp)
+            else:
+                self.getKokoro().toHeart["dibicameral"] = temp.replace("#", "")

@@ -2791,6 +2791,7 @@ class TimedMessages:
         # Get the last reminder message again
         print(tm.getLastMSG())
     """
+
     def __init__(self) -> None:
         self.messages: dict[str, str] = {}
         self.playGround: PlayGround = PlayGround()  # Assuming PlayGround is defined elsewhere
@@ -2804,6 +2805,20 @@ class TimedMessages:
             timeStamp: str = ru1.extractEnumRegex(enumRegexGrimoire.simpleTimeStamp, ear)
             if timeStamp:
                 self.messages[timeStamp] = tempMSG
+
+    def addMSGV2(self, timeStamp: str, msg: str) -> None:
+        self.messages[timeStamp] = msg
+
+    def sprinkleMSG(self, msg: str, amount: int) -> None:
+        for _ in range(amount):
+            self.messages[self.generateRandomTimestamp()] = msg
+
+    @staticmethod
+    def generateRandomTimestamp() -> str:
+        minutes: int = random.randint(0, 59)
+        m = f"{minutes:02d}"
+        hours: int = random.randint(0, 11)
+        return f"{hours}:{m}"
 
     def clear(self):
         self.messages.clear()

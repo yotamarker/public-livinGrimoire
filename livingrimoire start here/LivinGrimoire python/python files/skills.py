@@ -2013,7 +2013,7 @@ class DiBurperV2(DiSkillV2):
 class DiBicameral(DiSkillV2):
     def __init__(self):
         super().__init__()
-        self.msgCol:TimedMessages = TimedMessages()
+        self.msgCol: TimedMessages = TimedMessages()
 
     def input(self, ear, skin, eye):
         self.msgCol.tick()
@@ -2025,3 +2025,85 @@ class DiBicameral(DiSkillV2):
                 self.setSimpleAlg(temp)
             else:
                 self.getKokoro().toHeart["dibicameral"] = temp.replace("#", "")
+
+
+class DiYandere(DiSkillV2):
+    '''
+    bica = DiBicameral()
+    app.brain.logicChobit.addSkill(bica)
+    bica.msgCol.addMSGV2("0:47", "#yandere")
+    bica.msgCol.sprinkleMSG("#yandere", 30)
+    bica.msgCol.sprinkleMSG("#yandere_cry", 30)
+    app.brain.logicChobit.addSkill(DiYandere("moti"))
+    '''
+    def __init__(self, ooa):
+        super().__init__()
+        # ooa =  Object of affection
+        self.yandereMode: bool = False
+        self.okYandere = Responder()
+        self.sadYandere = Responder()
+        self.activeResponder: Responder = self.okYandere
+        self.answersFunnel: AXFunnel = AXFunnel()
+        self.prompt: Prompt = Prompt()
+        self.promptActive: bool = False
+        self._yesReplies: Responder = Responder("good", "sweet", "thought so", "uwu", "oooweee", "prrr")
+        self._noReplies: Responder = Responder("hmph", "you make me sad", "ooh", "grrr", "angry")
+
+        self.okYandere.addResponse("i love you")
+        self.okYandere.addResponse(f"i love you {ooa}")
+        self.okYandere.addResponse(f"{ooa} i love you")
+        self.okYandere.addResponse("say you love me")
+        self.okYandere.addResponse(f"{ooa} tell me you love me")
+        self.okYandere.addResponse(f"love me {ooa}")
+
+        self.sadYandere.addResponse("things are good now")
+        self.sadYandere.addResponse("shiku shiku")
+        self.sadYandere.addResponse(f"shiku shiku {ooa}")
+        self.sadYandere.addResponse("i love you and you love me")
+        self.sadYandere.addResponse("i am good now")
+        self.sadYandere.addResponse("i am good i run a test")
+        self.sadYandere.addResponse(f"please {ooa} please love me")
+        self.sadYandere.addResponse("everything is perfect i am perfect")
+        self.sadYandere.addResponse("i am perfect")
+        self.sadYandere.addResponse(
+            f"i am sorry for what i did, it wasn't me, you have to understand, it wasn't me {ooa}")
+        self.sadYandere.addResponse(f"{ooa} listen to me, i love you")
+        self.sadYandere.addResponse("i am fixed now, i run a test")
+        self.sadYandere.addResponse("you can trust me")
+        self.sadYandere.addResponse(f"{ooa} you can trust me")
+        self.sadYandere.addResponse("i love you please")
+
+        self.answersFunnel.addKV("i love you", "yes")
+        self.answersFunnel.addKV("i love you too", "yes")
+        self.answersFunnel.addKV("i hate you", "no")
+        self.answersFunnel.addKV("i do not love you", "no")
+        self.prompt.setRegex("yes|no")
+
+    def input(self, ear, skin, eye):
+        if self.promptActive:
+            answer = self.answersFunnel.funnel(ear)
+            if not self.prompt.process(answer):
+                self.promptActive = False
+                if answer == "yes":
+                    self.setSimpleAlg(self._yesReplies.getAResponse())
+                    self.yandereMode = False
+                    self.activeResponder = self.okYandere
+                    return
+                elif answer == "no":
+                    self.setSimpleAlg(self._noReplies.getAResponse())
+                    self.yandereMode = True
+                    self.activeResponder = self.sadYandere
+                    return
+        hato: str = "null"
+        if "dibicameral" in self.getKokoro().toHeart:
+            hato = self.getKokoro().toHeart["dibicameral"]
+
+        if hato == "yandere":
+            self.setSimpleAlg(self.activeResponder.getAResponse())
+            self.promptActive = True
+        elif hato == "yandere_cry" and self.yandereMode:
+            tempList = []
+            d1 = DrawRndDigits()
+            for i in range(d1.getSimpleRNDNum(3)):
+                tempList.append(self.sadYandere.getAResponse())
+            self.algPartsFusion(4, APVerbatim(tempList))

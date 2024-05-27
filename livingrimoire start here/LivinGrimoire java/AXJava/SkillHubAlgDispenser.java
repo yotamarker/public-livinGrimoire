@@ -1,8 +1,6 @@
 package AXJava;
 
-import LivinGrimoire.Algorithm;
-import LivinGrimoire.DiSkillV2;
-import LivinGrimoire.Neuron;
+import LivinGrimoire.*;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -17,29 +15,38 @@ public class SkillHubAlgDispenser {
 //       (rndAlg , cycleAlg)
 //       moods can be used for specific cases to change behavior of the AGI, for example low energy state
 //       for that use (moodAlg)
-    private ArrayList<DiSkillV2> skills = new ArrayList<DiSkillV2>();
+    private final ArrayList<DiSkillV2> skills = new ArrayList<DiSkillV2>();
     private int activeSkill = 0;
-    private Neuron tempN = new Neuron();;
-    private Random rand = new Random();
+    private final Neuron tempN = new Neuron();;
+    private final Random rand = new Random();
+    private Kokoro kokoro = new Kokoro(new AbsDictionaryDB());
     public SkillHubAlgDispenser(DiSkillV2...skillsParams) {
         for (DiSkillV2 skill : skillsParams)
         {
+            skill.setKokoro(this.kokoro);
             skills.add(skill);
+        }
+    }
+    public void setKokoro(Kokoro kokoro) {
+        this.kokoro = kokoro;
+        for (DiSkillV2 skill : skills) {
+            skill.setKokoro(this.kokoro);
         }
     }
     public SkillHubAlgDispenser addSkill(DiSkillV2 skill){
         // builder pattern
+        skill.setKokoro(this.kokoro);
         skills.add(skill);
         return this;
     }
-    public Algorithm dispenseAlgorithm(String ear, String skin, String eye){
+    public AlgorithmV2 dispenseAlgorithm(String ear, String skin, String eye){
         // return value to outAlg param of (external) summoner DiskillV2
         skills.get(activeSkill).input(ear,skin,eye);
         skills.get(activeSkill).output(tempN);
         for (int i = 1; i < 6; i++) {
             Algorithm temp = tempN.getAlg(i);
             if (temp != null){
-                return temp;
+                return new AlgorithmV2(i,temp);
             }
         }
         return null;

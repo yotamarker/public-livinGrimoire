@@ -1,8 +1,10 @@
 package skills;
 
 import AXJava.AXLearnability;
+import AXJava.AlgorithmV2;
 import AXJava.SkillHubAlgDispenser;
 import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Kokoro;
 
 import java.util.Hashtable;
 
@@ -18,11 +20,6 @@ public class SkillBranch extends DiSkillV2 {
     private Hashtable<String,Integer> skillRef = new Hashtable<>();
     private SkillHubAlgDispenser skillHub = new SkillHubAlgDispenser();
     private AXLearnability ml;
-    private int algPriority = 4;
-
-    public void setAlgPriority(int algPriority) {
-        this.algPriority = algPriority;
-    }
 
     public SkillBranch(int tolerance) {
         ml = new AXLearnability(tolerance);
@@ -41,8 +38,11 @@ public class SkillBranch extends DiSkillV2 {
             setSimpleAlg("hmm");
         }
         // alg engage
-        outAlg = skillHub.dispenseAlgorithm(ear,skin,eye);
-        if (!(outAlg == null)){ml.pendAlg();outpAlgPriority = algPriority;}
+        AlgorithmV2 a1 = skillHub.dispenseAlgorithm(ear,skin,eye);
+        if(a1 == null){return;}
+        this.outAlg = a1.getAlg();
+        this.outpAlgPriority = a1.getPriority();
+        ml.pendAlg();
     }
     public void addSkill(DiSkillV2 skill){
         skillHub.addSkill(skill);
@@ -57,4 +57,9 @@ public class SkillBranch extends DiSkillV2 {
     public void addGoal(String goal){ml.defcons.add(goal);}
     // while alg is pending, cause alg mutation ignoring learnability tolerance:
     public void addDefconLV5(String defcon5){ml.defcons.add(defcon5);}
+    @Override
+    public void setKokoro(Kokoro kokoro) {
+        super.setKokoro(kokoro);
+        skillHub.setKokoro(kokoro);
+    }
 }

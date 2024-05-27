@@ -66,11 +66,19 @@ class SkillHubAlgDispenser:
         self._skills: list[DiSkillV2] = []
         self._activeSkill: int = 0
         self._tempN: Neuron = Neuron()
+        self._kokoro = Kokoro(AbsDictionaryDB())
         for i in range(0, len(skillsParams)):
+            skillsParams[i].setKokoro(self._kokoro)
             self._skills.append(skillsParams[i])
+
+    def set_kokoro(self, kokoro):
+        self._kokoro = kokoro
+        for skill in self._skills:
+            skill.setKokoro(self._kokoro)
 
     def addSkill(self, skill: DiSkillV2) -> SkillHubAlgDispenser:
         # builder pattern
+        skill.setKokoro(self._kokoro)
         self._skills.append(skill)
         return self
 
@@ -81,8 +89,8 @@ class SkillHubAlgDispenser:
         self._skills[self._activeSkill].output(self._tempN)
         for i in range(1, 6):
             temp: Algorithm = self._tempN.getAlg(i)
-            if temp is not None:
-                return temp
+            if temp:
+                return AlgorithmV2(i, temp)
         return None
 
     def randomizeActiveSkill(self):
@@ -2836,3 +2844,57 @@ class TimedMessages:
 
     def getMsg(self) -> bool:
         return self.msg
+
+
+class AlgorithmV2:
+    def __init__(self, priority, alg):
+        self.priority = priority
+        self.alg = alg
+
+    def get_priority(self):
+        return self.priority
+
+    def set_priority(self, priority):
+        self.priority = priority
+
+    def get_alg(self):
+        return self.alg
+
+    def set_alg(self, alg):
+        self.alg = alg
+
+
+class AXSkillBundle:
+    def __init__(self, *skills_params: DiSkillV2):
+        self.skills: list[DiSkillV2] = []
+        self.tempN: Neuron = Neuron()
+        self.kokoro: Kokoro = Kokoro(AbsDictionaryDB())
+
+        for skill in skills_params:
+            skill.setKokoro(self.kokoro)
+            self.skills.append(skill)
+
+    def set_kokoro(self, kokoro):
+        self.kokoro = kokoro
+        for skill in self.skills:
+            skill.setKokoro(self.kokoro)
+
+    def add_skill(self, skill) -> AXSkillBundle:
+        # Builder pattern
+        skill.setKokoro(self.kokoro)
+        self.skills.append(skill)
+        return self
+
+    def dispense_algorithm(self, ear, skin, eye):
+        for skill in self.skills:
+            skill.input(ear, skin, eye)
+            skill.output(self.tempN)
+            for j in range(1, 6):
+                temp = self.tempN.getAlg(j)
+                if temp:
+                    return AlgorithmV2(j, temp)
+
+        return None
+
+    def get_size(self):
+        return len(self.skills)

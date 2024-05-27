@@ -889,10 +889,11 @@ class SkillBranch(DiSkillV2):
         self._skillRef: dict[str, int] = {}
         self._skillHub: SkillHubAlgDispenser = SkillHubAlgDispenser()
         self._ml: AXLearnability = AXLearnability(tolerance)
-        self._priority: int = 4  # algPriority
+        self._kokoro: Kokoro = Kokoro(AbsDictionaryDB())
 
-    def setBranchAlgPriority(self, algPriority):
-        self._priority = algPriority
+    def setKokoro(self, kokoro):
+        super().setKokoro(kokoro)
+        self._skillHub.set_kokoro(kokoro)
 
     def input(self, ear, skin, eye):
         # conjuration alg morph
@@ -904,10 +905,11 @@ class SkillBranch(DiSkillV2):
             self._skillHub.cycleActiveSkill()
             self.setSimpleAlg("hmm")
         # alg engage
-        self.setOutalg(self._skillHub.dispenseAlgorithm(ear, skin, eye))
-        if self.getOutAlg() is not None:
+        a1: AlgorithmV2 = self._skillHub.dispenseAlgorithm(ear, skin, eye)
+        if a1:
+            self.setOutalg(a1.get_alg())
+            self.setOutAlgPriority(a1.get_priority())
             self._ml.pendAlg()
-            self.setOutAlgPriority(self._priority)
 
     def addSkill(self, skill):
         self._skillHub.addSkill(skill)
@@ -2036,6 +2038,7 @@ class DiYandere(DiSkillV2):
     bica.msgCol.sprinkleMSG("#yandere_cry", 30)
     app.brain.logicChobit.addSkill(DiYandere("moti"))
     '''
+
     def __init__(self, ooa):
         super().__init__()
         # ooa =  Object of affection
@@ -2107,3 +2110,23 @@ class DiYandere(DiSkillV2):
             for i in range(d1.getSimpleRNDNum(3)):
                 tempList.append(self.sadYandere.getAResponse())
             self.algPartsFusion(4, APVerbatim(tempList))
+
+
+class DiSkillBundle(DiSkillV2):
+    def __init__(self):
+        super().__init__()
+        self.axSkillBundle: AXSkillBundle = AXSkillBundle()
+
+    def input(self, ear, skin, eye):
+        a1 = self.axSkillBundle.dispense_algorithm(ear, skin, eye)
+        if a1 is None:
+            return
+        self._outAlg = a1.get_alg()
+        self._outpAlgPriority = a1.get_priority()
+
+    def setKokoro(self, kokoro):
+        super().setKokoro(kokoro)
+        self.axSkillBundle.set_kokoro(kokoro)
+
+    def add_skill(self, skill):
+        self.axSkillBundle.add_skill(skill)

@@ -1043,6 +1043,10 @@ class TimeGate{
         // the gate will stay open for pause minutes
         openDate.addTimeInterval(TimeInterval(pause * 60))
     }
+    func openGateforNSeconds(_ n:Int) {
+        // the gate will stay open for n seconds
+        openDate.addTimeInterval(TimeInterval(n))
+    }
     func isOpen() -> Bool {
         return Date() < openDate
     }

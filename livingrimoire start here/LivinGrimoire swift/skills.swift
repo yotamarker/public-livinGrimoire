@@ -819,3 +819,26 @@ class DiAware: DiSkillV2 {
         }
     }
 }
+class DiBicameral: DiSkillV2 {
+    /*
+     *   let bicameral = DiBicameral()
+         bicameral.msgCol.addMSGV2("02:57", "test run ok")
+         add # for messages that engage other skills
+     */
+    public var msgCol:TimedMessages = TimedMessages()
+
+    override func input(ear: String, skin: String, eye: String) {
+        msgCol.tick()
+        if kokoro.toHeart["dibicameral"] != nil && kokoro.toHeart["dibicameral"] == "null" {
+            kokoro.toHeart["dibicameral"] = nil
+        }
+        if msgCol.getMsg() {
+            let temp = msgCol.getLastMSG()
+            if !temp.contains("#") {
+                setSimpleAlg(sayThis: temp)
+            } else {
+                kokoro.toHeart["dibicameral"] = temp.replacingOccurrences(of: "#", with: "")
+            }
+        }
+    }
+}

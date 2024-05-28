@@ -2364,3 +2364,90 @@ class ElizaDeducerInitializer: ElizaDeducer {
         babble2 = babbleTmp
     }
 }
+class Excluder {
+    private var startsWith:Array<String> = [String]()
+    private var endsWith:Array<String> = [String]()
+
+    func addStartsWith(_ s1: String) {
+        if !startsWith.contains("^(" + s1 + ").*") {
+            startsWith.append("^(" + s1 + ").*")
+        }
+    }
+
+    func addEndsWith(_ s1: String) {
+        if !endsWith.contains("(.*)(?=" + s1 + ")") {
+            endsWith.append("(.*)(?=" + s1 + ")")
+        }
+    }
+
+    func exclude(_ ear: String) -> Bool {
+        let r1 = RegexUtil() // Assuming RegexUtil is defined elsewhere
+        for tempStr in startsWith {
+            if r1.regexChecker(theRegex: tempStr, str2Check: ear).count > 0 {
+                return true
+            }
+        }
+        for tempStr in endsWith {
+            if r1.regexChecker(theRegex: tempStr, str2Check: ear).count > 0 {
+                return true
+            }
+        }
+        return false
+    }
+}
+class TimedMessages {
+    var messages: [String: String] = [:]
+    private let playGround :PlayGround = PlayGround()
+    private var lastMSG = "nothing"
+    private var msg:Bool = false
+
+    func addMSG(_ ear: String) {
+        let ru1 = RegexUtil()
+        let tempMSG = ru1.regexChecker(theRegex:"(?<=remind me to).*?(?=at)", str2Check: ear)
+        if tempMSG.isEmpty { return }
+        let timeStamp = ru1.regexChecker(theRegex: enumRegexGrimoire.simpleTimeStamp, str2Check: ear)
+        if timeStamp.isEmpty { return }
+        messages[timeStamp] = tempMSG
+    }
+
+    func addMSGV2(_ timeStamp: String, _ msg: String) {
+        messages[timeStamp] = msg
+    }
+
+    func sprinkleMSG(_ msg: String, amount: Int) {
+        for _ in 0..<amount {
+            messages[Self.generateRandomTimestamp()] = msg
+        }
+    }
+
+    static func generateRandomTimestamp() -> String {
+        let minutes = Int.random(in: 0..<60)
+        let hours = Int.random(in: 0..<12)
+        let m = String(format: "%02d", minutes)
+        let h = String(format: "%02d", hours)
+        return "\(h):\(m)"
+    }
+
+    func clear() {
+        messages = [:]
+    }
+
+    func tick() {
+        let now = playGround.getCurrentTimeStamp()
+        if let message = messages[now], lastMSG != message {
+            lastMSG = message
+            msg = true
+        }
+    }
+
+    func getLastMSG() -> String {
+        msg = false
+        return lastMSG
+    }
+
+    func getMsg() -> Bool {
+        return msg
+    }
+}
+
+

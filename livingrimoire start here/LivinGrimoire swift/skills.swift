@@ -829,8 +829,8 @@ class DiBicameral: DiSkillV2 {
 
     override func input(ear: String, skin: String, eye: String) {
         msgCol.tick()
-        if kokoro.toHeart["dibicameral"] != nil && kokoro.toHeart["dibicameral"] == "null" {
-            kokoro.toHeart["dibicameral"] = nil
+        if kokoro.toHeart["dibicameral"] != "null" {
+            kokoro.toHeart["dibicameral"] = "null"
         }
         if msgCol.getMsg() {
             let temp = msgCol.getLastMSG()
@@ -840,5 +840,9 @@ class DiBicameral: DiSkillV2 {
                 kokoro.toHeart["dibicameral"] = temp.replacingOccurrences(of: "#", with: "")
             }
         }
+    }
+    override func setKokoro(kokoro: Kokoro) {
+        super.setKokoro(kokoro: kokoro)
+        kokoro.toHeart["dibicameral"] = "null"
     }
 }

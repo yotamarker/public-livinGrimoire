@@ -36,4 +36,33 @@
             End Select
         End Sub
     End Class
+    Public Class DiBicameral
+        Inherits DiSkillV2
+        ' DiBicameral bicameral = New DiBicameral()
+        ' bicameral.msgCol.addMSGV2("02:57", "test run ok")
+        ' Add # for messages that engage other skills
+
+        Public msgCol As New TimedMessages()
+
+        Public Overrides Sub input(ByVal ear As String, ByVal skin As String, ByVal eye As String)
+            msgCol.Tick()
+
+            If Not kokoro.toHeart("dibicameral").Equals("null") Then
+                kokoro.toHeart("dibicameral") = "null"
+            End If
+
+            If msgCol.GetMsg() Then
+                Dim temp As String = msgCol.GetLastMSG()
+                If Not temp.Contains("#") Then
+                    SetSimpleAlg(temp)
+                Else
+                    kokoro.toHeart("dibicameral") = temp.Replace("#", "")
+                End If
+            End If
+        End Sub
+        Public Overrides Sub SetKokoro(kokoro As Kokoro)
+            MyBase.SetKokoro(kokoro)
+            kokoro.toHeart("dibicameral") = "null"
+        End Sub
+    End Class
 End Module

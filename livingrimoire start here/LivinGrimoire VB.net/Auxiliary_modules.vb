@@ -2468,4 +2468,94 @@ Module Auxiliary_modules
             babble2 = babbleTmp
         End Sub
     End Class
+    Public Class Excluder
+        Private ReadOnly startsWith As New List(Of String)()
+        Private ReadOnly endsWith As New List(Of String)()
+
+        Public Sub AddStartsWith(s1 As String)
+            If Not startsWith.Contains("^(" & s1 & ").*") Then
+                startsWith.Add("^(" & s1 & ").*")
+            End If
+        End Sub
+
+        Public Sub AddEndsWith(s1 As String)
+            If Not endsWith.Contains("(.*)(?=" & s1 & ")") Then
+                endsWith.Add("(.*)(?=" & s1 & ")")
+            End If
+        End Sub
+
+        Public Function Exclude(ear As String) As Boolean
+            Dim r1 As New RegexUtil() ' Assuming RegexUtil is defined elsewhere
+            For Each tempStr As String In startsWith
+                If r1.ExtractRegex(tempStr, ear).Length > 0 Then
+                    Return True
+                End If
+            Next
+            For Each tempStr As String In endsWith
+                If r1.ExtractRegex(tempStr, ear).Length > 0 Then
+                    Return True
+                End If
+            Next
+            Return False
+        End Function
+    End Class
+    Public Class TimedMessages
+        Public Property Messages As New Dictionary(Of String, String)()
+        Private lastMSG As String = "nothing"
+        Private msg As Boolean = False
+
+        Public Sub AddMSG(ear As String)
+            Dim ru1 As New RegexUtil()
+            Dim tempMSG As String = ru1.ExtractRegex("(?<=remind me to).*?(?=at)", ear)
+            If String.IsNullOrEmpty(tempMSG) Then
+                Return
+            End If
+            Dim timeStamp As String = ru1.ExtractRegex(enumRegexGrimoire.simpleTimeStamp, ear)
+            If String.IsNullOrEmpty(timeStamp) Then
+                Return
+            End If
+            Messages(timeStamp) = tempMSG
+        End Sub
+
+        Public Sub AddMSGV2(timeStamp As String, msg As String)
+            Messages(timeStamp) = msg
+        End Sub
+
+        Public Sub SprinkleMSG(msg As String, amount As Integer)
+            For i As Integer = 0 To amount - 1
+                Messages(GenerateRandomTimestamp()) = msg
+            Next
+        End Sub
+
+        Public Shared Function GenerateRandomTimestamp() As String
+            Dim random As New Random()
+            Dim minutes As Integer = random.Next(60)
+            Dim m As String = If(minutes > 9, minutes.ToString(), $"0{minutes}")
+            Dim hours As Integer = random.Next(12)
+            Return If(hours > 9, $"{hours}:{m}", $"0{hours}:{m}")
+        End Function
+
+        Public Sub Clear()
+            Messages = New Dictionary(Of String, String)()
+        End Sub
+
+        Public Sub Tick()
+            Dim now As String = TimeUtils.getCurrentTimeStamp()
+            If Messages.ContainsKey(now) Then
+                If Not lastMSG.Equals(Messages(now)) Then
+                    lastMSG = Messages(now)
+                    msg = True
+                End If
+            End If
+        End Sub
+
+        Public Function GetLastMSG() As String
+            msg = False
+            Return lastMSG
+        End Function
+
+        Public Function GetMsg() As Boolean
+            Return msg
+        End Function
+    End Class
 End Module

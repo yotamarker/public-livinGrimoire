@@ -326,7 +326,7 @@
             End If
         End Sub
 
-        Public Sub SetKokoro(kokoro As Kokoro)
+        Public Overridable Sub SetKokoro(kokoro As Kokoro)
             Me.kokoro = kokoro
         End Sub
 

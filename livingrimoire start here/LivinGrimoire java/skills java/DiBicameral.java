@@ -2,6 +2,7 @@ package skills;
 
 import AXJava.TimedMessages;
 import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Kokoro;
 
 public class DiBicameral extends DiSkillV2 {
     /*
@@ -13,7 +14,7 @@ public class DiBicameral extends DiSkillV2 {
     @Override
     public void input(String ear, String skin, String eye) {
         msgCol.tick();
-        if(!(kokoro.toHeart.getOrDefault("dibicameral","null").equals("null"))){
+        if(!(kokoro.toHeart.get("dibicameral").equals("null"))){
             kokoro.toHeart.put("dibicameral","null");
         }
         if(msgCol.getMsg()){
@@ -25,5 +26,11 @@ public class DiBicameral extends DiSkillV2 {
                 kokoro.toHeart.put("dibicameral",temp.replace("#",""));
             }
         }
+    }
+
+    @Override
+    public void setKokoro(Kokoro kokoro) {
+        super.setKokoro(kokoro);
+        kokoro.toHeart.put("dibicameral","null");
     }
 }

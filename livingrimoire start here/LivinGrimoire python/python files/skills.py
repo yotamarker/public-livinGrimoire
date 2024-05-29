@@ -2019,7 +2019,7 @@ class DiBicameral(DiSkillV2):
 
     def input(self, ear, skin, eye):
         self.msgCol.tick()
-        if self.getKokoro().toHeart.get("dibicameral", "null") != "null":
+        if self.getKokoro().toHeart.get("dibicameral") != "null":
             self.getKokoro().toHeart["dibicameral"] = "null"
         if self.msgCol.getMsg():
             temp = self.msgCol.getLastMSG()
@@ -2027,6 +2027,10 @@ class DiBicameral(DiSkillV2):
                 self.setSimpleAlg(temp)
             else:
                 self.getKokoro().toHeart["dibicameral"] = temp.replace("#", "")
+
+    def setKokoro(self, kokoro: Kokoro):
+        self._kokoro = kokoro
+        self.getKokoro().toHeart["dibicameral"] = "null"
 
 
 class DiYandere(DiSkillV2):

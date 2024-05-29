@@ -122,6 +122,11 @@ public class TimeGate
         DateTime now = new DateTime();
         this.openedGate = this.openedGate.AddMinutes(minutes);
     }
+    public void openGateforNSeconds(int n)
+    {
+        DateTime now = new DateTime();
+        this.openedGate = this.openedGate.AddSeconds(n);
+    }
 }
 public class LGFIFO<T>
 {
@@ -1028,7 +1033,6 @@ public class AXKeyValuePair
         return key + ";" + value;
     }
 }
-
 public class TrGEV3
 {
     // Advanced boolean gates with internal logic.
@@ -3001,5 +3005,123 @@ public class ElizaDeducerInitializer : ElizaDeducer
         kvs.Add(new AXKeyValuePair("explain {0}", "{0} is a {1}"));
         babbleTmp.Add(new PhraseMatcher("(.*) is a (.*)", kvs));
         babble2 = babbleTmp;
+    }
+}
+public class Excluder
+{
+    private readonly List<string> startsWith = new List<string>();
+    private readonly List<string> endsWith = new List<string>();
+
+    public void AddStartsWith(string s1)
+    {
+        if (!startsWith.Contains($"^({s1}).*"))
+        {
+            startsWith.Add($"^({s1}).*");
+        }
+    }
+
+    public void AddEndsWith(string s1)
+    {
+        if (!endsWith.Contains($"(.*)(?={s1})"))
+        {
+            endsWith.Add($"(.*)(?={s1})");
+        }
+    }
+
+    public bool Exclude(string ear)
+    {
+        // Assuming RegexUtil is defined elsewhere
+        RegexUtil r1 = new RegexUtil();
+
+        foreach (string tempStr in startsWith)
+        {
+            if (r1.ExtractRegex(tempStr, ear).Length > 0)
+            {
+                return true;
+            }
+        }
+
+        foreach (string tempStr in endsWith)
+        {
+            if (r1.ExtractRegex(tempStr, ear).Length > 0)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
+public class TimedMessages
+{
+    public Dictionary<string, string> Messages { get; } = new Dictionary<string, string>();
+    private string lastMSG = "nothing";
+    private bool msg = false;
+
+    public void AddMSG(string ear)
+    {
+        RegexUtil ru1 = new RegexUtil();
+        string tempMSG = ru1.ExtractRegex("(?<=remind me to).*?(?=at)", ear);
+        if (string.IsNullOrEmpty(tempMSG))
+        {
+            return;
+        }
+        string timeStamp = ru1.ExtractRegex(EnumRegexGrimoire.simpleTimeStamp, ear);
+        if (string.IsNullOrEmpty(timeStamp))
+        {
+            return;
+        }
+        Messages[timeStamp] = tempMSG;
+    }
+
+    public void AddMSGV2(string timeStamp, string msg)
+    {
+        Messages[timeStamp] = msg;
+    }
+
+    public void SprinkleMSG(string msg, int amount)
+    {
+        for (int i = 0; i < amount; i++)
+        {
+            Messages[GenerateRandomTimestamp()] = msg;
+        }
+    }
+
+    public static string GenerateRandomTimestamp()
+    {
+        Random random = new Random();
+        int minutes = random.Next(60);
+        string m = minutes > 9 ? minutes.ToString() : $"0{minutes}";
+        int hours = random.Next(12);
+        return hours > 9 ? $"{hours}:{m}" : $"0{hours}:{m}";
+    }
+
+    public void Clear()
+    {
+        Messages.Clear();
+    }
+
+    public void Tick()
+    {
+        string now = TimeUtils.GetCurrentTimeStamp();
+        if (Messages.ContainsKey(now))
+        {
+            if (!lastMSG.Equals(Messages[now]))
+            {
+                lastMSG = Messages[now];
+                msg = true;
+            }
+        }
+    }
+
+    public string GetLastMSG()
+    {
+        msg = false;
+        return lastMSG;
+    }
+
+    public bool GetMsg()
+    {
+        return msg;
     }
 }

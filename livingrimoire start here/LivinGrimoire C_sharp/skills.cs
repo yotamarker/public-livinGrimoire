@@ -42,3 +42,40 @@
         }
     }
 }
+public class DiBicameral : DiSkillV2
+{
+    // DiBicameral bicameral = new DiBicameral();
+    // bicameral.msgCol.addMSGV2("02:57", "test run ok");
+    // Add # for messages that engage other skills
+
+    public TimedMessages msgCol = new TimedMessages();
+
+    public void input(string ear, string skin, string eye)
+    {
+        msgCol.Tick();
+
+        if (!kokoro.toHeart["dibicameral"].Equals("null"))
+        {
+            kokoro.toHeart["dibicameral"] = "null";
+        }
+
+        if (msgCol.GetMsg())
+        {
+            string temp = msgCol.GetLastMSG();
+            if (!temp.Contains("#"))
+            {
+                SetSimpleAlg(temp);
+            }
+            else
+            {
+                kokoro.toHeart["dibicameral"] = temp.Replace("#", "");
+            }
+        }
+    }
+
+    public new void SetKokoro(Kokoro kokoro)
+    {
+        base.SetKokoro(kokoro);
+        kokoro.toHeart["dibicameral"] = "null";
+    }
+}

@@ -84,6 +84,11 @@ Module Auxiliary_modules
             Me.openedGate = Me.openedGate.AddMinutes(pause)
         End Sub
 
+        Public Sub openGateforNSeconds(ByVal n As Integer)
+            ' The gate will stay open for n seconds.
+            Me.openedGate = Me.openedGate.AddSeconds(n)
+        End Sub
+
         Public Sub Close()
             openedGate = New Date()
         End Sub
@@ -2556,6 +2561,75 @@ Module Auxiliary_modules
 
         Public Function GetMsg() As Boolean
             Return msg
+        End Function
+    End Class
+    Public Class AlgorithmV2
+        Private priority As Integer = 4
+        Private alg As Algorithm = Nothing
+
+        Public Sub New(ByVal priority As Integer, ByVal alg As Algorithm)
+            Me.priority = priority
+            Me.alg = alg
+        End Sub
+
+        Public Function GetPriority() As Integer
+            Return priority
+        End Function
+
+        Public Sub SetPriority(ByVal priority As Integer)
+            Me.priority = priority
+        End Sub
+
+        Public Function GetAlg() As Algorithm
+            Return alg
+        End Function
+
+        Public Sub SetAlg(ByVal alg As Algorithm)
+            Me.alg = alg
+        End Sub
+    End Class
+    Public Class AXSkillBundle
+        Private skills As New List(Of DiSkillV2)()
+        Private tempN As New Neuron()
+        Private kokoro As New Kokoro(New AbsDictionaryDB())
+
+        Public Sub SetKokoro(ByVal kokoro As Kokoro)
+            Me.kokoro = kokoro
+            For Each skill As DiSkillV2 In skills
+                skill.SetKokoro(Me.kokoro)
+            Next
+        End Sub
+
+        Public Sub New(ParamArray skillsParams As DiSkillV2())
+            For Each skill As DiSkillV2 In skillsParams
+                skill.SetKokoro(Me.kokoro)
+                skills.Add(skill)
+            Next
+        End Sub
+
+        Public Function AddSkill(ByVal skill As DiSkillV2) As AXSkillBundle
+            ' Builder pattern
+            skill.SetKokoro(Me.kokoro)
+            skills.Add(skill)
+            Return Me
+        End Function
+
+        Public Function DispenseAlgorithm(ByVal ear As String, ByVal skin As String, ByVal eye As String) As AlgorithmV2
+            For Each skill As DiSkillV2 In skills
+                skill.Input(ear, skin, eye)
+                skill.Output(tempN)
+                For j As Integer = 1 To 5
+                    Dim temp As Algorithm = tempN.GetAlg(j)
+                    If temp IsNot Nothing Then
+                        Return New AlgorithmV2(j, temp)
+                    End If
+                Next
+            Next
+            Return Nothing
+        End Function
+
+        Public Function GetSize() As Integer
+            Return skills.Count
         End Function
     End Class
 End Module

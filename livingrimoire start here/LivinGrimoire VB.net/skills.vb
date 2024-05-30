@@ -65,4 +65,27 @@
             kokoro.toHeart("dibicameral") = "null"
         End Sub
     End Class
+    Public Class DiSkillBundle
+        Inherits DiSkillV2
+
+        Private ReadOnly axSkillBundle As New AXSkillBundle()
+
+        Public Overrides Sub Input(ByVal ear As String, ByVal skin As String, ByVal eye As String)
+            Dim a1 As AlgorithmV2 = axSkillBundle.DispenseAlgorithm(ear, skin, eye)
+            If a1 Is Nothing Then
+                Return
+            End If
+            Me.outAlg = a1.GetAlg()
+            Me.outpAlgPriority = a1.GetPriority()
+        End Sub
+
+        Public Overrides Sub SetKokoro(ByVal kokoro As Kokoro)
+            MyBase.SetKokoro(kokoro)
+            axSkillBundle.SetKokoro(kokoro)
+        End Sub
+
+        Public Sub AddSkill(ByVal skill As DiSkillV2)
+            axSkillBundle.AddSkill(skill)
+        End Sub
+    End Class
 End Module

@@ -3125,3 +3125,89 @@ public class TimedMessages
         return msg;
     }
 }
+public class AlgorithmV2
+{
+    private int priority = 4;
+    private Algorithm alg = null;
+
+    public AlgorithmV2(int priority, Algorithm alg)
+    {
+        this.priority = priority;
+        this.alg = alg;
+    }
+
+    public int GetPriority()
+    {
+        return priority;
+    }
+
+    public void SetPriority(int priority)
+    {
+        this.priority = priority;
+    }
+
+    public Algorithm GetAlg()
+    {
+        return alg;
+    }
+
+    public void SetAlg(Algorithm alg)
+    {
+        this.alg = alg;
+    }
+}
+public class AXSkillBundle
+{
+    private List<DiSkillV2> skills = new List<DiSkillV2>();
+    private Neuron tempN = new Neuron();
+    private Kokoro kokoro = new Kokoro(new AbsDictionaryDB());
+
+    public void SetKokoro(Kokoro kokoro)
+    {
+        this.kokoro = kokoro;
+        foreach (DiSkillV2 skill in skills)
+        {
+            skill.SetKokoro(this.kokoro);
+        }
+    }
+
+    public AXSkillBundle(params DiSkillV2[] skillsParams)
+    {
+        foreach (DiSkillV2 skill in skillsParams)
+        {
+            skill.SetKokoro(this.kokoro);
+            skills.Add(skill);
+        }
+    }
+
+    public AXSkillBundle AddSkill(DiSkillV2 skill)
+    {
+        // Builder pattern
+        skill.SetKokoro(this.kokoro);
+        skills.Add(skill);
+        return this;
+    }
+
+    public AlgorithmV2 DispenseAlgorithm(string ear, string skin, string eye)
+    {
+        foreach (DiSkillV2 skill in skills)
+        {
+            skill.Input(ear, skin, eye);
+            skill.Output(tempN);
+            for (int j = 1; j <= 5; j++)
+            {
+                Algorithm temp = tempN.GetAlg(j);
+                if (temp != null)
+                {
+                    return new AlgorithmV2(j, temp);
+                }
+            }
+        }
+        return null;
+    }
+
+    public int GetSize()
+    {
+        return skills.Count;
+    }
+}

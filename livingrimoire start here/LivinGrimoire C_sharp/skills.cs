@@ -79,3 +79,29 @@ public class DiBicameral : DiSkillV2
         kokoro.toHeart["dibicameral"] = "null";
     }
 }
+public class DiSkillBundle : DiSkillV2
+{
+    private readonly AXSkillBundle axSkillBundle = new AXSkillBundle();
+
+    public override void Input(string ear, string skin, string eye)
+    {
+        AlgorithmV2 a1 = axSkillBundle.DispenseAlgorithm(ear, skin, eye);
+        if (a1 == null)
+        {
+            return;
+        }
+        this.outAlg = a1.GetAlg();
+        this.outpAlgPriority = a1.GetPriority();
+    }
+
+    public new void SetKokoro(Kokoro kokoro)
+    {
+        base.SetKokoro(kokoro);
+        axSkillBundle.SetKokoro(kokoro);
+    }
+
+    public void AddSkill(DiSkillV2 skill)
+    {
+        axSkillBundle.AddSkill(skill);
+    }
+}

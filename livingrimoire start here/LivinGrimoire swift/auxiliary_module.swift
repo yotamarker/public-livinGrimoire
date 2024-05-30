@@ -2449,5 +2449,72 @@ class TimedMessages {
         return msg
     }
 }
+class AlgorithmV2 {
+    private var priority: Int = 4
+    private var alg: Algorithm?
 
+    init(priority: Int, alg: Algorithm) {
+        self.priority = priority
+        self.alg = alg
+    }
 
+    func getPriority() -> Int {
+        return priority
+    }
+
+    func setPriority(_ priority: Int) {
+        self.priority = priority
+    }
+
+    func getAlg() -> Algorithm? {
+        return alg
+    }
+
+    func setAlg(_ alg: Algorithm) {
+        self.alg = alg
+    }
+}
+class AXSkillBundle {
+    private var skills: [DiSkillV2] = []
+    private let tempN = Neuron()
+    private var kokoro = Kokoro(absDictionaryDB: AbsDictionaryDB())
+
+    func setKokoro(_ kokoro: Kokoro) {
+        self.kokoro = kokoro
+        for skill in skills {
+            skill.setKokoro(kokoro: self.kokoro)
+        }
+    }
+
+    init(skillsParams: DiSkillV2...) {
+        for skill in skillsParams {
+            skill.setKokoro(kokoro: self.kokoro)
+            skills.append(skill)
+        }
+    }
+
+    @discardableResult
+    func addSkill(_ skill: DiSkillV2) -> AXSkillBundle {
+        // builder pattern
+        skill.setKokoro(kokoro: self.kokoro)
+        skills.append(skill)
+        return self
+    }
+
+    func dispenseAlgorithm(ear: String, skin: String, eye: String) -> AlgorithmV2? {
+        for skill in skills {
+            skill.input(ear: ear, skin: skin, eye: eye)
+            skill.output(noiron: tempN)
+            for j in 1..<6 {
+                if let temp = tempN.getAlg(defcon: j) {
+                    return AlgorithmV2(priority: j, alg: temp)
+                }
+            }
+        }
+        return nil
+    }
+
+    func getSize() -> Int {
+        return skills.count
+    }
+}

@@ -846,3 +846,22 @@ class DiBicameral: DiSkillV2 {
         kokoro.toHeart["dibicameral"] = "null"
     }
 }
+class DiSkillBundle: DiSkillV2 {
+    private let axSkillBundle = AXSkillBundle()
+
+    override func input(ear: String, skin: String, eye: String) {
+        if let a1 = axSkillBundle.dispenseAlgorithm(ear: ear, skin: skin, eye: eye) {
+            self.outAlg = a1.getAlg()
+            self.outpAlgPriority = a1.getPriority()
+        }
+    }
+
+    override func setKokoro(kokoro: Kokoro) {
+        super.setKokoro(kokoro: kokoro)
+        axSkillBundle.setKokoro(kokoro)
+    }
+
+    func addSkill(_ skill: DiSkillV2) {
+        axSkillBundle.addSkill(skill)
+    }
+}

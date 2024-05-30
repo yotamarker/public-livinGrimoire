@@ -38,44 +38,77 @@ class AlgDispenser {
     }
 }
 class SkillHubAlgDispenser {
-    /// super class to output an algorithm out of a selection of skills
-    ///  engage the hub with dispenseAlg and return the value to outAlg attribute
-    ///  of the containing skill (which houses the skill hub)
-    ///  this module enables using a selection of 1 skill for triggers instead of having the triggers engage on multible skill
-    ///   the methode is ideal for learnability and behavioral modifications
-    ///   use a learnability auxiliary module as a condition to run an active skill shuffle or change methode
-    ///   (rndAlg , cycleAlg)
-    ///   moods can be used for specific cases to change behavior of the AGI, for example low energy state
-    ///   for that use (moodAlg)
-    var skills:Array<DiSkillV2> = [DiSkillV2]()
-    var activeSkill:Int = 0
-    init(_skills:DiSkillV2...){
-        for skill in _skills {
-            self.skills.append(skill)
+    // Super class to output an algorithm out of a selection of skills
+    // Engage the hub with dispenseAlg and return the value to outAlg attribute
+    // of the containing skill (which houses the skill hub)
+    // This module enables using a selection of 1 skill for triggers instead of having the triggers engage on multiple skills
+    // The method is ideal for learnability and behavioral modifications
+    // Use a learnability auxiliary module as a condition to run an active skill shuffle or change method
+    // (rndAlg, cycleAlg)
+    // Moods can be used for specific cases to change behavior of the AGI, for example low energy state
+    // For that use (moodAlg)
+   
+    private var skills: [DiSkillV2] = []
+    private var activeSkill: Int = 0
+    private let tempN = Neuron()
+    private let rand = Int.random(in: 0..<Int.max)
+    private var kokoro = Kokoro(absDictionaryDB: AbsDictionaryDB())
+   
+    init(skillsParams: DiSkillV2...) {
+        for skill in skillsParams {
+            skill.setKokoro(kokoro: kokoro)
+            skills.append(skill)
         }
     }
+   
+    func setKokoro(_ kokoro: Kokoro) {
+        self.kokoro = kokoro
+        for skill in skills {
+            skill.setKokoro(kokoro: kokoro)
+        }
+    }
+   
     @discardableResult
-    func addSkill(skill:DiSkillV2) -> SkillHubAlgDispenser {
-        self.skills.append(skill)
+    func addSkill(_ skill: DiSkillV2) -> SkillHubAlgDispenser {
+        // Builder pattern
+        skill.setKokoro(kokoro: kokoro)
+        skills.append(skill)
         return self
     }
-    func dispenseAlgorithm(ear:String, skin:String, eye:String) -> Algorithm? {
+   
+    func dispenseAlgorithm(ear: String, skin: String, eye: String) -> AlgorithmV2? {
+        // Return value to outAlg param of (external) summoner DiSkillV2
         skills[activeSkill].input(ear: ear, skin: skin, eye: eye)
-        return skills[activeSkill].outAlg
+        skills[activeSkill].output(noiron: tempN)
+        for i in 1..<6 {
+            if let temp = tempN.getAlg(defcon: i) {
+                return AlgorithmV2(priority: i, alg: temp)
+            }
+        }
+        return nil
     }
-    func rndAlg(){
+   
+    func randomizeActiveSkill() {
         activeSkill = Int.random(in: 0..<skills.count)
     }
-    func moodAlg (mood:Int){
-        let c1:Int = skills.count
-        if -1<mood && mood<c1 {
+   
+    func setActiveSkillWithMood(_ mood: Int) {
+        // Mood integer represents active skill
+        // Different mood = different behavior
+        if mood > -1 && mood < skills.count {
             activeSkill = mood
         }
     }
-    func cycleAlg(){
+   
+    func cycleActiveSkill() {
+        // Changes active skill
+        // I recommend this method be triggered with a Learnability or SpiderSense object
         activeSkill += 1
-        if activeSkill == skills.count {activeSkill = 0}
+        if activeSkill == skills.count {
+            activeSkill = 0
+        }
     }
+   
     func getSize() -> Int {
         return skills.count
     }

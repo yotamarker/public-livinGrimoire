@@ -88,4 +88,73 @@
             axSkillBundle.AddSkill(skill)
         End Sub
     End Class
+    Public Class SkillBranch
+        Inherits DiSkillV2
+
+        ' unique skill used to bind similar skills
+        ' contains collection of skills
+        ' mutates active skill if detects conjuration
+        ' mutates active skill if algorithm results in
+        ' negative feedback
+        ' positive feedback negates active skill mutation
+
+        Private skillRef As New Hashtable()
+        Private skillHub As New SkillHubAlgDispenser()
+        Private ml As AXLearnability
+
+        Public Sub New(tolerance As Integer)
+            ml = New AXLearnability(tolerance)
+        End Sub
+
+        Public Overrides Sub input(ear As String, skin As String, eye As String)
+            ' conjuration alg morph
+            If skillRef.ContainsKey(ear) Then
+                skillHub.setActiveSkillWithMood(skillRef(ear))
+                SetSimpleAlg("hmm")
+            End If
+
+            ' machine learning alg morph
+            If ml.MutateAlg(ear) Then
+                skillHub.cycleActiveSkill()
+                SetSimpleAlg("hmm")
+            End If
+
+            ' alg engage
+            Dim a1 As AlgorithmV2 = skillHub.dispenseAlgorithm(ear, skin, eye)
+            If a1 Is Nothing Then Return
+
+            Me.outAlg = a1.GetAlg()
+            Me.outpAlgPriority = a1.GetPriority()
+            ml.PendAlg()
+        End Sub
+
+        Public Sub addSkill(skill As DiSkillV2)
+            skillHub.addSkill(skill)
+        End Sub
+
+        Public Sub addReferencedSkill(skill As DiSkillV2, conjuration As String)
+            ' the conjuration string will engage its respective skill
+            skillHub.addSkill(skill)
+            skillRef(conjuration) = skillHub.getSize()
+        End Sub
+
+        ' learnability params
+        Public Sub addDefcon(defcon As String)
+            ml.defcons.Add(defcon)
+        End Sub
+
+        Public Sub addGoal(goal As String)
+            ml.goals.Add(goal)
+        End Sub
+
+        ' while alg is pending, cause alg mutation ignoring learnability tolerance:
+        Public Sub addDefconLV5(defcon5 As String)
+            ml.defcon5.Add(defcon5)
+        End Sub
+
+        Public Overrides Sub setKokoro(kokoro As Kokoro)
+            MyBase.SetKokoro(kokoro)
+            skillHub.setKokoro(kokoro)
+        End Sub
+    End Class
 End Module

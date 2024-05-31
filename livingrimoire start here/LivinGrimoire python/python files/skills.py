@@ -924,11 +924,11 @@ class SkillBranch(DiSkillV2):
         self._ml.defcons.insert(defcon)
 
     def addGoal(self, goal):
-        self._ml.defcons.insert(goal)
+        self._ml.goals.insert(goal)
 
     # while alg is pending, cause alg mutation ignoring learnability tolerance:
     def addDefconLV5(self, defcon5):
-        self._ml.defcons.insert(defcon5)
+        self._ml.defcon5.insert(defcon5)
 
 
 class DiBlabberV2(DiSkillV2):

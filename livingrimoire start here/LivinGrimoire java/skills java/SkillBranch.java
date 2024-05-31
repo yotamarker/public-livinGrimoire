@@ -54,9 +54,9 @@ public class SkillBranch extends DiSkillV2 {
     }
     // learnability params
     public void addDefcon(String defcon){ml.defcons.add(defcon);}
-    public void addGoal(String goal){ml.defcons.add(goal);}
+    public void addGoal(String goal){ml.goals.add(goal);}
     // while alg is pending, cause alg mutation ignoring learnability tolerance:
-    public void addDefconLV5(String defcon5){ml.defcons.add(defcon5);}
+    public void addDefconLV5(String defcon5){ml.defcon5.add(defcon5);}
     @Override
     public void setKokoro(Kokoro kokoro) {
         super.setKokoro(kokoro);

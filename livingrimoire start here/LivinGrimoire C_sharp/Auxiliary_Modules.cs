@@ -2402,37 +2402,59 @@ public class RailChatBot
 }
 public class SkillHubAlgDispenser
 {
-    private List<DiSkillV2> skills = new List<DiSkillV2>();
+    // Super class to output an algorithm out of a selection of skills
+    // Engage the hub with dispenseAlg and return the value to outAlg attribute
+    // of the containing skill (which houses the skill hub)
+    // This module enables using a selection of 1 skill for triggers instead of having the triggers engage on multiple skills
+    // The method is ideal for learnability and behavioral modifications
+    // Use a learnability auxiliary module as a condition to run an active skill shuffle or change method
+    // (rndAlg, cycleAlg)
+    // Moods can be used for specific cases to change behavior of the AGI, for example low energy state
+    // For that use (moodAlg)
+
+    private readonly List<DiSkillV2> skills = new List<DiSkillV2>();
     private int activeSkill = 0;
-    private Neuron tempN = new Neuron();
-    private Random rand = new Random();
+    private readonly Neuron tempN = new Neuron();
+    private readonly Random rand = new Random();
+    private Kokoro kokoro = new Kokoro(new AbsDictionaryDB());
 
     public SkillHubAlgDispenser(params DiSkillV2[] skillsParams)
     {
-        foreach (DiSkillV2 skill in skillsParams)
+        foreach (var skill in skillsParams)
         {
+            skill.SetKokoro(this.kokoro);
             skills.Add(skill);
+        }
+    }
+
+    public void SetKokoro(Kokoro kokoro)
+    {
+        this.kokoro = kokoro;
+        foreach (var skill in skills)
+        {
+            skill.SetKokoro(this.kokoro);
         }
     }
 
     public SkillHubAlgDispenser AddSkill(DiSkillV2 skill)
     {
         // Builder pattern
+        skill.SetKokoro(this.kokoro);
         skills.Add(skill);
         return this;
     }
 
-    public Algorithm DispenseAlgorithm(string ear, string skin, string eye)
+    public AlgorithmV2 DispenseAlgorithm(string ear, string skin, string eye)
     {
         // Return value to outAlg param of (external) summoner DiskillV2
         skills[activeSkill].Input(ear, skin, eye);
         skills[activeSkill].Output(tempN);
-        for (int i = 1; i <= 5; i++)
+        for (int i = 1; i < 6; i++)
         {
             Algorithm temp = tempN.GetAlg(i);
             if (temp != null)
             {
-                return temp;
+                return new AlgorithmV2(i, temp);
             }
         }
         return null;
@@ -2447,7 +2469,7 @@ public class SkillHubAlgDispenser
     {
         // Mood integer represents active skill
         // Different mood = different behavior
-        if (mood >= 0 && mood < skills.Count)
+        if (mood > -1 && mood < skills.Count)
         {
             activeSkill = mood;
         }
@@ -2457,7 +2479,11 @@ public class SkillHubAlgDispenser
     {
         // Changes active skill
         // I recommend this method be triggered with a Learnability or SpiderSense object
-        activeSkill = (activeSkill + 1) % skills.Count;
+        activeSkill++;
+        if (activeSkill == skills.Count)
+        {
+            activeSkill = 0;
+        }
     }
 
     public int GetSize()

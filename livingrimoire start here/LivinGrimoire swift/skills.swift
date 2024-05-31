@@ -784,9 +784,9 @@ class SkillBranch: DiSkillV2 {
 
     // learnability params
     func addDefcon(_ defcon: String){ml.defcons.input(in1: defcon)}
-    func addGoal(_ goal: String){ml.defcons.input(in1: goal)}
+    func addGoal(_ goal: String){ml.goal.input(in1: goal)}
     // while alg is pending, cause alg mutation ignoring learnability tolerance:
-    func addDefconLV5(_ defcon5: String){ml.defcons.input(in1: defcon5)}
+    func addDefconLV5(_ defcon5: String){ml.defcon5.input(in1: defcon5)}
 
     override func setKokoro(kokoro: Kokoro) {
         super.setKokoro(kokoro: kokoro)

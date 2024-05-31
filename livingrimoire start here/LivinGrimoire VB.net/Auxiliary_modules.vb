@@ -1957,49 +1957,69 @@ Module Auxiliary_modules
         End Sub
     End Class
     Public Class SkillHubAlgDispenser
-        Private skills As New List(Of DiSkillV2)()
+        ' Super class to output an algorithm out of a selection of skills
+        ' Engage the hub with dispenseAlg and return the value to outAlg attribute
+        ' of the containing skill (which houses the skill hub)
+        ' This module enables using a selection of 1 skill for triggers instead of having the triggers engage on multiple skills
+        ' The method is ideal for learnability and behavioral modifications
+        ' Use a learnability auxiliary module as a condition to run an active skill shuffle or change method
+        ' (rndAlg, cycleAlg)
+        ' Moods can be used for specific cases to change behavior of the AGI, for example low energy state
+        ' For that use (moodAlg)
+
+        Private ReadOnly skills As New List(Of DiSkillV2)()
         Private activeSkill As Integer = 0
-        Private tempN As New Neuron()
-        Private rand As New Random()
+        Private ReadOnly tempN As New Neuron()
+        Private ReadOnly rand As New Random()
+        Private kokoro As New Kokoro(New AbsDictionaryDB())
 
         Public Sub New(ParamArray skillsParams As DiSkillV2())
             For Each skill As DiSkillV2 In skillsParams
+                skill.SetKokoro(Me.kokoro)
                 skills.Add(skill)
             Next
         End Sub
 
-        Public Function AddSkill(skill As DiSkillV2) As SkillHubAlgDispenser
+        Public Sub setKokoro(kokoro As Kokoro)
+            Me.kokoro = kokoro
+            For Each skill As DiSkillV2 In skills
+                skill.SetKokoro(Me.kokoro)
+            Next
+        End Sub
+
+        Public Function addSkill(skill As DiSkillV2) As SkillHubAlgDispenser
             ' Builder pattern
+            skill.SetKokoro(Me.kokoro)
             skills.Add(skill)
             Return Me
         End Function
 
-        Public Function DispenseAlgorithm(ear As String, skin As String, eye As String) As Algorithm
+        Public Function dispenseAlgorithm(ear As String, skin As String, eye As String) As AlgorithmV2
             ' Return value to outAlg param of (external) summoner DiskillV2
             skills(activeSkill).Input(ear, skin, eye)
             skills(activeSkill).Output(tempN)
             For i As Integer = 1 To 5
                 Dim temp As Algorithm = tempN.GetAlg(i)
                 If temp IsNot Nothing Then
-                    Return temp
+                    Return New AlgorithmV2(i, temp)
                 End If
             Next
             Return Nothing
         End Function
 
-        Public Sub RandomizeActiveSkill()
+        Public Sub randomizeActiveSkill()
             activeSkill = rand.Next(skills.Count)
         End Sub
 
-        Public Sub SetActiveSkillWithMood(mood As Integer)
+        Public Sub setActiveSkillWithMood(mood As Integer)
             ' Mood integer represents active skill
             ' Different mood = different behavior
-            If mood >= 0 AndAlso mood < skills.Count Then
+            If mood > -1 AndAlso mood < skills.Count Then
                 activeSkill = mood
             End If
         End Sub
 
-        Public Sub CycleActiveSkill()
+        Public Sub cycleActiveSkill()
             ' Changes active skill
             ' I recommend this method be triggered with a Learnability or SpiderSense object
             activeSkill += 1
@@ -2008,7 +2028,7 @@ Module Auxiliary_modules
             End If
         End Sub
 
-        Public Function GetSize() As Integer
+        Public Function getSize() As Integer
             Return skills.Count
         End Function
     End Class

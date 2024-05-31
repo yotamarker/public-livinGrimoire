@@ -1,0 +1,24 @@
+as it's name implies, this skill lets the programmer bundle multiple skills together.
+DiSkillBundle or a subclass of it can be used.
+
+***
+
+        Brain b1 = new Brain();<br>
+        DiSkillBundle dsb = new DiSkillBundle();<br>
+        dsb.addSkill(new DiHelloWorld());<br>
+        dsb.addSkill(new DiTime());<br>
+        b1.logicChobit.addSkill(dsb);<br>
+
+***
+
+bundling skills together has several merits:
+
+better readability
+* faster skill equiping(several at once)
+* combined with a SkillBranch, a bundle of skills can mutate together into other skills, 
+or skill bundles. this also means enablement of burst modes in which every microsecond counts,
+and the bundle can use a skill branch to mutate into a bundle of a few essential skills.
+* creation of new skills.
+* it is a little bit faster than unbundled skills, because on activation of an algorithm
+the bundle skips to the stage of sending out the Algorithm.
+* organizing skill sets into bundles means cleaner and more readable code.

@@ -2101,10 +2101,8 @@ class DiYandere(DiSkillV2):
                     self.yandereMode = True
                     self.activeResponder = self.sadYandere
                     return
-        hato: str = "null"
-        if "dibicameral" in self.getKokoro().toHeart:
-            hato = self.getKokoro().toHeart["dibicameral"]
-
+        hato: str = self.getKokoro().toHeart["dibicameral"]
+            
         if hato == "yandere":
             self.setSimpleAlg(self.activeResponder.getAResponse())
             self.promptActive = True

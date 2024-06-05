@@ -1,7 +1,8 @@
-chobits can be linked (chain effect) together one chobits output can be used as input for the next chobit
+AI pharmaceuticals are LivinGrimoire skills, with shallow reference to the external environment of a livingrimoire object.
+naming convention: Pill_skillName
 
-thus AI drugs are programmable when the "drugs" are input into the 1st chobit it may engage for example reality morphing for input which in turn, after passing through a certain skill in the 1st chobit will produce a different output before its sent to the main chobit.
+example 1 : a pill skill can change the interval duration of a tick event, which triggers the livingrimoire.
+example 2 : a pill skill can change input before it reaches the livingrimoire Brain or Chobit class.
 
-drug/alcohol effects can be coded
-
-as well as input to main language translation
+AI drugs can also be made to effect specific skills, so long as the effected skills are equipped with some form of receptor code to react
+with the drug's special input.

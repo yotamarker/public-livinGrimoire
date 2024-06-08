@@ -1,6 +1,7 @@
 package LivinGrimoire;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class APCldVerbatim extends Mutatable {
     /*
@@ -8,12 +9,10 @@ public class APCldVerbatim extends Mutatable {
      */
     private ArrayList<String> sentences = new ArrayList<String>();
     private int at = 0;
-    private CldBool cldBool; // access via shallow reference
+    private final CldBool cldBool; // access via shallow reference
 
     public APCldVerbatim(CldBool cldBool, String... sentences) {
-        for (int i = 0; i < sentences.length; i++) {
-            this.sentences.add(sentences[i]);
-        }
+        this.sentences.addAll(Arrays.asList(sentences));
         if (0 == sentences.length) {
             at = 30;
         }
@@ -32,7 +31,6 @@ public class APCldVerbatim extends Mutatable {
 
     @Override
     public String action(String ear, String skin, String eye) {
-        // TODO Auto-generated method stub
         String axnStr = "";
         if (this.at < this.sentences.size()) {
             axnStr = this.sentences.get(at);
@@ -49,7 +47,6 @@ public class APCldVerbatim extends Mutatable {
 
     @Override
     public Mutatable clone() {
-        // TODO Auto-generated method stub
         return new APCldVerbatim(cldBool, this.sentences);
     }
 }

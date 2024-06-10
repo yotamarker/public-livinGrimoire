@@ -1,8 +1,8 @@
 package AXJava;
 
 public class AnnoyedQue {
-    private RefreshQ q1 = new RefreshQ();
-    private RefreshQ q2 = new RefreshQ();
+    private final RefreshQ q1 = new RefreshQ();
+    private final RefreshQ q2 = new RefreshQ();
 
     public AnnoyedQue(int queLim) {
         q1.setLimit(queLim);

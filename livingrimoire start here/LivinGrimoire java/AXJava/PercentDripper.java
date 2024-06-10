@@ -1,7 +1,7 @@
 package AXJava;
 
 public class PercentDripper {
-    private DrawRnd dr = new DrawRnd();
+    private final DrawRnd dr = new DrawRnd();
     private int limis = 35;
 
     public void setLimis(int limis) {

@@ -2,7 +2,7 @@ package AXJava;
 import LivinGrimoire.*;
 
 public class LGTypeConverter {
-    private RegexUtil r1 = new RegexUtil();
+    private final RegexUtil r1 = new RegexUtil();
     public int convertToInt(String v1){
         String temp = r1.extractRegex(enumRegexGrimoire.integer, v1);
         if (temp.isEmpty()) {return 0;}

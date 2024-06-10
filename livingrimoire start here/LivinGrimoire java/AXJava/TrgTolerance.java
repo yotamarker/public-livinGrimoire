@@ -25,10 +25,7 @@ public class TrgTolerance extends TrGEV3{
     public Boolean trigger() {
         // will return true till depletion or reset()
         repeats--;
-        if (repeats > 0) {
-            return true;
-        }
-        return false;
+        return repeats > 0;
     }
     public void disable(){
         repeats = 0;

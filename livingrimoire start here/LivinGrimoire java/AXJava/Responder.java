@@ -1,16 +1,15 @@
 package AXJava;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 public class Responder {
     // simple random response dispenser
-    private ArrayList<String> responses = new ArrayList<String>();
-    private Random rand = new Random();
+    private final ArrayList<String> responses = new ArrayList<String>();
+    private final Random rand = new Random();
     public Responder(String... replies) {
-        for (int i = 0; i < replies.length; i++) {
-            responses.add(replies[i]);
-        }
+        Collections.addAll(responses, replies);
     }
     public String getAResponse(){
         if (responses.isEmpty()){
@@ -22,7 +21,7 @@ public class Responder {
         return responses.contains(str);
     }
     public Boolean strContainsResponse(String str){
-        Boolean result = false;
+        boolean result = false;
         for (String tempStr: responses) {
             if (str.contains(tempStr)){
                 result = true;

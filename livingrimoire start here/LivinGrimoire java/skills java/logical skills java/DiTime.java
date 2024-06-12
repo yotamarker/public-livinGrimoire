@@ -3,8 +3,10 @@ package skills;
 import LivinGrimoire.DiSkillV2;
 import LivinGrimoire.PlayGround;
 
+import java.util.Objects;
+
 public class DiTime extends DiSkillV2 {
-    private PlayGround pl = new PlayGround();
+    private final PlayGround pl = new PlayGround();
 
     @Override
     public void input(String ear, String skin, String eye) {
@@ -116,13 +118,13 @@ public class DiTime extends DiSkillV2 {
                 setVerbatimAlg(4, pl.nxtDayOnDate(28));
                 return;
             case "when is the twenty ninth":
-                setVerbatimAlg(4, pl.nxtDayOnDate(29) == "" ? "never":pl.nxtDayOnDate(29));
+                setVerbatimAlg(4, Objects.equals(pl.nxtDayOnDate(29), "") ? "never":pl.nxtDayOnDate(29));
                 return;
             case "when is the thirtieth":
-                setVerbatimAlg(4, pl.nxtDayOnDate(30) == "" ? "never":pl.nxtDayOnDate(30));
+                setVerbatimAlg(4, Objects.equals(pl.nxtDayOnDate(30), "") ? "never":pl.nxtDayOnDate(30));
                 return;
             case "when is the thirty first":
-                setVerbatimAlg(4, pl.nxtDayOnDate(31) == "" ? "never":pl.nxtDayOnDate(31));
+                setVerbatimAlg(4, Objects.equals(pl.nxtDayOnDate(31), "") ? "never":pl.nxtDayOnDate(31));
                 return;
             case "incantation 0":
                 setSimpleAlg("fly","bless of magic caster","infinity wall", "magic ward holy","life essence");

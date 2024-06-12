@@ -8,8 +8,8 @@ public class Cron extends TrGEV3{
     // triggers true, limit times, after initial time, and every minutes interval
     // counter resets at initial time, assuming trigger method was run
     int minutes; // minute interval between triggerings
-    private PlayGround pl = new PlayGround();
-    private TrgTime trgTime;
+    private final PlayGround pl = new PlayGround();
+    private final TrgTime trgTime;
     private String timeStamp = "";
     private String initialTimeStamp = "";
     private int limit;

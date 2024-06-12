@@ -7,8 +7,8 @@ import java.util.Random;
 public class TrgEveryNMinutes extends TrGEV3{
     // trigger returns true every minutes interval, post start time
     private int minutes; // minute interval between triggerings
-    private PlayGround pl = new PlayGround();
-    private TrgTime trgTime;
+    private final PlayGround pl = new PlayGround();
+    private final TrgTime trgTime;
     private String timeStamp = "";
 
     public TrgEveryNMinutes(String startTime, int minutes) {

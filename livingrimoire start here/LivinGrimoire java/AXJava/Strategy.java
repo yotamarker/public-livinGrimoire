@@ -1,8 +1,8 @@
 package AXJava;
 
 public class Strategy {
-    private UniqueItemSizeLimitedPriorityQueue activeStrategy; // active strategic options
-    private DrawRnd allStrategies; // bank of all strategies. out of this pool active strategies are pulled
+    private final UniqueItemSizeLimitedPriorityQueue activeStrategy; // active strategic options
+    public DrawRnd allStrategies; // bank of all strategies. out of this pool active strategies are pulled
 
     public Strategy(DrawRnd allStrategies) {
         // create the strategy Object with a bank of options

@@ -5,8 +5,8 @@ public class TODOListManager {
     q1 tasks are mentioned once, and forgotten
     backup tasks are the memory of recently mentioned tasks
     * */
-    private UniqueItemSizeLimitedPriorityQueue q1 = new UniqueItemSizeLimitedPriorityQueue();
-    private UniqueItemSizeLimitedPriorityQueue backup = new UniqueItemSizeLimitedPriorityQueue();
+    private final UniqueItemSizeLimitedPriorityQueue q1 = new UniqueItemSizeLimitedPriorityQueue();
+    private final UniqueItemSizeLimitedPriorityQueue backup = new UniqueItemSizeLimitedPriorityQueue();
 
     public TODOListManager(int todoLim) {
         q1.setLimit(todoLim);

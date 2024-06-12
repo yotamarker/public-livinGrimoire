@@ -47,5 +47,4 @@
 47. TrgSnooze
 48. AXContextCmd
 49. AXConvince
-50. AXChangeDetector
-51. AXSkillBundle
+50. AXSkillBundle

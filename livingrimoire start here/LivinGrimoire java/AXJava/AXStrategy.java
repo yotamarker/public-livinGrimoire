@@ -9,8 +9,8 @@ public class AXStrategy {
         upon pain/lose use the evolve methode to update to different new active strategies
         check for battle state end externaly (opponent state/hits on rival counter)
     a dictionary of strategies*/
-    private int lim;
-    private Hashtable<String,Strategy> strategies = new Hashtable<>();
+    private final int lim;
+    private final Hashtable<String,Strategy> strategies = new Hashtable<>();
 
     public AXStrategy(int lim) {
         // limit of active strategies (pulled from all available strategies)

@@ -9,7 +9,7 @@ public class AXPassword {
     private Boolean isOpen = false;
     private int maxAttempts = 3;
     private int loginAttempts = maxAttempts;
-    private RegexUtil regexUtil = new RegexUtil();
+    private final RegexUtil regexUtil = new RegexUtil();
     private int code = 0;
     public Boolean codeUpdate(String ear){
         // while the gate is toggled on, the password code can be changed

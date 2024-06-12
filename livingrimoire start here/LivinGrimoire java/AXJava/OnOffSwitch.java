@@ -4,7 +4,7 @@ import LivinGrimoire.TimeGate;
 
 public class OnOffSwitch {
     private Boolean mode = false;
-    private TimeGate timeGate = new TimeGate(5);
+    private final TimeGate timeGate = new TimeGate(5);
     private Responder on = new Responder("on","talk to me");
     private Responder off = new Responder("off","stop","shut up", "shut it","whatever","whateva");
 

@@ -8,9 +8,9 @@ public class TrgMinute extends TrGEV3{
     // trigger true at minute once per hour
     private int hour1 = -1;
     int minute;
-    private Random rand = new Random();
-    private PlayGround pl = new PlayGround();
+    private final PlayGround pl = new PlayGround();
     public TrgMinute() {
+        Random rand = new Random();
         minute = rand.nextInt(60);
     }
 

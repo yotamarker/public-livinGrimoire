@@ -11,7 +11,7 @@ public class TrgSnooze extends TrGEV3{
     private int maxrepeats; //2 recomended
     private Boolean snooze = true;
     private int snoozeInterval = 5;
-    private PlayGround playGround = new PlayGround();
+    private final PlayGround playGround = new PlayGround();
     public TrgSnooze(int maxrepeats) {
         this.maxrepeats = maxrepeats;
     }

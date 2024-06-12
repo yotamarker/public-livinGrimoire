@@ -7,8 +7,8 @@ import java.util.ArrayList;
 public class SpiderSense {
     // enables event prediction
     private Boolean spiderSense = false;
-    private UniqueItemSizeLimitedPriorityQueue events = new UniqueItemSizeLimitedPriorityQueue();
-    private UniqueItemSizeLimitedPriorityQueue alerts = new UniqueItemSizeLimitedPriorityQueue();
+    private final UniqueItemSizeLimitedPriorityQueue events = new UniqueItemSizeLimitedPriorityQueue();
+    private final UniqueItemSizeLimitedPriorityQueue alerts = new UniqueItemSizeLimitedPriorityQueue();
     private String prev = "";
     public SpiderSense addEvent(String event){
         // builder pattern

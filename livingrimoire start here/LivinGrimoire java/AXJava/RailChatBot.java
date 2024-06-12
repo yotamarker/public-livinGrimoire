@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 public class RailChatBot {
-    private Hashtable<String,RefreshQ> dic = new Hashtable<>();
+    private final Hashtable<String,RefreshQ> dic = new Hashtable<>();
     private String context = "default";
 
     public RailChatBot() {
@@ -67,9 +67,8 @@ public class RailChatBot {
         if (!dic.containsKey(ear)){
             dic.put(ear,new RefreshQ());
         }
-        String temp = dic.get(ear).getRNDElement();
 //        if (!temp.isEmpty()){context = temp;}
-        return temp;
+        return dic.get(ear).getRNDElement();
     }
     public void learnV2(String ear, ElizaDeducer elizaDeducer){
         feedKeyValuePairs(elizaDeducer.respond(ear));

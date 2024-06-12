@@ -11,6 +11,7 @@ to test the postpone ability, there is a skill with these 2 abilities:
 
 so what happens is, while one algorithm is running a second is set on stand by, to run after the 1st one finishes:
 
+>Brain b1 = new Brain()
 >b1.hardwareChobit.addSkill(new DiSysOut());
 >b1.logicChobit.addSkill(new DiTime());
 >b1.doIt("incantation 0","","");

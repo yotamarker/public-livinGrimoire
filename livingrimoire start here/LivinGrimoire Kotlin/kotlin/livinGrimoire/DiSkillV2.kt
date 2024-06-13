@@ -1,7 +1,7 @@
 package livinGrimoire
 
 open class DiSkillV2 {
-    public var kokoro =
+    public open var kokoro =
         Kokoro(AbsDictionaryDB()) // consciousness, shallow ref class to enable interskill communications
     protected var diSkillUtils = DISkillUtils()
     protected var outAlg: Algorithm? = null // skills output
@@ -11,7 +11,7 @@ open class DiSkillV2 {
     open fun input(ear: String, skin: String, eye: String) {}
 
     // extraction of skill algorithm to run (if there is one)
-    fun output(noiron: Neuron) {
+    open fun output(noiron: Neuron) {
         if (outAlg != null) {
             noiron.insertAlg(outpAlgPriority, outAlg!!)
             outpAlgPriority = -1

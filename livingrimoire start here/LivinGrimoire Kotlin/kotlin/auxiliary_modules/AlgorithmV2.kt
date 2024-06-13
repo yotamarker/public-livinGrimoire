@@ -3,7 +3,7 @@ package auxiliary_modules
 import livinGrimoire.Algorithm
 
 class AlgorithmV2(priority: Int, alg: Algorithm) {
-    private var priority = 4
+    var priority = 4
     private var alg: Algorithm? = null
 
     init {

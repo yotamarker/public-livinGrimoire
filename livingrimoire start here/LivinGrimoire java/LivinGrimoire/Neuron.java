@@ -23,7 +23,7 @@ public class Neuron {
         if (defcons.get(defcon).size() > 0){
             Algorithm temp = defcons.get(defcon).get(0);
             defcons.get(defcon).remove(0);
-            return temp.clone();
+            return temp;
         }
         return null;
     }

@@ -2,11 +2,11 @@ package LivinGrimoire;
 
 import java.util.Hashtable;
 
-/* all action data goes through here
- * detects negatives such as : repetition, pain on various levels and failures
- * serves as a database for memories, convos and alg generations
- * can trigger revenge algs
- * checks for % of difference in input for exploration type algs
+/* this class enables:
+communication between skills
+utilization of a database for skills
+in skill monitoring of which Mutatable was last run by the AI (consciousness)
+this class is a built-in attribute in skill objects.
  * */
 public class Kokoro {
     private String emot = "";

@@ -17,14 +17,5 @@ public class Algorithm {
     public int getSize() {
         return algParts.size();
     }
-
-    public Algorithm clone() {
-        // returns a deep copy algorithm
-        ArrayList<Mutatable> parts = new ArrayList<>();
-        for (Mutatable absAlgPart : this.algParts) {
-            parts.add(absAlgPart.clone());
-        }
-        return new Algorithm(parts);
-    }
 }
 

@@ -41,10 +41,4 @@ public class APVerbatim extends Mutatable {
         // TODO Auto-generated method stub
         return at >= this.sentences.size();
     }
-
-    @Override
-    public Mutatable clone() {
-        // TODO Auto-generated method stub
-        return new APVerbatim(this.sentences);
-    }
 }

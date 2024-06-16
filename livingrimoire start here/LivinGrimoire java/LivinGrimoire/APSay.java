@@ -33,9 +33,4 @@ public class APSay extends Mutatable{
         // TODO Auto-generated method stub
         return at < 1;
     }
-
-    @Override
-    public Mutatable clone() {
-        return new APSay(this.at, this.param);
-    }
 }

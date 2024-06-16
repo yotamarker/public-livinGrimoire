@@ -5,7 +5,6 @@ public abstract class Mutatable {
     public Boolean algKillSwitch = false;
     public abstract String action(String ear, String skin, String eye);
     public abstract Boolean completed();
-    public abstract Mutatable clone();
     public  String myName(){
         // Returns the class name
         return this.getClass().getSimpleName();

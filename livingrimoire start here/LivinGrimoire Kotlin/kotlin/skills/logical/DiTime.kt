@@ -1,12 +1,10 @@
-package skills
+package skills.logical
 
-import auxiliary_modules.PlayGround
-import livinGrimoire.APVerbatim
+import auxiliary_modules.TimeUtils
 import livinGrimoire.DiSkillV2
-import java.util.*
 
 class DiTime : DiSkillV2() {
-    private val pl: PlayGround = PlayGround()
+    private val pl: TimeUtils = TimeUtils()
     override fun input(ear: String, skin: String, eye: String) {
         when (ear) {
             "what is the date" -> {

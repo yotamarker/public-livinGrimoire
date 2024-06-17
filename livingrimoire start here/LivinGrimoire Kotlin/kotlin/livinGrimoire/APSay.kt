@@ -27,8 +27,4 @@ class APSay(repetitions: Int, param: String) : Mutatable() {
     override fun completed(): Boolean {
         return at < 1
     }
-
-    override fun clone(): Mutatable {
-        return APSay(at, param)
-    }
 }

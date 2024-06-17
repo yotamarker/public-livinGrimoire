@@ -24,7 +24,7 @@ class Neuron {
         if (defcons[defcon]!!.size > 0) {
             val temp = defcons[defcon]!![0]
             defcons[defcon]!!.removeAt(0)
-            return temp.clone()
+            return temp
         }
         return null
     }

@@ -1,4 +1,4 @@
-package livinGrimoire
+package auxiliary_modules
 
 class DeepCopier {
     fun copyList(original: ArrayList<String>?): ArrayList<String> {

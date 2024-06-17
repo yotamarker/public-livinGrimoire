@@ -1,7 +1,5 @@
 package auxiliary_modules
 
-import livinGrimoire.DeepCopier
-
 class SpiderSense {
     // enables event prediction
     private var spiderSense = false

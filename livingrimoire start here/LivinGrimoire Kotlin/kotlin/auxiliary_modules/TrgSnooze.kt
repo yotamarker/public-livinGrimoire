@@ -8,7 +8,7 @@ class TrgSnooze( //2 recomended
     private var repeats = 0
     private var snooze = true
     private var snoozeInterval = 5
-    private val playGround = PlayGround()
+    private val playGround = TimeUtils()
     fun setSnoozeInterval(snoozeInterval: Int) {
         if (snoozeInterval > 1 && snoozeInterval < 11) {
             this.snoozeInterval = snoozeInterval

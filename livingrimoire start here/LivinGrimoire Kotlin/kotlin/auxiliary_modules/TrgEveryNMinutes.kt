@@ -5,7 +5,7 @@ class TrgEveryNMinutes(
     private var minutes // minute interval between triggerings
     : Int
 ) : TrGEV3() {
-    private val pl = PlayGround()
+    private val pl = TimeUtils()
     private val trgTime: TrgTime
     private var timeStamp = ""
 

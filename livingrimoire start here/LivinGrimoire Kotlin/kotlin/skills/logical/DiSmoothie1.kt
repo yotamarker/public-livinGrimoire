@@ -1,4 +1,4 @@
-package skills
+package skills.logical
 
 import auxiliary_modules.AXContextCmd
 import auxiliary_modules.DrawRnd

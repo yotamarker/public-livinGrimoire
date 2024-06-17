@@ -6,7 +6,7 @@ import java.time.LocalDate
 import java.util.*
 
 // times and stuff
-class PlayGround {
+class TimeUtils {
     val currentTimeStamp: String
         // int foo = Integer.parseInt(myString);
         get() {

@@ -10,13 +10,4 @@ class Algorithm(algParts: ArrayList<Mutatable>) {
 
     val size: Int
         get() = algParts.size
-
-    fun clone(): Algorithm {
-        // returns a deep copy algorithm
-        val parts = ArrayList<Mutatable>()
-        for (absAlgPart in algParts) {
-            parts.add(absAlgPart.clone())
-        }
-        return Algorithm(parts)
-    }
 }

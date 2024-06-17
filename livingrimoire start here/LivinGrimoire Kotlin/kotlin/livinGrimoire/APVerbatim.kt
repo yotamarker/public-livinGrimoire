@@ -36,8 +36,4 @@ class APVerbatim : Mutatable {
     override fun completed(): Boolean {
         return at >= sentences.size
     }
-
-    override fun clone(): Mutatable {
-        return APVerbatim(sentences)
-    }
 }

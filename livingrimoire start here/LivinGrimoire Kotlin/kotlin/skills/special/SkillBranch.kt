@@ -1,4 +1,4 @@
-package skills
+package skills.special
 
 import auxiliary_modules.*
 import livinGrimoire.AbsDictionaryDB

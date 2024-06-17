@@ -42,8 +42,4 @@ class APCldVerbatim : Mutatable {
     override fun completed(): Boolean {
         return at >= sentences.size
     }
-
-    override fun clone(): Mutatable {
-        return APCldVerbatim(cldBool, sentences)
-    }
 }

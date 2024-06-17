@@ -4,7 +4,7 @@ import java.util.*
 
 class TimedMessages {
     var messages: MutableMap<String, String> = HashMap()
-    private val playGround = PlayGround()
+    private val playGround = TimeUtils()
     private var lastMSG: String = "nothing"
     var msg = false
         private set

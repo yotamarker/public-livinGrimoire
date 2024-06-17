@@ -6,7 +6,7 @@ class TrgMinute : TrGEV3 {
     // trigger true at minute once per hour
     private var hour1 = -1
     var minute: Int
-    private val pl = PlayGround()
+    private val pl = TimeUtils()
 
     constructor() {
         val rand = Random()

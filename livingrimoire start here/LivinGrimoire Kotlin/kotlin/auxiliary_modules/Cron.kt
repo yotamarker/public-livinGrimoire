@@ -6,7 +6,7 @@ class Cron(
     private var minutes // minute interval between triggerings
     : Int, limit: Int
 ) : TrGEV3() {
-    private val pl = PlayGround()
+    private val pl = TimeUtils()
     private val trgTime: TrgTime
     private var timeStamp = ""
     private var initialTimeStamp = ""

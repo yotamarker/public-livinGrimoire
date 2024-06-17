@@ -1,4 +1,4 @@
-package skills
+package skills.special
 
 import auxiliary_modules.*
 import livinGrimoire.DiSkillV2
@@ -10,7 +10,7 @@ class DiEngager(burpsPerHour: Int, skillToEngage: String) : DiSkillV2() {
     private var skillToEngage = "unknown"
     private val draw: DrawRndDigits = DrawRndDigits()
     private val burpMinutes: LGFIFO<Int> = LGFIFO()
-    private val pl: PlayGround = PlayGround()
+    private val pl: TimeUtils = TimeUtils()
 
     init {
         if (burpsPerHour in 1..59) {

@@ -6,6 +6,799 @@
 //
 
 import Foundation
+class DeepCopier{
+    func copyList(original: Array<String>)->Array<String>{
+        var deepCopy: Array<String> = [String]()
+        for item in original{
+            deepCopy.append(item)
+        }
+        return deepCopy
+    }
+    func copyListOfInts(original: Array<Int>)->Array<Int>{
+        var deepCopy: Array<Int> = [Int]()
+        for item in original{
+            deepCopy.append(item)
+        }
+        return deepCopy
+    }
+}
+enum enumTimes: Int {
+    case date
+    case day
+    case year
+    case hour
+    case minutes
+    case seconds
+}
+
+
+
+class TimeUtils {
+    
+    var right_now = Date()
+    var calendar = Calendar.current
+    var dateComponent = DateComponents()
+    
+    var week_days: [Int:String]
+    var dayOfMonth : [Int: String]
+    init() {
+        self.week_days = [1: "sunday",
+                          2: "monday",
+                          3: "tuesday",
+                          4: "wednesday",
+                          5: "thursday",
+                          6: "friday",
+                          7: "saturday"
+                          ]
+        self.dayOfMonth = [1: "first_of", 2: "second_of", 3: "third_of", 4: "fourth_of", 5: "fifth_of", 6: "sixth_of",
+                           7: "seventh_of",
+                           8: "eighth_of", 9: "nineth_of", 10: "tenth_of", 11: "eleventh_of", 12: "twelveth_of",
+                           13: "thirteenth_of",
+                           14: "fourteenth_of", 15: "fifteenth_of", 16: "sixteenth_of", 17: "seventeenth_of",
+                           18: "eighteenth_of",
+                           19: "nineteenth_of", 20: "twentyth_of", 21: "twentyfirst_of", 22: "twentysecond_of",
+                           23: "twentythird_of",
+                           24: "twentyfourth_of", 25: "twentyfifth_of", 26: "twentysixth_of", 27: "twentyseventh_of",
+                           28: "twentyeighth_of",
+                           29: "twentynineth_of", 30: "thirtyth_of", 31: "thirtyfirst_of"]
+    }
+
+    func getCurrentTimeStamp() -> String {
+       // '''This method returns the current time (hh:mm)'''
+        right_now = Date()
+        let minutes:Int = calendar.component(.minute, from: right_now)
+        let m:String = minutes<10 ? "0"+String(minutes):String(minutes)
+        return String(calendar.component(.hour, from: right_now)) + ":" + m
+    }
+
+    func getMonthAsInt() -> Int {
+       // '''This method returns the current month (MM)'''
+        right_now = Date()
+        return calendar.component(.month, from: right_now)
+    }
+
+    func getDayOfTheMonthAsInt() -> Int {
+       // '''This method returns the current day (dd)'''
+        right_now = Date()
+        return calendar.component(.day, from: right_now)
+    }
+
+    func getYearAsInt() -> Int {
+      //  '''This method returns the current year (yyyy)'''
+        right_now = Date()
+        return calendar.component(.year, from: right_now)
+    }
+
+    func getDayAsInt() -> Int {
+       // '''This method returns the current day of the week (1, 2, ... 7)'''
+        right_now = Date()
+        return calendar.component(.weekday, from: right_now)
+    }
+
+    func getMinutes() -> String {
+       // '''This method returns the current minutes (mm)'''
+        right_now = Date()
+        return right_now.minute() ?? ""
+    }
+
+    func getSeconds() -> String {
+      //  '''This method returns the current seconds (ss)'''
+        right_now = Date()
+        return String(calendar.component(.second, from: right_now))
+    }
+
+    func getDayOfDWeek() -> String {
+      //  '''This method returns the current day of the week as a word (monday, ...)'''
+        right_now = Date()
+        return right_now.dayOfWeek()!
+    }
+
+    func translateMonthDay(_ day_num:Int) -> String {
+       // '''This method returns the current day of the month as a word (first_of, ...)'''
+        let currentDay_string = dayOfMonth[day_num] ?? "?"
+        return currentDay_string
+    }
+
+    func getSpecificTime(time_variable: enumTimes) -> String {
+//        '''This method returns the current specific date in words (eleventh_of June 2021, ...)'''
+
+        right_now = Date()
+       let enum_temp = time_variable
+        switch enum_temp {
+        case .date:
+            return getCurrentMonthDay() + " " + (right_now.month() ?? "/") + " " + (right_now.year() ?? "/")
+        case .hour:
+            return right_now.hour() ?? "/"
+        case .minutes:
+           return right_now.minute() ?? "/"
+        case .seconds:
+           return right_now.second() ?? "/"
+        case .year:
+            return right_now.year() ?? "/"
+        default:
+            break
+        }
+        return ""
+    }
+
+    func getSecondsAsInt() -> Int {
+       // '''This method returns the current seconds'''
+        right_now = Date()
+        return calendar.component(.second, from: right_now)
+    }
+
+    func getMinutesAsInt() -> Int {
+       // '''This method returns the current minutes'''
+        right_now = Date()
+        return calendar.component(.minute, from: right_now)
+    }
+
+    func getHoursAsInt() -> Int {
+      //  '''This method returns the current hour'''
+        right_now = Date()
+        return calendar.component(.hour, from: right_now)
+    }
+
+    func getFutureInXMin(extra_minutes: Int) -> String {
+          //  '''This method returns the date in x minutes'''
+          
+        if extra_minutes > 1440 {return "hmm"}
+        let nowSum = getHoursAsInt()*60 + getMinutesAsInt()
+        var dif = nowSum + extra_minutes
+        if dif > 1440 {dif -= 1440}
+        let minutes = dif % 60
+        if minutes<10 {return "\(dif/60):0\(minutes)"}
+        return "\(dif/60):\(minutes)"
+        }
+
+    func getPastInXMin(less_minutes: Int) -> String {
+        if less_minutes > 1440 {return "hmm"}
+        let nowSum = getHoursAsInt()*60 + getMinutesAsInt()
+        var dif = nowSum - less_minutes
+        if dif < 0 {dif = 1440 - dif}
+        let minutes = dif % 60
+        if minutes<10 {return "\(dif/60):0\(minutes)"}
+        return "\(dif/60):\(minutes)"
+    }
+       
+    
+
+    func getFutureHour(startHour: Int, addedHours: Int) -> Int {
+       // '''This method returns the hour in x hours from the starting hour'''
+        return (startHour + addedHours) % 24
+   
+    }
+
+    func getFutureFromXInYMin(to_add: Int, start: String) -> String {
+       // '''This method returns the time (hh:mm) in x minutes the starting time (hh:mm)'''
+        
+        let values = start.components(separatedBy: ":")
+        let times_to_add = floor(Double(((Int(values[1]) ?? 0) + to_add) / 60))
+        let new_minutes = ((Int(values[1]) ?? 0) + to_add) % 60
+        let newTimeHours = ((Int(values[0]) ?? 0) + Int(times_to_add)) % 24
+        let new_time = String(newTimeHours) + ":" + String(new_minutes)
+       return new_time
+    }
+
+    func timeInXMinutes(x: Int) -> String {
+       // '''This method returns the time (hh:mm) in x minutes'''
+        right_now = Date()
+        // reset datecomponents
+       dateComponent = DateComponents()
+        dateComponent.minute = x
+        let final_time = Calendar.current.date(byAdding: dateComponent, to: right_now)
+        return String(calendar.component(.hour, from: final_time ?? Date())) + ":" + String(calendar.component(.minute, from: final_time ?? Date()))
+    
+    }
+    func isDayTime() -> Bool {
+        right_now = Date()
+      //  '''This method returns true if it's daytime (6-18)'''
+    return 5 < calendar.component(.hour, from: right_now)  &&  calendar.component(.hour, from: right_now) < 19
+    }
+
+    func smallToBig(_ a:Int...) -> Bool {
+        for i in 0..<a.count {
+    
+            guard i + 1 < a.count else {
+                return true
+                
+            }
+            if a[i] > a[i + 1]  {
+                return false
+            }
+      
+        }
+        return true
+    }
+    
+
+    func partOfDay() -> String {
+       // '''This method returns which part of the day it is (morning, ...)'''
+       let hour: Int = self.getHoursAsInt()
+        if self.smallToBig(5, hour, 12) {
+                  return "morning"
+        } else if self.smallToBig(11, hour, 17) {
+                  return "afternoon"
+        } else if self.smallToBig(16, hour, 21) {
+                  return "evening"
+        } else { return "night"
+                }
+
+    }
+
+    func convertToDay(number: Int) -> String {
+       // '''This method converts the week number to the weekday name'''
+     
+        return week_days[number] ?? ""
+    }
+
+    func isNight() -> Bool {
+      //  '''This method returns true if it's night (21-5)'''
+       let hour: Int = self.getHoursAsInt()
+        return hour > 20 || hour < 6
+    }
+
+    func getTomorrow() -> String {
+       // '''This method returns tomorrow'''
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "EEEE"
+        return dateFormatter.string(from: nowPlusOneDay()).capitalized
+       
+        
+    }
+
+    func getYesterday() -> String {
+       // '''This method returns yesterday'''
+   
+       let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "EEEE"
+        print(calendar.component(.weekday, from: nowPlusOneDay()))
+        return dateFormatter.string(from: nowMinusOneDay()).capitalized
+    }
+
+    func getGMT() -> Date {
+       // '''This method returns the local GMT'''
+        right_now = Date()
+        return right_now.localToGMT()
+        
+    }
+
+    func getLocal() -> String {
+       // '''This method returns the local time zone'''
+        return TimeZone.current.identifier
+    }
+    func findDay(month:Int,day:Int,year:Int) -> String {
+        // gets weekday from date
+        if day > 31 {
+            return ""
+        }
+        if (day > 30){
+            if ((month == 4)||(month == 6)||(month == 9)||(month == 11)){return ""}
+        }
+        if(month == 2){
+            if(isLeapYear(year: getYearAsInt())){
+                if (day > 29){
+                    return ""
+                }
+            }
+            if(day > 28){
+                return ""
+            }
+        }
+        // convert string to date
+        let today:String = "\(year)-\(month)-\(day)"
+        let formatter  = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        guard let todayDate = formatter.date(from: today) else { return "" }
+        let myCalendar = Calendar(identifier: .gregorian)
+        let weekDay = myCalendar.component(.weekday, from: todayDate)
+        return self.week_days[weekDay] ?? ""
+    }
+    func nxtDayOnDate(dayOfMonth:Int) -> String {
+        // get the weekday on the next dayOfMonth
+        let today:Int = getDayOfTheMonthAsInt()
+        if today <= dayOfMonth {
+            return findDay(month: getMonthAsInt(), day: dayOfMonth, year: getYearAsInt())
+        }else if (!(getMonthAsInt() == 12)){
+            return findDay(month: getMonthAsInt() + 1, day: dayOfMonth, year: getYearAsInt())
+        }
+        return findDay(month: 1, day: dayOfMonth, year: getYearAsInt() + 1)
+    }
+    func isLeapYear(year:Int) -> Bool {
+        var isLeapYear:Bool
+        isLeapYear = (year % 4 == 0)
+        return isLeapYear && (year % 100 != 0 || year % 400 == 0)
+    }
+    func getCurrentMonthName() -> String {
+        switch (getMonthAsInt()){
+                    case 1:
+                        return "january"
+                    case 2:
+                        return "february"
+                    case 3:
+                        return "march"
+                    case 4:
+                        return "april"
+                    case 5:
+                        return "may"
+                    case 6:
+                        return "june"
+                    case 7:
+                        return "july"
+                    case 8:
+                        return "august"
+                    case 9:
+                        return "november"
+                    case 10:
+                        return "october"
+                    case 11:
+                        return "november"
+                    case 12:
+                        return "december"
+                    default:
+                        return ""
+        }
+    }
+}
+                      
+extension Date {
+    func second() -> String? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "ss"
+        return dateFormatter.string(from: self).capitalized
+    }
+    func minute() -> String? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "mm"
+        return dateFormatter.string(from: self).capitalized
+    }
+    func hour() -> String? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "HH"
+        return dateFormatter.string(from: self).capitalized
+    }
+    func dayOfWeek() -> String? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "EEEE"
+        return dateFormatter.string(from: self).capitalized
+        // or use capitalized(with: locale) if you want
+    }
+    func month() -> String? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMMM"
+        return dateFormatter.string(from: self).capitalized
+    }
+    func year() -> String? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "YYYY"
+        return dateFormatter.string(from: self).capitalized
+    }
+    func localToGMT() -> Date {
+        let date = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss z"
+        dateFormatter.locale = .current
+        dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
+       let strDate = dateFormatter.string(from: date)
+        return dateFormatter.date(from: strDate) ?? Date()
+    }
+    
+}
+
+extension TimeUtils {
+    func nowPlusOneDay() -> Date {
+        // reset datecomponents
+        right_now = Date()
+        dateComponent = DateComponents()
+      dateComponent.day = 1
+        return Calendar.current.date(byAdding: dateComponent, to: right_now) ?? Date()
+    }
+    func nowMinusOneDay() -> Date {
+        right_now = Date()
+        // reset datecomponents
+        dateComponent = DateComponents()
+      dateComponent.day = -1
+        return Calendar.current.date(byAdding: dateComponent, to: right_now) ?? Date()
+    }
+    func getCurrentMonthDay() -> String {
+        right_now = Date()
+        let currentDay_number = calendar.component(.day, from: right_now)
+        return translateMonthDay(currentDay_number)
+    }
+    
+}
+class LGPointDouble{
+    var x:Double = 0
+    var y:Double = 0
+    init() {
+    }
+    init(x:Double,y:Double) {
+        self.x = x
+        self.y = y
+    }
+    func shift(x:Double,y:Double){
+        self.x += x;self.y += y
+    }
+    func toString()->String{
+        return "coordinate(\(self.x),\(self.y))"
+    }
+    func distance(a:LGPointDouble,b:LGPointDouble)->Double{
+        return sqrt(pow((a.x - b.x), 2) + pow((a.y - b.y), 2))
+    }
+}
+class LGPointInt{
+    var x:Int = 0
+    var y:Int = 0
+    init() {
+    }
+    init(x:Int,y:Int) {
+        self.x = x
+        self.y = y
+    }
+    func shift(x:Int,y:Int){
+        self.x += x;self.y += y
+    }
+    func toString()->String{
+        return "coordinate(\(self.x),\(self.y))"
+    }
+    func distance(a:LGPointInt,b:LGPointInt)->Double{
+        return sqrt(pow(Double((a.x - b.x)), 2) + pow(Double((a.y - b.y)), 2))
+    }
+}
+enum enumRegexGrimoire{
+    case email, timeStamp, integer, double, repeatedWord, phone, trackingID, IPV4, domain, number,
+    secondlessTimeStamp, date, fullDate, simpleTimeStamp
+}
+class RegexUtil{
+    var regexDictionary:[enumRegexGrimoire:String] = [:]
+    init() {
+        regexDictionary[enumRegexGrimoire.email] = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}"
+        regexDictionary[enumRegexGrimoire.timeStamp] = "[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}"
+        regexDictionary[enumRegexGrimoire.secondlessTimeStamp] = "[0-9]{1,2}:[0-9]{1,2}"
+        regexDictionary[enumRegexGrimoire.fullDate] = "[0-9]{1,4}/[0-9]{1,2}/[0-9]{1,2} [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}"
+        regexDictionary[enumRegexGrimoire.date] = "[0-9]{1,4}/[0-9]{1,2}/[0-9]{1,2}"
+        regexDictionary[enumRegexGrimoire.double] = "[-+]?[0-9]*[.,][0-9]*"
+        regexDictionary[enumRegexGrimoire.integer] = "[-+]?[0-9]{1,13}"
+        regexDictionary[enumRegexGrimoire.repeatedWord] = "\\b([\\w\\s']+) \\1\\b"
+        regexDictionary[enumRegexGrimoire.phone] = "[0]\\d{9}"
+        regexDictionary[enumRegexGrimoire.trackingID] = "[A-Z]{2}[0-9]{9}[A-Z]{2}"
+        regexDictionary[enumRegexGrimoire.IPV4] = "([0-9].){4}[0-9]*"
+        regexDictionary[enumRegexGrimoire.domain] = "[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}"
+        regexDictionary[enumRegexGrimoire.number] = "\\d+(\\.\\d+)?"
+        regexDictionary[enumRegexGrimoire.simpleTimeStamp] = "[0-9]{1,2}:[0-9]{1,2}"
+    }
+    func extractAllRegexResults(regex:String, text: String) -> [String] {
+        var results = [String]()
+
+        let emailRegex = regex
+        let nsText = text as NSString
+        do {
+            let regExp = try NSRegularExpression(pattern: emailRegex, options: .caseInsensitive)
+            let range = NSMakeRange(0, text.count)
+            let matches = regExp.matches(in: text, options: .reportProgress, range: range)
+
+            for match in matches {
+                let matchRange = match.range
+                results.append(nsText.substring(with: matchRange))
+            }
+        } catch (_) {
+    
+        }
+        if results.isEmpty {
+            results.append("")
+        }
+        return results
+    }
+    func extractAllRegexResults(regex:enumRegexGrimoire, text: String) -> [String] {
+        return extractAllRegexResults(regex: regexDictionary[regex]!, text: text)
+    }
+    func regexChecker(theRegex:String, str2Check:String)->String{
+        // the regex : regex pattern str2check = the input string in which to search for the regex pattern
+        var results = [String]()
+
+        let emailRegex = theRegex
+        let nsText = str2Check as NSString
+        do {
+            let regExp = try NSRegularExpression(pattern: emailRegex, options: .caseInsensitive)
+            let range = NSMakeRange(0, str2Check.count)
+            let matches = regExp.matches(in: str2Check, options: .reportProgress, range: range)
+
+            for match in matches {
+                let matchRange = match.range
+                results.append(nsText.substring(with: matchRange))
+            }
+        } catch (_) {
+            return ""
+        }
+        if results.isEmpty {return ""}
+        return results[0]
+    }
+    func regexChecker(theRegex:enumRegexGrimoire, str2Check:String)->String{
+        return regexChecker(theRegex: regexDictionary[theRegex]!, str2Check: str2Check)
+    }
+    // return all regex results
+    func extractEmailAddrIn(text: String) -> [String] {
+        return extractAllRegexResults(regex: "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}", text: text)
+    }
+    func pointRegex(text: String) -> LGPointDouble {
+        let result = extractAllRegexResults(regex: "[-+]?[0-9]{1,13}(\\.[0-9]*)?", text: text)
+        if result.count == 2 {return LGPointDouble(x: Double(result[0]) ?? 0, y: Double(result[1]) ?? 0)}
+        return LGPointDouble()
+    }
+    func intPointRegex(text: String) -> LGPointInt {
+        let result = extractAllRegexResults(regex: "[-+]?[0-9]{1,13}", text: text)
+        if result.count == 2 {return LGPointInt(x: Int(result[0]) ?? 0, y: Int(result[1]) ?? 0)}
+        return LGPointInt()
+    }
+    func timeStampRegexes(text: String) -> [String] {
+        return extractAllRegexResults(regex: "[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}", text: text)
+    }
+    func numberRegexes(text: String) -> [String] {
+        return extractAllRegexResults(regex: "[-+]?[0-9]*[.,][0-9]*", text: text)
+    }
+    func intRegexes(text: String) -> [String] {
+        return extractAllRegexResults(regex: "[-+]?[0-9]{1,13}", text: text)
+    }
+    func doubleRegexes(text: String) -> [String] {
+        return extractAllRegexResults(regex: "[-+]?[0-9]{1,13}(\\.[0-9]*)?", text: text)
+    }
+    func repeatedWords(text: String) -> [String] {
+        return extractAllRegexResults(regex: "\\b([\\w\\s']+) \\1\\b", text: text)
+    }
+    // return 1st regex result
+    func numberRegex(str2Check:String)->String{
+        return regexChecker(theRegex: "[-+]?[0-9]*[.,][0-9]*", str2Check: str2Check)
+    }
+    func timeStampRegex(str2Check:String)->String{
+        return regexChecker(theRegex: "[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}", str2Check: str2Check)
+    }
+    func intRegex(str2Check:String)->String{
+        return regexChecker(theRegex: "[-+]?[0-9]{1,13}", str2Check: str2Check)
+    }
+    func intRegexAsInt(str2Check:String)->Int{
+        return Int(regexChecker(theRegex: "[-+]?[0-9]{1,13}", str2Check: str2Check)) ?? 0
+    }
+    func doubleRegex(str2Check:String)->String{
+        return regexChecker(theRegex: "[-+]?[0-9]{1,13}(\\.[0-9]*)?", str2Check: str2Check)
+    }
+    func doubleRegexAsDouble(str2Check:String)->Double{
+        return Double(regexChecker(theRegex: "[-+]?[0-9]{1,13}(\\.[0-9]*)?", str2Check: str2Check)) ?? 0
+    }
+    func phoneRegex(str2Check:String)->String{
+        return regexChecker(theRegex: "[0]\\d{2}\\d{4}\\d{3}$", str2Check: str2Check)
+    }
+    func phoneRegex2(str2Check:String)->String{
+        return regexChecker(theRegex: "[0]\\d{9}", str2Check: str2Check)
+    }
+    func firtNameLastName(str2Check:String)->String{
+        // Fukurou, Slime
+        return regexChecker(theRegex: "([\\w\\-]+)\\s*,\\s*(\\w+)\\s*", str2Check: str2Check)
+    }
+    func trackingID(str2Check:String)->String{
+        //
+        return regexChecker(theRegex: "[A-Z]{2}[0-9]{9}[A-Z]{2}", str2Check: str2Check)
+    }
+    func endsWith(endingOfWord:String, str2Check:String)->String{
+        //
+        return regexChecker(theRegex: "[a-z]*(\(endingOfWord))", str2Check: str2Check)
+    }
+    func startsWith(startingingOfWord:String, str2Check:String)->String{
+        //
+        return regexChecker(theRegex: "(\(startingingOfWord))[a-z]*", str2Check: str2Check)
+    }
+    func ipV4Regex(str2Check:String)->String{
+        //
+        return regexChecker(theRegex: "([0-9].){4}[0-9]*", str2Check: str2Check)
+    }
+    func domainRegex(str2Check:String)->String{
+        //
+        return regexChecker(theRegex: "[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}", str2Check: str2Check)
+    }
+    func urlRegex(str2Check:String)->String{
+        //
+        let tempStr = regexChecker(theRegex: "[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}", str2Check: str2Check)
+        let wordsArr = str2Check.components(separatedBy: " ")
+        if !wordsArr.isEmpty{
+            for i in 0..<wordsArr.count {
+                if wordsArr[i].contains(tempStr){return wordsArr[i]}
+            }
+        }
+        return ""
+    }
+    func urlsRegex(str2Check:String)->[String]{
+        //
+        var results = [String]()
+        let wordsArr = str2Check.components(separatedBy: " ")
+        if !wordsArr.isEmpty{
+            for i in 0..<wordsArr.count {
+                if !regexChecker(theRegex: "[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}", str2Check: wordsArr[i]).isEmpty{results.append(wordsArr[i])}
+            }
+        }
+        return results
+    }
+    func integersRegex(str2Check:String)->[Int]{
+        //
+        var results = [Int]()
+        let wordsArr = str2Check.components(separatedBy: " ")
+        if !wordsArr.isEmpty{
+            for i in 0..<wordsArr.count {
+                if !regexChecker(theRegex: regexDictionary[enumRegexGrimoire.integer]!, str2Check: wordsArr[i]).isEmpty{
+                    let result = Int(wordsArr[i]) ?? 0
+                    if result != 0{results.append(Int(wordsArr[i]) ?? 0)}
+                    }
+            }
+        }
+        return results
+    }
+    func doublesRegex(str2Check:String)->[Double]{
+        //
+        var results = [Double]()
+        let wordsArr = str2Check.components(separatedBy: " ")
+        if !wordsArr.isEmpty{
+            for i in 0..<wordsArr.count {
+                if !regexChecker(theRegex: regexDictionary[enumRegexGrimoire.double]!, str2Check: wordsArr[i]).isEmpty{results.append(Double(wordsArr[i])!)}
+            }
+        }
+        return results
+    }
+    func numbersRegex(str2Check:String)->[Double]{
+        //
+        var results = [Double]()
+        let wordsArr = str2Check.components(separatedBy: " ")
+        if !wordsArr.isEmpty{
+            for i in 0..<wordsArr.count {
+                if !regexChecker(theRegex: regexDictionary[enumRegexGrimoire.number]!, str2Check: wordsArr[i]).isEmpty{results.append(Double(wordsArr[i])!)}
+            }
+        }
+        return results
+    }
+    func afterWord(word:String, str2Check:String)->String{
+        return regexChecker(theRegex: "(?<=\(word))(.*)", str2Check: str2Check).trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+    func beforeWord(word:String, str2Check:String)->String{
+        return regexChecker(theRegex: "(.*?)\(word)", str2Check: str2Check).replacingOccurrences(of: word, with: "")
+    }
+    func betweenWords(word1:String, word2:String, str2Check:String)->String{
+        let result = afterWord(word: word1, str2Check: str2Check)
+        return beforeWord(word: word2, str2Check: result)
+    }
+    func repeatedWord(str2Check:String)->String{
+        return regexChecker(theRegex: "\\b([\\w\\s']+) \\1\\b", str2Check: str2Check)
+    }
+    func firstWord(str2Check:String)->String{
+        let wordsArr = str2Check.components(separatedBy: " ")
+        if !wordsArr.isEmpty{
+            return wordsArr[0]
+        }
+        return ""
+    }
+    func lastWord(str2Check:String)->String{
+        let wordsArr = str2Check.components(separatedBy: " ")
+        if !wordsArr.isEmpty{
+            return wordsArr[wordsArr.count - 1]
+        }
+        return ""
+    }
+    func uniqueWord(str2Check:String)->String{
+        if str2Check.isEmpty{return ""}
+        let wordsArr = str2Check.components(separatedBy: " ")
+        var p:String = wordsArr[0]
+        var result = p
+        for i in 1..<wordsArr.count {
+            if(p != wordsArr[i]){
+                result = "\(result) \(wordsArr[i])"
+                p = wordsArr[i]
+            }
+        }
+        return result
+    }
+    // other functions
+    func stripAwayNumbers(str1:String)->String{
+        return str1.trimmingCharacters(in: CharacterSet(charactersIn: "0123456789"))
+    }
+    func extractNumber(str1:String)->String{
+        return str1.trimmingCharacters(in: CharacterSet(charactersIn: "0123456789.").inverted)
+    }
+    func removeSpaces(str1:String)->String{
+        return String(str1.unicodeScalars.filter(CharacterSet.whitespaces.inverted.contains))
+    }
+}
+class TimeGate{
+    //time boolean gate
+    // gate goes open (pause minutes time)-> closed
+    private var pause:Int = 5
+    private var openDate:Date = Date()
+    private var checkPoint:Date = Date()
+    init() {
+        openGate()
+    }
+    init(pause:Int) {
+        if pause < 0 || pause > 60 {return}
+        self.pause = pause
+        openGate()
+    }
+    func setPause(pause:Int) {
+        if pause < 0 || pause > 60 {return}
+        self.pause = pause
+    }
+    func openGate() {
+        // the gate will stay open for pause minutes
+        openDate.addTimeInterval(TimeInterval(pause * 60))
+    }
+    func openGateforNSeconds(_ n:Int) {
+        // the gate will stay open for n seconds
+        openDate.addTimeInterval(TimeInterval(n))
+    }
+    func isOpen() -> Bool {
+        return Date() < openDate
+    }
+    func isClosed() -> Bool {
+        return !isOpen()
+    }
+    func closeGate(){
+        // force closes the gate
+        openDate = Date()
+    }
+    func resetCheckPoint() {
+        checkPoint = Date()
+    }
+    func timeFromCheckPoint() -> DateComponents{
+        // get the time between reset check point and now
+        let diffComponents:DateComponents = Calendar.current.dateComponents([.minute, .second], from: checkPoint, to: Date())
+//        let minutes = diffComponents.minute ?? 0
+//        let seconds = diffComponents.second ?? 0
+        return diffComponents
+    }
+}
+class PriorityQueue<T> {
+  var elements: [T] = []
+
+  func insert(_ value: T) {
+    elements.append(value)
+  }
+  @discardableResult
+  func poll() -> T? {
+    guard !elements.isEmpty else {
+      return nil
+    }
+    return elements.removeFirst()
+  }
+
+  var head: T? {
+    return elements.first
+  }
+
+  var tail: T? {
+    return elements.last
+  }
+    func isEmpty() -> Bool {
+        return elements.isEmpty
+    }
+    func size() -> Int {
+        return elements.count
+    }
+}
 // (*)Algorithm Dispensers
 class AlgDispenser {
     // super class to output an algorithm out of a selection of algorithms
@@ -320,7 +1113,7 @@ class TrgMinute:TrGEV3{
     init(minute:Int) {
         self.minute = minute
     }
-    let pl:PlayGround = PlayGround()
+    let pl:TimeUtils = TimeUtils()
     override func trigger() -> Bool {
         let tempHour:Int = pl.getHoursAsInt()
         if tempHour != hour1 {
@@ -1137,14 +1930,6 @@ class AXContextCmd{
     }
 }
 // command auxiliary modules collection end
-class DiSysOut:DiSkillV2{
-    // hello world skill for testing purposes
-    override func input(ear: String, skin: String, eye: String) {
-        if(!ear.isEmpty && !ear.contains("#")){
-            print(ear)
-        }
-    }
-}
 class AXLSpeechModifier:AXLHousing{
     public var dic:[String:String] = [:]
     init(dic:[String:String]){
@@ -1214,7 +1999,7 @@ class TimeAccumulator{
 class TrgTime{
     var t:String = "null"
     let regexUtil:RegexUtil = RegexUtil()
-    var pl:PlayGround = PlayGround()
+    var pl:TimeUtils = TimeUtils()
     private var alarm:Bool = true
     func setTime(v1:String){
         t = regexUtil.regexChecker(theRegex: enumRegexGrimoire.simpleTimeStamp, str2Check: v1)
@@ -1236,7 +2021,7 @@ class TrgTime{
 class TrgEveryNMinutes:TrGEV3{
     // trigger returns true every minutes interval, post start time
     private var minutes:Int // minute interval between triggerings
-    private let pl:PlayGround = PlayGround()
+    private let pl:TimeUtils = TimeUtils()
     private var trgTime:TrgTime
     private var timeStamp:String = ""
     init(startTime:String, minutes:Int) {
@@ -1268,7 +2053,7 @@ class Cron:TrGEV3{
     // triggers true, limit times, after initial time, and every minutes interval
     // counter resets at initial time, assuming trigger method was run
     private var minutes:Int // minute interval between triggerings
-    private let pl:PlayGround = PlayGround()
+    private let pl:TimeUtils = TimeUtils()
     private var trgTime:TrgTime
     private var timeStamp:String = ""
     private var initialTimeStamp:String = ""
@@ -1445,7 +2230,7 @@ class AXNPC {
     }
 }
 class AXTimeContextResponder {
-    private var pl:PlayGround = PlayGround()
+    private var pl:TimeUtils = TimeUtils()
     var morning:Responder = Responder()
     var afternoon:Responder = Responder()
     var evening:Responder = Responder()
@@ -2430,7 +3215,7 @@ class Excluder {
 }
 class TimedMessages {
     var messages: [String: String] = [:]
-    private let playGround :PlayGround = PlayGround()
+    private let playGround :TimeUtils = TimeUtils()
     private var lastMSG = "nothing"
     private var msg:Bool = false
 

@@ -8,7 +8,7 @@
 import Foundation
 
 class DiTime:DiSkillV2{
-    private let pl:PlayGround = PlayGround()
+    private let pl:TimeUtils = TimeUtils()
     // hello world skill for testing purposes
     override func input(ear: String, skin: String, eye: String) {
         switch (ear)  {
@@ -331,7 +331,7 @@ class DiEngager: DiSkillV2 {
     private var skillToEngage = "unknown"
     private var draw = DrawRndDigits()
     private var burpMinutes:Array<Int> = [Int]()
-    private var pl = PlayGround()
+    private var pl = TimeUtils()
     
     init(burpsPerHour: Int, skillToEngage: String) {
         super.init()
@@ -442,7 +442,7 @@ class DiBurper: DiSkillV2 {
     private var burps:Responder = Responder("burp","burp2","burp3")
     private var draw = DrawRndDigits()
     private var burpMinutes:Array<Int> = [Int]()
-    private var pl = PlayGround()
+    private var pl = TimeUtils()
     
     init(burpsPerHour: Int) {
         super.init()

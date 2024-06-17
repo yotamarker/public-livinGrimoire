@@ -1,11 +1,10 @@
 from __future__ import annotations
-# from LivinGrimoire23 import *
 from AXPython import *
 
 
 class DiMisser(DiSkillV2):
     def __init__(self):
-        self._pl: PlayGround = PlayGround()
+        self._pl: TimeUtils = TimeUtils()
         self._cron: Cron = Cron("15:00", 50, 2)
         self._responder: Responder = Responder("welcome", "i have missed you", "welcome back")
         super().__init__()
@@ -33,7 +32,7 @@ class DiBurper(DiSkillV2):
         self._responder1: Responder = Responder("burp", "burp2", "burp3")
         self._draw: DrawRndDigits = DrawRndDigits()
         self._burpMinutes: LGFIFO = LGFIFO()
-        self._pl: PlayGround = PlayGround()
+        self._pl: TimeUtils = TimeUtils()
         for i in range(1, 60):
             self._draw.addElement(i)
         for i in range(0, burps_per_hour):
@@ -75,7 +74,7 @@ class DiSneezer(DiSkillV2):
         self._responder1: Responder = Responder("sneeze", "achoo", "atchoo", "achew", "atisshoo")
         self._draw: DrawRndDigits = DrawRndDigits()
         self._sneezeMinutes: LGFIFO = LGFIFO()
-        self._pl: PlayGround = PlayGround()
+        self._pl: TimeUtils = TimeUtils()
         for i in range(1, 60):
             self._draw.addElement(i)
         for i in range(0, sneezes_per_hour):
@@ -109,7 +108,7 @@ class DiPetv3(DiSkillV2):
         self._responder1: Responder1Word = Responder1Word()
         self._allMinutes: DrawRndDigits = DrawRndDigits()
         self._chirpMinutes: LGFIFO = LGFIFO()
-        self._pl: PlayGround = PlayGround()
+        self._pl: TimeUtils = TimeUtils()
         for i in range(1, 60):
             self._allMinutes.addElement(i)
         for i in range(0, chirps_per_hour):
@@ -460,7 +459,7 @@ class DiMagic8Ball(DiSkillV2):
 class DiTime(DiSkillV2):
     def __init__(self):
         super().__init__()
-        self.__pl: PlayGround = PlayGround()
+        self.__pl: TimeUtils = TimeUtils()
 
     # Override
     def input(self, ear: str, skin: str, eye: str):
@@ -707,7 +706,7 @@ class DiEngager(DiSkillV2):
         self._trgMinute.setMinute(0)
         self._draw: DrawRndDigits = DrawRndDigits()
         self._burpMinutes: LGFIFO = LGFIFO()
-        self._pl: PlayGround = PlayGround()
+        self._pl: TimeUtils = TimeUtils()
         self._skillToEngage: str = skillToEngage
         for i in range(1, 60):
             self._draw.addElement(i)
@@ -1981,7 +1980,7 @@ class DiBurperV2(DiSkillV2):
         self._responder1: Responder = Responder("burp", "burp2", "burp3")
         self._draw: DrawRndDigits = DrawRndDigits()
         self._burpMinutes: LGFIFO = LGFIFO()
-        self._pl: PlayGround = PlayGround()
+        self._pl: TimeUtils = TimeUtils()
         for i in range(1, 60):
             self._draw.addElement(i)
         for i in range(0, burps_per_hour):
@@ -2102,7 +2101,7 @@ class DiYandere(DiSkillV2):
                     self.activeResponder = self.sadYandere
                     return
         hato: str = self.getKokoro().toHeart["dibicameral"]
-            
+
         if hato == "yandere":
             self.setSimpleAlg(self.activeResponder.getAResponse())
             self.promptActive = True

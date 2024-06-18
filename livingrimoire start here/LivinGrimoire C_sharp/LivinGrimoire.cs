@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections;
-
 public class AbsDictionaryDB
 {
     public virtual void Save(string key, string value)
@@ -21,7 +20,6 @@ public abstract class Mutatable
 
     public abstract string Action(string ear, string skin, string eye);
     public abstract bool Completed();
-    public abstract Mutatable Clone();
 
     public string MyName()
     {
@@ -69,38 +67,6 @@ public class APSay : Mutatable
         return this.at < 1;
     }
 
-    public override Mutatable Clone()
-    {
-        return new APSay(this.at, this.param);
-    }
-}
-public class DeepCopier
-{
-    public List<string> DeepCopyStringList(List<string> originalList)
-    {
-        // Create a new list and copy each element from the original list.
-        List<string> copiedList = new List<string>(originalList.Count);
-        foreach (string item in originalList)
-        {
-            copiedList.Add(item);
-        }
-
-        // Return the deep-copied list.
-        return copiedList;
-    }
-
-    public List<int> DeepCopyIntList(List<int> originalList)
-    {
-        // Create a new list and copy each element from the original list.
-        List<int> copiedList = new List<int>(originalList.Count);
-        foreach (int item in originalList)
-        {
-            copiedList.Add(item);
-        }
-
-        // Return the deep-copied list.
-        return copiedList;
-    }
 }
 public class APVerbatim : Mutatable
 {
@@ -144,11 +110,6 @@ public class APVerbatim : Mutatable
     public override bool Completed()
     {
         return at >= sentences.Count;
-    }
-
-    public override Mutatable Clone()
-    {
-        return new APVerbatim(sentences);
     }
 }
 public class GrimoireMemento
@@ -238,10 +199,6 @@ public class APCldVerbatim : Mutatable
         return at >= sentences.Count;
     }
 
-    public override Mutatable Clone()
-    {
-        return new APCldVerbatim(cldBool, sentences);
-    }
 }
 public class Algorithm
 {
@@ -260,17 +217,6 @@ public class Algorithm
     public int GetSize()
     {
         return algParts.Count;
-    }
-
-    public Algorithm Clone()
-    {
-        // Returns a deep copy of the algorithm
-        List<Mutatable> parts = new List<Mutatable>();
-        foreach (Mutatable absAlgPart in this.algParts)
-        {
-            parts.Add(absAlgPart.Clone());
-        }
-        return new Algorithm(parts);
     }
 }
 public class Kokoro
@@ -324,7 +270,7 @@ public class Neuron
         {
             Algorithm temp = defcons[defcon][0];
             defcons[defcon].RemoveAt(0);
-            return temp.Clone();
+            return temp;
         }
         return null;
     }

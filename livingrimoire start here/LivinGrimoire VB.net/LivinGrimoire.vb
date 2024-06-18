@@ -14,8 +14,6 @@
 
         Public MustOverride Function Action(ear As String, skin As String, eye As String) As String
         Public MustOverride Function Completed() As Boolean
-        Public MustOverride Function Clone() As Mutatable
-
         Public Function MyName() As String
             ' Returns the class name
             Return Me.GetType().Name
@@ -53,32 +51,6 @@
         Public Overrides Function Completed() As Boolean
             ' TODO: Implement your logic here
             Return Me.at < 1
-        End Function
-
-        Public Overrides Function Clone() As Mutatable
-            Return New APSay(Me.at, Me.param)
-        End Function
-    End Class
-    Public Class DeepCopier
-        Public Function DeepCopyStringList(originalList As List(Of String)) As List(Of String)
-            ' Create a new list and copy each element from the original list.
-            Dim copiedList As New List(Of String)(originalList.Count)
-            For Each item As String In originalList
-                copiedList.Add(item)
-            Next
-
-            ' Return the deep-copied list.
-            Return copiedList
-        End Function
-        Public Function DeepCopyIntList(originalList As List(Of Integer)) As List(Of Integer)
-            ' Create a new list and copy each element from the original list.
-            Dim copiedList As New List(Of Integer)(originalList.Count)
-            For Each item As Integer In originalList
-                copiedList.Add(item)
-            Next
-
-            ' Return the deep-copied list.
-            Return copiedList
         End Function
 
     End Class
@@ -120,9 +92,6 @@
             Return at >= sentences.Count
         End Function
 
-        Public Overrides Function Clone() As Mutatable
-            Return New APVerbatim(sentences)
-        End Function
     End Class
     Public Class GrimoireMemento
         Private absDictionaryDB As AbsDictionaryDB
@@ -196,9 +165,6 @@
             Return at >= sentences.Count
         End Function
 
-        Public Overrides Function Clone() As Mutatable
-            Return New APCldVerbatim(cldBool, sentences)
-        End Function
     End Class
     Public Class Algorithm
         Private algParts As New List(Of Mutatable)()
@@ -216,14 +182,6 @@
             Return algParts.Count
         End Function
 
-        Public Function Clone() As Algorithm
-            ' Returns a deep copy of the algorithm
-            Dim parts As New List(Of Mutatable)()
-            For Each absAlgPart As Mutatable In Me.algParts
-                parts.Add(absAlgPart.Clone())
-            Next
-            Return New Algorithm(parts)
-        End Function
     End Class
     Public Class Kokoro
         Private emot As String = ""
@@ -265,7 +223,7 @@
             If defcons(defcon).Count > 0 Then
                 Dim temp As Algorithm = defcons(defcon)(0)
                 defcons(defcon).RemoveAt(0)
-                Return temp.Clone()
+                Return temp
             End If
             Return Nothing
         End Function

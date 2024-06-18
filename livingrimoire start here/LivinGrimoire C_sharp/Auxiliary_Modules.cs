@@ -2,6 +2,34 @@
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Text;
+public class DeepCopier
+{
+    public List<string> DeepCopyStringList(List<string> originalList)
+    {
+        // Create a new list and copy each element from the original list.
+        List<string> copiedList = new List<string>(originalList.Count);
+        foreach (string item in originalList)
+        {
+            copiedList.Add(item);
+        }
+
+        // Return the deep-copied list.
+        return copiedList;
+    }
+
+    public List<int> DeepCopyIntList(List<int> originalList)
+    {
+        // Create a new list and copy each element from the original list.
+        List<int> copiedList = new List<int>(originalList.Count);
+        foreach (int item in originalList)
+        {
+            copiedList.Add(item);
+        }
+
+        // Return the deep-copied list.
+        return copiedList;
+    }
+}
 public enum EnumRegexGrimoire
 {
     email,

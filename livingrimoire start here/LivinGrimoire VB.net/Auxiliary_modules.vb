@@ -3,6 +3,29 @@ Imports System.Collections.Generic
 Imports System.Text
 
 Module Auxiliary_modules
+    Public Class DeepCopier
+        Public Function DeepCopyStringList(originalList As List(Of String)) As List(Of String)
+            ' Create a new list and copy each element from the original list.
+            Dim copiedList As New List(Of String)(originalList.Count)
+            For Each item As String In originalList
+                copiedList.Add(item)
+            Next
+
+            ' Return the deep-copied list.
+            Return copiedList
+        End Function
+        Public Function DeepCopyIntList(originalList As List(Of Integer)) As List(Of Integer)
+            ' Create a new list and copy each element from the original list.
+            Dim copiedList As New List(Of Integer)(originalList.Count)
+            For Each item As Integer In originalList
+                copiedList.Add(item)
+            Next
+
+            ' Return the deep-copied list.
+            Return copiedList
+        End Function
+
+    End Class
     Public Enum enumRegexGrimoire
         email
         timeStamp

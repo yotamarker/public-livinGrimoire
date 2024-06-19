@@ -15,6 +15,8 @@ swift
 java
 kotlin
 python
+VB.net
+C#
 
 ## principle of work :
 
@@ -73,39 +75,24 @@ https://github.com/yotamarker/public-livinGrimoire/blob/master/livingrimoire%20s
 ## the Living Grimoire classes list
 
 1. AbsDictionaryDB
-2. AbsDictionaryDBShadow
-3. enumFail
-4. Mutatable
-5. T1, T2 (test classes) //// used for testing. not core classes
-6. AbsAlgPart
-7. APSay
-8. APVerbatim
-9. Person //not core class
-10. enumTimes
-11. PlayGround // not core class
-12. GrimoireMemento
-13. Algorithm
-14. CldBool
-15. APCldVerbatim
-16. Kokoro
-17. Chi
-18. Neuron
-19. DISkillUtils
-20. DiSkillV2
-21. Point // not core class
-22. RegexUtil // not core class
-23. ZeroTimeGate
-24. Cerabellum
-25. DExplorer(DiSkillV2)
-26. PriorityQueue
-27. Fusion
-28. FusionCera
-29. Thinkable
-30. Actionable
-31. Brain
-32. PersonalityLight
-33. ChobitsLight(Thinkable)
-34. DiHelloWorld(DiSkillV2) // used for testing. not a core class
+2. Mutatable
+3. APSay:Mutatable
+4. APVerbatim:Mutatable
+5. GrimoireMemento
+6. Algorithm
+7. CldBool
+8. APCldVerbatim:APVerbatim
+9. Kokoro
+10. Neuron
+11. DiSkillUtils
+12. DiSkillV2
+13. DiHelloWorld:DiSkillV2 // logical skill for testing
+14. Cerabellum
+15. Fusion
+16. Thinkable 
+17. Chobits:Thinkable
+18. Brain
+19. DiSysOut // hardware skill for testing
 
 books about the LivinGrimoire :
 ![](https://i.ibb.co/61fWWnv/3d-Mockup.png)

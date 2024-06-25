@@ -4,18 +4,16 @@ import Auxiliary_Modules.AXGamification;
 import LivinGrimoire.DiSkillV2;
 import LivinGrimoire.Neuron;
 
-public class GamificationN extends DiSkillV2 {
-    private AXGamification axGamification;
-    private int cost = 3;
-    private DiSkillV2 skill;
+public class GamiMinus extends DiSkillV2 {
+    private final AXGamification axGamification;
+    private final int cost;
+    private final DiSkillV2 skill;
 
-    public GamificationN(DiSkillV2 skill, GamificationP rewardBank) {
+    public GamiMinus(DiSkillV2 skill, AXGamification axGamification, int cost) {
+        skill.setKokoro(this.kokoro);
         this.skill = skill;
-        axGamification = rewardBank.getAxGamification();
-    }
-
-    public GamificationN setCost(int cost) {
-        this.cost = cost;return this;
+        this.axGamification = axGamification;
+        this.cost = cost;
     }
 
     @Override

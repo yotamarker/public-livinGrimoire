@@ -737,55 +737,6 @@ class DiEngager(DiSkillV2):
             self.getKokoro().toHeart[self._skillToEngage] = "engage"
 
 
-class GamificationP(DiSkillV2):
-    # the grind side of the game, see GamificationN for the reward side
-    def __init__(self, skill: DiSkillV2):
-        super().__init__()
-        self._gain: int = 1
-        self._skill: DiSkillV2 = skill
-        self._axGamification: AXGamification = AXGamification()
-
-    def setGain(self, gain):
-        if gain > 0:
-            self._gain = gain
-
-    def getAxGamification(self) -> AXGamification:
-        # shallow ref
-        return self._axGamification
-
-    def input(self, ear, skin, eye):
-        self._skill.input(ear, skin, eye)
-
-    def output(self, noiron):
-        # skill activation increases gaming credits
-        if self._skill.pendingAlgorithm():
-            self._axGamification.incrementBy(self._gain)
-        self._skill.output(noiron)
-
-
-class GamificationN(DiSkillV2):
-    def __init__(self, skill: DiSkillV2, rewardBank: GamificationP):
-        super().__init__()
-        self._axGamification: AXGamification = rewardBank.getAxGamification()
-        self._cost: int = 3
-        self._skill = skill
-
-    def setCost(self, cost: int):
-        self._cost = cost
-        return self
-
-    def input(self, ear, skin, eye):
-        # engage skill only if a reward is possible
-        if self._axGamification.surplus(self._cost):
-            self._skill.input(ear, skin, eye)
-
-    def output(self, noiron):
-        # charge reward if an algorithm is pending
-        if self._skill.pendingAlgorithm():
-            self._axGamification.reward(self._cost)
-            self._skill.output(noiron)
-
-
 class DiSayer(DiSkillV2):
     def __init__(self):
         super().__init__()
@@ -2131,3 +2082,61 @@ class DiSkillBundle(DiSkillV2):
 
     def add_skill(self, skill):
         self.axSkillBundle.add_skill(skill)
+
+
+class GamiPlus(DiSkillV2):
+    def __init__(self, skill: DiSkillV2, ax_gamification: AXGamification, gain: int):
+        super().__init__()
+        self.skill: DiSkillV2 = skill
+        self.ax_gamification: AXGamification = ax_gamification
+        self.gain: int = gain
+
+    def input(self, ear, skin, eye):
+        self.skill.input(ear, skin, eye)
+
+    def output(self, noiron: Neuron):
+        # Skill activation increases gaming credits
+        if self.skill.pendingAlgorithm():
+            self.ax_gamification.incrementBy(self.gain)
+        self.skill.output(noiron)
+
+
+class GamiMinus(DiSkillV2):
+    def __init__(self, skill: DiSkillV2, ax_gamification: AXGamification, cost: int):
+        super().__init__()
+        self.skill: DiSkillV2 = skill
+        self.ax_gamification: AXGamification = ax_gamification
+        self.cost: int = cost
+
+    def input(self, ear, skin, eye):
+        # Engage skill only if a reward is possible
+        if self.ax_gamification.surplus(self.cost):
+            self.skill.input(ear, skin, eye)
+
+    def output(self, noiron: Neuron):
+        # Charge reward if an algorithm is pending
+        if self.skill.pendingAlgorithm():
+            self.ax_gamification.reward(self.cost)
+            self.skill.output(noiron)
+
+
+class DiGamificationSkillBundle(DiSkillBundle):
+    def __init__(self):
+        super().__init__()
+        self.ax_gamification: AXGamification = AXGamification()
+        self.gain: int = 1
+        self.cost: int = 3
+
+    def set_gain(self, gain):
+        if gain > 0:
+            self.gain = gain
+
+    def set_cost(self, cost):
+        if cost > 0:
+            self.cost = cost
+
+    def add_grind_skill(self, skill):
+        self.axSkillBundle.add_skill(GamiPlus(skill, self.ax_gamification, self.gain))
+
+    def add_costly_skill(self, skill):
+        self.axSkillBundle.add_skill(GamiMinus(skill, self.ax_gamification, self.cost))

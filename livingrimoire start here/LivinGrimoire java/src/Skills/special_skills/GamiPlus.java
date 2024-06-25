@@ -4,24 +4,17 @@ import Auxiliary_Modules.AXGamification;
 import LivinGrimoire.DiSkillV2;
 import LivinGrimoire.Neuron;
 
-public class GamificationP extends DiSkillV2 {
+public class GamiPlus extends DiSkillV2 {
     // the grind side of the game, see GamificationN for the reward side
-    private int gain = 1;
-    private DiSkillV2 skill;
-    private AXGamification axGamification = new AXGamification();
+    private final int gain;
+    private final DiSkillV2 skill;
+    private final AXGamification axGamification;
 
-    public GamificationP(DiSkillV2 skill) {
+    public GamiPlus(DiSkillV2 skill,AXGamification axGamification, int gain) {
+        skill.setKokoro(this.kokoro);
         this.skill = skill;
-    }
-
-    public void setGain(int gain) {
-        if (gain >0){
-            this.gain = gain;}
-    }
-
-    public AXGamification getAxGamification() {
-        // shallow ref
-        return axGamification;
+        this.axGamification = axGamification;
+        this.gain = gain;
     }
 
     @Override

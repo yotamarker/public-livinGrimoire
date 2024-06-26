@@ -6,8 +6,8 @@ import livinGrimoire.AbsDictionaryDB
 import livinGrimoire.DiSkillV2
 import livinGrimoire.Kokoro
 
-class DiSkillBundle : DiSkillV2() {
-    private val axSkillBundle: AXSkillBundle = AXSkillBundle()
+open class DiSkillBundle : DiSkillV2() {
+    protected val axSkillBundle: AXSkillBundle = AXSkillBundle()
     override fun input(ear: String, skin: String, eye: String) {
         val a1: AlgorithmV2 = axSkillBundle.dispenseAlgorithm(ear, skin, eye) ?: return
         this.outAlg = a1.getAlg()

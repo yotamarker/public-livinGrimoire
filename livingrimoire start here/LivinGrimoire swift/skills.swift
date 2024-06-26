@@ -373,69 +373,6 @@ class DiEngager: DiSkillV2 {
         }
     }
 }
-class GamificationP: DiSkillV2 {
-    // the grind side of the game, see GamificationN for the reward side
-    private var gain = 1
-    private var skill: DiSkillV2
-    private var axGamification = AXGamification()
-    
-    init(skill: DiSkillV2) {
-        self.skill = skill
-    }
-    
-    func setGain(gain: Int) {
-        if gain > 0 {
-            self.gain = gain
-        }
-    }
-    
-    func getAxGamification() -> AXGamification {
-        // shallow ref
-        return axGamification
-    }
-    
-    override func input(ear: String, skin: String, eye: String) {
-        skill.input(ear: ear, skin: skin, eye: eye)
-    }
-    
-    override func output(noiron: Neuron) {
-        // skill activation increases gaming credits
-        if skill.pendingAlgorithm() {
-            axGamification.incrementBy(amount: gain)
-        }
-        skill.output(noiron: noiron)
-    }
-}
-class GamificationN: DiSkillV2 {
-    private var axGamification: AXGamification
-    private var cost = 3
-    private var skill: DiSkillV2
-    
-    init(skill: DiSkillV2, rewardBank: GamificationP) {
-        self.skill = skill
-        axGamification = rewardBank.getAxGamification()
-    }
-    
-    func setCost(_ cost: Int) -> GamificationN {
-        self.cost = cost
-        return self
-    }
-    
-    override func input(ear: String, skin: String, eye: String) {
-        // engage skill only if a reward is possible
-        if axGamification.surplus(cost: cost) {
-            skill.input(ear: ear, skin: skin, eye: eye)
-        }
-    }
-    
-    override func output(noiron: Neuron) {
-        // charge reward if an algorithm is pending
-        if skill.pendingAlgorithm() {
-            axGamification.reward(cost: cost)
-            skill.output(noiron: noiron)
-        }
-    }
-}
 class DiBurper: DiSkillV2 {
     private var burpsPerHour = 2
     private var trgMinute = TrgMinute(minute: 0)
@@ -850,7 +787,7 @@ class DiBicameral: DiSkillV2 {
     }
 }
 class DiSkillBundle: DiSkillV2 {
-    private let axSkillBundle = AXSkillBundle()
+    fileprivate let axSkillBundle = AXSkillBundle()
 
     override func input(ear: String, skin: String, eye: String) {
         if let a1 = axSkillBundle.dispenseAlgorithm(ear: ear, skin: skin, eye: eye) {
@@ -866,5 +803,81 @@ class DiSkillBundle: DiSkillV2 {
 
     func addSkill(_ skill: DiSkillV2) {
         axSkillBundle.addSkill(skill)
+    }
+}
+// gamification classes
+class GamiPlus: DiSkillV2 {
+    // The grind side of the game; see GamificationN for the reward side
+    private let gain: Int
+    private let skill: DiSkillV2
+    private let axGamification: AXGamification
+
+    init(skill: DiSkillV2, axGamification: AXGamification, gain: Int) {
+        self.skill = skill
+        self.axGamification = axGamification
+        self.gain = gain
+    }
+
+    override func input(ear: String, skin: String, eye: String) {
+        skill.input(ear: ear, skin: skin, eye: eye)
+    }
+
+    override func output(noiron: Neuron) {
+        // Skill activation increases gaming credits
+        if skill.pendingAlgorithm() {
+            axGamification.incrementBy(amount: gain)
+        }
+        skill.output(noiron: noiron)
+    }
+}
+class GamiMinus: DiSkillV2 {
+    private let axGamification: AXGamification
+    private let cost: Int
+    private let skill: DiSkillV2
+
+    init(skill: DiSkillV2, axGamification: AXGamification, cost: Int) {
+        self.skill = skill
+        self.axGamification = axGamification
+        self.cost = cost
+    }
+
+    override func input(ear: String, skin: String, eye: String) {
+        // Engage skill only if a reward is possible
+        if axGamification.surplus(cost: cost) {
+            skill.input(ear: ear, skin: skin, eye: eye)
+        }
+    }
+
+    override func output(noiron: Neuron) {
+        // Charge reward if an algorithm is pending
+        if skill.pendingAlgorithm() {
+            axGamification.reward(cost: cost)
+            skill.output(noiron: noiron)
+        }
+    }
+}
+class DiGamificationSkillBundle: DiSkillBundle {
+    private let axGamification = AXGamification()
+    private var gain = 1
+    private var cost = 3
+
+    func setGain(_ gain: Int) {
+        if gain > 0 {
+            self.gain = gain
+        }
+    }
+
+    func setCost(_ cost: Int) {
+        if cost > 0 {
+            self.cost = cost
+        }
+    }
+
+    func addGrindSkill(_ skill: DiSkillV2) {
+        axSkillBundle.addSkill(GamiPlus(skill: skill, axGamification: axGamification, gain: gain))
+    }
+
+    func addCostlySkill(_ skill: DiSkillV2) {
+        axSkillBundle.addSkill(GamiMinus(skill: skill, axGamification: axGamification, cost: cost))
     }
 }

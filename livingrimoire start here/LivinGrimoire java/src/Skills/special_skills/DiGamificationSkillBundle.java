@@ -21,4 +21,8 @@ public class DiGamificationSkillBundle extends DiSkillBundle{
     public void addCostlySkill(DiSkillV2 skill){
         axSkillBundle.addSkill(new GamiMinus(skill,axGamification,cost));
     }
+
+    public AXGamification getAxGamification() {
+        return axGamification;
+    }
 }

@@ -4,7 +4,7 @@ import auxiliary_modules.AXGamification
 import livinGrimoire.DiSkillV2
 
 class DiGamificationSkillBundle : DiSkillBundle() {
-    private val axGamification: AXGamification = AXGamification()
+    val axGamification = AXGamification()
     private var gain = 1
     private var cost = 3
     fun setGain(gain: Int) {

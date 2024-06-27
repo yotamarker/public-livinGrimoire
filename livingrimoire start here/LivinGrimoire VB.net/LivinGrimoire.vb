@@ -276,7 +276,7 @@
         Public Overridable Sub Input(ear As String, skin As String, eye As String)
         End Sub
 
-        Public Sub Output(noiron As Neuron)
+        Public Overridable Sub Output(noiron As Neuron)
             If outAlg IsNot Nothing Then
                 noiron.InsertAlg(Me.outpAlgPriority, outAlg)
                 outpAlgPriority = -1

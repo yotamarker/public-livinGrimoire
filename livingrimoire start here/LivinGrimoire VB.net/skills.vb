@@ -68,7 +68,7 @@
     Public Class DiSkillBundle
         Inherits DiSkillV2
 
-        Private ReadOnly axSkillBundle As New AXSkillBundle()
+        Protected axSkillBundle As New AXSkillBundle()
 
         Public Overrides Sub Input(ByVal ear As String, ByVal skin As String, ByVal eye As String)
             Dim a1 As AlgorithmV2 = axSkillBundle.DispenseAlgorithm(ear, skin, eye)
@@ -157,4 +157,86 @@
             skillHub.setKokoro(kokoro)
         End Sub
     End Class
+    Public Class GamiPlus
+        Inherits DiSkillV2
+
+        ' The grind side of the game; see GamificationN for the reward side
+        Private ReadOnly gain As Integer
+        Private ReadOnly skill As DiSkillV2
+        Private ReadOnly axGamification As AXGamification
+
+        Public Sub New(skill As DiSkillV2, axGamification As AXGamification, gain As Integer)
+            Me.skill = skill
+            Me.axGamification = axGamification
+            Me.gain = gain
+        End Sub
+
+        Public Overrides Sub Input(ear As String, skin As String, eye As String)
+            skill.Input(ear, skin, eye)
+        End Sub
+
+        Public Overrides Sub Output(noiron As Neuron)
+            ' Skill activation increases gaming credits
+            If skill.PendingAlgorithm() Then
+                axGamification.IncrementBy(gain)
+            End If
+            skill.Output(noiron)
+        End Sub
+    End Class
+    Public Class GamiMinus
+        Inherits DiSkillV2
+
+        Private ReadOnly axGamification As AXGamification
+        Private ReadOnly cost As Integer
+        Private ReadOnly skill As DiSkillV2
+
+        Public Sub New(skill As DiSkillV2, axGamification As AXGamification, cost As Integer)
+            Me.skill = skill
+            Me.axGamification = axGamification
+            Me.cost = cost
+        End Sub
+
+        Public Overrides Sub Input(ear As String, skin As String, eye As String)
+            ' Engage skill only if a reward is possible
+            If axGamification.Surplus(cost) Then
+                skill.Input(ear, skin, eye)
+            End If
+        End Sub
+
+        Public Overrides Sub Output(noiron As Neuron)
+            ' Charge reward if an algorithm is pending
+            If skill.PendingAlgorithm() Then
+                axGamification.Reward(cost)
+                skill.Output(noiron)
+            End If
+        End Sub
+    End Class
+    Public Class DiGamificationSkillBundle
+        Inherits DiSkillBundle
+
+        Private ReadOnly axGamification As New AXGamification()
+        Private gain As Integer = 1
+        Private cost As Integer = 3
+
+        Public Sub SetGain(gain As Integer)
+            If gain > 0 Then
+                Me.gain = gain
+            End If
+        End Sub
+
+        Public Sub SetCost(cost As Integer)
+            If cost > 0 Then
+                Me.cost = cost
+            End If
+        End Sub
+
+        Public Sub AddGrindSkill(skill As DiSkillV2)
+            AXSkillBundle.AddSkill(New GamiPlus(skill, axGamification, gain))
+        End Sub
+
+        Public Sub AddCostlySkill(skill As DiSkillV2)
+            AXSkillBundle.AddSkill(New GamiMinus(skill, axGamification, cost))
+        End Sub
+    End Class
+
 End Module

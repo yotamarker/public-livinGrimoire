@@ -1517,7 +1517,6 @@ Module Auxiliary_modules
     Public Class TrgTime
         Private t As String = "null"
         Private regexUtil As New RegexUtil()
-        Private pl As New TimeUtils
         Private alarm As Boolean = True
 
         Public Sub setTime(v1 As String)
@@ -1525,7 +1524,7 @@ Module Auxiliary_modules
         End Sub
 
         Public Function checkAlarm() As Boolean
-            Dim now As String = pl.getCurrentTimeStamp()
+            Dim now As String = TimeUtils.getCurrentTimeStamp()
             If alarm Then
                 If now = t Then
                     alarm = False
@@ -1732,7 +1731,7 @@ Module Auxiliary_modules
                 Me.context = Me.matcher.ToString() ' context
                 Dim p As String = Me.RandomPhrase()
                 For i As Integer = 0 To m.Groups.Count - 2
-                    Dim groupValue As String = Me.Reflect(m.Groups(i + 1).Value)
+                    Dim groupValue As String = Reflect(m.Groups(i + 1).Value)
                     Me.param = groupValue ' param
                     Me.infoRequest = p ' more info request
                     p = p.Replace("{" & i & "}", groupValue)

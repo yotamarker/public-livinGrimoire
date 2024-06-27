@@ -147,12 +147,10 @@ public class TimeGate
 
     public void OpenGate(int minutes)
     {
-        DateTime now = new DateTime();
         this.openedGate = this.openedGate.AddMinutes(minutes);
     }
     public void openGateforNSeconds(int n)
     {
-        DateTime now = new DateTime();
         this.openedGate = this.openedGate.AddSeconds(n);
     }
 }

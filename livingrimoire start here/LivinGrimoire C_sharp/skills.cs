@@ -83,7 +83,7 @@ public class DiBicameral : DiSkillV2
 }
 public class DiSkillBundle : DiSkillV2
 {
-    private readonly AXSkillBundle axSkillBundle = new AXSkillBundle();
+    protected AXSkillBundle axSkillBundle = new AXSkillBundle();
 
     public override void Input(string ear, string skin, string eye)
     {
@@ -170,5 +170,98 @@ public class SkillBranch : DiSkillV2
     {
         base.SetKokoro(kokoro);
         skillHub.SetKokoro(kokoro);
+    }
+}
+public class GamiPlus : DiSkillV2
+{
+    // The grind side of the game; see GamificationN for the reward side
+    private readonly int gain;
+    private readonly DiSkillV2 skill;
+    private readonly AXGamification axGamification;
+
+    public GamiPlus(DiSkillV2 skill, AXGamification axGamification, int gain)
+    {
+        this.skill = skill;
+        this.axGamification = axGamification;
+        this.gain = gain;
+    }
+
+    public override void Input(string ear, string skin, string eye)
+    {
+        skill.Input(ear, skin, eye);
+    }
+
+    public override void Output(Neuron noiron)
+    {
+        // Skill activation increases gaming credits
+        if (skill.PendingAlgorithm())
+        {
+            axGamification.IncrementBy(gain);
+        }
+        skill.Output(noiron);
+    }
+}
+public class GamiMinus : DiSkillV2
+{
+    private readonly AXGamification axGamification;
+    private readonly int cost;
+    private readonly DiSkillV2 skill;
+
+    public GamiMinus(DiSkillV2 skill, AXGamification axGamification, int cost)
+    {
+        this.skill = skill;
+        this.axGamification = axGamification;
+        this.cost = cost;
+    }
+
+    public override void Input(string ear, string skin, string eye)
+    {
+        // Engage skill only if a reward is possible
+        if (axGamification.Surplus(cost))
+        {
+            skill.Input(ear, skin, eye);
+        }
+    }
+
+    public override void Output(Neuron noiron)
+    {
+        // Charge reward if an algorithm is pending
+        if (skill.PendingAlgorithm())
+        {
+            axGamification.Reward(cost);
+            skill.Output(noiron);
+        }
+    }
+}
+public class DiGamificationSkillBundle : DiSkillBundle
+{
+    private readonly AXGamification axGamification = new AXGamification();
+    private int gain = 1;
+    private int cost = 3;
+
+    public void SetGain(int gain)
+    {
+        if (gain > 0)
+        {
+            this.gain = gain;
+        }
+    }
+
+    public void SetCost(int cost)
+    {
+        if (cost > 0)
+        {
+            this.cost = cost;
+        }
+    }
+
+    public void AddGrindSkill(DiSkillV2 skill)
+    {
+        axSkillBundle.AddSkill(new GamiPlus(skill, axGamification, gain));
+    }
+
+    public void AddCostlySkill(DiSkillV2 skill)
+    {
+        axSkillBundle.AddSkill(new GamiMinus(skill, axGamification, cost));
     }
 }

@@ -332,7 +332,7 @@ public class DiSkillV2
     {
     }
 
-    public void Output(Neuron noiron)
+    public virtual void Output(Neuron noiron)
     {
         if (outAlg != null)
         {

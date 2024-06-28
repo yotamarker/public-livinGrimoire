@@ -1,7 +1,9 @@
 package skills.special
 
 import auxiliary_modules.AXGamification
+import livinGrimoire.AbsDictionaryDB
 import livinGrimoire.DiSkillV2
+import livinGrimoire.Kokoro
 import livinGrimoire.Neuron
 
 class GamiPlus(skill: DiSkillV2, axGamification: AXGamification, gain: Int) : DiSkillV2() {
@@ -11,7 +13,6 @@ class GamiPlus(skill: DiSkillV2, axGamification: AXGamification, gain: Int) : Di
     private val axGamification: AXGamification
 
     init {
-        skill.kokoro = this.kokoro
         this.skill = skill
         this.axGamification = axGamification
         this.gain = gain
@@ -28,4 +29,9 @@ class GamiPlus(skill: DiSkillV2, axGamification: AXGamification, gain: Int) : Di
         }
         skill.output(noiron)
     }
+    override var kokoro: Kokoro = Kokoro(AbsDictionaryDB())
+        set(value) {
+            skill.kokoro = kokoro
+            field = value
+        }
 }

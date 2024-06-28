@@ -2100,6 +2100,9 @@ class GamiPlus(DiSkillV2):
             self.ax_gamification.incrementBy(self.gain)
         self.skill.output(noiron)
 
+    def setKokoro(self, kokoro: Kokoro):
+        self.skill.setKokoro(kokoro)
+
 
 class GamiMinus(DiSkillV2):
     def __init__(self, skill: DiSkillV2, ax_gamification: AXGamification, cost: int):
@@ -2119,13 +2122,16 @@ class GamiMinus(DiSkillV2):
             self.ax_gamification.reward(self.cost)
             self.skill.output(noiron)
 
+    def setKokoro(self, kokoro: Kokoro):
+        self.skill.setKokoro(kokoro)
+
 
 class DiGamificationSkillBundle(DiSkillBundle):
     def __init__(self):
         super().__init__()
         self.ax_gamification: AXGamification = AXGamification()
         self.gain: int = 1
-        self.cost: int = 3
+        self.cost: int = 2
 
     def set_gain(self, gain):
         if gain > 0:
@@ -2140,3 +2146,26 @@ class DiGamificationSkillBundle(DiSkillBundle):
 
     def add_costly_skill(self, skill):
         self.axSkillBundle.add_skill(GamiMinus(skill, self.ax_gamification, self.cost))
+
+    def getAxGamification(self) -> AXGamification:
+        return self.ax_gamification
+
+
+class DiGamificationScouter(DiSkillV2):
+    def __init__(self, ax_gamification):
+        super().__init__()
+        self.lim: int = 2  # minimum for mood
+        self.ax_gamification: AXGamification = ax_gamification
+        self.no_mood: Responder = Responder("bored", "no emotions detected", "neutral")
+        self.yes_mood: Responder = Responder("operational", "efficient", "mission ready", "awaiting orders")
+
+    def set_lim(self, lim):
+        self.lim = lim
+
+    def input(self, ear, skin, eye):
+        if ear != "how are you":
+            return
+        if self.ax_gamification.getCounter() > self.lim:
+            self.setSimpleAlg(self.yes_mood.getAResponse())
+        else:
+            self.algPartsFusion(4, APSad(self.no_mood.getAResponse()))

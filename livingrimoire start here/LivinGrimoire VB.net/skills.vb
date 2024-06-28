@@ -237,6 +237,8 @@
         Public Sub AddCostlySkill(skill As DiSkillV2)
             AXSkillBundle.AddSkill(New GamiMinus(skill, axGamification, cost))
         End Sub
+        Public Function GetAxGamification() As AXGamification
+            Return axGamification
+        End Function
     End Class
-
 End Module

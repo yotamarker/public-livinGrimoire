@@ -7,7 +7,7 @@ import livinGrimoire.DiSkillV2
 class DiGamificationScouter(axGamification: AXGamification) : DiSkillV2() {
     private var lim = 2 // minimum for mood
     private val axGamification: AXGamification
-    private val noMood: Responder = Responder("bored", "no emotions detected", "neutral", "machine")
+    private val noMood: Responder = Responder("bored", "no emotions detected", "neutral")
     private val yesMood: Responder = Responder("operational", "efficient", "mission ready", "awaiting orders")
 
     init {

@@ -7,7 +7,7 @@ import LivinGrimoire.DiSkillV2;
 public class DiGamificationScouter extends DiSkillV2 {
     private int lim = 2; // minimum for mood
     private final AXGamification axGamification;
-    private final Responder noMood = new Responder("bored","no emotions detected","neutral","machine");
+    private final Responder noMood = new Responder("bored","no emotions detected","neutral");
     private final Responder yesMood = new Responder("operational", "efficient","mission ready","awaiting orders");
 
     public DiGamificationScouter(AXGamification axGamification) {

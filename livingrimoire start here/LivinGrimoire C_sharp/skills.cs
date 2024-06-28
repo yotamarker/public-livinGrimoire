@@ -264,4 +264,9 @@ public class DiGamificationSkillBundle : DiSkillBundle
     {
         axSkillBundle.AddSkill(new GamiMinus(skill, axGamification, cost));
     }
+    public AXGamification GetAxGamification()
+    {
+        return axGamification;
+    }
+
 }

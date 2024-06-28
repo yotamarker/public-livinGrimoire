@@ -880,4 +880,32 @@ class DiGamificationSkillBundle: DiSkillBundle {
     func addCostlySkill(_ skill: DiSkillV2) {
         axSkillBundle.addSkill(GamiMinus(skill: skill, axGamification: axGamification, cost: cost))
     }
+    func getAxGamification() -> AXGamification {
+        return axGamification
+    }
+}
+class DiGamificationScouter: DiSkillV2 {
+    private var lim = 2 // minimum for mood
+    private let axGamification: AXGamification
+    private let noMood = Responder("bored", "no emotions detected", "neutral", "machine")
+    private let yesMood = Responder("operational", "efficient", "mission ready", "awaiting orders")
+
+    init(axGamification: AXGamification) {
+        self.axGamification = axGamification
+    }
+
+    func setLim(_ lim: Int) {
+        self.lim = lim
+    }
+
+    override func input(ear: String, skin: String, eye: String) {
+        if ear != "how are you" {
+            return
+        }
+        if axGamification.getCounter() > lim {
+            setSimpleAlg(sayThis: yesMood.getAResponse())
+        } else {
+            setSimpleAlg(sayThis: noMood.getAResponse())
+        }
+    }
 }

@@ -6,7 +6,7 @@ import LivinGrimoire.DiSkillV2;
 public class DiGamificationSkillBundle extends DiSkillBundle{
     private final AXGamification axGamification = new AXGamification();
     private int gain = 1;
-    private int cost = 3;
+    private int cost = 2;
     public void setGain(int gain) {
         if (gain >0){
             this.gain = gain;}

@@ -807,7 +807,6 @@ class DiSkillBundle: DiSkillV2 {
 }
 // gamification classes
 class GamiPlus: DiSkillV2 {
-    // The grind side of the game; see GamificationN for the reward side
     private let gain: Int
     private let skill: DiSkillV2
     private let axGamification: AXGamification
@@ -823,13 +822,17 @@ class GamiPlus: DiSkillV2 {
     }
 
     override func output(noiron: Neuron) {
-        // Skill activation increases gaming credits
         if skill.pendingAlgorithm() {
             axGamification.incrementBy(amount: gain)
         }
         skill.output(noiron: noiron)
     }
+
+    override func setKokoro(kokoro: Kokoro) {
+        skill.setKokoro(kokoro: kokoro)
+    }
 }
+
 class GamiMinus: DiSkillV2 {
     private let axGamification: AXGamification
     private let cost: Int
@@ -842,24 +845,27 @@ class GamiMinus: DiSkillV2 {
     }
 
     override func input(ear: String, skin: String, eye: String) {
-        // Engage skill only if a reward is possible
         if axGamification.surplus(cost: cost) {
             skill.input(ear: ear, skin: skin, eye: eye)
         }
     }
 
     override func output(noiron: Neuron) {
-        // Charge reward if an algorithm is pending
         if skill.pendingAlgorithm() {
             axGamification.reward(cost: cost)
             skill.output(noiron: noiron)
         }
     }
+
+    override func setKokoro(kokoro: Kokoro) {
+        skill.setKokoro(kokoro: kokoro)
+    }
 }
+
 class DiGamificationSkillBundle: DiSkillBundle {
     private let axGamification = AXGamification()
-    private var gain = 1
-    private var cost = 3
+    private var gain: Int = 1
+    private var cost: Int = 2
 
     func setGain(_ gain: Int) {
         if gain > 0 {
@@ -880,14 +886,16 @@ class DiGamificationSkillBundle: DiSkillBundle {
     func addCostlySkill(_ skill: DiSkillV2) {
         axSkillBundle.addSkill(GamiMinus(skill: skill, axGamification: axGamification, cost: cost))
     }
+
     func getAxGamification() -> AXGamification {
         return axGamification
     }
 }
+
 class DiGamificationScouter: DiSkillV2 {
-    private var lim = 2 // minimum for mood
+    private var lim: Int = 2
     private let axGamification: AXGamification
-    private let noMood = Responder("bored", "no emotions detected", "neutral", "machine")
+    private let noMood = Responder("bored", "no emotions detected", "neutral")
     private let yesMood = Responder("operational", "efficient", "mission ready", "awaiting orders")
 
     init(axGamification: AXGamification) {

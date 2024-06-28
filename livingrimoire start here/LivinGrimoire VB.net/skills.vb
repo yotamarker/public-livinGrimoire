@@ -160,7 +160,7 @@
     Public Class GamiPlus
         Inherits DiSkillV2
 
-        ' The grind side of the game; see GamificationN for the reward side
+        ' The grind side of the game, see GamificationN for the reward side
         Private ReadOnly gain As Integer
         Private ReadOnly skill As DiSkillV2
         Private ReadOnly axGamification As AXGamification
@@ -181,6 +181,10 @@
                 axGamification.IncrementBy(gain)
             End If
             skill.Output(noiron)
+        End Sub
+
+        Public Overrides Sub SetKokoro(kokoro As Kokoro)
+            Me.skill.SetKokoro(kokoro)
         End Sub
     End Class
     Public Class GamiMinus
@@ -210,13 +214,17 @@
                 skill.Output(noiron)
             End If
         End Sub
+
+        Public Overrides Sub SetKokoro(kokoro As Kokoro)
+            Me.skill.SetKokoro(kokoro)
+        End Sub
     End Class
     Public Class DiGamificationSkillBundle
         Inherits DiSkillBundle
 
         Private ReadOnly axGamification As New AXGamification()
         Private gain As Integer = 1
-        Private cost As Integer = 3
+        Private cost As Integer = 2
 
         Public Sub SetGain(gain As Integer)
             If gain > 0 Then
@@ -231,14 +239,42 @@
         End Sub
 
         Public Sub AddGrindSkill(skill As DiSkillV2)
-            AXSkillBundle.AddSkill(New GamiPlus(skill, axGamification, gain))
+            axSkillBundle.AddSkill(New GamiPlus(skill, axGamification, gain))
         End Sub
 
         Public Sub AddCostlySkill(skill As DiSkillV2)
-            AXSkillBundle.AddSkill(New GamiMinus(skill, axGamification, cost))
+            axSkillBundle.AddSkill(New GamiMinus(skill, axGamification, cost))
         End Sub
+
         Public Function GetAxGamification() As AXGamification
             Return axGamification
         End Function
+    End Class
+    Public Class DiGamificationScouter
+        Inherits DiSkillV2
+
+        Private lim As Integer = 2 ' Minimum for mood
+        Private ReadOnly axGamification As AXGamification
+        Private ReadOnly noMood As New Responder("bored", "no emotions detected", "neutral")
+        Private ReadOnly yesMood As New Responder("operational", "efficient", "mission ready", "awaiting orders")
+
+        Public Sub New(axGamification As AXGamification)
+            Me.axGamification = axGamification
+        End Sub
+
+        Public Sub SetLim(lim As Integer)
+            Me.lim = lim
+        End Sub
+
+        Public Overrides Sub Input(ear As String, skin As String, eye As String)
+            If Not ear.Equals("how are you") Then
+                Return
+            End If
+            If axGamification.GetCounter() > lim Then
+                SetSimpleAlg(yesMood.GetAResponse())
+            Else
+                SetSimpleAlg(noMood.GetAResponse())
+            End If
+        End Sub
     End Class
 End Module

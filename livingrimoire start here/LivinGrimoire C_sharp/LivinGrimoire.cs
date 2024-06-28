@@ -342,7 +342,7 @@ public class DiSkillV2
         }
     }
 
-    public void SetKokoro(Kokoro kokoro)
+    public virtual void SetKokoro(Kokoro kokoro)
     {
         this.kokoro = kokoro;
     }

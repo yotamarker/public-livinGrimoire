@@ -6,7 +6,7 @@ import livinGrimoire.DiSkillV2
 class DiGamificationSkillBundle : DiSkillBundle() {
     val axGamification = AXGamification()
     private var gain = 1
-    private var cost = 3
+    private var cost = 2
     fun setGain(gain: Int) {
         if (gain > 0) {
             this.gain = gain

@@ -174,7 +174,7 @@ public class SkillBranch : DiSkillV2
 }
 public class GamiPlus : DiSkillV2
 {
-    // The grind side of the game; see GamificationN for the reward side
+    // The grind side of the game, see GamificationN for the reward side
     private readonly int gain;
     private readonly DiSkillV2 skill;
     private readonly AXGamification axGamification;
@@ -200,7 +200,13 @@ public class GamiPlus : DiSkillV2
         }
         skill.Output(noiron);
     }
+
+    public override void SetKokoro(Kokoro kokoro)
+    {
+        this.skill.SetKokoro(kokoro);
+    }
 }
+
 public class GamiMinus : DiSkillV2
 {
     private readonly AXGamification axGamification;
@@ -232,12 +238,18 @@ public class GamiMinus : DiSkillV2
             skill.Output(noiron);
         }
     }
+
+    public override void SetKokoro(Kokoro kokoro)
+    {
+        this.skill.SetKokoro(kokoro);
+    }
 }
+
 public class DiGamificationSkillBundle : DiSkillBundle
 {
     private readonly AXGamification axGamification = new AXGamification();
     private int gain = 1;
-    private int cost = 3;
+    private int cost = 2;
 
     public void SetGain(int gain)
     {
@@ -264,9 +276,43 @@ public class DiGamificationSkillBundle : DiSkillBundle
     {
         axSkillBundle.AddSkill(new GamiMinus(skill, axGamification, cost));
     }
+
     public AXGamification GetAxGamification()
     {
         return axGamification;
     }
+}
 
+public class DiGamificationScouter : DiSkillV2
+{
+    private int lim = 2; // Minimum for mood
+    private readonly AXGamification axGamification;
+    private readonly Responder noMood = new Responder("bored", "no emotions detected", "neutral");
+    private readonly Responder yesMood = new Responder("operational", "efficient", "mission ready", "awaiting orders");
+
+    public DiGamificationScouter(AXGamification axGamification)
+    {
+        this.axGamification = axGamification;
+    }
+
+    public void SetLim(int lim)
+    {
+        this.lim = lim;
+    }
+
+    public override void Input(string ear, string skin, string eye)
+    {
+        if (!ear.Equals("how are you"))
+        {
+            return;
+        }
+        if (axGamification.GetCounter() > lim)
+        {
+            SetSimpleAlg(yesMood.GetAResponse());
+        }
+        else
+        {
+            SetSimpleAlg(noMood.GetAResponse());
+        }
+    }
 }

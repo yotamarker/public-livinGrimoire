@@ -1150,6 +1150,13 @@ class DrawRnd:
     def isEmptied(self) -> bool:
         return self.strings.size() == 0
 
+    def renewableDraw(self) -> str:
+        if len(self.strings.queue) == 0:
+            self.reset()
+        temp: str = self.strings.getRNDElement()
+        self.strings.removeItem(temp)
+        return temp
+
 
 class DrawRndDigits:
     # draw a random integer, then take said element out

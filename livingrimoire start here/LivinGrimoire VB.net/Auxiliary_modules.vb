@@ -1012,6 +1012,17 @@ Module Auxiliary_modules
             Return element
         End Function
 
+        Public Function renewableDraw() As String
+            If strings.Count = 0 Then
+                Reset()
+            End If
+
+            Dim x As Integer = rand.Next(strings.Count)
+            Dim element As String = strings(x)
+            strings.RemoveAt(x)
+            Return element
+        End Function
+
         Public Function GetSimpleRNDNum(ByVal bound As Integer) As Integer
             ' Return 0 to bound-1
             Return rand.Next(bound)

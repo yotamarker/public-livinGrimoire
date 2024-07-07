@@ -1253,6 +1253,13 @@ class DrawRnd {
         strings.remove(at: x)
         return element
     }
+    func renewableDraw() -> String {
+        if strings.isEmpty {reset()}
+        let x:Int = Int.random(in: 0..<strings.count)
+        let element:String = strings[x]
+        strings.remove(at: x)
+        return element
+    }
     func reset(){
         let dc:DeepCopier = DeepCopier()
         strings = dc.copyList(original: stringsSource)

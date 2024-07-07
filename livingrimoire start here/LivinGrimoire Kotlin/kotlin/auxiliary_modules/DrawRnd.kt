@@ -54,4 +54,15 @@ class DrawRnd(vararg values: String) {
 
     val isEmptied: Boolean
         get() = strings.isEmpty()
+    fun renewableDraw(): String? {
+        // using this method assumes at least 1 element was added to the module
+        // otherwise you can expect an error!
+        if (strings.isEmpty()) {
+            reset()
+        }
+        val x = rand.nextInt(strings.size)
+        val element = strings[x]
+        strings.removeAt(x)
+        return element
+    }
 }

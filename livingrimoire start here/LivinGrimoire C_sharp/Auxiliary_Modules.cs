@@ -1250,6 +1250,19 @@ public class DrawRnd
         return element;
     }
 
+    public string renewableDraw()
+    {
+        if (strings.Count == 0)
+        {
+            Reset();
+        }
+
+        int x = rand.Next(strings.Count);
+        string element = strings[x];
+        strings.RemoveAt(x);
+        return element;
+    }
+
     public int GetSimpleRNDNum(int bound)
     {
         // Return 0 to bound-1

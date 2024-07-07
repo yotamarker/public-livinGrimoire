@@ -6,12 +6,12 @@ import java.util.Random;
 public class DrawRnd {
     // draw a random element, then take said element out
     private ArrayList<String> strings = new ArrayList<>();
-    private ArrayList<String> stringsSource = new ArrayList<>();
-    private Random rand = new Random();
+    private final ArrayList<String> stringsSource = new ArrayList<>();
+    private final Random rand = new Random();
     public DrawRnd(String... values) {
-        for (int i = 0; i < values.length; i++) {
-            strings.add(values[i]);
-            stringsSource.add(values[i]);
+        for (String value : values) {
+            strings.add(value);
+            stringsSource.add(value);
         }
     }
     public void addElement(String element){
@@ -30,7 +30,7 @@ public class DrawRnd {
         // return 0->bound-1
         return rand.nextInt(bound);
     }
-    private LGTypeConverter tc = new LGTypeConverter();
+    private final LGTypeConverter tc = new LGTypeConverter();
     public int drawAsInt(){
         if (strings.isEmpty()) {return 0;}
         Random rand = new Random();
@@ -44,4 +44,13 @@ public class DrawRnd {
         strings = dc.copyList(stringsSource);
     }
     public boolean isEmptied(){return strings.isEmpty();}
+    public String renewableDraw(){
+        // using this method assumes at least 1 element was added to the module
+        // otherwise you can expect an error!
+        if (strings.isEmpty()) {reset();}
+        int x = rand.nextInt(strings.size());
+        String element = strings.get(x);
+        strings.remove(x);
+        return element;
+    }
 }

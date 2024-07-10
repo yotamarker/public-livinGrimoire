@@ -1,3 +1,4 @@
+import feedparser
 import requests
 import threading
 
@@ -25,10 +26,8 @@ class ShorniSplash(DiSkillV2):
             my_thread = threading.Thread(target=self._async_func, args=(self,))
             my_thread.daemon = True
             my_thread.start()
-            print("thread summoned")
 
         if len(self._result) > 0:
-            print("thread result:")
             self.output_result()
             self._result = ""
 
@@ -47,12 +46,15 @@ class DaRainAlerts(ShorniSplash):
         self._funnel: AXFunnel = AXFunnel()
         self._funnel.setDefault("temp")
         self._funnel.addK("so hot today").addK("so cold today").addK("what is the temperature?").addK("temperature")
+        self._funnel.addKV("temp", "temp")
+        self._funnel.addKV("rain alerts", "rain alearts")
+        self._funnel.addKV("get weather", "get weather")
         self.cmd: str = "nothing"
 
     def trigger(self, ear, skin, eye) -> bool:
         if len(ear) == 0:
             return False
-        self.cmd = self._funnel.funnel(ear)
+        self.cmd = self._funnel.funnel_of_empty(ear)
         return len(self.cmd) > 0
 
     @staticmethod
@@ -123,3 +125,39 @@ class DaRainAlerts(ShorniSplash):
             return f"{current_temperature_celsius:.2f}°C"
         else:
             return "City Not Found"
+
+
+class DaRSSFeed(ShorniSplash):
+    def __init__(self, rss_URL: str):
+        super().__init__()
+        self.rss_feed: str = rss_URL
+        self._list_result: list[str] = []
+
+    def trigger(self, ear, skin, eye) -> bool:
+        return ear == "rss feed"
+
+    @staticmethod
+    def _async_func(this_cls):
+        temp: list[str] = DaRSSFeed.get_rss_titles(this_cls.rss_feed)
+        temp2: list[str] = []
+        for item in temp:
+            temp2.append(item)
+            temp2.append('')
+            if len(item) > 20:
+                temp2.append('')
+        this_cls._list_result = temp2
+
+    @staticmethod
+    def get_rss_titles(rss_url) -> list[str]:
+        feed = feedparser.parse(rss_url)
+        return [entry.title for entry in feed.entries]  # [:15]
+
+    def input(self, ear: str, skin: str, eye: str):
+        if self.trigger(ear, skin, eye):
+            my_thread = threading.Thread(target=self._async_func, args=(self,))
+            my_thread.daemon = True
+            my_thread.start()
+
+        if len(self._list_result) > 0:
+            self.setVebatimAlgFromList(4, self._list_result)
+            self._list_result = []

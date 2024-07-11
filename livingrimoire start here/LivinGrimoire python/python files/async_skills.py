@@ -54,7 +54,7 @@ class DaRainAlerts(ShorniSplash):
     def trigger(self, ear, skin, eye) -> bool:
         if len(ear) == 0:
             return False
-        self.cmd = self._funnel.funnel_of_empty(ear)
+        self.cmd = self._funnel.funnel_or_empty(ear)
         return len(self.cmd) > 0
 
     @staticmethod

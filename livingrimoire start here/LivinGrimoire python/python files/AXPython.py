@@ -3063,13 +3063,13 @@ class AXFunnel:
         return self
 
     def funnel(self, key: str) -> str:
-        # dictionary get or default
+        # dictionary get or default(key)
         if key not in self.dic:
             return key
         return self.dic[key]
 
-    def funnel_of_empty(self, key: str) -> str:
-        # dictionary get or default
+    def funnel_or_empty(self, key: str) -> str:
+        # dictionary get or default("")
         if key not in self.dic:
             return ""
         return self.dic[key]

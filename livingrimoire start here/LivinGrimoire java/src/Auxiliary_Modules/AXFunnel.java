@@ -34,4 +34,8 @@ public class AXFunnel {
         // get value from dictionary or return the key itself as default
         return dic.getOrDefault(key, key);
     }
+    public String funnel_or_empty(String key) {
+        // get value from dictionary or return ""
+        return dic.getOrDefault(key, "");
+    }
 }

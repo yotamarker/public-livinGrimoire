@@ -33,4 +33,8 @@ class AXFunnel {
         // get value from dictionary or return the key itself as default
         return dic.getOrDefault(key, key)
     }
+    fun funnelOrEmpty(key: String): String {
+        // get value from dictionary or return ""
+        return dic.getOrDefault(key, "")
+    }
 }

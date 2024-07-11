@@ -767,6 +767,11 @@ Module Auxiliary_modules
             ' Get value from dictionary or return the key itself as default
             Return If(dic.ContainsKey(key), dic(key), key)
         End Function
+
+        Public Function FunnelOrEmpty(ByVal key As String) As String
+            ' Get value from dictionary or return ""
+            Return If(dic.ContainsKey(key), dic(key), "")
+        End Function
     End Class
     Public Class AXGamification
         ' This auxiliary module can add fun to tasks, skills, and abilities simply by

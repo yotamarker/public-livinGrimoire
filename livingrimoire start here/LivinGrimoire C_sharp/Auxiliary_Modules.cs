@@ -950,6 +950,12 @@ public class AXFunnel
         // Get value from dictionary or return the key itself as default
         return dic.ContainsKey(key) ? dic[key] : key;
     }
+
+    public string FunnelOrFunnel(string key)
+    {
+        // Get value from dictionary or return ""
+        return dic.ContainsKey(key) ? dic[key] : "";
+    }
 }
 public class AXGamification
 {

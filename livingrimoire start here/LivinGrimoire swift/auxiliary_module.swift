@@ -3062,6 +3062,11 @@ class AXFunnel {
         // Get value from dictionary or return the key itself as default
         return dic[key] ?? key
     }
+    
+    func funnelOrEmpty(_ key: String) -> String {
+        // Get value from dictionary or return ""
+        return dic[key] ?? ""
+    }
 }
 class ChangeDetector {
     private var A: String

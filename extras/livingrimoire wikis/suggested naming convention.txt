@@ -7,6 +7,10 @@ for example DiHelloWorld.
 
 ***
 
+**Da** : DaSkills : skills that are asynchronous
+
+***
+
 **The**: a unique skill, which has effect or is affected by the Chobit Object,
 or requires a reference to the Chobit Object in it's c'tor. see TheShell skill as an example.
 

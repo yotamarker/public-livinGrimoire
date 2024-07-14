@@ -1,3 +1,6 @@
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="mr_meeseeks" data-color="#5F7FFF" data-emoji=""  data-font="Lato" data-text="LivinGrimoire acceleration" data-outline-color="#000000" data-font-color="#ffffff" data-coffee-color="#FFDD00" ></script>
+
+
 the LivinGrimoire is a software design pattern, that absorbs skills.
 1 line of code is needed to add a skill.
 

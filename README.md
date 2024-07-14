@@ -1,4 +1,4 @@
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="mr_meeseeks" data-color="#5F7FFF" data-emoji=""  data-font="Lato" data-text="LivinGrimoire acceleration" data-outline-color="#000000" data-font-color="#ffffff" data-coffee-color="#FFDD00" ></script>
+<a href="https://www.buymeacoffee.com/mr_meeseeks" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="LivinGrimoire acceleration" height="41" width="174"></a>
 
 
 the LivinGrimoire is a software design pattern, that absorbs skills.

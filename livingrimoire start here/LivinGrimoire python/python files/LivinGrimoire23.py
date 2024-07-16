@@ -510,6 +510,12 @@ class Brain:
         self._emotion = self.logicChobit.getSoulEmotion()
         self._bodyInfo = self.hardwareChobit.think(self._logicChobitOutput, skin, eye)
 
+    def add_logical_skill(self, skill):
+        self.logicChobit.addSkill(skill)
+
+    def add_hardware_skill(self, skill):
+        self.hardwareChobit.addSkill(skill)
+
 
 ''' Chobits CLASS '''
 

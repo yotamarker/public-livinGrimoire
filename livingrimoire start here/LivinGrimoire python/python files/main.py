@@ -7,7 +7,7 @@ from AXPython import *
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     b1: Brain = Brain()
-    b1.logicChobit.addSkill(DiHelloWorld())
-    b1.hardwareChobit.addSkill(DiSysOut())
+    b1.add_logical_skill(DiHelloWorld())
+    b1.add_hardware_skill(DiSysOut())
     b1.doIt("hello", "", "")
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

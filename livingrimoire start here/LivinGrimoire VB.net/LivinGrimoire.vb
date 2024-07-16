@@ -557,6 +557,15 @@
             ' Case: Hardware skill wishes to pass info to logical chobit
             bodyInfo = hardwareChobit.Think(logicChobitOutput, skin, eye)
         End Sub
+
+        Public Sub AddLogicalSkill(skill As DiSkillV2)
+            logicChobit.AddSkill(skill)
+        End Sub
+
+        Public Sub AddHardwareSkill(skill As DiSkillV2)
+            hardwareChobit.AddSkill(skill)
+        End Sub
+
     End Class
     Public Class DiPrinter
         Inherits DiSkillV2

@@ -660,6 +660,16 @@ public class Brain
         // Case: Hardware skill wishes to pass info to logical chobit
         bodyInfo = hardwareChobit.Think(logicChobitOutput, skin, eye);
     }
+    public void AddLogicalSkill(DiSkillV2 skill)
+    {
+        logicChobit.AddSkill(skill);
+    }
+
+    public void AddHardwareSkill(DiSkillV2 skill)
+    {
+        hardwareChobit.AddSkill(skill);
+    }
+
 }
 public class DiPrinter : DiSkillV2
 {

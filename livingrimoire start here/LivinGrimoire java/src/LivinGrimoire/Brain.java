@@ -90,4 +90,6 @@ public class Brain {
         // case: hardware skill wishes to pass info to logical chobit
         bodyInfo = hardwareChobit.think(logicChobitOutput,skin,eye);
     }
+    public void addLogicalSkill(DiSkillV2 skill){logicChobit.addSkill(skill);}
+    public void addHardwareSkill(DiSkillV2 skill){hardwareChobit.addSkill(skill);}
 }

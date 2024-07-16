@@ -1,7 +1,7 @@
             Brain brain = new Brain();
-            brain.logicChobit.AddSkill(new DiHelloWorld());
-            brain.logicChobit.AddSkill(new DiTime());
-            brain.hardwareChobit.AddSkill(new DiPrinter());
+            brain.AddLogicalSkill(new DiHelloWorld());
+            brain.AddLogicalSkill(new DiTime());
+            brain.AddHardwareSkill(new DiPrinter());
 
             // Engage the "incantation 0" command
             brain.DoIt("incantation 0", "", "");

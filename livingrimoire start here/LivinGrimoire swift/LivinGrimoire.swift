@@ -518,6 +518,13 @@ class Brain {
         emotion = logicChobit.getSoulEmotion()
         bodyInfo = hardwareChobit.think(ear: logicChobitOutput, skin: skin, eye: ear)
     }
+    func addLogicalSkill(_ skill: DiSkillV2) {
+        logicChobit.addSkill(skill: skill)
+        }
+        
+        func addHardwareSkill(_ skill: DiSkillV2) {
+            hardwareChobit.addSkill(skill: skill)
+        }
 }
 class DiSysOut:DiSkillV2{
     // hello world skill for testing purposes

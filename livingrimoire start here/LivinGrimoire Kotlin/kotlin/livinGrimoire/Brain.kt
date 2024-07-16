@@ -82,4 +82,11 @@ class Brain {
         // case: hardware skill wishes to pass info to logical chobit
         bodyInfo = hardwareChobit.think(logicChobitOutput, skin, eye)
     }
+    fun addLogicalSkill(skill: DiSkillV2) {
+        logicChobit.addSkill(skill)
+    }
+
+    fun addHardwareSkill(skill: DiSkillV2) {
+        hardwareChobit.addSkill(skill)
+    }
 }

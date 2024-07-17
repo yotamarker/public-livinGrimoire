@@ -1,5 +1,6 @@
 from __future__ import annotations
 from AXPython import *
+from subprocess import call  # for calc skill DiCalculator
 
 
 class DiMisser(DiSkillV2):
@@ -1813,3 +1814,13 @@ class DiGamificationScouter(DiSkillV2):
             self.setSimpleAlg(self.yes_mood.getAResponse())
         else:
             self.algPartsFusion(4, APSad(self.no_mood.getAResponse()))
+
+
+class DiCalculator(DiSkillV2):
+    def __init__(self):
+        super().__init__()
+
+    def input(self, ear: str, skin: str, eye: str):
+        if ear == "calculator":
+            self.setSimpleAlg("calculator engaged")
+            call(["calc.exe"])

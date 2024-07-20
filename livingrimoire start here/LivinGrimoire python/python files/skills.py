@@ -684,15 +684,13 @@ class DiJumbler(DiSkillV2):
     # jumble a string
     def __init__(self):
         super().__init__()
-        self.cmdBreaker: AXCmdBreaker = AXCmdBreaker("jumble the name")
-        self.__temp: str = ""
+        self.cmdBreaker: AXCmdBreaker = AXCmdBreaker("jumble")
 
     def input(self, ear, skin, eye):
         temp = self.cmdBreaker.extractCmdParam(ear)
         if not temp:  # In Python, an empty string is considered False in a boolean context
             return
         self.setSimpleAlg(self.jumble_string(temp))
-        temp = ""
 
     @staticmethod
     def jumble_string(s: str) -> str:
@@ -1129,7 +1127,7 @@ class DiOneWorder(DiSkillV2):
         result = ""
 
         # Iterate through each word
-        for word in words:
+        for _ in words:
             # Append "chi" to the result
             result += self.cry
 
@@ -1294,7 +1292,7 @@ class DiBlabberV5(DiSkillV2):
     def setResponses(self, *responses: str) -> DiBlabberV5:
         self.npc.responder.queue = []
         for str1 in responses:
-            self.npc.responder.queue.insert(str1)
+            self.npc.responder.queue.append(str1)
         return self
 
     def input(self, ear: str, skin: str, eye: str):
@@ -1429,17 +1427,8 @@ class APMad(Mutatable):
         super().__init__()
         self.sentences: list[str] = []
         self.at = 0
-
-        try:
-            if isinstance(args[0], list):
-                self.sentences = args[0]
-                if 0 == len(self.sentences):
-                    self.at = 30
-            else:
-                for i in range(len(args)):
-                    self.sentences.append(args[i])
-        except:
-            self.at = 30
+        for i in range(len(args)):
+            self.sentences.append(args[i])
 
     # Override
     def action(self, ear: str, skin: str, eye: str) -> str:
@@ -1465,17 +1454,8 @@ class APShy(Mutatable):
         super().__init__()
         self.sentences: list[str] = []
         self.at = 0
-
-        try:
-            if isinstance(args[0], list):
-                self.sentences = args[0]
-                if 0 == len(self.sentences):
-                    self.at = 30
-            else:
-                for i in range(len(args)):
-                    self.sentences.append(args[i])
-        except:
-            self.at = 30
+        for i in range(len(args)):
+            self.sentences.append(args[i])
 
     # Override
     def action(self, ear: str, skin: str, eye: str) -> str:
@@ -1501,17 +1481,8 @@ class APHappy(Mutatable):
         super().__init__()
         self.sentences: list[str] = []
         self.at = 0
-
-        try:
-            if isinstance(args[0], list):
-                self.sentences = args[0]
-                if 0 == len(self.sentences):
-                    self.at = 30
-            else:
-                for i in range(len(args)):
-                    self.sentences.append(args[i])
-        except:
-            self.at = 30
+        for i in range(len(args)):
+            self.sentences.append(args[i])
 
     # Override
     def action(self, ear: str, skin: str, eye: str) -> str:
@@ -1537,17 +1508,8 @@ class APSad(Mutatable):
         super().__init__()
         self.sentences: list[str] = []
         self.at = 0
-
-        try:
-            if isinstance(args[0], list):
-                self.sentences = args[0]
-                if 0 == len(self.sentences):
-                    self.at = 30
-            else:
-                for i in range(len(args)):
-                    self.sentences.append(args[i])
-        except:
-            self.at = 30
+        for i in range(len(args)):
+            self.sentences.append(args[i])
 
     # Override
     def action(self, ear: str, skin: str, eye: str) -> str:
@@ -1629,14 +1591,14 @@ class DiBicameral(DiSkillV2):
 
 
 class DiYandere(DiSkillV2):
-    '''
+    """
     bica = DiBicameral()
     app.brain.logicChobit.addSkill(bica)
     bica.msgCol.addMSGV2("0:47", "#yandere")
     bica.msgCol.sprinkleMSG("#yandere", 30)
     bica.msgCol.sprinkleMSG("#yandere_cry", 30)
     app.brain.logicChobit.addSkill(DiYandere("moti"))
-    '''
+    """
 
     def __init__(self, ooa):
         super().__init__()
@@ -1819,8 +1781,17 @@ class DiGamificationScouter(DiSkillV2):
 class DiCalculator(DiSkillV2):
     def __init__(self):
         super().__init__()
+        self._funnel: AXFunnel = AXFunnel()
+        self._funnel.addKV("open calculator", "calculator")
+        self._funnel.addKV("calculator", "calculator")
+        self._funnel.addKV("open notepad", "notepad")
+        self._funnel.addKV("notepad", "notepad")
 
     def input(self, ear: str, skin: str, eye: str):
-        if ear == "calculator":
-            self.setSimpleAlg("calculator engaged")
-            call(["calc.exe"])
+        match self._funnel.funnel(ear):
+            case "calculator":
+                self.setSimpleAlg("calculator engaged")
+                call(["calc.exe"])
+            case "notepad":
+                self.setSimpleAlg("notepad engaged")
+                call(["notepad.exe"])

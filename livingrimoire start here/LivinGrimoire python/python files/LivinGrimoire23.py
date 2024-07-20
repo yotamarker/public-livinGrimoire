@@ -51,7 +51,7 @@ class GrimoireMemento:
         return self.absDictionaryDB.load(key)
 
     def simpleSave(self, key: str, value: str):
-        if (key.startswith("AP") or key == "" or value == ""):
+        if key.startswith("AP") or key == "" or value == "":
             return
         self.absDictionaryDB.save(key, value)
 
@@ -88,7 +88,7 @@ class APSay(Mutatable):
         self.param = param
 
     def action(self, ear: str, skin: str, eye: str) -> str:
-        '''TODO Auto-generated method stub'''
+        """TODO Auto-generated method stub"""
         axnStr = ""
         if self.at > 0:
             if ear.lower() != self.param.lower():
@@ -107,16 +107,23 @@ class APVerbatim(Mutatable):
         super().__init__()
         self.sentences: list[str] = []
         self.at = 0
-
         try:
             if isinstance(args[0], list):
                 self.sentences = args[0]
-                if 0 == len(self.sentences):
+                if len(self.sentences) == 0:
                     self.at = 30
             else:
                 for i in range(len(args)):
                     self.sentences.append(args[i])
-        except:
+        except IndexError:
+            # Handle the case where args[0] does not exist
+            self.at = 30
+        except AttributeError:
+            # Handle the case where self.sentences is not initialized
+            self.at = 30
+        except Exception as e:
+            # Log or handle other exceptions
+            print(f"An unexpected error occurred: {e}")
             self.at = 30
 
     # Override
@@ -146,7 +153,7 @@ class CldBool:
 
 
 class APCldVerbatim(Mutatable):
-    '''this algorithm part says each string param verbatim'''
+    """this algorithm part says each string param verbatim"""
 
     def __init__(self, cldBool: CldBool, *words):
         super().__init__()
@@ -162,7 +169,15 @@ class APCldVerbatim(Mutatable):
                 for i in range(len(words)):
                     self.sentences.append(words[i])
                 self.cldBool.setModeActive(True)
-        except:
+        except IndexError:
+            # Handle the case where args[0] does not exist
+            self.at = 30
+        except AttributeError:
+            # Handle the case where self.sentences is not initialized
+            self.at = 30
+        except Exception as e:
+            # Log or handle other exceptions
+            print(f"An unexpected error occurred: {e}")
             self.at = 30
 
     # Override
@@ -225,6 +240,7 @@ class Neuron:
 class DISkillUtils:
     # alg part based algorithm building methods
     # var args param
+    # noinspection PyMethodMayBeStatic
     def algBuilder(self, *itte: Mutatable) -> Algorithm:
         # returns an algorithm built with the algPart varargs
         algParts1: list[Mutatable] = []
@@ -243,10 +259,11 @@ class DISkillUtils:
         # returns alg that says the word string (sayThis)
         return self.algBuilder(APCldVerbatim(cldBool, *sayThis))
 
+    # noinspection PyMethodMayBeStatic
     def strContainsList(self, str1: str, items: list[str]) -> str:
         # returns the 1st match between words in a string and values in a list.
         for temp in items:
-            if (str1.count(temp) > 0):
+            if str1.count(temp) > 0:
                 return temp
         return ""
 
@@ -259,7 +276,8 @@ class DiSkillV2:
         # The variables start with an underscore (_) because they are protected
         self._kokoro = Kokoro(AbsDictionaryDB())  # consciousness, shallow ref class to enable interskill communications
         self._diSkillUtils = DISkillUtils()
-        self._outAlg: Algorithm = None  # skills output
+        self._outAlg: Algorithm  # skills output
+        self._outAlg = None
         self._outpAlgPriority: int = -1  # defcon 1->5
 
     def setOutalg(self, alg: Algorithm):
@@ -343,10 +361,13 @@ class DiHelloWorld(DiSkillV2):
 class Cerabellum:
     # runs an algorithm
     def __init__(self) -> None:
-        self.fin: int = None
-        self.at: int = None
+        self.fin: int
+        self.fin = None
+        self.at: int
+        self.at = None
         self.incrementAt: bool = False
-        self.alg: Algorithm = None
+        self.alg: Algorithm
+        self.alg = None
         self.isActive: bool = False
         self.emot: str = ""
 
@@ -398,7 +419,7 @@ class Cerabellum:
 class Fusion:
     def __init__(self):
         self._emot: str = ""
-        self.ceraArr: list[Cerabellum] = [Cerabellum() for i in range(5)]
+        self.ceraArr: list[Cerabellum] = [Cerabellum() for _ in range(5)]
         self._result: str = ""
 
     def getEmot(self) -> str:
@@ -408,7 +429,7 @@ class Fusion:
         for i in range(1, 6):
             if not self.ceraArr[i - 1].isActive:
                 temp: Algorithm = neuron.getAlg(i)
-                if not temp is None:
+                if temp is not None:
                     self.ceraArr[i - 1].setAlgorithm(temp)
 
     def runAlgs(self, ear: str, skin: str, eye: str) -> str:

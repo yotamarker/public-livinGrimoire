@@ -1,6 +1,7 @@
 package LivinGrimoire;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class APVerbatim extends Mutatable {
     /*
@@ -10,9 +11,7 @@ public class APVerbatim extends Mutatable {
     private int at = 0;
 
     public APVerbatim(String... sentences) {
-        for (int i = 0; i < sentences.length; i++) {
-            this.sentences.add(sentences[i]);
-        }
+        this.sentences.addAll(Arrays.asList(sentences));
         if (0 == sentences.length) {
             at = 30;
         }

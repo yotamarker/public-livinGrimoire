@@ -1,6 +1,7 @@
 import feedparser
 import requests
 import threading
+from subprocess import call  # for calc skill DiCalculator
 
 from AXPython import AXFunnel
 from LivinGrimoire23 import DiSkillV2
@@ -161,3 +162,35 @@ class DaRSSFeed(ShorniSplash):
         if len(self._list_result) > 0:
             self.setVebatimAlgFromList(4, self._list_result)
             self._list_result = []
+
+
+class DiExePath(DiSkillV2):
+    def __init__(self):
+        super().__init__()
+        self._funnel: AXFunnel = AXFunnel()
+        self._funnel.addKV("open calculator", "calculator")
+        self._funnel.addKV("calculator", "calculator")
+        self._funnel.addKV("open notepad", "notepad")
+        self._funnel.addKV("notepad", "notepad")
+
+    def input(self, ear: str, skin: str, eye: str):
+        match self._funnel.funnel(ear):
+            case "calculator":
+                self.setSimpleAlg("calculator engaged")
+                self.thread_caller(self._funnel.funnel(ear))
+            case "notepad":
+                self.setSimpleAlg("notepad engaged")
+                self.thread_caller(self._funnel.funnel(ear))
+
+    @staticmethod
+    def _async_func(command: str):
+        match command:
+            case "calculator":
+                call(["calc.exe"])
+            case "notepad":
+                call(["notepad.exe"])
+
+    def thread_caller(self, command: str):
+        my_thread = threading.Thread(target=self._async_func, args=(command,))
+        my_thread.daemon = True
+        my_thread.start()

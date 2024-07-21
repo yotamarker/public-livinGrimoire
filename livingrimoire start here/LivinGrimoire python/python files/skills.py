@@ -1,6 +1,5 @@
 from __future__ import annotations
 from AXPython import *
-from subprocess import call  # for calc skill DiCalculator
 
 
 class DiMisser(DiSkillV2):
@@ -1427,8 +1426,24 @@ class APMad(Mutatable):
         super().__init__()
         self.sentences: list[str] = []
         self.at = 0
-        for i in range(len(args)):
-            self.sentences.append(args[i])
+        try:
+            if isinstance(args[0], list):
+                self.sentences = args[0]
+                if len(self.sentences) == 0:
+                    self.at = 30
+            else:
+                for i in range(len(args)):
+                    self.sentences.append(args[i])
+        except IndexError:
+            # Handle the case where args[0] does not exist
+            self.at = 30
+        except AttributeError:
+            # Handle the case where self.sentences is not initialized
+            self.at = 30
+        except Exception as e:
+            # Log or handle other exceptions
+            print(f"An unexpected error occurred: {e}")
+            self.at = 30
 
     # Override
     def action(self, ear: str, skin: str, eye: str) -> str:
@@ -1454,8 +1469,24 @@ class APShy(Mutatable):
         super().__init__()
         self.sentences: list[str] = []
         self.at = 0
-        for i in range(len(args)):
-            self.sentences.append(args[i])
+        try:
+            if isinstance(args[0], list):
+                self.sentences = args[0]
+                if len(self.sentences) == 0:
+                    self.at = 30
+            else:
+                for i in range(len(args)):
+                    self.sentences.append(args[i])
+        except IndexError:
+            # Handle the case where args[0] does not exist
+            self.at = 30
+        except AttributeError:
+            # Handle the case where self.sentences is not initialized
+            self.at = 30
+        except Exception as e:
+            # Log or handle other exceptions
+            print(f"An unexpected error occurred: {e}")
+            self.at = 30
 
     # Override
     def action(self, ear: str, skin: str, eye: str) -> str:
@@ -1481,8 +1512,24 @@ class APHappy(Mutatable):
         super().__init__()
         self.sentences: list[str] = []
         self.at = 0
-        for i in range(len(args)):
-            self.sentences.append(args[i])
+        try:
+            if isinstance(args[0], list):
+                self.sentences = args[0]
+                if len(self.sentences) == 0:
+                    self.at = 30
+            else:
+                for i in range(len(args)):
+                    self.sentences.append(args[i])
+        except IndexError:
+            # Handle the case where args[0] does not exist
+            self.at = 30
+        except AttributeError:
+            # Handle the case where self.sentences is not initialized
+            self.at = 30
+        except Exception as e:
+            # Log or handle other exceptions
+            print(f"An unexpected error occurred: {e}")
+            self.at = 30
 
     # Override
     def action(self, ear: str, skin: str, eye: str) -> str:
@@ -1508,8 +1555,24 @@ class APSad(Mutatable):
         super().__init__()
         self.sentences: list[str] = []
         self.at = 0
-        for i in range(len(args)):
-            self.sentences.append(args[i])
+        try:
+            if isinstance(args[0], list):
+                self.sentences = args[0]
+                if len(self.sentences) == 0:
+                    self.at = 30
+            else:
+                for i in range(len(args)):
+                    self.sentences.append(args[i])
+        except IndexError:
+            # Handle the case where args[0] does not exist
+            self.at = 30
+        except AttributeError:
+            # Handle the case where self.sentences is not initialized
+            self.at = 30
+        except Exception as e:
+            # Log or handle other exceptions
+            print(f"An unexpected error occurred: {e}")
+            self.at = 30
 
     # Override
     def action(self, ear: str, skin: str, eye: str) -> str:
@@ -1776,22 +1839,3 @@ class DiGamificationScouter(DiSkillV2):
             self.setSimpleAlg(self.yes_mood.getAResponse())
         else:
             self.algPartsFusion(4, APSad(self.no_mood.getAResponse()))
-
-
-class DiCalculator(DiSkillV2):
-    def __init__(self):
-        super().__init__()
-        self._funnel: AXFunnel = AXFunnel()
-        self._funnel.addKV("open calculator", "calculator")
-        self._funnel.addKV("calculator", "calculator")
-        self._funnel.addKV("open notepad", "notepad")
-        self._funnel.addKV("notepad", "notepad")
-
-    def input(self, ear: str, skin: str, eye: str):
-        match self._funnel.funnel(ear):
-            case "calculator":
-                self.setSimpleAlg("calculator engaged")
-                call(["calc.exe"])
-            case "notepad":
-                self.setSimpleAlg("notepad engaged")
-                call(["notepad.exe"])

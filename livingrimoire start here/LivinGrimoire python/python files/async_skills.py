@@ -164,7 +164,7 @@ class DaRSSFeed(ShorniSplash):
             self._list_result = []
 
 
-class DiExePath(DiSkillV2):
+class DaExePath(DiSkillV2):
     def __init__(self):
         super().__init__()
         self._funnel: AXFunnel = AXFunnel()

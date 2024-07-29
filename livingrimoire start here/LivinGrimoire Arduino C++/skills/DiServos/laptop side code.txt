@@ -1,0 +1,15 @@
+import serial
+import time
+
+# Replace 'COM3' with the appropriate port for your system
+ser = serial.Serial('COM3', 9600)
+time.sleep(2)  # Wait for the serial connection to initialize
+
+def send_servo_command(servo_index, servo_position):
+    command = f"{servo_index} {servo_position}\n"
+    ser.write(command.encode())
+    print(f"Sent command: {command.strip()}")
+
+# Example usage
+send_servo_command(0, 90)  # Move servo 0 to 90 degrees
+send_servo_command(1, 45)  # Move servo 1 to 45 degrees

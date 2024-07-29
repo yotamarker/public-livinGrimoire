@@ -1,0 +1,14 @@
+#include "DiServos.h"
+#include "LivinGrimoireLight.h"
+
+Chobit* c1;
+
+void setup() {
+    Skill* s2 = new DiServos(); // servo skill created
+    c1 = new Chobit();
+    c1->addSkill(s2);    
+}
+
+void loop() {
+    c1->think(0, 0, 0);
+}

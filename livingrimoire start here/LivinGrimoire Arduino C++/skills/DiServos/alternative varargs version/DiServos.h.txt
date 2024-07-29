@@ -1,0 +1,19 @@
+#ifndef DiServos_H
+#define DiServos_H
+
+#include <Arduino.h>
+#include <Servo.h>
+#include "LivinGrimoireLight.h"
+
+class DiServos : public Skill {
+private:
+    const int numServos = 8;
+    Servo servos[numServos];
+    std::vector<int> servoPins; // Use a dynamic array for servo pins
+
+public:
+    DiServos(const std::vector<int>& pins);
+    virtual void inOut(byte ear, byte skin, byte eye);
+};
+
+#endif

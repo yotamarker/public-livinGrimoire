@@ -1,0 +1,16 @@
+#include "DiServos.h"
+#include "LivinGrimoireLight.h"
+
+Chobit* c1; // Declare c1 as a global variable
+DiServos* s2; // Declare s2 as a global variable
+
+void setup() {
+    std::vector<int> myPins = {2, 3, 4, 5}; // Customize with your desired pin numbers
+    s2 = new DiServos(myPins); // Create the DiServos instance
+    c1 = new Chobit(); // Create the Chobit instance
+    c1->addSkill(s2);
+}
+
+void loop() {
+    c1->think(0, 0, 0);
+}

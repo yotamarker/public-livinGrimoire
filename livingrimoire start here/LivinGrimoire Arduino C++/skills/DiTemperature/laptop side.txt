@@ -1,0 +1,32 @@
+laptop side:
+
+Make sure you have the pyserial library installed. 
+You can install it using pip using the PyCharm terminal tab:
+
+pip install pyserial
+
+Python code:
+
+import serial
+import time
+
+ser = serial.Serial('COM3', 9600)  # For Windows
+
+# Clear the buffer
+ser.reset_input_buffer()
+
+# Number of readings to take
+num_readings = 10
+
+for _ in range(num_readings):
+    if ser.in_waiting > 0:
+        line = ser.readline().decode('utf-8').rstrip()
+        print(line)
+    time.sleep(1)  # Delay between readings
+
+ser.close()
+
+ser.readline().decode('utf-8').rstrip() reads one line of data from the serial buffer, 
+which corresponds to the last complete line sent from the Arduino. Each call to ser.readline() 
+retrieves the next line of data available in the buffer, so if the Arduino is continuously 
+sending data, this command will read the most recent line that has been fully transmitted.

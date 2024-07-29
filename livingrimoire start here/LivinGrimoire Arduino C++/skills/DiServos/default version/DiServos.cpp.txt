@@ -1,0 +1,35 @@
+#include <Arduino.h>
+#include <Servo.h>
+#include "DiServos.h"
+#include "LivinGrimoireLight.h"
+
+DiServos::DiServos()
+{
+  Serial.begin(9600); // Start serial communication at 9600 baud
+  for (int i = 0; i < numServos; i++) {
+    servos[i].attach(servoPins[i]); // Attach each servo to its pin
+  }
+}
+void DiServos::inOut(byte ear, byte skin, byte eye)
+{ 
+	// loop logic
+  static int servoIndex = -1; // Static variable to keep track of the servo index
+  if (Serial.available() > 0) {
+    int value = Serial.parseInt(); // Read the next integer from the serial buffer
+    if (servoIndex == -1) {
+      // If servoIndex is -1, this value is the servo index
+      servoIndex = value;
+    } else {
+      // Otherwise, this value is the servo position
+      int servoPosition = value;
+      if (servoIndex >= 0 && servoIndex < numServos) {
+        servos[servoIndex].write(servoPosition); // Move the specified servo to the position
+        Serial.print("Servo ");
+        Serial.print(servoIndex);
+        Serial.print(" moved to ");
+        Serial.println(servoPosition);
+      }
+      servoIndex = -1; // Reset servoIndex for the next command
+    }
+  }
+}

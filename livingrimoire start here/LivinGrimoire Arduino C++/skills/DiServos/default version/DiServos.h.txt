@@ -1,0 +1,18 @@
+#ifndef DiServos_H
+#define DiServos_H
+// using Arduino hardware codes outside main:
+#include <Arduino.h>
+#include <Servo.h>
+#include "LivinGrimoireLight.h"
+
+// example hello world by blinking default Led #13 once
+class DiServos : public Skill {
+    private:
+	const int numServos = 8; // Number of servos
+        Servo servos[numServos]; // Array of servo objects
+	int servoPins[numServos] = {2, 3, 4, 5, 6, 7, 8, 9}; // Pins to which servos are connected
+    public:
+    DiServos();
+    virtual void inOut(byte ear, byte skin, byte eye);
+};
+#endif

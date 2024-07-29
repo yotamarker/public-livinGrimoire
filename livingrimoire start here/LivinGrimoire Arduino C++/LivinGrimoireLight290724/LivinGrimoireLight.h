@@ -22,6 +22,7 @@ class Chobit
 private:
   ListOfSkills* dSkills = new ListOfSkills();
 public:
+  ~Chobit(); // Destructor declaration
   void addSkill(Skill* s1);
   void clearSkills();
   // run all added skills

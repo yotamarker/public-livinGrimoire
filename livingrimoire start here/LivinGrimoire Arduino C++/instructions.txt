@@ -1,5 +1,5 @@
 Sketch->Include Library->Add .ZIP Library...
-select the LivinGrimoireLight200324.zip
+select the LivinGrimoireLight290724.zip
 
 main code example for hello world:
 // the code will blink twice the default Led, Led #13

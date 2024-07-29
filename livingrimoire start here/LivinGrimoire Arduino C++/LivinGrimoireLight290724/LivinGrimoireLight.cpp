@@ -10,13 +10,17 @@ void ListOfSkills::append(Skill* item)
 {
   if (length < 16) data[length++] = item;
 }
-void ListOfSkills::remove(byte index) 
-{
-  if (index >= length) return;
- memmove(&data[index], &data[index+1], length -
-index - 1);
- length--;
+void ListOfSkills::remove(byte index) {
+    if (index >= length) return;
+    memmove(&data[index], &data[index + 1], (length - index - 1) * sizeof(Skill*));
+    length--;
 }
+
+// Chobit class
+Chobit::~Chobit() {
+    delete dSkills;
+}
+
 // Chobit class
 void Chobit::addSkill(Skill* s1)
 {
@@ -24,6 +28,7 @@ void Chobit::addSkill(Skill* s1)
 }
 void Chobit::clearSkills()
   {
+    delete dSkills;
     dSkills = new ListOfSkills();
   }
 void Chobit::think(byte ear, byte skin, byte eye)

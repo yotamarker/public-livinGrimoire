@@ -1053,12 +1053,14 @@ class DiAlarmer(DiSkillV2):
 
         temp = self.regexUtil.extractRegex(r"(?<=set alarm to\s)([0-9]{1,2}:[0-9]{1,2})", ear)
         if not len(temp) == 0:
+            if temp.startswith("0"):
+                temp = temp[1:]
             self._cron.setStartTime(temp)
             self.setSimpleAlg(f"alarm set to {temp}")
             return
 
         if self._cron.triggerWithoutRenewal():
-            self.setSimpleAlg("beep")
+            self.setSimpleAlg("beep beep beep")
 
 
 class DiMemoryGame(DiSkillV2):

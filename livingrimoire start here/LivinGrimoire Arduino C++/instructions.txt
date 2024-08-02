@@ -1,3 +1,5 @@
+in the Arduino IDE:
+tools: select board and port connecting to the Arduino/elegoo
 Sketch->Include Library->Add .ZIP Library...
 select the LivinGrimoireLight290724.zip
 

@@ -48,7 +48,7 @@ class DaRainAlerts(ShorniSplash):
         self._funnel.setDefault("temp")
         self._funnel.addK("so hot today").addK("so cold today").addK("what is the temperature?").addK("temperature")
         self._funnel.addKV("temp", "temp")
-        self._funnel.addKV("rain alerts", "rain alearts")
+        self._funnel.addKV("rain alerts", "rain alerts")
         self._funnel.addKV("get weather", "get weather")
         self.cmd: str = "nothing"
 

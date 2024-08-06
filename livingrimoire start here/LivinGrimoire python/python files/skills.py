@@ -1841,3 +1841,51 @@ class DiGamificationScouter(DiSkillV2):
             self.setSimpleAlg(self.yes_mood.getAResponse())
         else:
             self.algPartsFusion(4, APSad(self.no_mood.getAResponse()))
+
+
+class DiImprint_PT1(DiSkillV2):
+    """
+    add skill:
+        brain.logicChobit.addSkills(DiImprint_PT1(app.brain.logicChobit), DiImprint_PT2())
+        OR
+        brain.add_logical_skill(DiImprint_PT1(app.brain.logicChobit))
+        brain.add_logical_skill(DiImprint_PT2())
+    """
+
+    def __init__(self, chobit: Chobits):
+        super().__init__()
+        self.chobit: Chobits = chobit
+
+    def input(self, ear: str, skin: str, eye: str):
+        if ear == "imprint":
+            self.imprint()
+
+    def imprint(self):
+        with open('kiln.txt', 'r') as file:
+            # Read all lines into a list
+            lines = file.readlines()
+
+        # Remove any trailing newline characters from each line
+        lines = [line.strip() for line in lines]
+
+        # Print the list of strings
+        for line in lines:
+            self.chobit.think(line, "", "")
+
+
+class DiImprint_PT2(DiSkillV2):
+    # complementary skill to DiImprint_PT1
+    """
+    add skill:
+        brain.logicChobit.addSkills(DiImprint_PT1(app.brain.logicChobit), DiImprint_PT2())
+        OR
+        brain.add_logical_skill(DiImprint_PT1(app.brain.logicChobit))
+        brain.add_logical_skill(DiImprint_PT2())
+    """
+
+    def __init__(self):
+        super().__init__()
+
+    def input(self, ear: str, skin: str, eye: str):
+        if ear == "imprint":
+            self.setSimpleAlg("imprinting")

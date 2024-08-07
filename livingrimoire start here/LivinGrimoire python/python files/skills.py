@@ -1889,3 +1889,32 @@ class DiImprint_PT2(DiSkillV2):
     def input(self, ear: str, skin: str, eye: str):
         if ear == "imprint":
             self.setSimpleAlg("imprinting")
+
+
+class DiImprint_recorder(DiSkillV2):
+    #  records imprint file, complementary skill for DiImprint
+    def __init__(self):
+        super().__init__()
+        self.recording: bool = False
+
+    def input(self, ear: str, skin: str, eye: str):
+        if len(ear) == 0:
+            return
+        match ear:
+            case "recorder on" | "you are a clone" | "start recording":
+                self.recording = True
+                self.setSimpleAlg("recording input")
+                return
+            case "stop recording":
+                self.recording = False
+                self.setSimpleAlg("recording stopped")
+                return
+            case _:
+                pass
+        if self.recording:
+            self.record(ear)
+
+    @staticmethod
+    def record(ear):
+        with open("kiln.txt", "a") as file:
+            file.write(f"\n{ear}")

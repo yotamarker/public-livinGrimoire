@@ -1574,6 +1574,8 @@ class TrgTime:
         self._alarm: bool = True
 
     def setTime(self, v1: str):
+        if v1.startswith("0"):
+            v1 = v1[1:]
         self._t = self._regexUtil.extractEnumRegex(enumRegexGrimoire.simpleTimeStamp, v1)
 
     def alarm(self) -> bool:

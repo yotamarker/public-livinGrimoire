@@ -1053,8 +1053,6 @@ class DiAlarmer(DiSkillV2):
 
         temp = self.regexUtil.extractRegex(r"(?<=set alarm to\s)([0-9]{1,2}:[0-9]{1,2})", ear)
         if not len(temp) == 0:
-            if temp.startswith("0"):
-                temp = temp[1:]
             self._cron.setStartTime(temp)
             self.setSimpleAlg(f"alarm set to {temp}")
             return
@@ -1918,3 +1916,42 @@ class DiImprint_recorder(DiSkillV2):
     def record(ear):
         with open("kiln.txt", "a") as file:
             file.write(f"\n{ear}")
+
+
+class APSleep(Mutatable):
+    def __init__(self, wakeners, sleep_minutes):
+        super().__init__()  # Call the constructor of the parent class (Mutatable)
+        self.wakeners: Responder = wakeners
+        self.done: bool = False
+        self.timeGate: TimeGate = TimeGate(sleep_minutes)
+        self.timeGate.openForPauseMinutes()
+
+    def action(self, ear, skin, eye):
+        if self.wakeners.responsesContainsStr(ear) or self.timeGate.isClosed():
+            self.done = True
+            return "i am awake"
+        if ear:
+            return "zzz"
+        return ""
+
+    def completed(self):
+        return self.done
+
+
+class DiSleep(DiSkillV2):
+    def __init__(self, sleep_duration_minutes, wakeners):
+        super().__init__()  # Call the superclass constructor
+        self.sleep_duration_minutes = sleep_duration_minutes
+        self.wakeners: Responder = wakeners
+        self.trgTime: TrgTime = TrgTime()
+        self.trgTime.setTime("00:00")
+
+    def set_sleep_time_stamp(self, sleep_time_stamp: str):
+        self.trgTime.setTime(sleep_time_stamp)
+        return self
+
+    def input(self, ear, skin, eye):
+        if self.trgTime.alarm():
+            announce: APVerbatim = APVerbatim("initializing sleep")
+            ap_sleep: APSleep = APSleep(self.wakeners, self.sleep_duration_minutes)
+            self.algPartsFusion(2, announce, ap_sleep)

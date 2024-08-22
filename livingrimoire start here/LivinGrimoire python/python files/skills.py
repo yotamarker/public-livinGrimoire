@@ -1955,3 +1955,29 @@ class DiSleep(DiSkillV2):
             announce: APVerbatim = APVerbatim("initializing sleep")
             ap_sleep: APSleep = APSleep(self.wakeners, self.sleep_duration_minutes)
             self.algPartsFusion(2, announce, ap_sleep)
+
+
+class DiTriggers(DiSkillV2):
+    def __init__(self, brain):
+        super().__init__()
+        self.triggers: UniqueItemsPriorityQue = UniqueItemsPriorityQue()
+        self.is_recording: bool = False
+        self.brain: Brain = brain
+        self.new_cmd: str = ""
+
+    def input(self, ear, skin, eye):
+        if not self.is_recording:
+            if ear:
+                self.new_cmd = ear
+                self.is_recording = True  # not recording and hear something so record
+        else:
+            if self.brain.getLogicChobitOutput():
+                self.triggers.insert(self.new_cmd)
+            self.is_recording = False
+
+        # trigger output (can add alternative code to do this automatically)
+        if ear == "random trigger":
+            element = self.triggers.getRNDElement()  # returns None or string
+            if element is not None:
+                self.setSimpleAlg(element)
+

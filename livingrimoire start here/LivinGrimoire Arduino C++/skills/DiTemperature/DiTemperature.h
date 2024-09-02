@@ -11,7 +11,7 @@ prints the temperature to the serial monitor
 
 class DiTemperature : public Skill {
     private:
-        const int _inPin; // analog pin
+        int _inPin; // analog pin
     public:
     DiTemperature(int inPin);
     virtual void inOut(byte ear, byte skin, byte eye);

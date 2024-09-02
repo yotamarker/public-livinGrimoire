@@ -2,11 +2,13 @@
 #include "DiTemperature.h"
 #include "LivinGrimoireLight.h"
 
-DiTemperature::DiTemperature(int inPin) : _inPin(inPin) {
+DiTemperature::DiTemperature(int inPin) 
+{
+  _inPin = inPin;
   Serial.begin(9600); // Start serial communication at 9600 baud
 }
 
-void DiTemperature::inOut(byte ear, byte skin, byte eye) { 
+void DiTemperature::inOut(byte ear, byte skin, byte eye) {
   int value = analogRead(_inPin);
   float millivolts = (value / 1024.0) * 5000;
   float celsius = millivolts / 10;

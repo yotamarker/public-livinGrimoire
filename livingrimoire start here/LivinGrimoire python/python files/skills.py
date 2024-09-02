@@ -1981,3 +1981,55 @@ class DiTriggers(DiSkillV2):
             if element is not None:
                 self.setSimpleAlg(element)
 
+
+class DiPrincess(DiSkillV2):
+    """
+    echo sentence // learns sentence
+    princess // output sentence, yes, more, again to repeat princess command
+    filth on // auto mode
+    shut up // auto mode off
+    input learns word/sentence : output random learned sentence
+    """
+    def __init__(self, memory_size: int = 15, reply_chance: int = 90):
+        super().__init__()
+        self.npc: AXNPC2 = AXNPC2(memory_size, reply_chance)
+        self.npc.cmdBreaker = AXCmdBreaker("echo")
+        self._temp_str: str = ""
+        self._autoTalk: OnOffSwitch = OnOffSwitch()
+        self._autoTalk.setOn(Responder("filth on"))
+        self.cntxtcmd: AXContextCmd = AXContextCmd()
+        self.cntxtcmd.contextCommands.insert("princess")
+        self.cntxtcmd.commands.insert("more")
+        self.cntxtcmd.commands.insert("again")
+        self.cntxtcmd.commands.insert("please")
+        self.cntxtcmd.commands.insert("yes")
+        self.cntxtcmd.commands.insert("yeah")
+
+    def addResponses(self, *responses: str) -> DiPrincess:
+        for str1 in responses:
+            self.npc.responder.queue.insert(str1)
+        return self
+
+    def setResponses(self, *responses: str) -> DiPrincess:
+        self.npc.responder.queue = []
+        for str1 in responses:
+            self.npc.responder.queue.append(str1)
+        return self
+
+    def input(self, ear: str, skin: str, eye: str):
+        # auto talk mode
+        if self._autoTalk.getMode(ear):
+            t = self.npc.respond()
+            if len(t) > 0:
+                self.setSimpleAlg(f'{t} sosu')
+                return
+        if len(ear) == 0:
+            return
+        if self.cntxtcmd.engageCommand(ear):
+            self.setSimpleAlg(f'{self.npc.respond()} sosu')
+            return
+        # blabber
+        self._temp_str = self.npc.strRespond(ear)
+        if len(self._temp_str) > 0:
+            self.setSimpleAlg(f'{self.npc.forceRespond()} sosu')
+        self.npc.learn(ear)

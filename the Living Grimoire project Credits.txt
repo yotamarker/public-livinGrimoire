@@ -4,5 +4,5 @@
 
 the living grimoire was created by Moti Barski
 
-Translation of code from java to python : Marco Vavassori (Vavuz), Moti Barski
-Translation of code from java to kotlin : Moti Barski
+LivinGrimoire core port from java to python : Marco Vavassori (Vavuz), Moti Barski
+LivinGrimoire core port from Java to C++: thompsct (https://github.com/thompsct)

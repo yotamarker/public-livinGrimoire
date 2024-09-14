@@ -2,14 +2,14 @@ package skills.special
 
 import auxiliary_modules.AXGamification
 import livinGrimoire.AbsDictionaryDB
-import livinGrimoire.DiSkillV2
+import livinGrimoire.Skill
 import livinGrimoire.Kokoro
 import livinGrimoire.Neuron
 
-class GamiPlus(skill: DiSkillV2, axGamification: AXGamification, gain: Int) : DiSkillV2() {
+class GamiPlus(skill: Skill, axGamification: AXGamification, gain: Int) : Skill() {
     // the grind side of the game, see GamificationN for the reward side
     private val gain: Int
-    private val skill: DiSkillV2
+    private val skill: Skill
     private val axGamification: AXGamification
 
     init {

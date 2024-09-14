@@ -2,8 +2,8 @@ package auxiliary_modules
 
 import livinGrimoire.*
 
-class AXSkillBundle(vararg skillsParams: DiSkillV2) {
-    private val skills: ArrayList<DiSkillV2> = ArrayList<DiSkillV2>()
+class AXSkillBundle(vararg skillsParams: Skill) {
+    private val skills: ArrayList<Skill> = ArrayList<Skill>()
     private val tempN: Neuron = Neuron()
     private var kokoro: Kokoro = Kokoro(AbsDictionaryDB())
     fun setKokoro(kokoro: Kokoro) {
@@ -20,7 +20,7 @@ class AXSkillBundle(vararg skillsParams: DiSkillV2) {
         }
     }
 
-    fun addSkill(skill: DiSkillV2): AXSkillBundle {
+    fun addSkill(skill: Skill): AXSkillBundle {
         // builder pattern
         skill.kokoro = this.kokoro
         skills.add(skill)

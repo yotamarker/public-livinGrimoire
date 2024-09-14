@@ -1,9 +1,9 @@
 package skills.special
 
 import auxiliary_modules.AXGamification
-import livinGrimoire.DiSkillV2
+import livinGrimoire.Skill
 
-class DiGamificationSkillBundle : DiSkillBundle() {
+class GamificationSkillBundle : SkillBundle() {
     val axGamification = AXGamification()
     private var gain = 1
     private var cost = 2
@@ -19,11 +19,11 @@ class DiGamificationSkillBundle : DiSkillBundle() {
         }
     }
 
-    fun addGrindSkill(skill: DiSkillV2) {
+    fun addGrindSkill(skill: Skill) {
         axSkillBundle.addSkill(GamiPlus(skill, axGamification, gain))
     }
 
-    fun addCostlySkill(skill: DiSkillV2) {
+    fun addCostlySkill(skill: Skill) {
         axSkillBundle.addSkill(GamiMinus(skill, axGamification, cost))
     }
 }

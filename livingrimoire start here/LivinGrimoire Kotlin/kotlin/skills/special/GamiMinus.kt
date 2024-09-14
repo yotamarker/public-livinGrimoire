@@ -2,14 +2,14 @@ package skills.special
 
 import auxiliary_modules.AXGamification
 import livinGrimoire.AbsDictionaryDB
-import livinGrimoire.DiSkillV2
+import livinGrimoire.Skill
 import livinGrimoire.Kokoro
 import livinGrimoire.Neuron
 
-class GamiMinus(skill: DiSkillV2, axGamification: AXGamification, cost: Int) : DiSkillV2() {
+class GamiMinus(skill: Skill, axGamification: AXGamification, cost: Int) : Skill() {
     private val axGamification: AXGamification
     private val cost: Int
-    private val skill: DiSkillV2
+    private val skill: Skill
 
     init {
         this.skill = skill

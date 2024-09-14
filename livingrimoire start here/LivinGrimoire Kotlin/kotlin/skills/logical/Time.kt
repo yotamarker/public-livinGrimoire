@@ -1,9 +1,9 @@
 package skills.logical
 
 import auxiliary_modules.TimeUtils
-import livinGrimoire.DiSkillV2
+import livinGrimoire.Skill
 
-class DiTime : DiSkillV2() {
+class Time : Skill() {
     private val pl: TimeUtils = TimeUtils()
     override fun input(ear: String, skin: String, eye: String) {
         when (ear) {

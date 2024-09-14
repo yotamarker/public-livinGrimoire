@@ -3,10 +3,10 @@ package skills.special
 import auxiliary_modules.AXSkillBundle
 import auxiliary_modules.AlgorithmV2
 import livinGrimoire.AbsDictionaryDB
-import livinGrimoire.DiSkillV2
+import livinGrimoire.Skill
 import livinGrimoire.Kokoro
 
-open class DiSkillBundle : DiSkillV2() {
+open class SkillBundle : Skill() {
     protected val axSkillBundle: AXSkillBundle = AXSkillBundle()
     override fun input(ear: String, skin: String, eye: String) {
         val a1: AlgorithmV2 = axSkillBundle.dispenseAlgorithm(ear, skin, eye) ?: return
@@ -20,7 +20,7 @@ open class DiSkillBundle : DiSkillV2() {
             kokoro.toHeart.put("dibicameral", "null")
         }
 
-    fun addSkill(skill: DiSkillV2) {
+    fun addSkill(skill: Skill) {
         axSkillBundle.addSkill(skill)
     }
 }

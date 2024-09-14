@@ -2,9 +2,9 @@ package skills.logical
 
 import auxiliary_modules.AXContextCmd
 import auxiliary_modules.DrawRnd
-import livinGrimoire.DiSkillV2
+import livinGrimoire.Skill
 
-class DiSmoothie0 : DiSkillV2() {
+class Smoothie0 : Skill() {
     private val draw: DrawRnd = DrawRnd("grapefruits", "oranges", "apples", "peaches", "melons", "pears", "carrot")
     private val cmd: AXContextCmd = AXContextCmd()
 

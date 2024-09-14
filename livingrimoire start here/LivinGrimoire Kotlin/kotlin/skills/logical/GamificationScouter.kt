@@ -2,9 +2,9 @@ package skills.logical
 
 import auxiliary_modules.AXGamification
 import auxiliary_modules.Responder
-import livinGrimoire.DiSkillV2
+import livinGrimoire.Skill
 
-class DiGamificationScouter(axGamification: AXGamification) : DiSkillV2() {
+class GamificationScouter(axGamification: AXGamification) : Skill() {
     private var lim = 2 // minimum for mood
     private val axGamification: AXGamification
     private val noMood: Responder = Responder("bored", "no emotions detected", "neutral")

@@ -1,7 +1,7 @@
 package livinGrimoire
 
-class Chobits : thinkable() {
-    protected var dClasses = ArrayList<DiSkillV2>()
+class Chobits {
+    protected var dClasses = ArrayList<Skill>()
     var fusion: Fusion
         protected set
     protected var noiron: Neuron
@@ -22,7 +22,7 @@ class Chobits : thinkable() {
         kokoro = Kokoro(absDictionaryDB)
     }
 
-    fun addSkill(skill: DiSkillV2): Chobits {
+    fun addSkill(skill: Skill): Chobits {
         // add a skill (builder design patterned func))
         skill.kokoro = kokoro
         dClasses.add(skill)
@@ -34,22 +34,22 @@ class Chobits : thinkable() {
         dClasses.clear()
     }
 
-    fun addSkills(vararg skills: DiSkillV2) {
+    fun addSkills(vararg skills: Skill) {
         for (skill in skills) {
             skill.kokoro = kokoro
             dClasses.add(skill)
         }
     }
 
-    fun removeSkill(skill: DiSkillV2) {
+    fun removeSkill(skill: Skill) {
         dClasses.remove(skill)
     }
 
-    fun containsSkill(skill: DiSkillV2): Boolean {
+    fun containsSkill(skill: Skill): Boolean {
         return dClasses.contains(skill)
     }
 
-    override fun think(ear: String, skin: String, eye: String): String {
+    fun think(ear: String?, skin: String?, eye: String?): String {
         for (dCls in dClasses) {
             inOut(dCls, ear, skin, eye)
         }
@@ -63,8 +63,8 @@ class Chobits : thinkable() {
             // an emotion
             fusion.emot
 
-    protected fun inOut(dClass: DiSkillV2, ear: String, skin: String, eye: String) {
-        dClass.input(ear, skin, eye) // new
+    protected fun inOut(dClass: Skill, ear: String?, skin: String?, eye: String?) {
+        dClass.input(ear!!, skin!!, eye!!) // new
         dClass.output(noiron)
     }
 

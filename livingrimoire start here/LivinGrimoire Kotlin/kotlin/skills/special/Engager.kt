@@ -1,9 +1,9 @@
 package skills.special
 
 import auxiliary_modules.*
-import livinGrimoire.DiSkillV2
+import livinGrimoire.Skill
 
-class DiEngager(burpsPerHour: Int, skillToEngage: String) : DiSkillV2() {
+class Engager(burpsPerHour: Int, skillToEngage: String) : Skill() {
     // makes the AI burp n  times per hour at random times
     private var burpsPerHour = 2
     private val trgMinute: TrgMinute = TrgMinute(0)

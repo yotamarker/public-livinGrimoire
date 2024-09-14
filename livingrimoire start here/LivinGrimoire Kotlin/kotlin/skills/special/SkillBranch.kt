@@ -2,11 +2,11 @@ package skills.special
 
 import auxiliary_modules.*
 import livinGrimoire.AbsDictionaryDB
-import livinGrimoire.DiSkillV2
+import livinGrimoire.Skill
 import livinGrimoire.Kokoro
 import java.util.*
 
-class SkillBranch(tolerance: Int) : DiSkillV2() {
+class SkillBranch(tolerance: Int) : Skill() {
     // unique skill used to bind similar skills
     /*
     * contains collection of skills
@@ -41,11 +41,11 @@ class SkillBranch(tolerance: Int) : DiSkillV2() {
         ml.pendAlg()
     }
 
-    fun addSkill(skill: DiSkillV2) {
+    fun addSkill(skill: Skill) {
         skillHub.addSkill(skill)
     }
 
-    fun addReferencedSkill(skill: DiSkillV2, conjuration: String) {
+    fun addReferencedSkill(skill: Skill, conjuration: String) {
         // the conjuration string will engage it's respective skill
         skillHub.addSkill(skill)
         skillRef[conjuration] = skillHub.size

@@ -3,7 +3,7 @@ package auxiliary_modules
 import livinGrimoire.*
 import java.util.*
 
-class SkillHubAlgDispenser(vararg skillsParams: DiSkillV2) {
+class SkillHubAlgDispenser(vararg skillsParams: Skill) {
     //     super class to output an algorithm out of a selection of skills
     //      engage the hub with dispenseAlg and return the value to outAlg attribute
     //      of the containing skill (which houses the skill hub)
@@ -13,7 +13,7 @@ class SkillHubAlgDispenser(vararg skillsParams: DiSkillV2) {
     //       (rndAlg , cycleAlg)
     //       moods can be used for specific cases to change behavior of the AGI, for example low energy state
     //       for that use (moodAlg)
-    private val skills: ArrayList<DiSkillV2> = ArrayList<DiSkillV2>()
+    private val skills: ArrayList<Skill> = ArrayList<Skill>()
     private var activeSkill = 0
     private val tempN: Neuron = Neuron()
     private val rand = Random()
@@ -33,7 +33,7 @@ class SkillHubAlgDispenser(vararg skillsParams: DiSkillV2) {
         }
     }
 
-    fun addSkill(skill: DiSkillV2): SkillHubAlgDispenser {
+    fun addSkill(skill: Skill): SkillHubAlgDispenser {
         // builder pattern
         skill.kokoro = kokoro
         skills.add(skill)

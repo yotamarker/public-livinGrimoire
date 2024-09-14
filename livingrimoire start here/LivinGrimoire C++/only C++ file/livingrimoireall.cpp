@@ -102,12 +102,12 @@ private:
 class Algorithm
 {
 public:
-	Algorithm(vector<Mutable*>& algParts);
+    Algorithm(vector<shared_ptr<Mutable>>& algParts);
 
-	vector<Mutable*>& getAlgParts();
-	int getSize();
+    vector<shared_ptr<Mutable>>& getAlgParts();
+    int getSize();
 private:
-	vector<Mutable*> algParts;
+    vector<shared_ptr<Mutable>> algParts;
 };
 
 class CldBool {
@@ -195,11 +195,11 @@ protected:
     void setVerbatimAlg(int priority, initializer_list<string> sayThis);
     void setSimpleAlg(initializer_list<string> sayThis);
     void setVerbatimAlgFromList(int priority, vector<string> sayThis);
-    void algPartsFusion(int priority, initializer_list<Mutable*> algParts);
+    void algPartsFusion(int priority, initializer_list<shared_ptr<Mutable>> algParts);
 
     // alg part based algorithm building methods
     // var args param
-    void algBuilder(initializer_list<Mutable*> algParts);
+    void algBuilder(initializer_list<shared_ptr<Mutable>> algParts);
 
     // string based algorithm building methods
     void simpleVerbatimAlgorithm(initializer_list<string> sayThis);
@@ -209,11 +209,10 @@ protected:
 
     Kokoro* kokoro; // consciousness, shallow ref class to enable interskill communications
     shared_ptr<Algorithm> outAlg; // skills output
-    unique_ptr<Mutable> lpApVerb;
+    shared_ptr<Mutable> lpApVerb;
     int outpAlgPriority; // defcon 1->5
 private:
 };
-
 // logical skill for testing
 class DiHelloWorld : public DiSkillV2
 {
@@ -411,14 +410,14 @@ void GrimoireMemento::simpleSave(const string& key, const string& value)
 }
 
 //Algorithm
-Algorithm::Algorithm(vector<Mutable*>& vecAlgParts)
+Algorithm::Algorithm(vector<shared_ptr<Mutable>>& vecAlgParts)
 {
-	algParts.insert(algParts.begin(), vecAlgParts.begin(), vecAlgParts.end());
+    algParts.insert(algParts.begin(), vecAlgParts.begin(), vecAlgParts.end());
 }
 
-vector<Mutable*>& Algorithm::getAlgParts()
+vector<shared_ptr<Mutable>>& Algorithm::getAlgParts()
 {
-	return algParts;
+    return algParts;
 }
 
 int Algorithm::getSize()
@@ -556,7 +555,7 @@ void DiSkillV2::setVerbatimAlgFromList(int priority, vector<string> sayThis)
     outpAlgPriority = priority; // 1->5 1 is the highest algorithm priority
 }
 
-void DiSkillV2::algPartsFusion(int priority, initializer_list<Mutable*> algParts)
+void DiSkillV2::algPartsFusion(int priority, initializer_list<shared_ptr<Mutable>> algParts)
 {
     // build a custom algorithm out of a chain of algorithm parts(actions)
     algBuilder(algParts);
@@ -573,17 +572,17 @@ void DiSkillV2::output(Neuron* neuron)
     }
 }
 
-void DiSkillV2::setKokoro(Kokoro* kokoro)
+void DiSkillV2::setKokoro(Kokoro* lpKokoro)
 {
     // use this for telepathic communication between different chobits objects
-    kokoro = kokoro;
+    kokoro = lpKokoro;
 }
 
-void DiSkillV2::algBuilder(initializer_list<Mutable*> algParts)
+void DiSkillV2::algBuilder(initializer_list<shared_ptr<Mutable>> algParts)
 {
     // returns an algorithm built with the algPart varargs
-    vector<Mutable*> algParts1;
-    for (auto algPart : algParts) {
+    vector<shared_ptr<Mutable>> algParts1;
+    for (shared_ptr<Mutable> algPart : algParts) {
         algParts1.push_back(algPart);
     }
     outAlg = make_shared<Algorithm>(algParts1);
@@ -592,22 +591,22 @@ void DiSkillV2::algBuilder(initializer_list<Mutable*> algParts)
 void DiSkillV2::simpleVerbatimAlgorithm(initializer_list<string> sayThis)
 {
     // returns an algorithm that says the sayThis Strings verbatim per think cycle
-    lpApVerb = make_unique<APVerbatim>(sayThis);
-    algBuilder({ lpApVerb.get() });
+    lpApVerb = make_shared<APVerbatim>(sayThis);
+    algBuilder({ lpApVerb });
 }
 
 void DiSkillV2::simpleVerbatimAlgorithm(vector<string>& sayThis)
 {
     // returns an algorithm that says the sayThis Strings verbatim per think cycle
-    lpApVerb = make_unique<APVerbatim>(sayThis);
-    algBuilder({ lpApVerb.get() });
+    lpApVerb = make_shared<APVerbatim>(sayThis);
+    algBuilder({ lpApVerb });
 }
 
 void DiSkillV2::simpleCloudiandVerbatimAlgorithm(CldBool* cldBool, initializer_list<string> sayThis)
 {
     // returns an algorithm that says the sayThis Strings verbatim per think cycle
-    lpApVerb = make_unique<APCldVerbatim>(cldBool, sayThis);
-    algBuilder({ lpApVerb.get() });
+    lpApVerb = make_shared<APCldVerbatim>(cldBool, sayThis);
+    algBuilder({ lpApVerb });
 }
 
 void DiSysOut::input(const string& ear, const string& skin, const string& eye)
@@ -674,7 +673,8 @@ string Cerabellum::act(const string& ear, const string& skin, const string& eye)
         return axnStr;
     }
     if (at < fin) {
-        axnStr = alg->getAlgParts().at(at)->action(ear, skin, eye);
+        shared_ptr<Mutable> mut = alg->getAlgParts().at(at);
+        axnStr = mut->action(ear, skin, eye);
         emot = alg->getAlgParts().at(at)->myName();
         if (alg->getAlgParts().at(at)->completed()) {
             incrementAt = true;
@@ -769,16 +769,15 @@ void Chobits::addSkills(initializer_list<DiSkillV2*> skills)
     }
 }
 
-void Chobits::removeSkill(DiSkillV2* skill) {
+void Chobits::removeSkill(DiSkillV2* skill)
+{
     if (skill != nullptr) {
         auto it = find(dClasses.begin(), dClasses.end(), skill);
-        if (it != dClasses.end()) {
-            delete *it;
-            dClasses.erase(it);
-        }
+        if (it != dClasses.end())
+            delete* it;
+        dClasses.erase(it);
     }
 }
-
 
 bool Chobits::containsSkill(DiSkillV2* skill)
 {
@@ -883,4 +882,19 @@ void Brain::addLogicalSkill(DiSkillV2* skill)
 void Brain::addHardwareSkill(DiSkillV2* skill)
 {
     hardwareChobit->addSkill(skill);
+}
+
+//**Main**//
+
+int main()
+{
+    Brain b1;
+    b1.addLogicalSkill(new DiHelloWorld());
+    b1.addLogicalSkill(new DiHelloWorld());
+    b1.addHardwareSkill(new DiSysOut());
+    b1.doIt("hello", "", "");
+    b1.getLogicChobit()->clearSkills();
+    b1.addLogicalSkill(new DiHelloWorld());
+    b1.doIt("", "", "");
+    b1.doIt("hello", "", "");
 }

@@ -9,7 +9,11 @@
 int main()
 {
     Brain b1;
-    b1.addLogicalSkill(new DiHelloWorld());
-    b1.addHardwareSkill(new DiSysOut());
+    unique_ptr< DiHelloWorld> dihello = make_unique< DiHelloWorld>();
+    unique_ptr< DiSysOut> disys = make_unique< DiSysOut>();
+
+    b1.addLogicalSkill(dihello.get());
+    b1.addHardwareSkill(disys.get());
     b1.doIt( "hello", "", "" );
+    //std::cout << "Hello World!\n";
 }

@@ -769,15 +769,16 @@ void Chobits::addSkills(initializer_list<DiSkillV2*> skills)
     }
 }
 
-void Chobits::removeSkill(DiSkillV2* skill)
-{
+void Chobits::removeSkill(DiSkillV2* skill) {
     if (skill != nullptr) {
         auto it = find(dClasses.begin(), dClasses.end(), skill);
-        if (it != dClasses.end())
-            delete* it;
-        dClasses.erase(it);
+        if (it != dClasses.end()) {
+            delete *it;
+            dClasses.erase(it);
+        }
     }
 }
+
 
 bool Chobits::containsSkill(DiSkillV2* skill)
 {

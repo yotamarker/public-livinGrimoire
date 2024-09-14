@@ -3,9 +3,9 @@ package Skills.logical;
 
 import Auxiliary_Modules.AXContextCmd;
 import Auxiliary_Modules.Magic8Ball;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 
-public class DiMagic8Ball extends DiSkillV2 {
+public class DiMagic8Ball extends Skill {
     public Magic8Ball magic8Ball = new Magic8Ball();
     // skill toggle params:
     public AXContextCmd skillToggler = new AXContextCmd();

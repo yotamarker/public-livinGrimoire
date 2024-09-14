@@ -3,10 +3,10 @@ package Skills.logical;
 
 import Auxiliary_Modules.RegexUtil;
 import Auxiliary_Modules.Responder;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 
 
-public class DiMemoryGame extends DiSkillV2 {
+public class DiMemoryGame extends Skill {
     int score = 0;
     Boolean gameOn = false;
     String gameStr = "";

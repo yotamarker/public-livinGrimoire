@@ -1,9 +1,9 @@
 package Skills.logical;
 
 import Auxiliary_Modules.PercentDripper;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 
-public class DiOneWorder extends DiSkillV2 {
+public class DiOneWorder extends Skill {
     private String cry = "chi ";
     private String toggler = "chi";
     private PercentDripper drip = new PercentDripper();

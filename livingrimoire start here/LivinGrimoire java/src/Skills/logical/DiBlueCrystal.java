@@ -3,12 +3,12 @@ package Skills.logical;
 import Auxiliary_Modules.AXCmdBreaker;
 import Auxiliary_Modules.AXContextCmd;
 import Auxiliary_Modules.DrawRnd;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
-public class DiBlueCrystal extends DiSkillV2 {
+public class DiBlueCrystal extends Skill {
     // language learning game skill
     private ArrayList<HashMap<String, String>> categories = new ArrayList<>();
     private DrawRnd quiz = new DrawRnd();

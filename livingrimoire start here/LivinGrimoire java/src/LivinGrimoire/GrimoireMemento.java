@@ -1,7 +1,5 @@
 package LivinGrimoire;
 
-import java.util.Hashtable;
-
 public class GrimoireMemento {
     private AbsDictionaryDB absDictionaryDB;
 

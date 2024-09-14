@@ -4,9 +4,9 @@ import Auxiliary_Modules.OnOffSwitch;
 import Auxiliary_Modules.PercentDripper;
 import Auxiliary_Modules.RegexUtil;
 import Auxiliary_Modules.Responder;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 
-public class DiHoneyBunny extends DiSkillV2 {
+public class DiHoneyBunny extends Skill {
     private RegexUtil regexUtil = new RegexUtil();
     public OnOffSwitch onOffSwitch = new OnOffSwitch();
     private String user = "user";

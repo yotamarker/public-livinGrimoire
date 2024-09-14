@@ -5,11 +5,11 @@ import Auxiliary_Modules.DrawRndDigits;
 import Auxiliary_Modules.Prompt;
 import Auxiliary_Modules.Responder;
 import LivinGrimoire.APVerbatim;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 
 import java.util.ArrayList;
 
-public class DiYandere extends DiSkillV2 {
+public class DiYandere extends Skill {
     private Boolean yandereMode = false;
     private final Responder okYandere = new Responder();
     private final Responder sadYandere = new Responder();

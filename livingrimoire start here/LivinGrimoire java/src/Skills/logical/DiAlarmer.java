@@ -3,9 +3,9 @@ package Skills.logical;
 import Auxiliary_Modules.Cron;
 import Auxiliary_Modules.RegexUtil;
 import Auxiliary_Modules.Responder;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 
-public class DiAlarmer extends DiSkillV2 {
+public class DiAlarmer extends Skill {
     private Responder off = new Responder("alarm off","cancel alarm");
     private RegexUtil regexUtil = new RegexUtil();
     private Cron cron = new Cron("", 3,3);

@@ -2,11 +2,11 @@ package Skills.logical;
 
 import Auxiliary_Modules.Responder;
 import LivinGrimoire.Chobits;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 
 import java.util.ArrayList;
 
-public class DiAware extends DiSkillV2 {
+public class DiAware extends Skill {
     private Chobits chobit;
     private String name;
     private String summoner = "user";

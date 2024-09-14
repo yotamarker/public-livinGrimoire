@@ -2,11 +2,11 @@ package Skills.special_skills;
 
 import Auxiliary_Modules.AXSkillBundle;
 import Auxiliary_Modules.AlgorithmV2;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 import LivinGrimoire.Kokoro;
 
-public class DiSkillBundle extends DiSkillV2 {
-    private final AXSkillBundle axSkillBundle = new AXSkillBundle();
+public class DiSkillBundle extends Skill {
+    protected final AXSkillBundle axSkillBundle = new AXSkillBundle();
     @Override
     public void input(String ear, String skin, String eye) {
         AlgorithmV2 a1 = axSkillBundle.dispenseAlgorithm(ear, skin, eye);
@@ -20,7 +20,7 @@ public class DiSkillBundle extends DiSkillV2 {
         super.setKokoro(kokoro);
         axSkillBundle.setKokoro(kokoro);
     }
-    public void addSkill(DiSkillV2 skill){
+    public void addSkill(Skill skill){
         axSkillBundle.addSkill(skill);
     }
 }

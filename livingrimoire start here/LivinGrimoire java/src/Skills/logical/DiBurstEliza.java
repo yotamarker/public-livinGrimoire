@@ -4,10 +4,10 @@ package Skills.logical;
 import Auxiliary_Modules.Eliza;
 import Auxiliary_Modules.Responder;
 import Auxiliary_Modules.TimeGate;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 
 
-public class DiBurstEliza extends DiSkillV2 {
+public class DiBurstEliza extends Skill {
     private Eliza eliza = new Eliza();
     private String trig = "listen";
     private Responder off = new Responder("chill","shut up");

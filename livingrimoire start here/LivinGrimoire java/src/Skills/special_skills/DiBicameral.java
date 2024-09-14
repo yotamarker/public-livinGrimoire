@@ -1,10 +1,10 @@
 package Skills.special_skills;
 
 import Auxiliary_Modules.TimedMessages;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 import LivinGrimoire.Kokoro;
 
-public class DiBicameral extends DiSkillV2 {
+public class DiBicameral extends Skill {
     /*
     *   DiBicameral bicameral = new DiBicameral();
         bicameral.msgCol.addMSGV2("02:57","test run ok");

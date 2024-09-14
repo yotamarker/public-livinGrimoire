@@ -1,9 +1,5 @@
 package LivinGrimoire;
 
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-
 public class Fusion {
     private String emot = "";
     private String result = "";

@@ -2,10 +2,10 @@ package Skills.logical;
 
 
 import Auxiliary_Modules.*;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 
 
-public class DiSneezer extends DiSkillV2 {
+public class DiSneezer extends Skill {
     // the skill simulates sneezing as a result of cold temperature
     private int sneezeLim = 2;
     private TrgMinute trgMinute = new TrgMinute(0);
@@ -41,7 +41,7 @@ public class DiSneezer extends DiSkillV2 {
         int nowMinutes = pl.getMinutesAsInt();
         if(burpMinutes.contains(nowMinutes)){
             burpMinutes.removeItem(nowMinutes);
-            this.outAlg = this.diSkillUtils.simpleVerbatimAlgorithm("petv3",responder1.getAResponse());
+            this.outAlg = simpleVerbatimAlgorithm("petv3",responder1.getAResponse());
             return;
         }
     }

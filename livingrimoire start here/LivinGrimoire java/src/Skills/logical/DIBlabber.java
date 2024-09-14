@@ -1,9 +1,9 @@
 package Skills.logical;
 
 import Auxiliary_Modules.*;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 
-public class DIBlabber extends DiSkillV2 {
+public class DIBlabber extends Skill {
     private Boolean isActive = true; // skill toggle
     public AXContextCmd skillToggler = new AXContextCmd();
     // chat mode select

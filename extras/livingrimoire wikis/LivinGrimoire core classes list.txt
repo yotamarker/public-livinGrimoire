@@ -4,16 +4,13 @@
 4. APVerbatim:Mutatable
 5. GrimoireMemento
 6. Algorithm
-7. CldBool
-8. APCldVerbatim:APVerbatim
-9. Kokoro
-10. Neuron
-11. DiSkillUtils
-12. DiSkillV2
-13. DiHelloWorld:DiSkillV2 // logical skill for testing
-14. Cerabellum
-15. Fusion
-16. Thinkable 
-17. Chobits:Thinkable
-18. Brain
-19. DiSysOut // hardware skill for testing
+7. Kokoro
+8. Neuron
+9. DiSkillV2
+10. DiHelloWorld:DiSkillV2 // logical skill for testing
+11. Cerabellum
+12. Fusion
+13. Thinkable 
+14. Chobits:Thinkable
+15. Brain
+16. DiSysOut // hardware skill for testing

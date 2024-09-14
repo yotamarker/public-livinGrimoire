@@ -1,17 +1,17 @@
 package Skills.special_skills;
 
 import Auxiliary_Modules.AXGamification;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 import LivinGrimoire.Kokoro;
 import LivinGrimoire.Neuron;
 
-public class GamiPlus extends DiSkillV2 {
+public class GamiPlus extends Skill {
     // the grind side of the game, see GamificationN for the reward side
     private final int gain;
-    private final DiSkillV2 skill;
+    private final Skill skill;
     private final AXGamification axGamification;
 
-    public GamiPlus(DiSkillV2 skill,AXGamification axGamification, int gain) {
+    public GamiPlus(Skill skill,AXGamification axGamification, int gain) {
         this.skill = skill;
         this.axGamification = axGamification;
         this.gain = gain;

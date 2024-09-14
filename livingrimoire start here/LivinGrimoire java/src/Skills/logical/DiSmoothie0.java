@@ -2,9 +2,9 @@ package Skills.logical;
 
 import Auxiliary_Modules.AXContextCmd;
 import Auxiliary_Modules.DrawRnd;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 
-public class DiSmoothie0 extends DiSkillV2 {
+public class DiSmoothie0 extends Skill {
     private DrawRnd draw = new DrawRnd("grapefruits", "oranges",  "apples", "peaches", "melons", "pears", "carrot");
     private AXContextCmd cmd = new AXContextCmd();
 

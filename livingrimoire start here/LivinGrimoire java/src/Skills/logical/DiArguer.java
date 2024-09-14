@@ -2,9 +2,9 @@ package Skills.logical;
 
 import Auxiliary_Modules.Responder;
 import Auxiliary_Modules.TrgArgue;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 
-public class DiArguer extends DiSkillV2 {
+public class DiArguer extends Skill {
     private TrgArgue argue = new TrgArgue();
     private Responder r1 = new Responder(); // replies against argument
     private Responder r2 = new Responder(); // replies for insistence

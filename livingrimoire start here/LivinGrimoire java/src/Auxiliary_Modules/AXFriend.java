@@ -1,13 +1,13 @@
 package Auxiliary_Modules;
 
 import LivinGrimoire.Algorithm;
-import LivinGrimoire.DISkillUtils;
+import LivinGrimoire.Skill;
 
 public class AXFriend {
     private String myName = "chi"; // default name
     private String friend_name = "null";
     private Boolean needsFriend = true;
-    private DISkillUtils diSkillUtils = new DISkillUtils();
+    private Skill diSkillUtils = new Skill();
     private TrgTolerance active = new TrgTolerance(10);
     private Boolean friendIsActive = false;
 

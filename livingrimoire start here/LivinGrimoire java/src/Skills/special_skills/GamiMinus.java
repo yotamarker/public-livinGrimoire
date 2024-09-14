@@ -1,16 +1,16 @@
 package Skills.special_skills;
 
 import Auxiliary_Modules.AXGamification;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 import LivinGrimoire.Kokoro;
 import LivinGrimoire.Neuron;
 
-public class GamiMinus extends DiSkillV2 {
+public class GamiMinus extends Skill {
     private final AXGamification axGamification;
     private final int cost;
-    private final DiSkillV2 skill;
+    private final Skill skill;
 
-    public GamiMinus(DiSkillV2 skill, AXGamification axGamification, int cost) {
+    public GamiMinus(Skill skill, AXGamification axGamification, int cost) {
         this.skill = skill;
         this.axGamification = axGamification;
         this.cost = cost;

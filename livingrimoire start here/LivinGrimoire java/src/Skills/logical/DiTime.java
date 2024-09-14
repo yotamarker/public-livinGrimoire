@@ -1,11 +1,11 @@
 package Skills.logical;
 
 import Auxiliary_Modules.TimeUtils;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 
 import java.util.Objects;
 
-public class DiTime extends DiSkillV2 {
+public class DiTime extends Skill {
     private final TimeUtils pl = new TimeUtils();
 
     @Override

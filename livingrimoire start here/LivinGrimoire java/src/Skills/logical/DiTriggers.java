@@ -2,10 +2,9 @@ package Skills.logical;
 
 import Auxiliary_Modules.UniqueItemsPriorityQue;
 import LivinGrimoire.Brain;
-import LivinGrimoire.Chobits;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 
-public class DiTriggers extends DiSkillV2 {
+public class DiTriggers extends Skill {
     private final UniqueItemsPriorityQue triggers = new UniqueItemsPriorityQue();
     private boolean isRecording = false;
     private final Brain brain;

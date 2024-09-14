@@ -4,9 +4,9 @@ import Auxiliary_Modules.DrawRndDigits;
 import Auxiliary_Modules.LGFIFO;
 import Auxiliary_Modules.TimeUtils;
 import Auxiliary_Modules.TrgMinute;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 
-public class DiEngager extends DiSkillV2 {
+public class DiEngager extends Skill {
     // makes the AI burp n  times per hour at random times
     private int burpsPerHour = 2;
     private TrgMinute trgMinute = new TrgMinute(0);

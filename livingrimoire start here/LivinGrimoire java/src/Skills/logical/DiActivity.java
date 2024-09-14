@@ -2,11 +2,11 @@ package Skills.logical;
 
 import Auxiliary_Modules.DrawRnd;
 import Auxiliary_Modules.Responder;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 
 import java.util.ArrayList;
 
-public class DiActivity extends DiSkillV2 {
+public class DiActivity extends Skill {
     /* for multistep activities
     uses step machine code algorithm to
     step between sub activities of activity

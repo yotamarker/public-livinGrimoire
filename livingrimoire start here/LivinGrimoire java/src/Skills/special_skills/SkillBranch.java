@@ -3,12 +3,12 @@ package Skills.special_skills;
 import Auxiliary_Modules.AXLearnability;
 import Auxiliary_Modules.AlgorithmV2;
 import Auxiliary_Modules.SkillHubAlgDispenser;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 import LivinGrimoire.Kokoro;
 
 import java.util.Hashtable;
 
-public class SkillBranch extends DiSkillV2 {
+public class SkillBranch extends Skill {
     // unique skill used to bind similar skills
     /*
     * contains collection of skills
@@ -44,10 +44,10 @@ public class SkillBranch extends DiSkillV2 {
         this.outpAlgPriority = a1.getPriority();
         ml.pendAlg();
     }
-    public void addSkill(DiSkillV2 skill){
+    public void addSkill(Skill skill){
         skillHub.addSkill(skill);
     }
-    public void addReferencedSkill(DiSkillV2 skill, String conjuration){
+    public void addReferencedSkill(Skill skill, String conjuration){
         // the conjuration string will engage it's respective skill
         skillHub.addSkill(skill);
         skillRef.put(conjuration, skillHub.getSize());

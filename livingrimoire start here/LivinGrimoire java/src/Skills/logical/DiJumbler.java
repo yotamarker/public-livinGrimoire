@@ -1,13 +1,13 @@
 package Skills.logical;
 
 import Auxiliary_Modules.AXCmdBreaker;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class DiJumbler extends DiSkillV2 {
+public class DiJumbler extends Skill {
     private AXCmdBreaker cmdBreaker = new AXCmdBreaker("jumble");
     private String temp = "";
     @Override

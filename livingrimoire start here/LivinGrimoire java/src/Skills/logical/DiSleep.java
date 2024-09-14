@@ -3,13 +3,9 @@ package Skills.logical;
 import Auxiliary_Modules.Responder;
 import Auxiliary_Modules.TrgTime;
 import LivinGrimoire.APVerbatim;
-import LivinGrimoire.DiSkillV2;
-import LivinGrimoire.Mutatable;
+import LivinGrimoire.Skill;
 
-import java.util.ArrayList;
-import java.util.Objects;
-
-public class DiSleep extends DiSkillV2 {
+public class DiSleep extends Skill {
     private final int sleep_duration_minutes;
     private final Responder wakeners;
     private final TrgTime trgTime = new TrgTime();

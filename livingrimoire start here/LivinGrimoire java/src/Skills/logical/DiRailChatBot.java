@@ -4,9 +4,9 @@ import Auxiliary_Modules.AXCmdBreaker;
 import Auxiliary_Modules.Eliza;
 import Auxiliary_Modules.RailChatBot;
 import Auxiliary_Modules.UniqueItemSizeLimitedPriorityQueue;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 
-public class DiRailChatBot extends DiSkillV2 {
+public class DiRailChatBot extends Skill {
     private RailChatBot rcb = new RailChatBot();
     private AXCmdBreaker dialog = new AXCmdBreaker("babe");
     private UniqueItemSizeLimitedPriorityQueue filter = new UniqueItemSizeLimitedPriorityQueue();

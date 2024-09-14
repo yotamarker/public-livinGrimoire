@@ -2,16 +2,16 @@ package Skills.special_skills;
 
 import Auxiliary_Modules.AXCmdBreaker;
 import LivinGrimoire.Chobits;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 
 import java.util.Hashtable;
 
-public class TheShell extends DiSkillV2 {
+public class TheShell extends Skill {
     public Chobits shellChobit = new Chobits();
     protected Chobits logicChobit;
     protected Chobits hardwareChobit;
-    protected Hashtable<String,DiSkillV2> logicSkills = new Hashtable<>(); // all logic skills
-    protected Hashtable<String,DiSkillV2> hardwareSkills = new Hashtable<>(); // all hardware skills
+    protected Hashtable<String,Skill> logicSkills = new Hashtable<>(); // all logic skills
+    protected Hashtable<String,Skill> hardwareSkills = new Hashtable<>(); // all hardware skills
     protected AXCmdBreaker installer = new AXCmdBreaker("install");
     protected AXCmdBreaker uninstaller = new AXCmdBreaker("abolish");
     protected String temp = "";
@@ -22,10 +22,10 @@ public class TheShell extends DiSkillV2 {
         shellChobit.addSkill(this);
     }
 
-    public void addLogicSkill(String skillName, DiSkillV2 skill){
+    public void addLogicSkill(String skillName, Skill skill){
         logicSkills.put(skillName,skill);
     }
-    public void addHardwareSkill(String skillName, DiSkillV2 skill){
+    public void addHardwareSkill(String skillName, Skill skill){
         hardwareSkills.put(skillName,skill);
     }
     // shell methods
@@ -35,14 +35,14 @@ public class TheShell extends DiSkillV2 {
         }
         // find the skill:
         if(logicSkills.containsKey(skillKey)){
-            DiSkillV2 ref = logicSkills.get(skillKey);
+            Skill ref = logicSkills.get(skillKey);
             if(logicChobit.containsSkill(ref)){
                 return 1; // logic skill already installed
             }
             logicChobit.addSkill(ref);
             return 2; // logic skill has been installed
         }
-        DiSkillV2 ref = hardwareSkills.get(skillKey);
+        Skill ref = hardwareSkills.get(skillKey);
         if(hardwareChobit.containsSkill(ref)){
             return 3; // hardware skill already installed
         }
@@ -54,14 +54,14 @@ public class TheShell extends DiSkillV2 {
             return 0; // skill does not exist
         }
         if(logicSkills.containsKey(skillKey)){
-            DiSkillV2 ref = logicSkills.get(skillKey);
+            Skill ref = logicSkills.get(skillKey);
             if(logicChobit.containsSkill(ref)){
                 logicChobit.removeSkill(ref);
                 return 1; // logic skill has been uninstalled
             }
             return 2; // logic skill is not installed
         }
-        DiSkillV2 ref = hardwareSkills.get(skillKey);
+        Skill ref = hardwareSkills.get(skillKey);
         if(hardwareChobit.containsSkill(ref)){
             hardwareChobit.removeSkill(ref);
             return 3; // hardware skill has been uninstalled

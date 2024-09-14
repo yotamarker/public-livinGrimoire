@@ -1,15 +1,15 @@
 package Skills.special_skills;
 
 import LivinGrimoire.Brain;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 
 public class Sh_Brain extends Brain {
     private TheShell shell = new TheShell(this);
     private String temp = "";
-    public void addLogicSkill(String skillName, DiSkillV2 skill){
+    public void addLogicSkill(String skillName, Skill skill){
         shell.addLogicSkill(skillName, skill);
     }
-    public void addHardwareSkill(String skillName, DiSkillV2 skill){
+    public void addHardwareSkill(String skillName, Skill skill){
         shell.addHardwareSkill(skillName, skill);
     }
 

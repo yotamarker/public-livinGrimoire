@@ -1,9 +1,9 @@
 package Skills.logical;
 
 import Auxiliary_Modules.*;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 
-public class DiBurper extends DiSkillV2 {
+public class DiBurper extends Skill {
     // makes the AI burp n  times per hour at random times
     private int burpsPerHour = 2;
     private TrgMinute trgMinute = new TrgMinute(0);

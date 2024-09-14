@@ -1,7 +1,7 @@
 package Skills.special_skills;
 
 import Auxiliary_Modules.AXGamification;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 
 public class DiGamificationSkillBundle extends DiSkillBundle{
     private final AXGamification axGamification = new AXGamification();
@@ -15,10 +15,10 @@ public class DiGamificationSkillBundle extends DiSkillBundle{
     public void setCost(int cost) {
         if (cost > 0){this.cost = cost;}
     }
-    public void addGrindSkill(DiSkillV2 skill){
+    public void addGrindSkill(Skill skill){
         axSkillBundle.addSkill(new GamiPlus(skill,axGamification,gain));
     }
-    public void addCostlySkill(DiSkillV2 skill){
+    public void addCostlySkill(Skill skill){
         axSkillBundle.addSkill(new GamiMinus(skill,axGamification,cost));
     }
 

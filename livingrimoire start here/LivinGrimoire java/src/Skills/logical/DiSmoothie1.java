@@ -3,9 +3,9 @@ package Skills.logical;
 import Auxiliary_Modules.AXContextCmd;
 import Auxiliary_Modules.DrawRnd;
 import Auxiliary_Modules.Responder;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 
-public class DiSmoothie1 extends DiSkillV2 {
+public class DiSmoothie1 extends Skill {
     private Responder base = new Responder("grapefruits", "oranges",  "apples", "peaches", "melons", "pears", "carrot");
     private DrawRnd thickeners = new DrawRnd("bananas", "mango", "strawberry", "pineapple", "dates");
     private AXContextCmd cmd = new AXContextCmd();

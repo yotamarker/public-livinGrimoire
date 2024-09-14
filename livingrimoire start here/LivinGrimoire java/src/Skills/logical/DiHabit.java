@@ -1,13 +1,11 @@
 package Skills.logical;
 
 import Auxiliary_Modules.*;
-import LivinGrimoire.APVerbatim;
-import LivinGrimoire.DISkillUtils;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 
 import java.util.ArrayList;
 
-public class DiHabit extends DiSkillV2 {
+public class DiHabit extends Skill {
     /*1 *habit*
 
 set: i should x
@@ -198,22 +196,22 @@ and used to "unlock" skills.
         }
         // engagers
         if(ear.contains("completed")){
-            if (!(diSkillUtils.strContainsList(ear,habitsPositive.getAsList()).isEmpty())){
+            if (!(strContainsList(ear,habitsPositive.getAsList()).isEmpty())){
                 gamification.increment();
                 setVerbatimAlg(4,"good boy");
                 return;
             }
-            if (!(diSkillUtils.strContainsList(ear,habitsNegative.getAsList()).isEmpty())){
+            if (!(strContainsList(ear,habitsNegative.getAsList()).isEmpty())){
                 punishments.increment();
                 setVerbatimAlg(4,"bad boy");
                 return;
             }
-            if (!(diSkillUtils.strContainsList(ear,dailies.getAsList()).isEmpty())){
+            if (!(strContainsList(ear,dailies.getAsList()).isEmpty())){
                 gamification.increment();
                 setVerbatimAlg(4,"daily engaged");
                 return;
             }
-            if (!(diSkillUtils.strContainsList(ear,weekends.getAsList()).isEmpty())){
+            if (!(strContainsList(ear,weekends.getAsList()).isEmpty())){
                 setVerbatimAlg(4,"prep engaged");
                 return;
             }

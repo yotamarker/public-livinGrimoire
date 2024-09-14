@@ -1,9 +1,9 @@
 package Skills.logical;
 
 import Auxiliary_Modules.AXCmdBreaker;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 
-public class DiSayer extends DiSkillV2 {
+public class DiSayer extends Skill {
     private AXCmdBreaker cmdBreaker = new AXCmdBreaker("say");
     private String command = "";
     @Override

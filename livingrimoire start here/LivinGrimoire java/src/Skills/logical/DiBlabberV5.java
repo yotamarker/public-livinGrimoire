@@ -1,11 +1,11 @@
 package Skills.logical;
 
 import Auxiliary_Modules.*;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 
 import java.util.ArrayList;
 
-public class DiBlabberV5 extends DiSkillV2 {
+public class DiBlabberV5 extends Skill {
     private AXNPC2 npc;
     private String tempStr = "";
     private OnOffSwitch autoTalk = new OnOffSwitch();

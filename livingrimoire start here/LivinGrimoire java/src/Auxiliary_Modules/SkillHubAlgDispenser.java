@@ -15,13 +15,13 @@ public class SkillHubAlgDispenser {
 //       (rndAlg , cycleAlg)
 //       moods can be used for specific cases to change behavior of the AGI, for example low energy state
 //       for that use (moodAlg)
-    private final ArrayList<DiSkillV2> skills = new ArrayList<DiSkillV2>();
+    private final ArrayList<Skill> skills = new ArrayList<Skill>();
     private int activeSkill = 0;
     private final Neuron tempN = new Neuron();;
     private final Random rand = new Random();
     private Kokoro kokoro = new Kokoro(new AbsDictionaryDB());
-    public SkillHubAlgDispenser(DiSkillV2...skillsParams) {
-        for (DiSkillV2 skill : skillsParams)
+    public SkillHubAlgDispenser(Skill...skillsParams) {
+        for (Skill skill : skillsParams)
         {
             skill.setKokoro(this.kokoro);
             skills.add(skill);
@@ -29,11 +29,11 @@ public class SkillHubAlgDispenser {
     }
     public void setKokoro(Kokoro kokoro) {
         this.kokoro = kokoro;
-        for (DiSkillV2 skill : skills) {
+        for (Skill skill : skills) {
             skill.setKokoro(this.kokoro);
         }
     }
-    public SkillHubAlgDispenser addSkill(DiSkillV2 skill){
+    public SkillHubAlgDispenser addSkill(Skill skill){
         // builder pattern
         skill.setKokoro(this.kokoro);
         skills.add(skill);

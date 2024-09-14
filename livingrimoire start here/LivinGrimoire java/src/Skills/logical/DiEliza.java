@@ -2,9 +2,9 @@ package Skills.logical;
 
 import Auxiliary_Modules.AXCmdBreaker;
 import Auxiliary_Modules.Eliza;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 
-public class DiEliza extends DiSkillV2 {
+public class DiEliza extends Skill {
     private Eliza eliza = new Eliza();
     private AXCmdBreaker cmdBreaker = new AXCmdBreaker("pal");
     @Override

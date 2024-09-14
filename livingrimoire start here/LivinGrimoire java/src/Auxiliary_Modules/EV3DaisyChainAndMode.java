@@ -1,7 +1,5 @@
 package Auxiliary_Modules;
 
-import LivinGrimoire.DiSkillV2;
-
 import java.util.ArrayList;
 
 public class EV3DaisyChainAndMode extends TrGEV3{

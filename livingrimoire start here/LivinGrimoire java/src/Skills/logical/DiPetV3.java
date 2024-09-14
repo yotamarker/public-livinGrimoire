@@ -2,10 +2,10 @@ package Skills.logical;
 
 
 import Auxiliary_Modules.*;
-import LivinGrimoire.DiSkillV2;
+import LivinGrimoire.Skill;
 
 
-public class DiPetV3 extends DiSkillV2 {
+public class DiPetV3 extends Skill {
     // chirp, learn replies and reply back occasionally.
     private int chirpsLim = 2;
     private TrgMinute trgMinute = new TrgMinute(0);
@@ -45,14 +45,14 @@ public class DiPetV3 extends DiSkillV2 {
         int nowMinutes = pl.getMinutesAsInt();
         if(burpMinutes.contains(nowMinutes)){
             burpMinutes.removeItem(nowMinutes);
-            this.outAlg = this.diSkillUtils.simpleVerbatimAlgorithm("petv3",responder1.getAResponse());
+            this.outAlg = simpleVerbatimAlgorithm("petv3",responder1.getAResponse());
             return;
         }
         // chirp back to input
         if(responder1.contains(ear)){
             int n = chirpMinutes.getSimpleRNDNum(100);
             if (n<35){
-                this.outAlg = this.diSkillUtils.simpleVerbatimAlgorithm("burp_hkn",responder1.getAResponse());
+                this.outAlg = simpleVerbatimAlgorithm("burp_hkn",responder1.getAResponse());
             }
         }
         // listen n learn recent single words

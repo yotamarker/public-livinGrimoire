@@ -29,6 +29,18 @@ namespace lgUtil {
 	}
 }
 
+class AbsDictionaryDB {
+public:
+    inline void save(const string& key, const string& value) {
+        // save to DB (override me)
+    }
+
+    inline string load(const string& key) {
+        // override me
+        return "null";
+    }
+};
+
 class Mutable
 {
 public:
@@ -43,6 +55,59 @@ public:
     }
     
     bool algKillSwitch;
+};
+
+class APSay : public Mutable
+{
+public:
+    APSay(int repetitions, const string& param);
+
+    virtual bool completed();
+    virtual string action(const string& ear, const string& skin, const string& eye);
+
+protected:
+    string param;
+private:
+
+    int at;
+};
+
+class APVerbatim : public Mutable
+{
+public:
+
+    APVerbatim(initializer_list<string> initlist);
+    APVerbatim(vector<string>& list1);
+
+    virtual string action(const string& ear, const string& skin, const string& eye);
+    virtual bool completed();
+private:
+    int at;
+    vector<string> sentences;
+};
+
+class GrimoireMemento
+{
+public:
+    GrimoireMemento(shared_ptr<AbsDictionaryDB>);
+    ~GrimoireMemento() {}
+
+    string simpleLoad(const string& key);
+    void simpleSave(const string& key, const string& value);
+private:
+    shared_ptr<AbsDictionaryDB> absDictionaryDB;
+};
+
+// a step-by-step plan to achieve a goal
+class Algorithm
+{
+public:
+	Algorithm(vector<shared_ptr<Mutable>>& algParts);
+
+	vector<shared_ptr<Mutable>>& getAlgParts();
+	int getSize();
+private:
+	vector<shared_ptr<Mutable>> algParts;
 };
 
 class CldBool {
@@ -63,32 +128,6 @@ private:
     bool modeActive;
 };
 
-
-class AbsDictionaryDB {
-public:
-    inline void save(const string& key, const string& value) {
-        // save to DB (override me)
-    }
-
-    inline string load(const string& key) {
-        // override me
-        return "null";
-    }
-};
-
-// a step-by-step plan to achieve a goal
-class Algorithm
-{
-public:
-	Algorithm(vector<Mutable*>& algParts);
-
-	vector<Mutable*>& getAlgParts();
-	int getSize();
-private:
-	vector<Mutable*> algParts;
-};
-
-
 class APCldVerbatim : public Mutable
 {
 public:
@@ -101,47 +140,6 @@ private:
     vector<string> sentences;
     int at = 0;
     CldBool* cldBool;
-};
-
-class APSay : public Mutable
-{
-public:
-	APSay(int repetitions, const string& param);
-
-	virtual bool completed();
-	virtual string action(const string& ear, const string& skin, const string& eye);
-
-protected:
-	string param;
-private:
-
-	int at;
-};
-
-class APVerbatim : public Mutable
-{
-public:
-	
-	APVerbatim(initializer_list<string> initlist);
-	APVerbatim(vector<string>& list1);
-
-	virtual string action(const string& ear, const string& skin, const string& eye);
-	virtual bool completed();
-private:
-	int at;
-	vector<string> sentences;
-};
-
-class GrimoireMemento
-{
-public:
-	GrimoireMemento(shared_ptr<AbsDictionaryDB>);
-	~GrimoireMemento() {}
-
-	string simpleLoad(const string& key);
-	void simpleSave(const string& key, const string& value);
-private:
-	shared_ptr<AbsDictionaryDB> absDictionaryDB;
 };
 
 class Kokoro {
@@ -160,6 +158,18 @@ public:
 private:
     string emot;
     unique_ptr<GrimoireMemento> grimoireMemento;
+};
+
+class Neuron
+{
+public:
+    Neuron();
+
+    void insertAlg(int priority, const shared_ptr<Algorithm> alg);
+    shared_ptr<Algorithm> getAlg(int defcon);
+
+private:
+    array<queue<shared_ptr<Algorithm>>, 6> defcons;
 };
 
 namespace DISkillUtils
@@ -185,11 +195,11 @@ protected:
     void setVerbatimAlg(int priority, initializer_list<string> sayThis);
     void setSimpleAlg(initializer_list<string> sayThis);
     void setVerbatimAlgFromList(int priority, vector<string> sayThis);
-    void algPartsFusion(int priority, initializer_list<Mutable*> algParts);
+    void algPartsFusion(int priority, initializer_list<shared_ptr<Mutable>> algParts);
 
     // alg part based algorithm building methods
     // var args param
-    void algBuilder(initializer_list<Mutable*> algParts);
+    void algBuilder(initializer_list<shared_ptr<Mutable>> algParts);
 
     // string based algorithm building methods
     void simpleVerbatimAlgorithm(initializer_list<string> sayThis);
@@ -199,7 +209,7 @@ protected:
 
     Kokoro* kokoro; // consciousness, shallow ref class to enable interskill communications
     shared_ptr<Algorithm> outAlg; // skills output
-    unique_ptr<Mutable> lpApVerb;
+    shared_ptr<Mutable> lpApVerb;
     int outpAlgPriority; // defcon 1->5
 private:
 };
@@ -211,24 +221,6 @@ public:
     DiHelloWorld() : DiSkillV2() {}
 
     virtual void input(const string& ear, const string& skin, const string& eye);
-};
-
-class DiSysOut : public DiSkillV2
-{
-public:
-	virtual void input(const string& ear, const string& skin, const string& eye);
-};
-
-class Neuron
-{
-public: 
-	Neuron();
-
-	void insertAlg(int priority, const shared_ptr<Algorithm> alg);
-	shared_ptr<Algorithm> getAlg(int defcon);
-
-private:
-	array<queue<shared_ptr<Algorithm>>, 6> defcons;
 };
 
 class Cerabellum
@@ -282,7 +274,7 @@ class Chobits : public Thinkable
 {
 public:
     Chobits();
-    ~Chobits() {}
+    ~Chobits();
 
     void setDataBase(shared_ptr<AbsDictionaryDB> absDictionaryDB);
     Chobits* addSkill(DiSkillV2* skill);
@@ -325,4 +317,10 @@ private:
     string logicChobitOutput;
     unique_ptr<Chobits> logicChobit;
     unique_ptr<Chobits> hardwareChobit;
+};
+
+class DiSysOut : public DiSkillV2
+{
+public:
+    virtual void input(const string& ear, const string& skin, const string& eye);
 };

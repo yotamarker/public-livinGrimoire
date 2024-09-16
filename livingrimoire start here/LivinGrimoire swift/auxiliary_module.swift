@@ -841,13 +841,13 @@ class SkillHubAlgDispenser {
     // Moods can be used for specific cases to change behavior of the AGI, for example low energy state
     // For that use (moodAlg)
    
-    private var skills: [DiSkillV2] = []
+    private var skills: [Skill] = []
     private var activeSkill: Int = 0
     private let tempN = Neuron()
     private let rand = Int.random(in: 0..<Int.max)
     private var kokoro = Kokoro(absDictionaryDB: AbsDictionaryDB())
    
-    init(skillsParams: DiSkillV2...) {
+    init(skillsParams: Skill...) {
         for skill in skillsParams {
             skill.setKokoro(kokoro: kokoro)
             skills.append(skill)
@@ -862,7 +862,7 @@ class SkillHubAlgDispenser {
     }
    
     @discardableResult
-    func addSkill(_ skill: DiSkillV2) -> SkillHubAlgDispenser {
+    func addSkill(_ skill: Skill) -> SkillHubAlgDispenser {
         // Builder pattern
         skill.setKokoro(kokoro: kokoro)
         skills.append(skill)
@@ -3305,7 +3305,7 @@ class AlgorithmV2 {
     }
 }
 class AXSkillBundle {
-    private var skills: [DiSkillV2] = []
+    private var skills: [Skill] = []
     private let tempN = Neuron()
     private var kokoro = Kokoro(absDictionaryDB: AbsDictionaryDB())
 
@@ -3316,7 +3316,7 @@ class AXSkillBundle {
         }
     }
 
-    init(skillsParams: DiSkillV2...) {
+    init(skillsParams: Skill...) {
         for skill in skillsParams {
             skill.setKokoro(kokoro: self.kokoro)
             skills.append(skill)
@@ -3324,7 +3324,7 @@ class AXSkillBundle {
     }
 
     @discardableResult
-    func addSkill(_ skill: DiSkillV2) -> AXSkillBundle {
+    func addSkill(_ skill: Skill) -> AXSkillBundle {
         // builder pattern
         skill.setKokoro(kokoro: self.kokoro)
         skills.append(skill)

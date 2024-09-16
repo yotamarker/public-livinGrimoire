@@ -7,7 +7,7 @@
 
 import Foundation
 
-class DiTime:DiSkillV2{
+class DiTime:Skill{
     private let pl:TimeUtils = TimeUtils()
     // hello world skill for testing purposes
     override func input(ear: String, skin: String, eye: String) {
@@ -135,7 +135,7 @@ class DiTime:DiSkillV2{
         }
     }
 }
-class DiMagic8Ball: DiSkillV2 {
+class DiMagic8Ball: Skill {
     public var magic8Ball = Magic8Ball()
     // skill toggle params:
     public var skillToggler = AXContextCmd()
@@ -166,7 +166,7 @@ class DiMagic8Ball: DiSkillV2 {
         }
     }
 }
-class DiCron:DiSkillV2{
+class DiCron:Skill{
     private var sound:String = "snore"
     private var cron:Cron = Cron(startTime: "12:05", minutes: 40, limit: 2)
     // setters
@@ -184,7 +184,7 @@ class DiCron:DiSkillV2{
         }
     }
 }
-class DIBlabber: DiSkillV2 {
+class DIBlabber: Skill {
     private var isActive: Bool = true // skill toggler
     var skillToggler: AXContextCmd = AXContextCmd()
     // chat mode select
@@ -243,8 +243,8 @@ class DIBlabber: DiSkillV2 {
     }
     
     private func mode0(_ ear: String) {
-        if !kokoro.toHeart["diblabber", default: ""].isEmpty {
-            kokoro.toHeart["diblabber"] = ""
+        if !kokoro!.toHeart["diblabber", default: ""].isEmpty {
+            kokoro!.toHeart["diblabber"] = ""
             setSimpleAlg(sayThis: chatbot1.forceRespond())
             return
         }
@@ -325,7 +325,7 @@ class DIBlabber: DiSkillV2 {
         }
     }
 }
-class DiEngager: DiSkillV2 {
+class DiEngager: Skill {
     private var burpsPerHour = 2
     private var trgMinute = TrgMinute(minute: 0)
     private var skillToEngage = "unknown"
@@ -369,11 +369,11 @@ class DiEngager: DiSkillV2 {
         if burpMinutes.contains(nowMinutes) {
             // snippet of code : remove item from array list
             burpMinutes.removeAll {value in return value == nowMinutes}
-            self.kokoro.toHeart[skillToEngage] = "engage"
+            self.kokoro!.toHeart[skillToEngage] = "engage"
         }
     }
 }
-class DiBurper: DiSkillV2 {
+class DiBurper: Skill {
     private var burpsPerHour = 2
     private var trgMinute = TrgMinute(minute: 0)
     private var burps:Responder = Responder("burp","burp2","burp3")
@@ -419,7 +419,7 @@ class DiBurper: DiSkillV2 {
         }
     }
 }
-class DiHabit: DiSkillV2 {
+class DiHabit: Skill {
     private var habitsPositive = UniqueItemSizeLimitedPriorityQueue()
     private var habitP = AXCmdBreaker(conjuration: "i should")
     private var temp = ""
@@ -544,22 +544,22 @@ class DiHabit: DiSkillV2 {
         }
         
         if ear.contains("completed") {
-            if !diSkillUtills.stringContainsListElement(str1: ear, items: habitsPositive.getAsList()).isEmpty {
+            if !stringContainsListElement(str1: ear, items: habitsPositive.getAsList()).isEmpty {
                 gamification.increment()
                 setSimpleAlg(sayThis: "good boy")
                 return
             }
-            if !diSkillUtills.stringContainsListElement(str1: ear, items: habitsNegative.getAsList()).isEmpty {
+            if !stringContainsListElement(str1: ear, items: habitsNegative.getAsList()).isEmpty {
                 punishments.increment()
                 setSimpleAlg(sayThis: "bad boy")
                 return
             }
-            if !diSkillUtills.stringContainsListElement(str1:ear, items: dailies.getAsList()).isEmpty {
+            if !stringContainsListElement(str1:ear, items: dailies.getAsList()).isEmpty {
                 gamification.increment()
                 setSimpleAlg(sayThis: "daily engaged")
                 return
             }
-            if !diSkillUtills.stringContainsListElement(str1:ear, items:weekends.getAsList()).isEmpty {
+            if !stringContainsListElement(str1:ear, items:weekends.getAsList()).isEmpty {
                 setSimpleAlg(sayThis: "prep engaged")
                 return
             }
@@ -604,7 +604,7 @@ class DiHabit: DiSkillV2 {
         }
     }
 }
-class DiSayer: DiSkillV2 {
+class DiSayer: Skill {
     var cmdBreaker = AXCmdBreaker(conjuration: "say")
     var command = ""
 
@@ -616,7 +616,7 @@ class DiSayer: DiSkillV2 {
         }
     }
 }
-class DiSmoothie0: DiSkillV2 {
+class DiSmoothie0: Skill {
     private var draw = DrawRnd("grapefruits", "oranges",  "apples", "peaches", "melons", "pears", "carrot")
     private var cmd = AXContextCmd()
 
@@ -636,7 +636,7 @@ class DiSmoothie0: DiSkillV2 {
         }
     }
 }
-class DiSmoothie1: DiSkillV2 {
+class DiSmoothie1: Skill {
     private var base = Responder("grapefruits", "oranges",  "apples", "peaches", "melons", "pears", "carrot")
     private var thickeners = DrawRnd("bananas", "mango", "strawberry", "pineapple", "dates")
     private var cmd = AXContextCmd()
@@ -657,7 +657,7 @@ class DiSmoothie1: DiSkillV2 {
         }
     }
 }
-class DiJumbler: DiSkillV2{
+class DiJumbler: Skill{
     private var cmdBreaker = AXCmdBreaker(conjuration: "jumble the name")
         private var temp = ""
     override func input(ear: String, skin: String, eye: String) {
@@ -672,7 +672,7 @@ class DiJumbler: DiSkillV2{
         return String(characters)
     }
 }
-class SkillBranch: DiSkillV2 {
+class SkillBranch: Skill {
     // unique skill used to bind similar skills
     /*
     * contains collection of skills
@@ -709,11 +709,11 @@ class SkillBranch: DiSkillV2 {
         }
     }
 
-    func addSkill(_ skill:DiSkillV2) {
+    func addSkill(_ skill:Skill) {
         skillHub.addSkill(skill)
     }
 
-    func addReferencedSkill(skill: DiSkillV2, conjuration: String) {
+    func addReferencedSkill(skill: Skill, conjuration: String) {
         // the conjuration string will engage its respective skill
         skillHub.addSkill(skill)
         skillRef[conjuration] = skillHub.getSize()
@@ -730,7 +730,7 @@ class SkillBranch: DiSkillV2 {
         skillHub.setKokoro(kokoro)
     }
 }
-class DiAware: DiSkillV2 {
+class DiAware: Skill {
     private var chobit: Chobits
     private var name: String
     private var summoner: String = "user"
@@ -753,13 +753,13 @@ class DiAware: DiSkillV2 {
             setSimpleAlg(sayThis: summoner)
             case "how do you feel":
                 // handle in hardware skill in hardwer chobit
-                kokoro.toHeart["last_ap"] = chobit.getSoulEmotion()
+                kokoro!.toHeart["last_ap"] = chobit.getSoulEmotion()
             default:
                 break
         }
     }
 }
-class DiBicameral: DiSkillV2 {
+class DiBicameral: Skill {
     /*
      *   let bicameral = DiBicameral()
          bicameral.msgCol.addMSGV2("02:57", "test run ok")
@@ -769,15 +769,15 @@ class DiBicameral: DiSkillV2 {
 
     override func input(ear: String, skin: String, eye: String) {
         msgCol.tick()
-        if kokoro.toHeart["dibicameral"] != "null" {
-            kokoro.toHeart["dibicameral"] = "null"
+        if kokoro!.toHeart["dibicameral"] != "null" {
+            kokoro!.toHeart["dibicameral"] = "null"
         }
         if msgCol.getMsg() {
             let temp = msgCol.getLastMSG()
             if !temp.contains("#") {
                 setSimpleAlg(sayThis: temp)
             } else {
-                kokoro.toHeart["dibicameral"] = temp.replacingOccurrences(of: "#", with: "")
+                kokoro!.toHeart["dibicameral"] = temp.replacingOccurrences(of: "#", with: "")
             }
         }
     }
@@ -786,7 +786,7 @@ class DiBicameral: DiSkillV2 {
         kokoro.toHeart["dibicameral"] = "null"
     }
 }
-class DiSkillBundle: DiSkillV2 {
+class DiSkillBundle: Skill {
     fileprivate let axSkillBundle = AXSkillBundle()
 
     override func input(ear: String, skin: String, eye: String) {
@@ -801,17 +801,17 @@ class DiSkillBundle: DiSkillV2 {
         axSkillBundle.setKokoro(kokoro)
     }
 
-    func addSkill(_ skill: DiSkillV2) {
+    func addSkill(_ skill: Skill) {
         axSkillBundle.addSkill(skill)
     }
 }
 // gamification classes
-class GamiPlus: DiSkillV2 {
+class GamiPlus: Skill {
     private let gain: Int
-    private let skill: DiSkillV2
+    private let skill: Skill
     private let axGamification: AXGamification
 
-    init(skill: DiSkillV2, axGamification: AXGamification, gain: Int) {
+    init(skill: Skill, axGamification: AXGamification, gain: Int) {
         self.skill = skill
         self.axGamification = axGamification
         self.gain = gain
@@ -833,12 +833,12 @@ class GamiPlus: DiSkillV2 {
     }
 }
 
-class GamiMinus: DiSkillV2 {
+class GamiMinus: Skill {
     private let axGamification: AXGamification
     private let cost: Int
-    private let skill: DiSkillV2
+    private let skill: Skill
 
-    init(skill: DiSkillV2, axGamification: AXGamification, cost: Int) {
+    init(skill: Skill, axGamification: AXGamification, cost: Int) {
         self.skill = skill
         self.axGamification = axGamification
         self.cost = cost
@@ -879,11 +879,11 @@ class DiGamificationSkillBundle: DiSkillBundle {
         }
     }
 
-    func addGrindSkill(_ skill: DiSkillV2) {
+    func addGrindSkill(_ skill: Skill) {
         axSkillBundle.addSkill(GamiPlus(skill: skill, axGamification: axGamification, gain: gain))
     }
 
-    func addCostlySkill(_ skill: DiSkillV2) {
+    func addCostlySkill(_ skill: Skill) {
         axSkillBundle.addSkill(GamiMinus(skill: skill, axGamification: axGamification, cost: cost))
     }
 
@@ -892,7 +892,7 @@ class DiGamificationSkillBundle: DiSkillBundle {
     }
 }
 
-class DiGamificationScouter: DiSkillV2 {
+class DiGamificationScouter: Skill {
     private var lim: Int = 2
     private let axGamification: AXGamification
     private let noMood = Responder("bored", "no emotions detected", "neutral")

@@ -113,34 +113,6 @@ class Algorithm{
         return algParts.count
     }
 }
-class CldBool{
-    private var modeActive:Bool = false
-    func getModeActive()->Bool{
-        return self.modeActive
-    }
-    func setModeActive(modeActive:Bool){
-        self.modeActive = modeActive
-    }
-}
-class APCldVerbatim:APVerbatim{
-    private var cldBool:CldBool = CldBool()
-    init(sentences: Array<String>, cldBool:CldBool) {
-        super.init(sentences: sentences)
-        self.cldBool = cldBool
-    }
-    override func action(ear: String, skin: String, eye: String) -> String {
-        var axnStr = ""
-        if self.at < self.sentences.count{
-            axnStr=self.sentences[at]
-            self.at += 1
-        }
-        cldBool.setModeActive(modeActive: !self.completed() )
-        return axnStr
-    }
-    override func completed() -> Bool {
-        return self.at >= self.sentences.count
-    }
-}
 class Kokoro{
     private var emot:String = ""
     private(set) var grimoireMemento:GrimoireMemento
@@ -178,39 +150,8 @@ class Neuron{
         return nil
     }
 }
-class DiSkillUtils{
-    // alg part based algorithm building methods
-    // var args param
-    func algBuilder(algParts:Mutatable...)->Algorithm{
-        // returns an algorithm built with the algPart varargs
-        var algParts1: Array<Mutatable> = [Mutatable]()
-        for algPart in algParts{
-            algParts1.append(algPart)
-        }
-        let result:Algorithm = Algorithm(algParts: algParts1)
-        return result
-    }
-    // String based algorithm building methods
-    func simpleVerbatimAlgorithm(sayThis:String...)->Algorithm{
-        // returns an algorithm that says the sayThis Strings verbatim per think cycle
-        return algBuilder(algParts: APVerbatim(sentences: sayThis))
-    }
-    // String part based algorithm building methods with cloudian (shallow ref object to inform on alg completion)
-    func simpleCloudianVerbatimAlgorithm(cldBool:CldBool,sayThis:String...)->Algorithm{
-        /// returns an algorithm that says the sayThis Strings verbatim per think cycle
-        return algBuilder(algParts: APCldVerbatim(sentences: sayThis, cldBool: cldBool))
-    }
-    func stringContainsListElement(str1:String, items:Array<String>)->String{
-        // returns the 1st match between words in a string and values in a list.
-        for item in items{
-            if str1.contains(item){return item}
-        }
-        return ""
-    }
-}
-open class DiSkillV2{
-    private(set) var kokoro:Kokoro = Kokoro(absDictionaryDB: AbsDictionaryDB())
-    let diSkillUtills:DiSkillUtils = DiSkillUtils()
+open class Skill{
+    private(set) var kokoro:Kokoro? = nil
     var outAlg:Algorithm? = nil
     var outpAlgPriority:Int = -1 // defcon 1->5
     init() {}
@@ -231,7 +172,7 @@ open class DiSkillV2{
     func setVerbatimAlgFromList(priority:Int,  sayThis: Array<String>) {
         // build a simple output algorithm to speak string by string per think cycle
         // uses list param
-        self.outAlg = diSkillUtills.algBuilder(algParts: APVerbatim(sentences: sayThis))
+        self.outAlg = algBuilder(algParts: APVerbatim(sentences: sayThis))
         self.outpAlgPriority = priority // 1->5 1 is the highest algorithm priority
     }
     func setVerbatimAlg(priority:Int,  sayThis:String...) {
@@ -265,8 +206,30 @@ open class DiSkillV2{
     func pendingAlgorithm() -> Bool {
         return outAlg != nil
     }
+    // algorithm building methods
+    func algBuilder(algParts:Mutatable...)->Algorithm{
+        // returns an algorithm built with the algPart varargs
+        var algParts1: Array<Mutatable> = [Mutatable]()
+        for algPart in algParts{
+            algParts1.append(algPart)
+        }
+        let result:Algorithm = Algorithm(algParts: algParts1)
+        return result
+    }
+    // String based algorithm building methods
+    func simpleVerbatimAlgorithm(sayThis:String...)->Algorithm{
+        // returns an algorithm that says the sayThis Strings verbatim per think cycle
+        return algBuilder(algParts: APVerbatim(sentences: sayThis))
+    }
+    func stringContainsListElement(str1:String, items:Array<String>)->String{
+        // returns the 1st match between words in a string and values in a list.
+        for item in items{
+            if str1.contains(item){return item}
+        }
+        return ""
+    }
 }
-class DiHelloWorld:DiSkillV2{
+class DiHelloWorld:Skill{
     // hello world skill for testing purposes
     override func input(ear: String, skin: String, eye: String) {
         switch (ear)  {
@@ -355,21 +318,15 @@ class Fusion {
         return result
     }
 }
-class Thinkable {
-    func think(ear: String, skin: String, eye: String) -> String {
-        // override me
-        return ""
-    }
-}
-class Chobits:Thinkable {
+class Chobits {
     fileprivate(set) var emot = "" // emotion represented by the current active alg part
     var kokoro:Kokoro = Kokoro(absDictionaryDB: AbsDictionaryDB())// consciousness
-    private var dClasses: Array<DiSkillV2> // skills of the chobit
+    private var dClasses: Array<Skill> // skills of the chobit
     fileprivate var fusion:Fusion // multitasking center
     fileprivate var noiron:Neuron = Neuron() // algorithms transporter
-    override init () {
+    init () {
         self.fusion = Fusion()
-        self.dClasses = [DiSkillV2]()
+        self.dClasses = [Skill]()
         self.kokoro = Kokoro(absDictionaryDB: AbsDictionaryDB())
     }
     /* set the chobit database
@@ -380,7 +337,7 @@ class Chobits:Thinkable {
         self.kokoro = Kokoro(absDictionaryDB: absDictionaryDB)
     }
     @discardableResult
-    func addSkill(skill:DiSkillV2) -> Chobits {
+    func addSkill(skill:Skill) -> Chobits {
         // add a skill (builder design patterned func))
         skill.setKokoro(kokoro: self.kokoro)
         self.dClasses.append(skill)
@@ -390,16 +347,16 @@ class Chobits:Thinkable {
         // remove all skills
         dClasses.removeAll()
     }
-    func addSkills(skills:DiSkillV2...) {
+    func addSkills(skills:Skill...) {
         for skill in skills{
             skill.setKokoro(kokoro: self.kokoro)
             dClasses.append(skill)
         }
     }
-    func removeSkill(skill:DiSkillV2) {
+    func removeSkill(skill:Skill) {
         dClasses.removeAll(where: { $0 === skill })
     }
-    func containsSkill(skill:DiSkillV2)-> Bool {
+    func containsSkill(skill:Skill)-> Bool {
         if dClasses.count == 0 {return false}
         for i in 0...dClasses.count - 1{
             if dClasses[i] === skill{
@@ -408,9 +365,9 @@ class Chobits:Thinkable {
         }
         return false
     }
-    override func think(ear: String, skin: String, eye: String) -> String {
+    func think(ear: String, skin: String, eye: String) -> String {
         // the input will be processed by the chobits' skills
-        for skill:DiSkillV2 in self.dClasses {
+        for skill:Skill in self.dClasses {
             inOut(dClass: skill, ear: ear, skin: skin, eye: eye)
         }
         fusion.loadAlgs(neuron: noiron)
@@ -422,7 +379,7 @@ class Chobits:Thinkable {
         // an emotion
         return fusion.getEmot()
     }
-    private func inOut(dClass:DiSkillV2,ear:String,skin:String,eye:String) {
+    private func inOut(dClass:Skill,ear:String,skin:String,eye:String) {
         dClass.input(ear: ear, skin: skin, eye: eye)
         dClass.output(noiron: self.noiron)
     }
@@ -518,15 +475,15 @@ class Brain {
         emotion = logicChobit.getSoulEmotion()
         bodyInfo = hardwareChobit.think(ear: logicChobitOutput, skin: skin, eye: ear)
     }
-    func addLogicalSkill(_ skill: DiSkillV2) {
+    func addLogicalSkill(_ skill: Skill) {
         logicChobit.addSkill(skill: skill)
         }
         
-        func addHardwareSkill(_ skill: DiSkillV2) {
+        func addHardwareSkill(_ skill: Skill) {
             hardwareChobit.addSkill(skill: skill)
         }
 }
-class DiSysOut:DiSkillV2{
+class DiSysOut:Skill{
     // hello world skill for testing purposes
     override func input(ear: String, skin: String, eye: String) {
         if(!ear.isEmpty && !ear.contains("#")){

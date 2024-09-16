@@ -1,6 +1,6 @@
 ﻿Module skills
     Public Class DiTime
-        Inherits DiSkillV2
+        Inherits Skill
         Public Sub New()
             MyBase.New()
         End Sub
@@ -37,7 +37,7 @@
         End Sub
     End Class
     Public Class DiBicameral
-        Inherits DiSkillV2
+        Inherits Skill
         ' DiBicameral bicameral = New DiBicameral()
         ' bicameral.msgCol.addMSGV2("02:57", "test run ok")
         ' Add # for messages that engage other skills
@@ -66,7 +66,7 @@
         End Sub
     End Class
     Public Class DiSkillBundle
-        Inherits DiSkillV2
+        Inherits Skill
 
         Protected axSkillBundle As New AXSkillBundle()
 
@@ -84,12 +84,12 @@
             axSkillBundle.SetKokoro(kokoro)
         End Sub
 
-        Public Sub AddSkill(ByVal skill As DiSkillV2)
+        Public Sub AddSkill(ByVal skill As Skill)
             axSkillBundle.AddSkill(skill)
         End Sub
     End Class
     Public Class SkillBranch
-        Inherits DiSkillV2
+        Inherits Skill
 
         ' unique skill used to bind similar skills
         ' contains collection of skills
@@ -128,11 +128,11 @@
             ml.PendAlg()
         End Sub
 
-        Public Sub addSkill(skill As DiSkillV2)
+        Public Sub addSkill(skill As Skill)
             skillHub.addSkill(skill)
         End Sub
 
-        Public Sub addReferencedSkill(skill As DiSkillV2, conjuration As String)
+        Public Sub addReferencedSkill(skill As Skill, conjuration As String)
             ' the conjuration string will engage its respective skill
             skillHub.addSkill(skill)
             skillRef(conjuration) = skillHub.getSize()
@@ -158,14 +158,14 @@
         End Sub
     End Class
     Public Class GamiPlus
-        Inherits DiSkillV2
+        Inherits Skill
 
         ' The grind side of the game, see GamificationN for the reward side
         Private ReadOnly gain As Integer
-        Private ReadOnly skill As DiSkillV2
+        Private ReadOnly skill As Skill
         Private ReadOnly axGamification As AXGamification
 
-        Public Sub New(skill As DiSkillV2, axGamification As AXGamification, gain As Integer)
+        Public Sub New(skill As Skill, axGamification As AXGamification, gain As Integer)
             Me.skill = skill
             Me.axGamification = axGamification
             Me.gain = gain
@@ -188,13 +188,13 @@
         End Sub
     End Class
     Public Class GamiMinus
-        Inherits DiSkillV2
+        Inherits Skill
 
         Private ReadOnly axGamification As AXGamification
         Private ReadOnly cost As Integer
-        Private ReadOnly skill As DiSkillV2
+        Private ReadOnly skill As Skill
 
-        Public Sub New(skill As DiSkillV2, axGamification As AXGamification, cost As Integer)
+        Public Sub New(skill As Skill, axGamification As AXGamification, cost As Integer)
             Me.skill = skill
             Me.axGamification = axGamification
             Me.cost = cost
@@ -238,11 +238,11 @@
             End If
         End Sub
 
-        Public Sub AddGrindSkill(skill As DiSkillV2)
+        Public Sub AddGrindSkill(skill As Skill)
             axSkillBundle.AddSkill(New GamiPlus(skill, axGamification, gain))
         End Sub
 
-        Public Sub AddCostlySkill(skill As DiSkillV2)
+        Public Sub AddCostlySkill(skill As Skill)
             axSkillBundle.AddSkill(New GamiMinus(skill, axGamification, cost))
         End Sub
 
@@ -251,7 +251,7 @@
         End Function
     End Class
     Public Class DiGamificationScouter
-        Inherits DiSkillV2
+        Inherits Skill
 
         Private lim As Integer = 2 ' Minimum for mood
         Private ReadOnly axGamification As AXGamification

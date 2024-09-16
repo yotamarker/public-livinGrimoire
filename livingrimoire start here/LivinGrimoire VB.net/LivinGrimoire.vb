@@ -112,60 +112,6 @@
             Me.absDictionaryDB.Save(key, value)
         End Sub
     End Class
-    Public Class CldBool
-        ' cloudian : this class is used to provide shadow reference to a boolean variable
-        Private modeActive As Boolean = False
-
-        Public Function GetModeActive() As Boolean
-            Return modeActive
-        End Function
-
-        Public Sub SetModeActive(ByVal modeActive As Boolean)
-            Me.modeActive = modeActive
-        End Sub
-    End Class
-    Public Class APCldVerbatim
-        Inherits Mutatable
-        ' This algorithm part says each past param verbatim
-        Private sentences As New List(Of String)()
-        Private at As Integer = 0
-        Private cldBool As CldBool ' Access via shallow reference
-
-        Public Sub New(ByVal cldBool As CldBool, ByVal ParamArray sentences As String())
-            For Each sentence As String In sentences
-                Me.sentences.Add(sentence)
-            Next
-            If sentences.Length = 0 Then
-                at = 30
-            End If
-            Me.cldBool = cldBool
-            Me.cldBool.SetModeActive(True)
-        End Sub
-
-        Public Sub New(ByVal cldBool As CldBool, ByVal list1 As List(Of String))
-            Me.sentences = New List(Of String)(list1)
-            If Me.sentences.Count = 0 Then
-                at = 30
-            End If
-            Me.cldBool = cldBool
-            Me.cldBool.SetModeActive(True)
-        End Sub
-
-        Public Overrides Function Action(ByVal ear As String, ByVal skin As String, ByVal eye As String) As String
-            Dim axnStr As String = ""
-            If at < sentences.Count Then
-                axnStr = sentences(at)
-                at += 1
-            End If
-            cldBool.SetModeActive(Not (at >= sentences.Count))
-            Return axnStr
-        End Function
-
-        Public Overrides Function Completed() As Boolean
-            Return at >= sentences.Count
-        End Function
-
-    End Class
     Public Class Algorithm
         Private algParts As New List(Of Mutatable)()
 
@@ -228,44 +174,8 @@
             Return Nothing
         End Function
     End Class
-    Public Class DISkillUtils
-        ' alg part based algorithm building methods
-        ' var args param
-        Public Function AlgBuilder(ParamArray algParts As Mutatable()) As Algorithm
-            ' returns an algorithm built with the algPart varargs
-            Dim algParts1 As New List(Of Mutatable)()
-            For Each part As Mutatable In algParts
-                algParts1.Add(part)
-            Next
-            Dim algorithm As New Algorithm(algParts1)
-            Return algorithm
-        End Function
-
-        ' String based algorithm building methods
-        Public Function SimpleVerbatimAlgorithm(ParamArray sayThis As String()) As Algorithm
-            ' returns an algorithm that says the sayThis Strings verbatim per think cycle
-            Return AlgBuilder(New APVerbatim(sayThis))
-        End Function
-
-        ' String part based algorithm building methods with cloudian (shallow ref object to inform on alg completion)
-        Public Function SimpleCloudianVerbatimAlgorithm(cldBool As CldBool, ParamArray sayThis As String()) As Algorithm
-            ' returns an algorithm that says the sayThis Strings verbatim per think cycle
-            Return AlgBuilder(New APCldVerbatim(cldBool, sayThis))
-        End Function
-
-        Public Function StrContainsList(str1 As String, items As List(Of String)) As String
-            ' returns the 1st match between words in a string and values in a list.
-            For Each temp As String In items
-                If str1.Contains(temp) Then
-                    Return temp
-                End If
-            Next
-            Return ""
-        End Function
-    End Class
-    Public Class DiSkillV2
-        Protected kokoro As Kokoro = New Kokoro(New AbsDictionaryDB()) ' consciousness, shallow ref class to enable interskill communications
-        Protected diSkillUtils As DISkillUtils = New DISkillUtils()
+    Public Class Skill
+        Protected kokoro As Kokoro = Nothing ' consciousness, shallow ref class to enable interskill communications
         Protected outAlg As Algorithm = Nothing ' skills output
         Protected outpAlgPriority As Integer = -1 ' defcon 1->5
 
@@ -289,31 +199,57 @@
         End Sub
 
         Protected Sub SetVerbatimAlg(priority As Integer, ParamArray sayThis As String())
-            Me.outAlg = Me.diSkillUtils.SimpleVerbatimAlgorithm(sayThis)
+            Me.outAlg = SimpleVerbatimAlgorithm(sayThis)
             Me.outpAlgPriority = priority ' 1->5 1 is the highest algorithm priority
         End Sub
 
         Protected Sub SetSimpleAlg(ParamArray sayThis As String())
-            Me.outAlg = Me.diSkillUtils.SimpleVerbatimAlgorithm(sayThis)
+            Me.outAlg = SimpleVerbatimAlgorithm(sayThis)
             Me.outpAlgPriority = 4 ' 1->5 1 is the highest algorithm priority
         End Sub
 
         Protected Sub SetVerbatimAlgFromList(priority As Integer, sayThis As List(Of String))
-            Me.outAlg = Me.diSkillUtils.AlgBuilder(New APVerbatim(sayThis))
+            Me.outAlg = AlgBuilder(New APVerbatim(sayThis))
             Me.outpAlgPriority = priority ' 1->5 1 is the highest algorithm priority
         End Sub
 
         Protected Sub AlgPartsFusion(priority As Integer, ParamArray algParts As Mutatable())
-            Me.outAlg = Me.diSkillUtils.AlgBuilder(algParts)
+            Me.outAlg = AlgBuilder(algParts)
             Me.outpAlgPriority = priority ' 1->5 1 is the highest algorithm priority
         End Sub
 
         Public Function PendingAlgorithm() As Boolean
             Return Me.outAlg IsNot Nothing
         End Function
+        ' algorithm building methods
+        Public Function AlgBuilder(ParamArray algParts As Mutatable()) As Algorithm
+            ' returns an algorithm built with the algPart varargs
+            Dim algParts1 As New List(Of Mutatable)()
+            For Each part As Mutatable In algParts
+                algParts1.Add(part)
+            Next
+            Dim algorithm As New Algorithm(algParts1)
+            Return algorithm
+        End Function
+
+        ' String based algorithm building methods
+        Public Function SimpleVerbatimAlgorithm(ParamArray sayThis As String()) As Algorithm
+            ' returns an algorithm that says the sayThis Strings verbatim per think cycle
+            Return AlgBuilder(New APVerbatim(sayThis))
+        End Function
+
+        Public Function StrContainsList(str1 As String, items As List(Of String)) As String
+            ' returns the 1st match between words in a string and values in a list.
+            For Each temp As String In items
+                If str1.Contains(temp) Then
+                    Return temp
+                End If
+            Next
+            Return ""
+        End Function
     End Class
     Public Class DiHelloWorld
-        Inherits DiSkillV2
+        Inherits Skill
 
         ' hello world skill for testing purposes
         Public Sub New()
@@ -372,7 +308,7 @@
 
         Public Function Act(ear As String, skin As String, eye As String) As String
             Dim axnStr As String = ""
-            If Not isActive Then
+            If Not IsActive() Then
                 Return axnStr
             End If
             If at < fin Then
@@ -431,16 +367,9 @@
             Return result
         End Function
     End Class
-    Public Class Thinkable
-        Public Function Think(ear As String, skin As String, eye As String) As String
-            ' Override me
-            Return ""
-        End Function
-    End Class
     Public Class Chobits
-        Inherits Thinkable
 
-        Protected dClasses As New List(Of DiSkillV2)()
+        Protected dClasses As New List(Of Skill)()
         Protected fusion As Fusion
         Protected noiron As Neuron
         Protected kokoro As Kokoro = New Kokoro(New AbsDictionaryDB()) ' consciousness
@@ -455,7 +384,7 @@
             Me.kokoro = New Kokoro(absDictionaryDB)
         End Sub
 
-        Public Function AddSkill(skill As DiSkillV2) As Chobits
+        Public Function AddSkill(skill As Skill) As Chobits
             skill.SetKokoro(Me.kokoro)
             Me.dClasses.Add(skill)
             Return Me
@@ -466,23 +395,23 @@
             Me.dClasses.Clear()
         End Sub
 
-        Public Sub AddSkills(ParamArray skills As DiSkillV2())
-            For Each skill As DiSkillV2 In skills
+        Public Sub AddSkills(ParamArray skills As Skill())
+            For Each skill As Skill In skills
                 skill.SetKokoro(Me.kokoro)
                 Me.dClasses.Add(skill)
             Next
         End Sub
 
-        Public Sub RemoveSkill(skill As DiSkillV2)
+        Public Sub RemoveSkill(skill As Skill)
             dClasses.Remove(skill)
         End Sub
 
-        Public Function ContainsSkill(skill As DiSkillV2) As Boolean
+        Public Function ContainsSkill(skill As Skill) As Boolean
             Return dClasses.Contains(skill)
         End Function
 
-        Public Overloads Function Think(ear As String, skin As String, eye As String) As String
-            For Each dCls As DiSkillV2 In dClasses
+        Public Function Think(ear As String, skin As String, eye As String) As String
+            For Each dCls As Skill In dClasses
                 InOut(dCls, ear, skin, eye)
             Next
             fusion.LoadAlgs(noiron)
@@ -493,7 +422,7 @@
             Return fusion.GetEmot()
         End Function
 
-        Protected Sub InOut(dClass As DiSkillV2, ear As String, skin As String, eye As String)
+        Protected Sub InOut(dClass As Skill, ear As String, skin As String, eye As String)
             dClass.Input(ear, skin, eye) ' New
             dClass.Output(noiron)
         End Sub
@@ -504,7 +433,7 @@
 
         Public Function GetSkillList() As List(Of String)
             Dim result As New List(Of String)()
-            For Each skill As DiSkillV2 In Me.dClasses
+            For Each skill As Skill In Me.dClasses
                 result.Add(skill.GetType().Name)
             Next
             Return result
@@ -558,17 +487,17 @@
             bodyInfo = hardwareChobit.Think(logicChobitOutput, skin, eye)
         End Sub
 
-        Public Sub AddLogicalSkill(skill As DiSkillV2)
+        Public Sub AddLogicalSkill(skill As Skill)
             logicChobit.AddSkill(skill)
         End Sub
 
-        Public Sub AddHardwareSkill(skill As DiSkillV2)
+        Public Sub AddHardwareSkill(skill As Skill)
             hardwareChobit.AddSkill(skill)
         End Sub
 
     End Class
     Public Class DiPrinter
-        Inherits DiSkillV2
+        Inherits Skill
 
         ' hello world skill for testing purposes
         Public Sub New()

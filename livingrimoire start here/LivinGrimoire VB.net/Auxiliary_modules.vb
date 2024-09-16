@@ -2005,14 +2005,14 @@ Module Auxiliary_modules
         ' Moods can be used for specific cases to change behavior of the AGI, for example low energy state
         ' For that use (moodAlg)
 
-        Private ReadOnly skills As New List(Of DiSkillV2)()
+        Private ReadOnly skills As New List(Of Skill)()
         Private activeSkill As Integer = 0
         Private ReadOnly tempN As New Neuron()
         Private ReadOnly rand As New Random()
         Private kokoro As New Kokoro(New AbsDictionaryDB())
 
-        Public Sub New(ParamArray skillsParams As DiSkillV2())
-            For Each skill As DiSkillV2 In skillsParams
+        Public Sub New(ParamArray skillsParams As Skill())
+            For Each skill As Skill In skillsParams
                 skill.SetKokoro(Me.kokoro)
                 skills.Add(skill)
             Next
@@ -2020,12 +2020,12 @@ Module Auxiliary_modules
 
         Public Sub setKokoro(kokoro As Kokoro)
             Me.kokoro = kokoro
-            For Each skill As DiSkillV2 In skills
+            For Each skill As Skill In skills
                 skill.SetKokoro(Me.kokoro)
             Next
         End Sub
 
-        Public Function addSkill(skill As DiSkillV2) As SkillHubAlgDispenser
+        Public Function addSkill(skill As Skill) As SkillHubAlgDispenser
             ' Builder pattern
             skill.SetKokoro(Me.kokoro)
             skills.Add(skill)
@@ -2647,25 +2647,25 @@ Module Auxiliary_modules
         End Sub
     End Class
     Public Class AXSkillBundle
-        Private skills As New List(Of DiSkillV2)()
+        Private skills As New List(Of Skill)()
         Private tempN As New Neuron()
         Private kokoro As New Kokoro(New AbsDictionaryDB())
 
         Public Sub SetKokoro(ByVal kokoro As Kokoro)
             Me.kokoro = kokoro
-            For Each skill As DiSkillV2 In skills
+            For Each skill As Skill In skills
                 skill.SetKokoro(Me.kokoro)
             Next
         End Sub
 
-        Public Sub New(ParamArray skillsParams As DiSkillV2())
-            For Each skill As DiSkillV2 In skillsParams
+        Public Sub New(ParamArray skillsParams As Skill())
+            For Each skill As Skill In skillsParams
                 skill.SetKokoro(Me.kokoro)
                 skills.Add(skill)
             Next
         End Sub
 
-        Public Function AddSkill(ByVal skill As DiSkillV2) As AXSkillBundle
+        Public Function AddSkill(ByVal skill As Skill) As AXSkillBundle
             ' Builder pattern
             skill.SetKokoro(Me.kokoro)
             skills.Add(skill)
@@ -2673,7 +2673,7 @@ Module Auxiliary_modules
         End Function
 
         Public Function DispenseAlgorithm(ByVal ear As String, ByVal skin As String, ByVal eye As String) As AlgorithmV2
-            For Each skill As DiSkillV2 In skills
+            For Each skill As Skill In skills
                 skill.Input(ear, skin, eye)
                 skill.Output(tempN)
                 For j As Integer = 1 To 5

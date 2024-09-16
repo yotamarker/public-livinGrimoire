@@ -135,71 +135,6 @@ public class GrimoireMemento
         this.absDictionaryDB.Save(key, value);
     }
 }
-public class CldBool
-{
-    // cloudian: this class is used to provide shadow reference to a boolean variable
-    private bool modeActive = false;
-
-    public bool GetModeActive()
-    {
-        return modeActive;
-    }
-
-    public void SetModeActive(bool modeActive)
-    {
-        this.modeActive = modeActive;
-    }
-}
-public class APCldVerbatim : Mutatable
-{
-    // This algorithm part says each past param verbatim
-    private List<string> sentences = new List<string>();
-    private int at = 0;
-    private CldBool cldBool; // Access via shallow reference
-
-    public APCldVerbatim(CldBool cldBool, params string[] sentences)
-    {
-        foreach (string sentence in sentences)
-        {
-            this.sentences.Add(sentence);
-        }
-        if (sentences.Length == 0)
-        {
-            at = 30;
-        }
-        this.cldBool = cldBool;
-        this.cldBool.SetModeActive(true);
-    }
-
-    public APCldVerbatim(CldBool cldBool, List<string> list1)
-    {
-        this.sentences = new List<string>(list1);
-        if (this.sentences.Count == 0)
-        {
-            at = 30;
-        }
-        this.cldBool = cldBool;
-        this.cldBool.SetModeActive(true);
-    }
-
-    public override string Action(string ear, string skin, string eye)
-    {
-        string axnStr = "";
-        if (at < sentences.Count)
-        {
-            axnStr = sentences[at];
-            at++;
-        }
-        cldBool.SetModeActive(!(at >= sentences.Count));
-        return axnStr;
-    }
-
-    public override bool Completed()
-    {
-        return at >= sentences.Count;
-    }
-
-}
 public class Algorithm
 {
     private List<Mutatable> algParts = new List<Mutatable>();
@@ -275,56 +210,13 @@ public class Neuron
         return null;
     }
 }
-public class DISkillUtils
+public class Skill
 {
-    // Alg part based algorithm building methods (var args param)
-    public Algorithm AlgBuilder(params Mutatable[] algParts)
-    {
-        // Returns an algorithm built with the algPart varargs
-        List<Mutatable> algParts1 = new List<Mutatable>();
-        foreach (Mutatable part in algParts)
-        {
-            algParts1.Add(part);
-        }
-        Algorithm algorithm = new Algorithm(algParts1);
-        return algorithm;
-    }
-
-    // String based algorithm building methods
-    public Algorithm SimpleVerbatimAlgorithm(params string[] sayThis)
-    {
-        // Returns an algorithm that says the sayThis Strings verbatim per think cycle
-        return AlgBuilder(new APVerbatim(sayThis));
-    }
-
-    // String part based algorithm building methods with cloudian (shallow ref object to inform on alg completion)
-    public Algorithm SimpleCloudianVerbatimAlgorithm(CldBool cldBool, params string[] sayThis)
-    {
-        // Returns an algorithm that says the sayThis Strings verbatim per think cycle
-        return AlgBuilder(new APCldVerbatim(cldBool, sayThis));
-    }
-
-    public string StrContainsList(string str1, List<string> items)
-    {
-        // Returns the 1st match between words in a string and values in a list.
-        foreach (string temp in items)
-        {
-            if (str1.Contains(temp))
-            {
-                return temp;
-            }
-        }
-        return "";
-    }
-}
-public class DiSkillV2
-{
-    protected Kokoro kokoro = new Kokoro(new AbsDictionaryDB()); // consciousness, shallow ref class to enable interskill communications
-    protected DISkillUtils diSkillUtils = new DISkillUtils();
+    protected Kokoro kokoro = null; // consciousness, shallow ref class to enable interskill communications
     protected Algorithm outAlg = null; // skills output
     protected int outpAlgPriority = -1; // defcon 1->5
 
-    public DiSkillV2()
+    public Skill()
     {
     }
 
@@ -349,25 +241,25 @@ public class DiSkillV2
 
     protected void SetVerbatimAlg(int priority, params string[] sayThis)
     {
-        outAlg = diSkillUtils.SimpleVerbatimAlgorithm(sayThis);
+        outAlg = SimpleVerbatimAlgorithm(sayThis);
         outpAlgPriority = priority; // 1->5 1 is the highest algorithm priority
     }
 
     protected void SetSimpleAlg(params string[] sayThis)
     {
-        outAlg = diSkillUtils.SimpleVerbatimAlgorithm(sayThis);
+        outAlg = SimpleVerbatimAlgorithm(sayThis);
         outpAlgPriority = 4; // 1->5 1 is the highest algorithm priority
     }
 
     protected void SetVerbatimAlgFromList(int priority, List<string> sayThis)
     {
-        outAlg = diSkillUtils.AlgBuilder(new APVerbatim(sayThis));
+        outAlg = AlgBuilder(new APVerbatim(sayThis));
         outpAlgPriority = priority; // 1->5 1 is the highest algorithm priority
     }
 
     protected void AlgPartsFusion(int priority, params Mutatable[] algParts)
     {
-        outAlg = diSkillUtils.AlgBuilder(algParts);
+        outAlg = AlgBuilder(algParts);
         outpAlgPriority = priority; // 1->5 1 is the highest algorithm priority
     }
 
@@ -375,8 +267,41 @@ public class DiSkillV2
     {
         return outAlg != null;
     }
+    // skill utils (alg building methods)
+    // Alg part based algorithm building methods (var args param)
+    public Algorithm AlgBuilder(params Mutatable[] algParts)
+    {
+        // Returns an algorithm built with the algPart varargs
+        List<Mutatable> algParts1 = new List<Mutatable>();
+        foreach (Mutatable part in algParts)
+        {
+            algParts1.Add(part);
+        }
+        Algorithm algorithm = new Algorithm(algParts1);
+        return algorithm;
+    }
+
+    // String based algorithm building methods
+    public Algorithm SimpleVerbatimAlgorithm(params string[] sayThis)
+    {
+        // Returns an algorithm that says the sayThis Strings verbatim per think cycle
+        return AlgBuilder(new APVerbatim(sayThis));
+    }
+
+    public string StrContainsList(string str1, List<string> items)
+    {
+        // Returns the 1st match between words in a string and values in a list.
+        foreach (string temp in items)
+        {
+            if (str1.Contains(temp))
+            {
+                return temp;
+            }
+        }
+        return "";
+    }
 }
-public class DiHelloWorld : DiSkillV2
+public class DiHelloWorld : Skill
 {
     // hello world skill for testing purposes
     public DiHelloWorld() : base()
@@ -522,17 +447,9 @@ public class Fusion
         return result;
     }
 }
-public class Thinkable
+public class Chobits
 {
-    public string Think(string ear, string skin, string eye)
-    {
-        // Override me
-        return "";
-    }
-}
-public class Chobits : Thinkable
-{
-    protected List<DiSkillV2> dClasses = new List<DiSkillV2>();
+    protected List<Skill> dClasses = new List<Skill>();
     protected Fusion fusion;
     protected Neuron noiron;
     protected Kokoro kokoro = new Kokoro(new AbsDictionaryDB()); // consciousness
@@ -548,7 +465,7 @@ public class Chobits : Thinkable
         kokoro = new Kokoro(absDictionaryDB);
     }
 
-    public Chobits AddSkill(DiSkillV2 skill)
+    public Chobits AddSkill(Skill skill)
     {
         skill.SetKokoro(kokoro);
         dClasses.Add(skill);
@@ -561,28 +478,28 @@ public class Chobits : Thinkable
         dClasses.Clear();
     }
 
-    public void AddSkills(params DiSkillV2[] skills)
+    public void AddSkills(params Skill[] skills)
     {
-        foreach (DiSkillV2 skill in skills)
+        foreach (Skill skill in skills)
         {
             skill.SetKokoro(kokoro);
             dClasses.Add(skill);
         }
     }
 
-    public void RemoveSkill(DiSkillV2 skill)
+    public void RemoveSkill(Skill skill)
     {
         dClasses.Remove(skill);
     }
 
-    public bool ContainsSkill(DiSkillV2 skill)
+    public bool ContainsSkill(Skill skill)
     {
         return dClasses.Contains(skill);
     }
 
-    public new string Think(string ear, string skin, string eye)
+    public string Think(string ear, string skin, string eye)
     {
-        foreach (DiSkillV2 dCls in dClasses)
+        foreach (Skill dCls in dClasses)
         {
             InOut(dCls, ear, skin, eye);
         }
@@ -594,7 +511,7 @@ public class Chobits : Thinkable
         return fusion.GetEmot();
     }
 
-    protected void InOut(DiSkillV2 dClass, string ear, string skin, string eye)
+    protected void InOut(Skill dClass, string ear, string skin, string eye)
     {
         dClass.Input(ear, skin, eye); // New
         dClass.Output(noiron);
@@ -608,7 +525,7 @@ public class Chobits : Thinkable
     public List<string> GetSkillList()
     {
         List<string> result = new List<string>();
-        foreach (DiSkillV2 skill in dClasses)
+        foreach (Skill skill in dClasses)
         {
             result.Add(skill.GetType().Name);
         }
@@ -660,18 +577,18 @@ public class Brain
         // Case: Hardware skill wishes to pass info to logical chobit
         bodyInfo = hardwareChobit.Think(logicChobitOutput, skin, eye);
     }
-    public void AddLogicalSkill(DiSkillV2 skill)
+    public void AddLogicalSkill(Skill skill)
     {
         logicChobit.AddSkill(skill);
     }
 
-    public void AddHardwareSkill(DiSkillV2 skill)
+    public void AddHardwareSkill(Skill skill)
     {
         hardwareChobit.AddSkill(skill);
     }
 
 }
-public class DiPrinter : DiSkillV2
+public class DiPrinter : Skill
 {
     // hello world skill for testing purposes
     public DiPrinter() : base()

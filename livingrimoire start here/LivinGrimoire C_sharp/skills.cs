@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-public class DiTime : DiSkillV2
+public class DiTime : Skill
 {
     public DiTime()
         : base()
@@ -44,7 +44,7 @@ public class DiTime : DiSkillV2
         }
     }
 }
-public class DiBicameral : DiSkillV2
+public class DiBicameral : Skill
 {
     // DiBicameral bicameral = new DiBicameral();
     // bicameral.msgCol.addMSGV2("02:57", "test run ok");
@@ -81,7 +81,7 @@ public class DiBicameral : DiSkillV2
         kokoro.toHeart["dibicameral"] = "null";
     }
 }
-public class DiSkillBundle : DiSkillV2
+public class DiSkillBundle : Skill
 {
     protected AXSkillBundle axSkillBundle = new AXSkillBundle();
 
@@ -102,12 +102,12 @@ public class DiSkillBundle : DiSkillV2
         axSkillBundle.SetKokoro(kokoro);
     }
 
-    public void AddSkill(DiSkillV2 skill)
+    public void AddSkill(Skill skill)
     {
         axSkillBundle.AddSkill(skill);
     }
 }
-public class SkillBranch : DiSkillV2
+public class SkillBranch : Skill
 {
     // unique skill used to bind similar skills
     /*
@@ -148,12 +148,12 @@ public class SkillBranch : DiSkillV2
         ml.PendAlg();
     }
 
-    public void AddSkill(DiSkillV2 skill)
+    public void AddSkill(Skill skill)
     {
         skillHub.AddSkill(skill);
     }
 
-    public void AddReferencedSkill(DiSkillV2 skill, string conjuration)
+    public void AddReferencedSkill(Skill skill, string conjuration)
     {
         // the conjuration string will engage its respective skill
         skillHub.AddSkill(skill);
@@ -172,14 +172,14 @@ public class SkillBranch : DiSkillV2
         skillHub.SetKokoro(kokoro);
     }
 }
-public class GamiPlus : DiSkillV2
+public class GamiPlus : Skill
 {
     // The grind side of the game, see GamificationN for the reward side
     private readonly int gain;
-    private readonly DiSkillV2 skill;
+    private readonly Skill skill;
     private readonly AXGamification axGamification;
 
-    public GamiPlus(DiSkillV2 skill, AXGamification axGamification, int gain)
+    public GamiPlus(Skill skill, AXGamification axGamification, int gain)
     {
         this.skill = skill;
         this.axGamification = axGamification;
@@ -207,13 +207,13 @@ public class GamiPlus : DiSkillV2
     }
 }
 
-public class GamiMinus : DiSkillV2
+public class GamiMinus : Skill
 {
     private readonly AXGamification axGamification;
     private readonly int cost;
-    private readonly DiSkillV2 skill;
+    private readonly Skill skill;
 
-    public GamiMinus(DiSkillV2 skill, AXGamification axGamification, int cost)
+    public GamiMinus(Skill skill, AXGamification axGamification, int cost)
     {
         this.skill = skill;
         this.axGamification = axGamification;
@@ -267,12 +267,12 @@ public class DiGamificationSkillBundle : DiSkillBundle
         }
     }
 
-    public void AddGrindSkill(DiSkillV2 skill)
+    public void AddGrindSkill(Skill skill)
     {
         axSkillBundle.AddSkill(new GamiPlus(skill, axGamification, gain));
     }
 
-    public void AddCostlySkill(DiSkillV2 skill)
+    public void AddCostlySkill(Skill skill)
     {
         axSkillBundle.AddSkill(new GamiMinus(skill, axGamification, cost));
     }
@@ -283,7 +283,7 @@ public class DiGamificationSkillBundle : DiSkillBundle
     }
 }
 
-public class DiGamificationScouter : DiSkillV2
+public class DiGamificationScouter : Skill
 {
     private int lim = 2; // Minimum for mood
     private readonly AXGamification axGamification;

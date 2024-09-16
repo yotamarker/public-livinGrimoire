@@ -2457,13 +2457,13 @@ public class SkillHubAlgDispenser
     // Moods can be used for specific cases to change behavior of the AGI, for example low energy state
     // For that use (moodAlg)
 
-    private readonly List<DiSkillV2> skills = new List<DiSkillV2>();
+    private readonly List<Skill> skills = new List<Skill>();
     private int activeSkill = 0;
     private readonly Neuron tempN = new Neuron();
     private readonly Random rand = new Random();
     private Kokoro kokoro = new Kokoro(new AbsDictionaryDB());
 
-    public SkillHubAlgDispenser(params DiSkillV2[] skillsParams)
+    public SkillHubAlgDispenser(params Skill[] skillsParams)
     {
         foreach (var skill in skillsParams)
         {
@@ -2481,7 +2481,7 @@ public class SkillHubAlgDispenser
         }
     }
 
-    public SkillHubAlgDispenser AddSkill(DiSkillV2 skill)
+    public SkillHubAlgDispenser AddSkill(Skill skill)
     {
         // Builder pattern
         skill.SetKokoro(this.kokoro);
@@ -3229,29 +3229,29 @@ public class AlgorithmV2
 }
 public class AXSkillBundle
 {
-    private List<DiSkillV2> skills = new List<DiSkillV2>();
+    private List<Skill> skills = new List<Skill>();
     private Neuron tempN = new Neuron();
     private Kokoro kokoro = new Kokoro(new AbsDictionaryDB());
 
     public void SetKokoro(Kokoro kokoro)
     {
         this.kokoro = kokoro;
-        foreach (DiSkillV2 skill in skills)
+        foreach (Skill skill in skills)
         {
             skill.SetKokoro(this.kokoro);
         }
     }
 
-    public AXSkillBundle(params DiSkillV2[] skillsParams)
+    public AXSkillBundle(params Skill[] skillsParams)
     {
-        foreach (DiSkillV2 skill in skillsParams)
+        foreach (Skill skill in skillsParams)
         {
             skill.SetKokoro(this.kokoro);
             skills.Add(skill);
         }
     }
 
-    public AXSkillBundle AddSkill(DiSkillV2 skill)
+    public AXSkillBundle AddSkill(Skill skill)
     {
         // Builder pattern
         skill.SetKokoro(this.kokoro);
@@ -3261,7 +3261,7 @@ public class AXSkillBundle
 
     public AlgorithmV2 DispenseAlgorithm(string ear, string skin, string eye)
     {
-        foreach (DiSkillV2 skill in skills)
+        foreach (Skill skill in skills)
         {
             skill.Input(ear, skin, eye);
             skill.Output(tempN);

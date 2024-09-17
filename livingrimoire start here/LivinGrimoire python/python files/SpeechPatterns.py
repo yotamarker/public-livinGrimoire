@@ -116,6 +116,8 @@ def neuro_sama(sentence: str):
     return AXNeuroSama(3).decorate(sentence)
 
 
+# ;) kreng was here
+
 def slav_potato_speech(input_text):
     # Common phrases Slav Potato might use
     potato_phrases = [
@@ -127,7 +129,6 @@ def slav_potato_speech(input_text):
         'the': 'ze',
         'th': 'z',
         'w': 'v',
-        'h': 'kh',
         'r': 'rr',
         'l': 'l',
         'is': 'iz',
@@ -154,3 +155,26 @@ def slav_potato_speech(input_text):
     final_text = random.choice(potato_phrases) + transformed_text
 
     return final_text
+
+
+class SpeechChanger:
+    def __init__(self):
+        self.mode: int = -1
+
+    def addPattern(self, ear: str) -> str:
+        match self.mode:
+            case 0:
+                return slav_potato_speech(ear)
+            case 1:
+                return chi_speech_pattern(ear)
+            case 2:
+                return uwu_converter(ear)
+            case 3:
+                return neuro_sama(ear)
+            case 4:
+                return unrefined_speech_pattern(ear)
+            case 5:
+                return girly_speak(ear)
+            case 6:
+                return g_dropping_dialect(ear)
+        return ear

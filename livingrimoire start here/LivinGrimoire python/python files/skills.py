@@ -2,7 +2,7 @@ from __future__ import annotations
 from AXPython import *
 
 
-class DiMisser(DiSkillV2):
+class DiMisser(Skill):
     def __init__(self):
         self._pl: TimeUtils = TimeUtils()
         self._cron: Cron = Cron("15:00", 50, 2)
@@ -22,7 +22,7 @@ class DiMisser(DiSkillV2):
                     self.setVerbatimAlg(4, f'hmph {n}')
 
 
-class DiBurper(DiSkillV2):
+class DiBurper(Skill):
     def __init__(self, burps_per_hour: int):
         self._burpsPerHour = 2
         if 60 > burps_per_hour > 0:
@@ -63,7 +63,7 @@ class DiBurper(DiSkillV2):
             self.setVerbatimAlg(4, self._responder1.getAResponse())
 
 
-class DiSneezer(DiSkillV2):
+class DiSneezer(Skill):
     # the skill simulates sneezing as a result of cold temperature
     def __init__(self, sneezes_per_hour: int):
         self._sneezesPerHour = 2
@@ -97,7 +97,7 @@ class DiSneezer(DiSkillV2):
             self.setVerbatimAlg(4, self._responder1.getAResponse())
 
 
-class DiPetv3(DiSkillV2):
+class DiPetv3(Skill):
     # chirp, learn replies and reply back occasionally.
     def __init__(self, chirps_per_hour: int):
         self._chirpsPerHour = 2
@@ -135,7 +135,7 @@ class DiPetv3(DiSkillV2):
             self.setVerbatimAlg(3, self._responder1.getAResponse())
 
 
-class DiReplier(DiSkillV2):
+class DiReplier(Skill):
     # chirp, learn replies and reply back occasionally.
     def __init__(self):
         self._responder1: Responder1Word = Responder1Word()
@@ -154,7 +154,7 @@ class DiReplier(DiSkillV2):
         self._responder1.listen(ear)
 
 
-class DiHabit(DiSkillV2):
+class DiHabit(Skill):
     def __init__(self):
         super().__init__()
         # setter params:
@@ -267,19 +267,19 @@ class DiHabit(DiSkillV2):
                     return
         # engagers
         if ear.__contains__("completed"):
-            if not (self._diSkillUtils.strContainsList(ear, self._habitsPositive.getAsList()) == ""):
+            if not (self.strContainsList(ear, self._habitsPositive.getAsList()) == ""):
                 self._gamification.increment()
                 self.setVerbatimAlg(4, "good boy")
                 return
-            if not (self._diSkillUtils.strContainsList(ear, self._habitsNegative.getAsList()) == ""):
+            if not (self.strContainsList(ear, self._habitsNegative.getAsList()) == ""):
                 self._punishments.increment()
                 self.setVerbatimAlg(4, "bad boy")
                 return
-            if not (self._diSkillUtils.strContainsList(ear, self._dailies.getAsList()) == ""):
+            if not (self.strContainsList(ear, self._dailies.getAsList()) == ""):
                 self._gamification.increment()
                 self.setVerbatimAlg(4, "daily engaged")
                 return
-            if not (self._diSkillUtils.strContainsList(ear, self._weekends.getAsList()) == ""):
+            if not (self.strContainsList(ear, self._weekends.getAsList()) == ""):
                 self.setVerbatimAlg(4, "prep engaged")
                 return
             # expiration gamification redacted
@@ -327,23 +327,23 @@ class DiHabit(DiSkillV2):
                         self._temp = ""
 
 
-class TheShell(DiSkillV2):
+class TheShell(Skill):
     def __init__(self, b1: ShBrain):
         super().__init__()
         self.shellChobit: Chobits = Chobits()
         self.logicChobit: Chobits = b1.logicChobit
         self.hardwareChobit: Chobits = b1.hardwareChobit
         self.shellChobit.addSkill(self)
-        self.logicSkills: [str, DiSkillV2] = {}
-        self.hardwareSkills: [str, DiSkillV2] = {}
+        self.logicSkills: [str, Skill] = {}
+        self.hardwareSkills: [str, Skill] = {}
         self.installer: AXCmdBreaker = AXCmdBreaker("install")
         self.uninstaller: AXCmdBreaker = AXCmdBreaker("abolish")
         self.temp: str = ""
 
-    def addLogicalSkill(self, skillName: str, skill: DiSkillV2):
+    def addLogicalSkill(self, skillName: str, skill: Skill):
         self.logicSkills[skillName] = skill
 
-    def addHardwareSkill(self, skillName: str, skill: DiSkillV2):
+    def addHardwareSkill(self, skillName: str, skill: Skill):
         self.hardwareSkills[skillName] = skill
 
     # shell methods
@@ -352,12 +352,12 @@ class TheShell(DiSkillV2):
             return 0  # skill does not exist
         # find the skill
         if skillKey in self.logicSkills:
-            ref: DiSkillV2 = self.logicSkills[skillKey]
+            ref: Skill = self.logicSkills[skillKey]
             if self.logicChobit.containsSkill(ref):
                 return 1  # logic skill already installed
             self.logicChobit.addSkill(ref)
             return 2  # logic skill has been installed
-        ref: DiSkillV2 = self.hardwareSkills[skillKey]
+        ref: Skill = self.hardwareSkills[skillKey]
         if self.hardwareChobit.containsSkill(ref):
             return 3  # hardware skill already installed
         self.hardwareChobit.addSkill(ref)
@@ -367,12 +367,12 @@ class TheShell(DiSkillV2):
         if not (skillKey in self.logicSkills or skillKey in self.hardwareSkills):
             return 0  # skill does not exist
         if skillKey in self.logicSkills:
-            ref: DiSkillV2 = self.logicSkills[skillKey]
+            ref: Skill = self.logicSkills[skillKey]
             if self.logicChobit.containsSkill(ref):
                 self.logicChobit.removeSkill(ref)
                 return 1  # logic skill has been uninstalled
             return 2  # logic skill is not installed
-        ref: DiSkillV2 = self.hardwareSkills[skillKey]
+        ref: Skill = self.hardwareSkills[skillKey]
         # ref: DiSkillV2 = self.hardwareChobit[skillKey]
         if self.hardwareChobit.containsSkill(ref):
             self.hardwareChobit.removeSkill(ref)
@@ -424,10 +424,10 @@ class ShBrain(Brain):
         self._shell: TheShell = TheShell(self)
         self._temp: str = ""
 
-    def addLogicalSkill(self, skillName: str, skill: DiSkillV2):
+    def addLogicalSkill(self, skillName: str, skill: Skill):
         self._shell.addLogicalSkill(skillName, skill)
 
-    def addHardwareSkill(self, skillName: str, skill: DiSkillV2):
+    def addHardwareSkill(self, skillName: str, skill: Skill):
         self._shell.addHardwareSkill(skillName, skill)
 
     def setShell(self, newShell: TheShell):
@@ -444,7 +444,7 @@ class ShBrain(Brain):
         self.hardwareChobit.think(self._temp, skin, eye)
 
 
-class DiMagic8Ball(DiSkillV2):
+class DiMagic8Ball(Skill):
     def __init__(self):
         super().__init__()
         self.magic8Ball: Magic8Ball = Magic8Ball()
@@ -456,7 +456,7 @@ class DiMagic8Ball(DiSkillV2):
             self.setVerbatimAlg(4, self.magic8Ball.reply())
 
 
-class DiTime(DiSkillV2):
+class DiTime(Skill):
     def __init__(self):
         super().__init__()
         self.__pl: TimeUtils = TimeUtils()
@@ -559,7 +559,7 @@ class DiTime(DiSkillV2):
                 self.setSimpleAlg("bwahaha mwahaha")
 
 
-class DiCron(DiSkillV2):
+class DiCron(Skill):
     def __init__(self):
         super().__init__()
         self.__sound: str = "snore"
@@ -580,7 +580,7 @@ class DiCron(DiSkillV2):
             self.setSimpleAlg(self.__sound)
 
 
-class DiEngager(DiSkillV2):
+class DiEngager(Skill):
     def __init__(self, burps_per_hour: int, skillToEngage: str):
         self._burpsPerHour = 2
         if 60 > burps_per_hour > 0:
@@ -620,7 +620,7 @@ class DiEngager(DiSkillV2):
             self.getKokoro().toHeart[self._skillToEngage] = "engage"
 
 
-class DiSayer(DiSkillV2):
+class DiSayer(Skill):
     def __init__(self):
         super().__init__()
         self.cmdBreaker = AXCmdBreaker("say")
@@ -643,7 +643,7 @@ class DiSayer(DiSkillV2):
 # the smoothie skills are simple skills for testing purposes,
 # such as testing the BranchSkill. but they have their own merit
 # in suggesting smoothies and have a good alg base for other recipe skills
-class DiSmoothie0(DiSkillV2):
+class DiSmoothie0(Skill):
     def __init__(self):
         super().__init__()
         self.draw = DrawRnd("grapefruits", "oranges", "apples", "peaches", "melons", "pears", "carrot")
@@ -660,7 +660,7 @@ class DiSmoothie0(DiSkillV2):
             self.draw.reset()
 
 
-class DiSmoothie1(DiSkillV2):
+class DiSmoothie1(Skill):
     def __init__(self):
         super().__init__()
         self.base = Responder("grapefruits", "oranges", "apples", "peaches", "melons", "pears", "carrot")
@@ -679,7 +679,7 @@ class DiSmoothie1(DiSkillV2):
             self.thickeners.reset()
 
 
-class DiJumbler(DiSkillV2):
+class DiJumbler(Skill):
     # jumble a string
     def __init__(self):
         super().__init__()
@@ -705,7 +705,7 @@ class DiJumbler(DiSkillV2):
         return jumbled_s
 
 
-class SkillBranch(DiSkillV2):
+class SkillBranch(Skill):
     # unique skill used to bind similar skills
     """
     * contains collection of skills
@@ -762,7 +762,7 @@ class SkillBranch(DiSkillV2):
         self._ml.defcon5.insert(defcon5)
 
 
-class DiActivity(DiSkillV2):
+class DiActivity(Skill):
     def __init__(self):
         super().__init__()
         self.activities: list[DrawRnd] = []
@@ -817,7 +817,7 @@ class DiHuggyWuggy:
         return self.o1
 
 
-class DiArguer(DiSkillV2):
+class DiArguer(Skill):
     def __init__(self):
         super().__init__()
         self.argue = TrgArgue()
@@ -853,7 +853,7 @@ class DiArguer(DiSkillV2):
             self.setSimpleAlg(self.r2.getAResponse())
 
 
-class DiRailChatBot(DiSkillV2):
+class DiRailChatBot(Skill):
     def __init__(self):
         super().__init__()
         self.rcb: RailChatBot = RailChatBot()
@@ -892,7 +892,7 @@ class DiRailChatBot(DiSkillV2):
         self.rcb.learn(ear)
 
 
-class DiBlueCrystal(DiSkillV2):
+class DiBlueCrystal(Skill):
     def __init__(self):
         super().__init__()
         # language learning game skill
@@ -1000,7 +1000,7 @@ class DiBlueCrystal(DiSkillV2):
         self._keyList = list(self._categories[self._categoryIndex].keys())
 
 
-class DiHoneyBunny(DiSkillV2):
+class DiHoneyBunny(Skill):
     def __init__(self):
         super().__init__()  # Call the parent class constructor
         self.regex_util: RegexUtil = RegexUtil()
@@ -1034,7 +1034,7 @@ class DiHoneyBunny(DiSkillV2):
                 self.algPartsFusion(4, APSad(self.responses.getAResponse().replace("user", self.user)))
 
 
-class DiAlarmer(DiSkillV2):
+class DiAlarmer(Skill):
     def __init__(self):
         super().__init__()
         self.off: Responder = Responder("alarm off", "cancel alarm")
@@ -1061,7 +1061,7 @@ class DiAlarmer(DiSkillV2):
             self.setSimpleAlg("beep beep beep")
 
 
-class DiMemoryGame(DiSkillV2):
+class DiMemoryGame(Skill):
     def __init__(self):
         super().__init__()
         self.score = 0
@@ -1091,7 +1091,7 @@ class DiMemoryGame(DiSkillV2):
                     self.score = 0
 
 
-class DiOneWorder(DiSkillV2):
+class DiOneWorder(Skill):
     def __init__(self, phrase: str = "chi"):
         super().__init__()  # Call the superclass constructor
         self.cry: str = f'{phrase} '
@@ -1137,7 +1137,7 @@ class DiOneWorder(DiSkillV2):
         return result
 
 
-class DiAware(DiSkillV2):
+class DiAware(Skill):
     def __init__(self, chobit: Chobits, name: str, summoner="user"):
         super().__init__()
         self.chobit: Chobits = chobit
@@ -1194,7 +1194,7 @@ class DiAware(DiSkillV2):
                 self.setSimpleAlg(self.replies.getAResponse())
 
 
-class DiBlabberV3(DiSkillV2):
+class DiBlabberV3(Skill):
     def __init__(self, memory_size: int = 9, reply_chance: int = 90):
         super().__init__()
         self.npc: AXNPC2 = AXNPC2(memory_size, reply_chance)
@@ -1218,7 +1218,7 @@ class DiBlabberV3(DiSkillV2):
         self.getKokoro().grimoireMemento.simpleSave("blabberv3", self.splitter.stringBuilder(self.npc.responder.queue))
 
 
-class DiBlabberV4(DiSkillV2):
+class DiBlabberV4(Skill):
     def __init__(self, responder: Responder, memory_size: int = 15, reply_chance: int = 90, ):
         super().__init__()
         self.npc: AXNPC2 = AXNPC2(memory_size, reply_chance)
@@ -1268,7 +1268,7 @@ class DiBlabberV4(DiSkillV2):
         self.getKokoro().grimoireMemento.simpleSave("blabberv4", self.splitter.stringBuilder(self.npc.responder.queue))
 
 
-class DiBlabberV5(DiSkillV2):
+class DiBlabberV5(Skill):
     def __init__(self, memory_size: int = 15, reply_chance: int = 90):
         super().__init__()
         self.npc: AXNPC2 = AXNPC2(memory_size, reply_chance)
@@ -1316,7 +1316,7 @@ class DiBlabberV5(DiSkillV2):
         self.npc.learn(self._funnel)
 
 
-class DiBurstEliza(DiSkillV2):
+class DiBurstEliza(Skill):
     def __init__(self):
         super().__init__()
         self.eliza: Eliza = Eliza()
@@ -1344,7 +1344,7 @@ class DiBurstEliza(DiSkillV2):
             self.setSimpleAlg(self.eliza.respond(ear))
 
 
-class DiDeducer(DiSkillV2):
+class DiDeducer(Skill):
     def __init__(self, deducer: ElizaDeducer):
         super().__init__()
         self.rcb: RailChatBot = RailChatBot()
@@ -1384,7 +1384,7 @@ class DiDeducer(DiSkillV2):
         self.rcb.learnV2(ear, self.elizaDeducer)
 
 
-class DiBlabberV6(DiSkillV2):
+class DiBlabberV6(Skill):
     def __init__(self, funnel: AXFunnelResponder):
         super().__init__()
         self.funnel: AXFunnelResponder = funnel
@@ -1395,7 +1395,7 @@ class DiBlabberV6(DiSkillV2):
             self.setSimpleAlg(n)
 
 
-class DiNoteTaker(DiSkillV2):
+class DiNoteTaker(Skill):
     def __init__(self):
         super().__init__()
         self.notes: Notes = Notes()
@@ -1591,7 +1591,7 @@ class APSad(Mutatable):
         return APSad(DeepCopier().copyList(self.sentences))
 
 
-class DiBurperV2(DiSkillV2):
+class DiBurperV2(Skill):
     def __init__(self, burps_per_hour: int = 3):
         self._burpsPerHour = 2
         if 60 > burps_per_hour > 0:
@@ -1632,7 +1632,7 @@ class DiBurperV2(DiSkillV2):
             self.algPartsFusion(4, APHappy(self._responder1.getAResponse()))
 
 
-class DiBicameral(DiSkillV2):
+class DiBicameral(Skill):
     def __init__(self):
         super().__init__()
         self.msgCol: TimedMessages = TimedMessages()
@@ -1653,7 +1653,7 @@ class DiBicameral(DiSkillV2):
         self.getKokoro().toHeart["dibicameral"] = "null"
 
 
-class DiYandere(DiSkillV2):
+class DiYandere(Skill):
     """
     bica = DiBicameral()
     app.brain.logicChobit.addSkill(bica)
@@ -1734,7 +1734,7 @@ class DiYandere(DiSkillV2):
             self.algPartsFusion(4, APVerbatim(tempList))
 
 
-class DiSkillBundle(DiSkillV2):
+class DiSkillBundle(Skill):
     def __init__(self):
         super().__init__()
         self.axSkillBundle: AXSkillBundle = AXSkillBundle()
@@ -1754,10 +1754,10 @@ class DiSkillBundle(DiSkillV2):
         self.axSkillBundle.add_skill(skill)
 
 
-class GamiPlus(DiSkillV2):
-    def __init__(self, skill: DiSkillV2, ax_gamification: AXGamification, gain: int):
+class GamiPlus(Skill):
+    def __init__(self, skill: Skill, ax_gamification: AXGamification, gain: int):
         super().__init__()
-        self.skill: DiSkillV2 = skill
+        self.skill: Skill = skill
         self.ax_gamification: AXGamification = ax_gamification
         self.gain: int = gain
 
@@ -1774,10 +1774,10 @@ class GamiPlus(DiSkillV2):
         self.skill.setKokoro(kokoro)
 
 
-class GamiMinus(DiSkillV2):
-    def __init__(self, skill: DiSkillV2, ax_gamification: AXGamification, cost: int):
+class GamiMinus(Skill):
+    def __init__(self, skill: Skill, ax_gamification: AXGamification, cost: int):
         super().__init__()
-        self.skill: DiSkillV2 = skill
+        self.skill: Skill = skill
         self.ax_gamification: AXGamification = ax_gamification
         self.cost: int = cost
 
@@ -1821,7 +1821,7 @@ class DiGamificationSkillBundle(DiSkillBundle):
         return self.ax_gamification
 
 
-class DiGamificationScouter(DiSkillV2):
+class DiGamificationScouter(Skill):
     def __init__(self, ax_gamification):
         super().__init__()
         self.lim: int = 2  # minimum for mood
@@ -1841,7 +1841,7 @@ class DiGamificationScouter(DiSkillV2):
             self.algPartsFusion(4, APSad(self.no_mood.getAResponse()))
 
 
-class DiImprint_PT1(DiSkillV2):
+class DiImprint_PT1(Skill):
     """
     add skill:
         brain.logicChobit.addSkills(DiImprint_PT1(app.brain.logicChobit), DiImprint_PT2())
@@ -1871,7 +1871,7 @@ class DiImprint_PT1(DiSkillV2):
             self.chobit.think(line, "", "")
 
 
-class DiImprint_PT2(DiSkillV2):
+class DiImprint_PT2(Skill):
     # complementary skill to DiImprint_PT1
     """
     add skill:
@@ -1889,7 +1889,7 @@ class DiImprint_PT2(DiSkillV2):
             self.setSimpleAlg("imprinting")
 
 
-class DiImprint_recorder(DiSkillV2):
+class DiImprint_recorder(Skill):
     #  records imprint file, complementary skill for DiImprint
     def __init__(self):
         super().__init__()
@@ -1938,7 +1938,7 @@ class APSleep(Mutatable):
         return self.done
 
 
-class DiSleep(DiSkillV2):
+class DiSleep(Skill):
     def __init__(self, sleep_duration_minutes, wakeners):
         super().__init__()  # Call the superclass constructor
         self.sleep_duration_minutes = sleep_duration_minutes
@@ -1957,7 +1957,7 @@ class DiSleep(DiSkillV2):
             self.algPartsFusion(2, announce, ap_sleep)
 
 
-class DiTriggers(DiSkillV2):
+class DiTriggers(Skill):
     def __init__(self, brain):
         super().__init__()
         self.triggers: UniqueItemsPriorityQue = UniqueItemsPriorityQue()
@@ -1982,7 +1982,7 @@ class DiTriggers(DiSkillV2):
                 self.setSimpleAlg(element)
 
 
-class DiPrincess(DiSkillV2):
+class DiPrincess(Skill):
     """
     echo sentence // learns sentence
     princess // output sentence, yes, more, again to repeat princess command

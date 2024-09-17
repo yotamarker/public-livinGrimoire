@@ -4,10 +4,10 @@ import threading
 from subprocess import call  # for calc skill DiCalculator
 
 from AXPython import AXFunnel
-from LivinGrimoire23 import DiSkillV2
+from LivinGrimoire23 import Skill
 
 
-class ShorniSplash(DiSkillV2):
+class ShorniSplash(Skill):
     def __init__(self):
         super().__init__()
         self._result: str = ""
@@ -164,7 +164,7 @@ class DaRSSFeed(ShorniSplash):
             self._list_result = []
 
 
-class DaExePath(DiSkillV2):
+class DaExePath(Skill):
     def __init__(self):
         super().__init__()
         self._funnel: AXFunnel = AXFunnel()

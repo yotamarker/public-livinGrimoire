@@ -595,9 +595,9 @@ class SkillHubAlgDispenser:
        moods can be used for specific cases to change behavior of the AGI, for example low energy state
        for that use (moodAlg)"""
 
-    def __init__(self, *skillsParams: DiSkillV2):
+    def __init__(self, *skillsParams: Skill):
         super().__init__()
-        self._skills: list[DiSkillV2] = []
+        self._skills: list[Skill] = []
         self._activeSkill: int = 0
         self._tempN: Neuron = Neuron()
         self._kokoro = Kokoro(AbsDictionaryDB())
@@ -610,7 +610,7 @@ class SkillHubAlgDispenser:
         for skill in self._skills:
             skill.setKokoro(self._kokoro)
 
-    def addSkill(self, skill: DiSkillV2) -> SkillHubAlgDispenser:
+    def addSkill(self, skill: Skill) -> SkillHubAlgDispenser:
         # builder pattern
         skill.setKokoro(self._kokoro)
         self._skills.append(skill)
@@ -1981,7 +1981,7 @@ class AXContextCmd:
 
 
 # command auxiliary modules collection end
-class DiSysOut(DiSkillV2):
+class DiSysOut(Skill):
     # Override
     def input(self, ear: str, skin: str, eye: str):
         if not ear == "" and not ear.__contains__("#"):
@@ -3414,8 +3414,8 @@ class AlgorithmV2:
 
 
 class AXSkillBundle:
-    def __init__(self, *skills_params: DiSkillV2):
-        self.skills: list[DiSkillV2] = []
+    def __init__(self, *skills_params: Skill):
+        self.skills: list[Skill] = []
         self.tempN: Neuron = Neuron()
         self.kokoro: Kokoro = Kokoro(AbsDictionaryDB())
 

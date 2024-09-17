@@ -139,62 +139,6 @@ class APVerbatim(Mutatable):
         return self.at >= len(self.sentences)
 
 
-class CldBool:
-    # cloudian : this class is used to provide shadow reference to a boolean variable
-    def __init__(self):
-        self.modeActive = False
-
-    @property
-    def getModeActive(self) -> bool:
-        return self.modeActive
-
-    def setModeActive(self, modeActive: bool):
-        self.modeActive = modeActive
-
-
-class APCldVerbatim(Mutatable):
-    """this algorithm part says each string param verbatim"""
-
-    def __init__(self, cldBool: CldBool, *words):
-        super().__init__()
-        self.sentences = []
-        self.at = 0
-        self.cldBool = cldBool
-
-        try:
-            if isinstance(words[0], list):
-                self.sentences = words[0]
-                self.cldBool.setModeActive(True)
-            else:
-                for i in range(len(words)):
-                    self.sentences.append(words[i])
-                self.cldBool.setModeActive(True)
-        except IndexError:
-            # Handle the case where args[0] does not exist
-            self.at = 30
-        except AttributeError:
-            # Handle the case where self.sentences is not initialized
-            self.at = 30
-        except Exception as e:
-            # Log or handle other exceptions
-            print(f"An unexpected error occurred: {e}")
-            self.at = 30
-
-    # Override
-    def action(self, ear: str, skin: str, eye: str) -> str:
-        axnStr = ""
-        if self.at < len(self.sentences):
-            axnStr = self.sentences[self.at]
-            self.at += 1
-
-        self.cldBool.setModeActive(not (self.at >= len(self.sentences)))
-        return axnStr
-
-    # Override
-    def completed(self) -> bool:
-        return self.at >= len(self.sentences)
-
-
 # A step-by-step plan to achieve a goal
 class Algorithm:
 
@@ -234,48 +178,13 @@ class Neuron:
         return None
 
 
-''' DISKILLUTILS CLASS '''
+''' Skill CLASS '''
 
 
-class DISkillUtils:
-    # alg part based algorithm building methods
-    # var args param
-    # noinspection PyMethodMayBeStatic
-    def algBuilder(self, *itte: Mutatable) -> Algorithm:
-        # returns an algorithm built with the algPart varargs
-        algParts1: list[Mutatable] = []
-        for i in range(0, len(itte)):
-            algParts1.append(itte[i])
-        algorithm: Algorithm = Algorithm(algParts1)
-        return algorithm
-
-    # String based algorithm building methods
-    def simpleVerbatimAlgorithm(self, *sayThis) -> Algorithm:
-        # returns alg that says the word string (sayThis)
-        return self.algBuilder(APVerbatim(*sayThis))
-
-    # String part based algorithm building methods with cloudian (shallow ref object to inform on alg completion)
-    def simpleCloudiandVerbatimAlgorithm(self, cldBool: CldBool, *sayThis) -> Algorithm:
-        # returns alg that says the word string (sayThis)
-        return self.algBuilder(APCldVerbatim(cldBool, *sayThis))
-
-    # noinspection PyMethodMayBeStatic
-    def strContainsList(self, str1: str, items: list[str]) -> str:
-        # returns the 1st match between words in a string and values in a list.
-        for temp in items:
-            if str1.count(temp) > 0:
-                return temp
-        return ""
-
-
-''' DISKILLV2 CLASS '''
-
-
-class DiSkillV2:
+class Skill:
     def __init__(self):
         # The variables start with an underscore (_) because they are protected
-        self._kokoro = Kokoro(AbsDictionaryDB())  # consciousness, shallow ref class to enable interskill communications
-        self._diSkillUtils = DISkillUtils()
+        self._kokoro = None  # consciousness, shallow ref class to enable interskill communications
         self._outAlg: Algorithm  # skills output
         self._outAlg = None
         self._outpAlgPriority: int = -1  # defcon 1->5
@@ -314,7 +223,7 @@ class DiSkillV2:
         temp: list[str] = []
         for i in range(0, len(sayThis)):
             temp.append(sayThis[i])
-        self._outAlg = self._diSkillUtils.simpleVerbatimAlgorithm(temp)
+        self._outAlg = self.simpleVerbatimAlgorithm(temp)
         self._outpAlgPriority = priority  # 1->5 1 is the highest algorithm priority
 
     def setSimpleAlg(self, *sayThis: str):
@@ -324,13 +233,13 @@ class DiSkillV2:
         temp: list[str] = []
         for i in range(0, len(sayThis)):
             temp.append(sayThis[i])
-        self._outAlg = self._diSkillUtils.simpleVerbatimAlgorithm(temp)
+        self._outAlg = self.simpleVerbatimAlgorithm(temp)
         self._outpAlgPriority = 4  # 1->5 1 is the highest algorithm priority
 
     def setVebatimAlgFromList(self, priority: int, sayThis: list[str]):
         # build a simple output algorithm to speak string by string per think cycle
         # uses list param
-        self._outAlg = self._diSkillUtils.algBuilder(APVerbatim(sayThis))
+        self._outAlg = self.algBuilder(APVerbatim(sayThis))
         self._outpAlgPriority = priority  # 1->5 1 is the highest algorithm priority
 
     def algPartsFusion(self, priority: int, *algParts: Mutatable):
@@ -345,8 +254,33 @@ class DiSkillV2:
         # is an algorithm pending?
         return self._outAlg is not None
 
+    # skill utils
+    # alg part based algorithm building methods
+    # var args param
+    # noinspection PyMethodMayBeStatic
+    def algBuilder(self, *itte: Mutatable) -> Algorithm:
+        # returns an algorithm built with the algPart varargs
+        algParts1: list[Mutatable] = []
+        for i in range(0, len(itte)):
+            algParts1.append(itte[i])
+        algorithm: Algorithm = Algorithm(algParts1)
+        return algorithm
 
-class DiHelloWorld(DiSkillV2):
+    # String based algorithm building methods
+    def simpleVerbatimAlgorithm(self, *sayThis) -> Algorithm:
+        # returns alg that says the word string (sayThis)
+        return self.algBuilder(APVerbatim(*sayThis))
+
+    # noinspection PyMethodMayBeStatic
+    def strContainsList(self, str1: str, items: list[str]) -> str:
+        # returns the 1st match between words in a string and values in a list.
+        for temp in items:
+            if str1.count(temp) > 0:
+                return temp
+        return ""
+
+
+class DiHelloWorld(Skill):
     # Override
     def input(self, ear: str, skin: str, eye: str):
         if ear == "hello":
@@ -446,15 +380,6 @@ class Fusion:
         return self._result
 
 
-''' Thinkable CLASS '''
-
-
-class Thinkable:
-    def think(self, ear: str, skin: str, eye: str) -> str:
-        """override me"""
-        return ""
-
-
 '''*********
  *intro *
  ********
@@ -541,11 +466,11 @@ class Brain:
 ''' Chobits CLASS '''
 
 
-class Chobits(Thinkable):
+class Chobits:
 
     def __init__(self):
         super().__init__()
-        self._dClasses: list[DiSkillV2] = []  # _ is a private access modifier
+        self._dClasses: list[Skill] = []  # _ is a private access modifier
         self._fusion: Fusion = Fusion()
         self._noiron: Neuron = Neuron()
         self._kokoro: Kokoro = Kokoro(AbsDictionaryDB())  # soul
@@ -557,7 +482,7 @@ class Chobits(Thinkable):
     def setDatabase(self, absDictionaryDB: AbsDictionaryDB):
         self._kokoro = Kokoro(absDictionaryDB)
 
-    def addSkill(self, skill: DiSkillV2) -> Chobits:
+    def addSkill(self, skill: Skill) -> Chobits:
         # add a skill (builder design patterned func))
         skill.setKokoro(self._kokoro)
         self._dClasses.append(skill)
@@ -567,20 +492,19 @@ class Chobits(Thinkable):
         # remove all skills
         self._dClasses.clear()
 
-    def addSkills(self, *skills: DiSkillV2):
+    def addSkills(self, *skills: Skill):
         for skill in skills:
             skill.setKokoro(self._kokoro)
             self._dClasses.append(skill)
 
-    def removeSkill(self, skill: DiSkillV2):
+    def removeSkill(self, skill: Skill):
         if skill not in self._dClasses:
             return
         self._dClasses.remove(skill)
 
-    def containsSkill(self, skill: DiSkillV2) -> bool:
+    def containsSkill(self, skill: Skill) -> bool:
         return self._dClasses.__contains__(skill)
 
-    # override
     def think(self, ear: str, skin: str, eye: str) -> str:
         for dCls in self._dClasses:
             self.inOut(dCls, ear, skin, eye)
@@ -590,7 +514,7 @@ class Chobits(Thinkable):
     def getSoulEmotion(self) -> str:
         return self._fusion.getEmot()
 
-    def inOut(self, dClass: DiSkillV2, ear: str, skin: str, eye: str):
+    def inOut(self, dClass: Skill, ear: str, skin: str, eye: str):
         dClass.input(ear, skin, eye)  # new
         dClass.output(self._noiron)
 

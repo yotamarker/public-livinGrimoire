@@ -2,7 +2,7 @@
 
 ***
 
-**Di** : DiSkillV2 (LivinGrimoire skill class names) should start with Di.
+**Di** : Skill (LivinGrimoire skill class names) should start with Di.
 for example DiHelloWorld.
 
 ***

@@ -1,15 +1,14 @@
 1. AbsDictionaryDB
 2. Mutatable
-3. APSay:Mutatable
-4. APVerbatim:Mutatable
-5. GrimoireMemento
-6. Algorithm
-7. Kokoro
-8. Neuron
-9. Skill
-10. DiHelloWorld:DiSkillV2 // logical skill for testing
-11. Cerabellum
-12. Fusion
-13. Chobits:Thinkable
-14. Brain
-15. DiSysOut // hardware skill for testing
+3. APVerbatim:Mutatable
+4. GrimoireMemento
+5. Algorithm
+6. Kokoro
+7. Neuron
+8. Skill
+9. DiHelloWorld:Skill // logical skill for testing
+10. Cerabellum
+11. Fusion
+12. Chobits:Thinkable
+13. Brain
+14. DiSysOut:Skill // hardware skill for testing

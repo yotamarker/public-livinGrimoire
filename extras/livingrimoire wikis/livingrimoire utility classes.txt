@@ -1,6 +1,0 @@
-DiSkillUtils
-this class is an attribute of the DiSkillV2
-this class has methods to ease generating common algorithms
-such as speaking output
-
-for more refer to the DiHello world class (usage example).

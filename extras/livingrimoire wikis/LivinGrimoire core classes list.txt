@@ -6,7 +6,7 @@
 6. Algorithm
 7. Kokoro
 8. Neuron
-9. DiSkillV2
+9. Skill
 10. DiHelloWorld:DiSkillV2 // logical skill for testing
 11. Cerabellum
 12. Fusion

@@ -9,6 +9,6 @@
 9. DiHelloWorld:Skill // logical skill for testing
 10. Cerabellum
 11. Fusion
-12. Chobits:Thinkable
+12. Chobits
 13. Brain
 14. DiSysOut:Skill // hardware skill for testing

@@ -1,14 +1,10 @@
 from __future__ import annotations
 
-from enum import Enum
-
 from LivinGrimoire23 import *
 from enum import Enum, auto
-import datetime
-from datetime import timedelta
 import calendar
 import re
-from typing import Match, Pattern, Iterable
+from typing import Match, Pattern
 from collections import Counter
 from math import sqrt
 import random
@@ -471,11 +467,6 @@ class RegexUtil:
     def stripAwayNumbers(self, str1: str) -> str:
         return re.sub(r'\d+', '', str1)
 
-
-''' --------------- TIMEGATE --------------- '''
-import time
-import datetime
-
 ''' --------------- TIMEGATE --------------- '''
 import time
 import datetime
@@ -692,7 +683,6 @@ class AXFriend:
         self.myName: str = "chi"
         self._friendName: str = "null"
         self._needFriend: bool = True
-        self.diSkillUtil: DISkillUtils = DISkillUtils()
         self._friendIsActive: bool = False
 
     def reset(self):
@@ -1183,6 +1173,20 @@ class DrawRndDigits:
         self.strings.clear()
         for t in self._stringsSource:
             self.strings.insert(t)
+
+    def resetIfEmpty(self):
+        if len(self.strings.queue) == 0:
+            self.reset()
+
+    def containsElement(self, element: int) -> bool:
+        return self._stringsSource.__contains__(element)
+
+    def CurrentlyContainsElement(self, element: int) -> bool:
+        return self.strings.contains(element)
+
+    def removeItem(self, element: int):
+        if self.strings.contains(element):
+            self.strings.removeItem(element)
 
 
 class Responder:

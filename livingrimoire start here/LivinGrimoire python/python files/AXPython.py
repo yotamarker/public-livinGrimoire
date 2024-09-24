@@ -523,7 +523,7 @@ class TimeGate:
         # used to measure code snippets run time
         now: datetime.date = datetime.datetime.now()
         diff: datetime.timedelta = self.checkPoint - now
-        return diff.total_seconds()
+        return int(diff.total_seconds())
 
     def close(self):
         self.openedGate: datetime.date = datetime.datetime.now()
@@ -1173,6 +1173,9 @@ class DrawRndDigits:
         self.strings.clear()
         for t in self._stringsSource:
             self.strings.insert(t)
+
+    def isEmptied(self) -> bool:
+        return self.strings.size() == 0
 
     def resetIfEmpty(self):
         if len(self.strings.queue) == 0:

@@ -1,0 +1,25 @@
+the LivinGrimoirLight is a light version of the LivinGrimoire software design pattern,
+meant to run on Arduino/Elegoo microcontrollers.
+
+it's written in Arduino C++.
+
+only one line of code is needed to add a skill to the Arduino(multiple skills can be added).
+
+using the LivinGrimoireLight on one's Arduino solves problems like spaghetti code,
+and code debt.
+
+a livingrimoirelight skill can be anything from lighting a LED, moving a motor to reading
+a temperature sensor.
+
+instead of diving into the code, it suffices to use the one line of code to add the skill
+to the Arduino.
+
+**you can check the LGL out at:**
+
+https://github.com/yotamarker/public-livinGrimoire/tree/master/livingrimoire%20start%20here/LivinGrimoire%20Arduino%20C%2B%2B
+
+there is also a hello world example using a Led.
+
+you can find/post LGL skills at the LGL subforum:
+
+https://www.yotamarker.com/f5-livingrimoirelight

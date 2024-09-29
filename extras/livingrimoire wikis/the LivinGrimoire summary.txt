@@ -72,37 +72,18 @@ add his skill to the living grimoire instance using 1 line of code
 
 https://github.com/yotamarker/public-livinGrimoire/blob/master/livingrimoire%20start%20here/LivinGrimoire%20python/python%20files/main.py
 
-## the Living Grimoire classes list
-
-1. AbsDictionaryDB
-2. Mutatable
-3. APSay:Mutatable
-4. APVerbatim:Mutatable
-5. GrimoireMemento
-6. Algorithm
-7. CldBool
-8. APCldVerbatim:APVerbatim
-9. Kokoro
-10. Neuron
-11. DiSkillUtils
-12. DiSkillV2
-13. DiHelloWorld:DiSkillV2 // logical skill for testing
-14. Cerabellum
-15. Fusion
-16. Thinkable 
-17. Chobits:Thinkable
-18. Brain
-19. DiSysOut // hardware skill for testing
-
 books about the LivinGrimoire :
-![](https://i.ibb.co/61fWWnv/3d-Mockup.png)
+
 1 the living grimoire by Moti Barski : a detailed explanation with examples
 about the living grimoire project
 
 https://github.com/yotamarker/public-livinGrimoire/blob/master/livingrimoire%20start%20here/the%20living%20grimoire.pdf
 
-![](https://i.ibb.co/QbfMkfp/Moti-3-D-Mockup.jpg)
+![](https://i.ibb.co/61fWWnv/3d-Mockup.png)
+
 2 Auxiliary Modules for the livingrimoire by Moti Barski:
 modules that ease writing skills and make the waifubot more human
+
+![](https://i.ibb.co/b7cKTtL/Moti-3-D-Mockup.jpg)
 
 https://github.com/yotamarker/public-livinGrimoire/blob/master/livingrimoire%20start%20here/Auxiliary%20Modules%20for%20the%20livingrimoire.pdf

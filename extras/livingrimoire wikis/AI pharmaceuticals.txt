@@ -1,8 +1,0 @@
-AI pharmaceuticals are LivinGrimoire skills, with shallow reference to the external environment of a livingrimoire object.
-naming convention: Pill_skillName
-
-example 1 : a pill skill can change the interval duration of a tick event, which triggers the livingrimoire.
-example 2 : a pill skill can change input before it reaches the livingrimoire Brain or Chobit class.
-
-AI drugs can also be made to effect specific skills, so long as the effected skills are equipped with some form of receptor code to react
-with the drug's special input.

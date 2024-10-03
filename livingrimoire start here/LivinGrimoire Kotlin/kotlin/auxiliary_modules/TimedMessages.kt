@@ -10,12 +10,11 @@ class TimedMessages {
         private set
 
     fun addMSG(ear: String) {
-        val ru1 = RegexUtil()
-        val tempMSG = ru1.extractRegex("(?<=remind me to).*?(?=at)", ear)
+        val tempMSG = RegexUtil.extractRegex("(?<=remind me to).*?(?=at)", ear)
         if (tempMSG.isEmpty()) {
             return
         }
-        val timeStamp: String = ru1.extractRegex(enumRegexGrimoire.SimpleTimeStamp, ear)
+        val timeStamp: String = RegexUtil.extractRegex(enumRegexGrimoire.SimpleTimeStamp, ear)
         if (timeStamp.isEmpty()) {
             return
         }

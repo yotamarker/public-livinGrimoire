@@ -5,8 +5,8 @@ import java.util.*
 import java.util.regex.Pattern
 
 // returns expression of type theRegex from the string str2Check
-class RegexUtil {
-    var regexDictionary: Hashtable<enumRegexGrimoire, String> = Hashtable<enumRegexGrimoire, String>()
+object RegexUtil {
+    private var regexDictionary = Hashtable<enumRegexGrimoire, String>()
 
     init {
         regexDictionary[enumRegexGrimoire.Email] = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}"
@@ -24,6 +24,11 @@ class RegexUtil {
         regexDictionary[enumRegexGrimoire.IPV4] = "([0-9].){4}[0-9]*"
         regexDictionary[enumRegexGrimoire.Domain] = "[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}"
         regexDictionary[enumRegexGrimoire.Number] = "\\d+(\\.\\d+)?"
+        regexDictionary[enumRegexGrimoire.DuplicateWord] = "\\b(\\w+)\\b(?=.*\\b\\1\\b)"
+        regexDictionary[enumRegexGrimoire.FirstWord] = "^\\w+"
+        regexDictionary[enumRegexGrimoire.LastWord] = "\\w+$"
+        regexDictionary[enumRegexGrimoire.Surname] = "\\s+[^\\s]+"
+        regexDictionary[enumRegexGrimoire.RealNumber] = "[-+]?[0-9]*[.,][0-9]*" // -30.77 / 40.05
     }
 
     fun extractRegex(theRegex: String, str2Check: String): String {
@@ -38,7 +43,7 @@ class RegexUtil {
     }
 
     fun extractRegex(theRegex: enumRegexGrimoire, str2Check: String): String {
-        val checkRegex = regexDictionary[theRegex]?.let { Pattern.compile(it) } ?: return ""
+        val checkRegex = Pattern.compile(regexDictionary[theRegex]!!)
         val regexMatcher = checkRegex.matcher(str2Check)
         while (regexMatcher.find()) {
             if (regexMatcher.group().isNotEmpty()) {
@@ -61,10 +66,11 @@ class RegexUtil {
         return list
     }
 
+    @Suppress("unused")
     fun extractAllRegexes(theRegex: enumRegexGrimoire, str2Check: String): ArrayList<String> {
         // return a list of all matches
         val list = ArrayList<String>()
-        val checkRegex = regexDictionary[theRegex]?.let { Pattern.compile(it) } ?: return list
+        val checkRegex = Pattern.compile(regexDictionary[theRegex]!!)
         val regexMatcher = checkRegex.matcher(str2Check)
         while (regexMatcher.find()) {
             if (regexMatcher.group().isNotEmpty()) {
@@ -78,7 +84,6 @@ class RegexUtil {
         // "[-+]?[0-9]{1,13}(\\.[0-9]*)?" for double numbers
         val theRegex = "[-+]?[0-9]{1,13}"
         val result = Point(0, 0)
-        val list = ArrayList<String>()
         val checkRegex = Pattern.compile(theRegex)
         val regexMatcher = checkRegex.matcher(str2Check)
         while (regexMatcher.find()) {
@@ -90,67 +95,5 @@ class RegexUtil {
         phase2 = extractRegex(enumRegexGrimoire.Number, phase2)
         result.x = phase2.toInt()
         return result
-    }
-
-    fun contactRegex(str2Check: String): String {
-        // return a list of all matches
-        val theRegex = "(?<=contact)(.*)"
-        val list = ArrayList<String>()
-        val checkRegex = Pattern.compile(theRegex)
-        val regexMatcher = checkRegex.matcher(str2Check)
-        while (regexMatcher.find()) {
-            if (regexMatcher.group().isNotEmpty()) {
-                return regexMatcher.group().trim { it <= ' ' }
-            }
-        }
-        return ""
-    }
-
-    fun duplicateRegex(str2Check: String): String {
-        // return a list of all matches
-        // String theRegex = "\\b(\\w+)(\\b\\W+\\b\\1\\b)*";
-        val theRegex = "\\b([\\w\\s']+) \\1\\b" // set to 1 repeat of a word like hadoken hadoken
-        val list = ArrayList<String>()
-        val checkRegex = Pattern.compile(theRegex)
-        val regexMatcher = checkRegex.matcher(str2Check)
-        while (regexMatcher.find()) {
-            if (regexMatcher.group().isNotEmpty()) {
-                return uniqueWord(regexMatcher.group().trim { it <= ' ' })
-            }
-        }
-        return ""
-    }
-
-    fun uniqueWord(str: String): String {
-        val list = ArrayList<String>()
-        val s = str.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        var p = s[0]
-        list.add(p)
-        for (i in 1 until s.size) {
-            if (p !== s[i]) {
-                list.add(s[i])
-            }
-            p = s[i]
-        } // i
-        return list[0]
-    }
-
-    fun afterWord(word: String, str2Check: String): String {
-        // return a list of all matches
-        val theRegex = "(?<=$word)(.*)"
-        val list = ArrayList<String>()
-        val checkRegex = Pattern.compile(theRegex)
-        val regexMatcher = checkRegex.matcher(str2Check)
-        while (regexMatcher.find()) {
-            if (regexMatcher.group().isNotEmpty()) {
-                return regexMatcher.group().trim { it <= ' ' }
-            }
-        }
-        return ""
-    }
-
-    fun firstWord(str2Check: String): String {
-        val arr = str2Check.split(" ".toRegex(), limit = 2).toTypedArray()
-        return arr[0]
     }
 }

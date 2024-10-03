@@ -1,7 +1,6 @@
 package auxiliary_modules
 
 class Prompt {
-    var regexUtil = RegexUtil()
     var kv = AXKeyValuePair()
     var prompt = ""
     private var regex = ""
@@ -11,7 +10,7 @@ class Prompt {
     }
 
     fun process(in1: String): Boolean {
-        kv.value = regexUtil.extractRegex(regex, in1)
+        kv.value = RegexUtil.extractRegex(regex, in1)
         return kv.value.isEmpty() // is prompt still active?
     }
 

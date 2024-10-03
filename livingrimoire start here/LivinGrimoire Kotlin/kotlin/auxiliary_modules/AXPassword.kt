@@ -10,7 +10,6 @@ class AXPassword {
     // return remaining login attempts
     var loginAttempts = maxAttempts
         private set
-    private val regexUtil = RegexUtil()
 
     // event feature
     // get the code during weekly/monthly event after it has been randomized
@@ -23,7 +22,7 @@ class AXPassword {
             return false
         }
         if (ear.contains("code")) {
-            val temp: String = regexUtil.extractRegex(enumRegexGrimoire.Integer, ear)
+            val temp: String = RegexUtil.extractRegex(enumRegexGrimoire.Integer, ear)
             if (!temp.isEmpty()) {
                 codeEvent = temp.toInt()
                 return true
@@ -34,7 +33,7 @@ class AXPassword {
 
     fun openGate(ear: String) {
         if (ear.contains("code") && loginAttempts > 0) {
-            val noCode: String = regexUtil.extractRegex(enumRegexGrimoire.Integer, ear)
+            val noCode: String = RegexUtil.extractRegex(enumRegexGrimoire.Integer, ear)
             if (noCode.isEmpty()) {
                 return
             }

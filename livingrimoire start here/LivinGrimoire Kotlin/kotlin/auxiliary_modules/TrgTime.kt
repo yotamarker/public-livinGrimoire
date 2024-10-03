@@ -2,11 +2,10 @@ package auxiliary_modules
 
 class TrgTime {
     var t = "null"
-    var regexUtil = RegexUtil()
     var pl: TimeUtils = TimeUtils()
     private var alarm = true
     fun setTime(v1: String) {
-        t = regexUtil.extractRegex(enumRegexGrimoire.SimpleTimeStamp, v1)
+        t = RegexUtil.extractRegex(enumRegexGrimoire.SimpleTimeStamp, v1)
     }
 
     fun alarm(): Boolean {

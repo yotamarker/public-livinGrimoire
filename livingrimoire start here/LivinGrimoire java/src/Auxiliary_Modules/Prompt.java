@@ -1,7 +1,6 @@
 package Auxiliary_Modules;
 
 public class Prompt {
-    RegexUtil regexUtil = new RegexUtil();
     public AXKeyValuePair kv = new AXKeyValuePair();
     String prompt = "";
     String regex = "";
@@ -17,7 +16,7 @@ public class Prompt {
         this.prompt = prompt;
     }
     public Boolean process(String in1){
-        kv.setValue(regexUtil.extractRegex(regex,in1));
+        kv.setValue(RegexUtil.extractRegex(regex,in1));
         return kv.getValue().isEmpty(); // is prompt still active?
     }
 

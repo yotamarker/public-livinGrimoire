@@ -6,13 +6,12 @@ public class AXPassword {
     private Boolean isOpen = false;
     private int maxAttempts = 3;
     private int loginAttempts = maxAttempts;
-    private final RegexUtil regexUtil = new RegexUtil();
     private int code = 0;
     public Boolean codeUpdate(String ear){
         // while the gate is toggled on, the password code can be changed
         if(!isOpen){return false;}
         if(ear.contains("code")){
-            String temp = regexUtil.extractRegex(enumRegexGrimoire.integer,ear);
+            String temp = RegexUtil.extractRegex(enumRegexGrimoire.integer,ear);
             if(!temp.isEmpty()){code = Integer.parseInt(temp);
             return true;}
         }
@@ -20,7 +19,7 @@ public class AXPassword {
     }
     public void openGate(String ear) {
         if (ear.contains("code") && (loginAttempts > 0)) {
-            String noCode = regexUtil.extractRegex(enumRegexGrimoire.integer, ear);
+            String noCode = RegexUtil.extractRegex(enumRegexGrimoire.integer, ear);
             if (noCode.isEmpty()) {
                 return;
             }

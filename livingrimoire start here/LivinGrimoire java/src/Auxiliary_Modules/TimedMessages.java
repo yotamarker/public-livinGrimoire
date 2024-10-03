@@ -10,10 +10,9 @@ public class TimedMessages {
     private String lastMSG = "nothing";
     private Boolean msg = false;
     public void addMSG(String ear){
-        RegexUtil ru1 = new RegexUtil();
-        String tempMSG = ru1.extractRegex("(?<=remind me to).*?(?=at)",ear);
+        String tempMSG = RegexUtil.extractRegex("(?<=remind me to).*?(?=at)",ear);
         if(tempMSG.isEmpty()){return;}
-        String timeStamp = ru1.extractRegex(enumRegexGrimoire.simpleTimeStamp,ear);
+        String timeStamp = RegexUtil.extractRegex(enumRegexGrimoire.simpleTimeStamp,ear);
         if(timeStamp.isEmpty()){return;}
         messages.put(timeStamp, tempMSG);
     }

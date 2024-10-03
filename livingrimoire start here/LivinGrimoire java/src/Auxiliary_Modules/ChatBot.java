@@ -33,7 +33,6 @@ public class ChatBot {
     * */
     protected RefreshQ sentences = new RefreshQ();
     protected Hashtable<String, RefreshQ> wordToList = new Hashtable<>(); // params
-    private RegexUtil regexUtil = new RegexUtil();
     protected Hashtable<String, String> allParamRef = new Hashtable<>();
     protected int paramLim = 5;
     protected RefreshQ loggedParams = new RefreshQ();
@@ -64,7 +63,7 @@ public class ChatBot {
 
     private String clearRecursion(String result) {
         ArrayList<String> params = new ArrayList<String>();
-        params = regexUtil.extractAllRegexes("(\\w+)(?= #)", result);
+        params = RegexUtil.extractAllRegexes("(\\w+)(?= #)", result);
         for (String strI : params) {
             UniqueItemSizeLimitedPriorityQueue temp = wordToList.get(strI);
             String s1 = temp.getRNDElement();
@@ -134,7 +133,7 @@ public class ChatBot {
     }
     public void learnParam(String s1){
         if (!s1.contains(conjuration)){return;}
-        String category = regexUtil.afterWord(conjuration,s1);
+        String category = RegexUtil.extractRegex("(?<=" + conjuration + ")(.*)",s1);
         if(!(wordToList.containsKey(category))){return;}
         String param = s1.replace(conjuration +" "+category,"").trim();
         wordToList.get(category).add(param);

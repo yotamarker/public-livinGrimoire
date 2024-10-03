@@ -4,8 +4,7 @@ public class ForcedLearn {
    // remembers key inputs because they start with keyword
    // also can dispense key inputs
     public String keyword = "say";
-    private LGFIFO<String> p1 = new LGFIFO<String>();
-    private RegexUtil ru = new RegexUtil();
+    private final LGFIFO<String> p1 = new LGFIFO<>();
     private int queLimit = 5;
 
     public int getQueLimit() {
@@ -17,7 +16,7 @@ public class ForcedLearn {
         this.queLimit = queLimit;
     }
     public void input(String in1){
-        if (keyword.equals(ru.firstWord(in1))){
+        if (keyword.equals(RegexUtil.extractRegex(enumRegexGrimoire.firstWord,in1))){
             p1.add(in1.replace(keyword,""));
             if (p1.size()>queLimit){
                 p1.poll();

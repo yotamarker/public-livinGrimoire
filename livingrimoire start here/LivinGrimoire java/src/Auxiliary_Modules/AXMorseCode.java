@@ -5,12 +5,12 @@ class AXMorseCode {
     public String toHuman(String msg) {return decoder(msg);}
     public static String code(String msg) {
         char[] arr = msg.toCharArray();
-        String result ="";
-        for (int i = 0; i < arr.length; i++) {
+        StringBuilder result = new StringBuilder();
+        for (char c : arr) {
 
-            result += charToMorse(arr[i]);
+            result.append(charToMorse(c));
         }
-        return result;
+        return result.toString();
     }
     private static String charToMorse(char x) {
         String result="";
@@ -63,15 +63,19 @@ class AXMorseCode {
     }
     public static String decoder(String msg) {
 
-        String morseChr ="";
-        String result = "";
+        StringBuilder morseChr = new StringBuilder();
+        StringBuilder result = new StringBuilder();
         char[] arr = msg.toCharArray();
-        for (int i = 0; i < arr.length; i++) {
-            if(arr[i]!='/') {morseChr += arr[i];}
-            else {result += morseCharToChar(morseChr);morseChr="";}
+        for (char c : arr) {
+            if (c != '/') {
+                morseChr.append(c);
+            } else {
+                result.append(morseCharToChar(morseChr.toString()));
+                morseChr = new StringBuilder();
+            }
         }
-        result = result.replaceAll("  ", " ");
-        return result;
+        result = new StringBuilder(result.toString().replaceAll("  ", " "));
+        return result.toString();
     }
     private static char morseCharToChar(String x) {
         char result='@';

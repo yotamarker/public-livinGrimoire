@@ -2,12 +2,11 @@ package Auxiliary_Modules;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Random;
 
 public class LGFIFO <T>{
     //first in first out queue
-    protected ArrayList<T> elements = new ArrayList<T>();
+    protected ArrayList<T> elements = new ArrayList<>();
     public void add(T item){
         elements.add(item);
     }
@@ -29,8 +28,7 @@ public class LGFIFO <T>{
         return result;
     }
     public void removeItem(T item){
-        if(elements.contains(item)){
-        elements.remove(item);}
+        elements.remove(item);
     }
     public void clear(){
         elements.clear();

@@ -3,20 +3,18 @@ package Auxiliary_Modules;
 import LivinGrimoire.Algorithm;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 // (*)Algorithm Dispensers
 public class AlgDispenser {
 // super class to output an algorithm out of a selection of algorithms
-    private ArrayList<Algorithm> algs = new ArrayList<Algorithm>();
+    private ArrayList<Algorithm> algs = new ArrayList<>();
     private int activeAlg = 0;
     private Random rand = new Random();
 
     public AlgDispenser(Algorithm...algorithms) {
-        for (Algorithm alg : algorithms)
-        {
-            algs.add(alg);
-        }
+        Collections.addAll(algs, algorithms);
     }
     public AlgDispenser addAlgorithm(Algorithm alg){
         // builder pattern

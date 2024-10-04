@@ -2,7 +2,7 @@ package Auxiliary_Modules;
 
 public class AXInputWaiter {
     // wait for any input
-    private TrgTolerance trgTolerance;
+    private final TrgTolerance trgTolerance;
 
     public AXInputWaiter(int tolerance) {
         this.trgTolerance = new TrgTolerance(tolerance);

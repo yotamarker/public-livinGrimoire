@@ -3,8 +3,8 @@ package Auxiliary_Modules;
 import LivinGrimoire.Algorithm;
 
 public class AlgorithmV2 {
-    private int priority = 4;
-    private Algorithm alg = null;
+    private int priority;
+    private Algorithm alg;
 
     public AlgorithmV2(int priority, Algorithm alg) {
         this.priority = priority;

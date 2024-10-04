@@ -14,7 +14,7 @@ public class ChangeDetector {
         if (ear.isEmpty()){
             return 0;
         }
-        int current = -1;
+        int current;
         if (ear.contains(A)){
             current = 1;
         } else if (ear.contains(B)) {

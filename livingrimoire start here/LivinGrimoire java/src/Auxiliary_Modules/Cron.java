@@ -6,8 +6,8 @@ public class Cron extends TrGEV3{
     int minutes; // minute interval between triggerings
     private final TimeUtils pl = new TimeUtils();
     private final TrgTime trgTime;
-    private String timeStamp = "";
-    private String initialTimeStamp = "";
+    private String timeStamp;
+    private String initialTimeStamp;
     private int limit;
     private int counter = 0;
 

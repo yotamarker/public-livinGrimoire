@@ -15,9 +15,9 @@ public class SkillHubAlgDispenser {
 //       (rndAlg , cycleAlg)
 //       moods can be used for specific cases to change behavior of the AGI, for example low energy state
 //       for that use (moodAlg)
-    private final ArrayList<Skill> skills = new ArrayList<Skill>();
+    private final ArrayList<Skill> skills = new ArrayList<>();
     private int activeSkill = 0;
-    private final Neuron tempN = new Neuron();;
+    private final Neuron tempN = new Neuron();
     private final Random rand = new Random();
     private Kokoro kokoro = new Kokoro(new AbsDictionaryDB());
     public SkillHubAlgDispenser(Skill...skillsParams) {

@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class Responder {
     // simple random response dispenser
-    private final ArrayList<String> responses = new ArrayList<String>();
+    private final ArrayList<String> responses = new ArrayList<>();
     private final Random rand = new Random();
     public Responder(String... replies) {
         Collections.addAll(responses, replies);

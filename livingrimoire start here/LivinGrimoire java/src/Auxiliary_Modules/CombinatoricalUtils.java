@@ -1,6 +1,7 @@
 package Auxiliary_Modules;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class CombinatoricalUtils {
@@ -21,15 +22,14 @@ public class CombinatoricalUtils {
         }
     }
     public void generatePermutations(ArrayList<ArrayList<String>> lists){
-        result = new ArrayList<String>();
+        result = new ArrayList<>();
         generatePermutations(lists, this.result, 0, "");
     }
-    public void generatePermutations(ArrayList<String>... lists){
-        ArrayList<ArrayList<String>> ll = new ArrayList<ArrayList<String>>();
-        for (int i = 0; i < lists.length; i++) {
-            ll.add(lists[i]);
-        }
-        result = new ArrayList<String>();
+    @SafeVarargs
+    public final void generatePermutations(ArrayList<String>... lists){
+        ArrayList<ArrayList<String>> ll = new ArrayList<>();
+        Collections.addAll(ll, lists);
+        result = new ArrayList<>();
         generatePermutations(ll, this.result, 0, "");
     }
 }

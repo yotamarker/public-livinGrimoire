@@ -1,7 +1,5 @@
 package Auxiliary_Modules;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
 public class Magic8Ball {
     private Responder questions = new Responder();
     private Responder answers = new Responder();
@@ -52,8 +50,7 @@ public class Magic8Ball {
     }
     public Boolean engage(String ear){
         if (ear.isEmpty()){return  false;}
-        if (questions.strContainsResponse(ear)){return true;}
-        return false;
+        return questions.strContainsResponse(ear);
     }
     public String reply(){return answers.getAResponse();}
 }

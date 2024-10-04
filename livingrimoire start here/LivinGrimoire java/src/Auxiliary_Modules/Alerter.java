@@ -30,10 +30,9 @@ public class Alerter {
      * uses a timegate to prevent a reminder from firing up more than once.
      *
      */
-    private RegexUtil regexUtil = new RegexUtil();
     private TimeGate timeGate = new TimeGate(1);
     private TimeUtils playGround = new TimeUtils();
-    private ArrayList<AlerterMsg> msgs = new ArrayList<AlerterMsg>();
+    private ArrayList<AlerterMsg> msgs = new ArrayList<>();
     private AlerterMsg activeReminder = new AlerterMsg();
     private int cmd = 0;
     private int msgLim = 4;
@@ -90,11 +89,11 @@ public class Alerter {
                 cmd = 2;
             }
         }
-        String ear2 = regexUtil.extractRegex("(.*)(?=on)", ear);
+        String ear2 = RegexUtil.extractRegex("(.*)(?=on)", ear);
         if (ear2.isEmpty()) {
             ear2 = ear;
         }
-        String msg = regexUtil.extractRegex("(?<=remind me to)(.*)(?=at)", ear2);
+        String msg = RegexUtil.extractRegex("(?<=remind me to)(.*)(?=at)", ear2);
         if (msg.isEmpty()) {
             return;
         }
@@ -103,8 +102,8 @@ public class Alerter {
             return;
         }
         String temp2 = translateTimes(ear2);
-        String time = regexUtil.extractRegex(enumRegexGrimoire.simpleTimeStamp,temp2);
-        if (regexUtil.extractRegex("(^([0-9]|[0-1][0-9]|[2][0-3]):([0-5][0-9])$)|(^([0-9]|[1][0-9]|[2][0-3])$)", time)
+        String time = RegexUtil.extractRegex(enumRegexGrimoire.simpleTimeStamp,temp2);
+        if (RegexUtil.extractRegex("(^([0-9]|[0-1][0-9]|[2][0-3]):([0-5][0-9])$)|(^([0-9]|[1][0-9]|[2][0-3])$)", time)
                 .isEmpty()) {
             return;
         }

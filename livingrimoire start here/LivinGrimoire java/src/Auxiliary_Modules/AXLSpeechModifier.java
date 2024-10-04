@@ -11,12 +11,12 @@ public class AXLSpeechModifier extends AXLHousing{
 
     @Override
     public String decorate(String str1) {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         String[] words = str1.split("\\s+");
         for (int i = 0; i < words.length; i++) {
             words[i] = dic.getOrDefault(words[i], words[i]);
-            result = result + " " + words[i];
+            result.append(" ").append(words[i]);
         }
-        return result.trim();
+        return result.toString().trim();
     }
 }

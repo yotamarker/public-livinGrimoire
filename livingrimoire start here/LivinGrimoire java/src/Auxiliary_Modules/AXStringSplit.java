@@ -1,7 +1,5 @@
 package Auxiliary_Modules;
 
-import java.util.ArrayList;
-
 public class AXStringSplit {
     // may be used to prepare data before saving or after loading
     // the advantage is less data fields. for example: {skills: s1_s2_s3}

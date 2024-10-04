@@ -8,9 +8,7 @@ public class ButtonEngager {
         // send true for pressed state
         if(prev_state != btnState){
             prev_state = btnState;
-            if(btnState){
-                return true;
-            }
+            return btnState;
         }
         return false;
     }

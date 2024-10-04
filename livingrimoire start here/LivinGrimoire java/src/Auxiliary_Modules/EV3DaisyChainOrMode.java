@@ -1,16 +1,14 @@
 package Auxiliary_Modules;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class EV3DaisyChainOrMode extends TrGEV3{
     // this class connects several logic gates triggers together
-    private ArrayList<TrGEV3> trgGates = new ArrayList<TrGEV3>();
+    private ArrayList<TrGEV3> trgGates = new ArrayList<>();
 
     public EV3DaisyChainOrMode(TrGEV3... gates) {
-        for (TrGEV3 gate : gates)
-        {
-            trgGates.add(gate);
-        }
+        Collections.addAll(trgGates, gates);
     }
 
     @Override

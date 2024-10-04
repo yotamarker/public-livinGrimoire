@@ -3,7 +3,7 @@ package Auxiliary_Modules;
 public class OutputDripper {
     // drips true once every limit times
     // shushes the waifubot enough time to hear a reply from user
-    private int cycler = 0;
+    private int cycler;
     private int limit; // set to 1 for on off effect
 
     public OutputDripper(int limit) {

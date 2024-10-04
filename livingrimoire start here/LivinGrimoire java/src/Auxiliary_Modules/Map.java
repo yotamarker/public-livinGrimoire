@@ -8,7 +8,6 @@ public class Map {
     private Hashtable<String,String> pointDescription = new Hashtable<>();
     private Hashtable<String,String> descriptionPoint = new Hashtable<>();
     private LGPointInt currentPosition = new LGPointInt();
-    private RegexUtil regexUtil = new RegexUtil();
     public void reset(){
         // sleep location is considered (0,0) location
         currentPosition.reset();
@@ -21,7 +20,7 @@ public class Map {
         // use this when the AI is returning home
         if(descriptionPoint.contains(location)){
             String value = descriptionPoint.get(location);
-            Point p1 = regexUtil.pointRegex(value);
+            Point p1 = RegexUtil.pointRegex(value);
             LGPointInt temp = new LGPointInt(p1);
             currentPosition.x = temp.x;
             currentPosition.y = temp.y;

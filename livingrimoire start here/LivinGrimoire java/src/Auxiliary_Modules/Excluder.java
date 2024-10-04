@@ -1,7 +1,6 @@
 package Auxiliary_Modules;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Excluder {
     private final ArrayList<String> startsWith = new ArrayList<>();
@@ -20,14 +19,13 @@ public class Excluder {
     }
 
     public boolean exclude(String ear) {
-        RegexUtil r1 = new RegexUtil(); // Assuming RegexUtil is defined elsewhere
         for (String tempStr : startsWith) {
-            if (r1.extractRegex(tempStr, ear).length() > 0) {
+            if (RegexUtil.extractRegex(tempStr, ear).length() > 0) {
                 return true;
             }
         }
         for (String tempStr : endsWith) {
-            if (r1.extractRegex(tempStr, ear).length() > 0) {
+            if (RegexUtil.extractRegex(tempStr, ear).length() > 0) {
                 return true;
             }
         }

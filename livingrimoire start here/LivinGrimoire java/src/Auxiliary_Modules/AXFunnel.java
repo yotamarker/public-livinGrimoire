@@ -6,7 +6,7 @@ import java.util.Map;
 public class AXFunnel {
     // funnel many inputs to fewer or one input
     // allows using command variations in skills
-    private Map<String, String> dic;
+    private final Map<String, String> dic;
     private String defaultStr;
 
     public AXFunnel() {

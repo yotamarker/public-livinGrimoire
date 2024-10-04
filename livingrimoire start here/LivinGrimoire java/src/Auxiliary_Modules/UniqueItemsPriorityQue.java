@@ -15,7 +15,7 @@ public class UniqueItemsPriorityQue extends LGFIFO<String>{
         return temp;
     }
     public Boolean strContainsResponse(String str){
-        Boolean result = false;
+        boolean result = false;
         for (String tempStr: this.elements) {
             if (str.contains(tempStr)){
                 result = true;

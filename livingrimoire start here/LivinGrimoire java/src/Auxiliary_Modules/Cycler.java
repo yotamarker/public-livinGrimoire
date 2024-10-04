@@ -2,7 +2,7 @@ package Auxiliary_Modules;
 
 public class Cycler {
     // cycles through numbers limit to 0 non-stop
-    private int cycler = 0;
+    private int cycler;
     private int limit;
 
     public Cycler(int limit) {

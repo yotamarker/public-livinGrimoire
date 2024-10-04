@@ -5,7 +5,7 @@ import LivinGrimoire.*;
 import java.util.ArrayList;
 
 public class AXSkillBundle {
-    private final ArrayList<Skill> skills = new ArrayList<Skill>();
+    private final ArrayList<Skill> skills = new ArrayList<>();
     private final Neuron tempN = new Neuron();
     private Kokoro kokoro = new Kokoro(new AbsDictionaryDB());
 

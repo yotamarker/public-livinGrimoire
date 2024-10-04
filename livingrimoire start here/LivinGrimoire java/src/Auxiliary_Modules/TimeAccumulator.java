@@ -2,7 +2,7 @@ package Auxiliary_Modules;
 
 public class TimeAccumulator {
     // accumulator ++ each tick minutes interval
-    private TimeGate timeGate = new TimeGate(5);
+    private TimeGate timeGate;
     private int accumulator = 0;
     public void setTick(int tick) {
         timeGate.setPause(tick);

@@ -26,7 +26,7 @@ public class AXStrategy {
     public void evolve(){
         // replace active strategies
         Enumeration<String> e = this.strategies.keys();
-        String key = "";
+        String key;
         while (e.hasMoreElements()){
             key = e.nextElement();
             this.strategies.get(key).evolveStrategies(lim);

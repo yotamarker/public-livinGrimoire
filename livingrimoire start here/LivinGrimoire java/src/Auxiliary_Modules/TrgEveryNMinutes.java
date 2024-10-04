@@ -5,7 +5,7 @@ public class TrgEveryNMinutes extends TrGEV3{
     private int minutes; // minute interval between triggerings
     private final TimeUtils pl = new TimeUtils();
     private final TrgTime trgTime;
-    private String timeStamp = "";
+    private String timeStamp;
 
     public TrgEveryNMinutes(String startTime, int minutes) {
         this.minutes = minutes;

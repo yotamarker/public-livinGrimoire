@@ -29,15 +29,13 @@ public class TrgParrot {
         // no input or output for a while?
         if(standBy){
             // I will chirp
-            tolerance.reset();;
+            tolerance.reset();
             return true;
         }
         // we are handshaking?
         if(!ear.isEmpty()){
             // I will reply chirp till it grows old for me (a set amount of times till reset)
-            if(tolerance.trigger()){
-                return true;
-            }
+            return tolerance.trigger();
         }
         return false;
     }

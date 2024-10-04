@@ -9,9 +9,9 @@ public class DrawRndDigits {
     private ArrayList<Integer> stringsSource = new ArrayList<>();
     private Random rand = new Random();
     public DrawRndDigits(int... values) {
-        for (int i = 0; i < values.length; i++) {
-            strings.add(values[i]);
-            stringsSource.add(values[i]);
+        for (int value : values) {
+            strings.add(value);
+            stringsSource.add(value);
         }
     }
     public void addElement(int element){

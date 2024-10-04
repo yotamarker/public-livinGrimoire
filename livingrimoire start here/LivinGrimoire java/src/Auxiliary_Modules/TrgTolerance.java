@@ -1,7 +1,5 @@
 package Auxiliary_Modules;
 
-import java.util.Random;
-
 public class TrgTolerance extends TrGEV3{
     // this boolean gate will return true till depletion or reset()
     private int repeats = 0;

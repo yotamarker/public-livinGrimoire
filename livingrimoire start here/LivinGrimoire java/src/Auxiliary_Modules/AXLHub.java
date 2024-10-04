@@ -1,22 +1,18 @@
 package Auxiliary_Modules;
 
-import LivinGrimoire.Algorithm;
-
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class AXLHub {
     // hubs many reply decorators, language translators, encriptors and other string modifiers
     // decorate(str) to decorate string using the active string decorator
     private Cycler cycler;
     private DrawRnd drawRnd = new DrawRnd();
-    private int size = 0;
-    private ArrayList<AXLHousing> nyaa = new ArrayList<AXLHousing>();
+    private int size;
+    private ArrayList<AXLHousing> nyaa = new ArrayList<>();
     private int activeNyaa = 0;
     public AXLHub(AXLHousing...nyaa) {
-        for (AXLHousing temp : nyaa)
-        {
-            this.nyaa.add(temp);
-        }
+        Collections.addAll(this.nyaa, nyaa);
         size = this.nyaa.size();
         cycler = new Cycler(size -1);
         cycler.setToZero();

@@ -1,7 +1,5 @@
 package Auxiliary_Modules;
 
-import java.math.BigInteger;
-
 public class NumToWord {
     private String convert(int n){
         String result = "enter a number";

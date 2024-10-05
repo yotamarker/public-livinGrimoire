@@ -39,4 +39,27 @@ class DrawRndDigits(vararg values: Int) {
         val dc = DeepCopier()
         strings = dc.copyListOfInts(stringsSource)
     }
+    fun isEmptied(): Boolean {
+        return strings.size == 0
+    }
+
+    fun resetIfEmpty() {
+        if (strings.size == 0) {
+            reset()
+        }
+    }
+
+    fun containsElement(element: Int): Boolean {
+        return stringsSource.contains(element)
+    }
+
+    fun currentlyContainsElement(element: Int): Boolean {
+        return strings.contains(element)
+    }
+
+    fun removeItem(element: Int) {
+        if (strings.contains(element)) {
+            strings.removeAt(element)
+        }
+    }
 }

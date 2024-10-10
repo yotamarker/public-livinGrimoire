@@ -10,27 +10,26 @@ import java.util.TimeZone;
 // times and stuff
 public class TimeUtils {
     // int foo = Integer.parseInt(myString);
-    public String getCurrentTimeStamp() {
+    public static String getCurrentTimeStamp() {
         // SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//
         // dd/MM/yyyy
         SimpleDateFormat sdfDate = new SimpleDateFormat("HH:mm");// dd/MM/yyyy
         Date now = new Date();
-        String strDate = sdfDate.format(now);
-        return strDate;
+        return sdfDate.format(now);
     }
 
-    public int getMonthAsInt() {
+    public static int getMonthAsInt() {
         return Calendar.getInstance().get(Calendar.MONTH);
     }
 
-    public int getDayOfTheMonthAsInt() {
+    public static int getDayOfTheMonthAsInt() {
         return Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
     }
 
-    public int getYearAsInt() {
+    public static int getYearAsInt() {
         return Calendar.getInstance().get(Calendar.YEAR);
     }
-    public int getDayAsInt() {
+    public static int getDayAsInt() {
         return Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
     }
     public String getMinutes() {
@@ -38,20 +37,18 @@ public class TimeUtils {
         // dd/MM/yyyy
         SimpleDateFormat sdfDate = new SimpleDateFormat("mm");// dd/MM/yyyy
         Date now = new Date();
-        String strDate = sdfDate.format(now);
-        return strDate;
+        return sdfDate.format(now);
     }
 
-    public String getSeconds() {
+    public static String getSeconds() {
         // SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//
         // dd/MM/yyyy
         SimpleDateFormat sdfDate = new SimpleDateFormat("ss");// dd/MM/yyyy
         Date now = new Date();
-        String strDate = sdfDate.format(now);
-        return strDate;
+        return sdfDate.format(now);
     }
 
-    public String getDayOfDWeek() {
+    public static String getDayOfDWeek() {
         Date now = new Date();
         Calendar c = Calendar.getInstance();
         c.setTime(now);
@@ -59,7 +56,7 @@ public class TimeUtils {
         return convertToDay(dayOfWeek);
     }
 
-    private String convertToDay(Integer d) {
+    private static String convertToDay(Integer d) {
         String result = "";
         switch (d) {
             case 1:
@@ -89,7 +86,7 @@ public class TimeUtils {
         return result;
     }
 
-    public String getSpecificTime(enumTimes timeType) {
+    public static String getSpecificTime(enumTimes timeType) {
         // SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//
         // dd/MM/yyyy
         SimpleDateFormat sdfDate;
@@ -118,11 +115,10 @@ public class TimeUtils {
         }
         sdfDate = new SimpleDateFormat(format);
         Date now = new Date();
-        String strDate = sdfDate.format(now);
-        return strDate;
+        return sdfDate.format(now);
     }
 
-    public int getSecondsAsInt() {
+    public static int getSecondsAsInt() {
         // SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//
         // dd/MM/yyyy
         SimpleDateFormat sdfDate = new SimpleDateFormat("ss");// dd/MM/yyyy
@@ -131,7 +127,7 @@ public class TimeUtils {
         return Integer.parseInt(strDate);
     }
 
-    public int getMinutesAsInt() {
+    public static int getMinutesAsInt() {
         // SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//
         // dd/MM/yyyy
         SimpleDateFormat sdfDate = new SimpleDateFormat("mm");// dd/MM/yyyy
@@ -140,7 +136,7 @@ public class TimeUtils {
         return Integer.parseInt(strDate);
     }
 
-    public int getHoursAsInt() {
+    public static int getHoursAsInt() {
         // SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//
         // dd/MM/yyyy
         SimpleDateFormat sdfDate = new SimpleDateFormat("HH");// dd/MM/yyyy
@@ -149,21 +145,21 @@ public class TimeUtils {
         return Integer.parseInt(strDate);
     }
 
-    public String getFutureInXMin(int x) {
+    public static String getFutureInXMin(int x) {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MINUTE, x);
         SimpleDateFormat df = new SimpleDateFormat("HH:mm");
         return df.format(cal.getTime());
     }
 
-    public String getPastInXMin(int x) {
+    public static String getPastInXMin(int x) {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MINUTE, -1 * x);
         SimpleDateFormat df = new SimpleDateFormat("HH:mm");
         return df.format(cal.getTime());
     }
 
-    public int getFutureHour(int startHour, int addedHours) {
+    public static int getFutureHour(int startHour, int addedHours) {
         return (startHour + addedHours) % 25;
     }
     public String getFutureFromXInYMin(int x, String y) {
@@ -179,7 +175,7 @@ public class TimeUtils {
         return sdf.format(cal.getTime());
     }
 
-    public String translateMonth(int month1) {
+    public static String translateMonth(int month1) {
         String dMonth = "";
         switch (month1) {
             case 1:
@@ -224,7 +220,7 @@ public class TimeUtils {
         return dMonth;
     }
 
-    public String translateMonthDay(int day1) {
+    public static String translateMonthDay(int day1) {
         String dday = "";
         switch (day1) {
             case 1:
@@ -326,21 +322,18 @@ public class TimeUtils {
         return dday;
     }
 
-    public String timeInXMinutes(int x) {
+    public static String timeInXMinutes(int x) {
         Calendar now = Calendar.getInstance();
         now.add(Calendar.MINUTE, x);
         return now.get(Calendar.HOUR_OF_DAY) + ":" + now.get(Calendar.MINUTE);
     }
 
-    public Boolean isDayTime() {
+    public static Boolean isDayTime() {
         int hour = getHoursAsInt();
-        if (hour > 5 && hour < 19) {
-            return true;
-        }
-        return false;
+        return hour > 5 && hour < 19;
     }
 
-    public String partOfDay() {
+    public static String partOfDay() {
         int hour = getHoursAsInt();
         if (smallToBig(5, hour, 12)) {
             return "morning";
@@ -354,11 +347,11 @@ public class TimeUtils {
         return "night";
     }
 
-    public Boolean isNight() {
+    public static Boolean isNight() {
         int hour = getHoursAsInt();
         return hour>20||hour<6;
     }
-    public Boolean smallToBig(int... a)
+    public static Boolean smallToBig(int... a)
     // return true if input nums decend in value
     {
         for (int i = 0; i < a.length - 1; i++) {
@@ -369,7 +362,7 @@ public class TimeUtils {
         return true;
     }
 
-    public String getTomorrow() {
+    public static String getTomorrow() {
         Date now = new Date();
         Calendar c = Calendar.getInstance();
         c.setTime(now);
@@ -380,7 +373,7 @@ public class TimeUtils {
         return convertToDay(dayOfWeek + 1);
     }
 
-    public String getYesterday() {
+    public static String getYesterday() {
         Date now = new Date();
         Calendar c = Calendar.getInstance();
         c.setTime(now);
@@ -390,18 +383,14 @@ public class TimeUtils {
         }
         return convertToDay(dayOfWeek - 1);
     }
-    public int getGMT() {
+    public static int getGMT() {
         Calendar now = Calendar.getInstance();
-
-        // get current TimeZone using getTimeZone method of Calendar class
-        TimeZone timeZone = now.getTimeZone();
-
         // display current TimeZone using getDisplayName() method of TimeZone class
-        int x = timeZone.getDefault().inDaylightTime(new Date()) ? 1 : 0;
-        return timeZone.getRawOffset() / 3600000 + x;
+        int x = TimeZone.getDefault().inDaylightTime(new Date()) ? 1 : 0;
+        return now.getTimeZone().getRawOffset() / 3600000 + x;
     }
 
-    public String getLocal() {
+    public static String getLocal() {
         Calendar now = Calendar.getInstance();
 
         // get current TimeZone using getTimeZone method of Calendar class
@@ -410,7 +399,7 @@ public class TimeUtils {
         // display current TimeZone using getDisplayName() method of TimeZone class
         return "Current TimeZone is : " + timeZone.getDisplayName();
     }
-    public String findDay(int month, int day, int year) {
+    public static String findDay(int month, int day, int year) {
         // get weekday from date
         if (day > 31){
             return "";
@@ -432,7 +421,7 @@ public class TimeUtils {
         java.time.DayOfWeek dayOfWeek = localDate.getDayOfWeek();
         return dayOfWeek.toString().toLowerCase();
     }
-    public String nxtDayOnDate(int dayOfMonth){
+    public static String nxtDayOnDate(int dayOfMonth){
         // get the weekday on the next dayOfMonth
         int today = getDayOfTheMonthAsInt();
         if (today <= dayOfMonth){
@@ -442,7 +431,7 @@ public class TimeUtils {
         }
         return findDay(1,dayOfMonth,getYearAsInt()+1);
     }
-    public Boolean isLeapYear(int year){
+    public static Boolean isLeapYear(int year){
         boolean isLeapYear;
 
         // divisible by 4
@@ -451,10 +440,10 @@ public class TimeUtils {
         // divisible by 4, not by 100, or divisible by 400
         return isLeapYear && (year % 100 != 0 || year % 400 == 0);
     }
-    public String getCurrentMonthName(){
+    public static String getCurrentMonthName(){
         return translateMonth(getMonthAsInt()+1);
     }
-    public String getCurrentMonthDay(){
+    public static String getCurrentMonthDay(){
         return translateMonthDay(getDayOfTheMonthAsInt());
     }
 }

@@ -12,7 +12,6 @@ public class DiSneezer extends Skill {
     private Responder responder1 = new Responder("sneeze","achoo", "atchoo", "achew", "atisshoo");
     private DrawRndDigits chirpMinutes = new DrawRndDigits();
     private LGFIFO<Integer> burpMinutes = new LGFIFO<>();
-    private TimeUtils pl = new TimeUtils();
     public DiSneezer(int sneezeLim) {
         super();
         if((sneezeLim >0)&& (sneezeLim <60)){
@@ -38,7 +37,7 @@ public class DiSneezer extends Skill {
             return;
         }
         // sneeze
-        int nowMinutes = pl.getMinutesAsInt();
+        int nowMinutes = TimeUtils.getMinutesAsInt();
         if(burpMinutes.contains(nowMinutes)){
             burpMinutes.removeItem(nowMinutes);
             this.outAlg = simpleVerbatimAlgorithm("petv3",responder1.getAResponse());

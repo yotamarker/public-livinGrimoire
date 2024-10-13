@@ -32,7 +32,7 @@ public class TimeUtils {
     public static int getDayAsInt() {
         return Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
     }
-    public String getMinutes() {
+    public static String getMinutes() {
         // SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//
         // dd/MM/yyyy
         SimpleDateFormat sdfDate = new SimpleDateFormat("mm");// dd/MM/yyyy

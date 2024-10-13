@@ -12,7 +12,6 @@ public class DiPetV3 extends Skill {
     private Responder1Word responder1 = new Responder1Word();
     private DrawRndDigits chirpMinutes = new DrawRndDigits();
     private LGFIFO<Integer> burpMinutes = new LGFIFO<>();
-    private TimeUtils pl = new TimeUtils();
     public DiPetV3(int chirpsLim) {
         super();
         if((chirpsLim >0)&& (chirpsLim <60)){
@@ -29,7 +28,7 @@ public class DiPetV3 extends Skill {
     @Override
     public void input(String ear, String skin, String eye) {
         // night? return;
-        if (pl.partOfDay().equals("night")){
+        if (TimeUtils.partOfDay().equals("night")){
             return;
         }
         // reset chirps as hoyr starts
@@ -42,7 +41,7 @@ public class DiPetV3 extends Skill {
             return;
         }
         // chirp
-        int nowMinutes = pl.getMinutesAsInt();
+        int nowMinutes = TimeUtils.getMinutesAsInt();
         if(burpMinutes.contains(nowMinutes)){
             burpMinutes.removeItem(nowMinutes);
             this.outAlg = simpleVerbatimAlgorithm("petv3",responder1.getAResponse());

@@ -4,7 +4,6 @@ public class Cron extends TrGEV3{
     // triggers true, limit times, after initial time, and every minutes interval
     // counter resets at initial time, assuming trigger method was run
     int minutes; // minute interval between triggerings
-    private final TimeUtils pl = new TimeUtils();
     private final TrgTime trgTime;
     private String timeStamp;
     private String initialTimeStamp;
@@ -43,7 +42,7 @@ public class Cron extends TrGEV3{
         // delete counter = 0 if you don't want the trigger to work the next day
         if (counter == limit) {trgTime.setTime(initialTimeStamp);counter = 0;return false;}
         if (trgTime.alarm()){
-            timeStamp = pl.getFutureInXMin(minutes);
+            timeStamp = TimeUtils.getFutureInXMin(minutes);
             trgTime.setTime(timeStamp);
             counter++;
             return true;
@@ -54,7 +53,7 @@ public class Cron extends TrGEV3{
         // delete counter = 0 if you don't want the trigger to work the next day
         if (counter == limit) {trgTime.setTime(initialTimeStamp);return false;}
         if (trgTime.alarm()){
-            timeStamp = pl.getFutureInXMin(minutes);
+            timeStamp = TimeUtils.getFutureInXMin(minutes);
             trgTime.setTime(timeStamp);
             counter++;
             return true;

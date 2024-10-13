@@ -31,7 +31,6 @@ public class Alerter {
      *
      */
     private TimeGate timeGate = new TimeGate(1);
-    private TimeUtils playGround = new TimeUtils();
     private ArrayList<AlerterMsg> msgs = new ArrayList<>();
     private AlerterMsg activeReminder = new AlerterMsg();
     private int cmd = 0;
@@ -146,8 +145,8 @@ public class Alerter {
                     return "no reminders";
                 }
                 AlerterMsg alerterMsgTmp = new AlerterMsg();
-                alerterMsgTmp.setDay(playGround.getDayOfDWeek());
-                alerterMsgTmp.setTime(playGround.getHoursAsInt() + ":" + playGround.getMinutes());
+                alerterMsgTmp.setDay(TimeUtils.getDayOfDWeek());
+                alerterMsgTmp.setTime(TimeUtils.getHoursAsInt() + ":" + TimeUtils.getMinutes());
                 SortByDate sortByDateTmp = new SortByDate();
                 for (int counter = 0; counter < msgs.size(); counter++) {
                     if (sortByDateTmp.compare(alerterMsgTmp, msgs.get(counter)) == -1) {
@@ -176,9 +175,9 @@ public class Alerter {
         if (!timeGate.isClosed()) {
             return "";
         }
-        String tNow = playGround.getHoursAsInt() + ":" + playGround.getMinutes();
+        String tNow = TimeUtils.getHoursAsInt() + ":" + TimeUtils.getMinutes();
         for (AlerterMsg alerterMsg : msgs) {
-            if (alerterMsg.getDay().equals(playGround.getDayOfDWeek()) || alerterMsg.getDay().isEmpty()) {
+            if (alerterMsg.getDay().equals(TimeUtils.getDayOfDWeek()) || alerterMsg.getDay().isEmpty()) {
                 if (tNow.equals(alerterMsg.getTime())) {
                     timeGate.openGate();
                     this.activeReminder = alerterMsg;

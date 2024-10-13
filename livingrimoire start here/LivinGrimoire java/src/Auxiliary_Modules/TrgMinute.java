@@ -6,7 +6,6 @@ public class TrgMinute extends TrGEV3{
     // trigger true at minute once per hour
     private int hour1 = -1;
     int minute;
-    private final TimeUtils pl = new TimeUtils();
     public TrgMinute() {
         Random rand = new Random();
         minute = rand.nextInt(60);
@@ -18,9 +17,9 @@ public class TrgMinute extends TrGEV3{
 
     @Override
     public Boolean trigger() {
-        int tempHour = pl.getHoursAsInt();
+        int tempHour = TimeUtils.getHoursAsInt();
         if(tempHour!=hour1){
-            if(pl.getMinutesAsInt() == minute){
+            if(TimeUtils.getMinutesAsInt() == minute){
                 hour1 = tempHour;
                 return true;
             }

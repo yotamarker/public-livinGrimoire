@@ -6,7 +6,6 @@ import java.util.Random;
 
 public class TimedMessages {
     public Map<String, String> messages = new HashMap<>();
-    private final TimeUtils playGround = new TimeUtils();
     private String lastMSG = "nothing";
     private Boolean msg = false;
     public void addMSG(String ear){
@@ -28,7 +27,7 @@ public class TimedMessages {
         // Generate a random number of minutes (0 to 59)
         Random random = new Random();
         int minutes = random.nextInt(60);
-        String m = "";
+        String m;
         if(minutes>9){
             m = String.format("%d", minutes);
         }else{
@@ -36,13 +35,13 @@ public class TimedMessages {
         }
         int hours = random.nextInt(12);
         if(hours>9){
-            return String.format("%d:%s", hours, minutes);
+            return String.format("%d:%s", hours, m);
         }
-        return String.format("0%d:%s", hours, minutes);
+        return String.format("0%d:%s", hours, m);
     }
     public void clear(){messages = new HashMap<>();}
     public void tick(){
-        String now = this.playGround.getCurrentTimeStamp();
+        String now = TimeUtils.getCurrentTimeStamp();
         if(this.messages.containsKey(now)){
             if(!lastMSG.equals(messages.get(now))){
                 lastMSG = messages.get(now);

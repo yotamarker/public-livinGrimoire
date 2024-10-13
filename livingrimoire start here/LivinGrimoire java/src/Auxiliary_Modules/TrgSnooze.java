@@ -7,7 +7,6 @@ public class TrgSnooze extends TrGEV3{
     private int maxrepeats; //2 recomended
     private Boolean snooze = true;
     private int snoozeInterval = 5;
-    private final TimeUtils playGround = new TimeUtils();
     public TrgSnooze(int maxrepeats) {
         this.maxrepeats = maxrepeats;
     }
@@ -31,7 +30,7 @@ public class TrgSnooze extends TrGEV3{
     @Override
     public Boolean trigger() {
         // trigger a snooze alarm?
-        int minutes = playGround.getMinutesAsInt();
+        int minutes = TimeUtils.getMinutesAsInt();
         if(minutes%snoozeInterval !=0){
             snooze = true;
             return false;

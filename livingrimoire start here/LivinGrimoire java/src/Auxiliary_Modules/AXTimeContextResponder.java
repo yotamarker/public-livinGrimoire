@@ -4,7 +4,6 @@ import java.util.Hashtable;
 
 public class AXTimeContextResponder {
     // output reply based on the part of day as context
-    private TimeUtils pl = new TimeUtils();
     public Responder morning = new Responder();
     public Responder afternoon = new Responder();
     public Responder evening = new Responder();
@@ -19,6 +18,6 @@ public class AXTimeContextResponder {
     }
 
     public String respond(){
-        return responders.get(pl.partOfDay()).getAResponse();
+        return responders.get(TimeUtils.partOfDay()).getAResponse();
     }
 }

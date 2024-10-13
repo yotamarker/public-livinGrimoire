@@ -13,7 +13,6 @@ public class DiEngager extends Skill {
     private String skillToEngage = "unknown";
     private DrawRndDigits draw = new DrawRndDigits();
     private LGFIFO<Integer> burpMinutes = new LGFIFO<>();
-    private TimeUtils pl = new TimeUtils();
     public DiEngager(int burpsPerHour, String skillToEngage) {
         super();
         if((burpsPerHour >0)&& (burpsPerHour <60)){
@@ -35,7 +34,7 @@ public class DiEngager extends Skill {
     @Override
     public void input(String ear, String skin, String eye) {
         // night? do not burp
-        if (pl.partOfDay().equals("night")){
+        if (TimeUtils.partOfDay().equals("night")){
             return;
         }
         // reset burps
@@ -48,7 +47,7 @@ public class DiEngager extends Skill {
             return;
         }
         // burp
-        int nowMinutes = pl.getMinutesAsInt();
+        int nowMinutes = TimeUtils.getMinutesAsInt();
         if(burpMinutes.contains(nowMinutes)){
             burpMinutes.removeItem(nowMinutes);
             this.kokoro.toHeart.put(skillToEngage, "engage");

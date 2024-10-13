@@ -6,7 +6,6 @@ public class TrgParrot {
     // in essence this trigger says: I am here, are you here? good.
     private TrgTolerance tolerance = new TrgTolerance(3);
     private Responder silencer = new Responder("ok","okay","stop","shut up","quiet");
-    private TimeUtils pl = new TimeUtils();
 
     public void setTolerance(int limit) {
         if(limit>0){
@@ -17,7 +16,7 @@ public class TrgParrot {
         // relies on the Kokoro standby boolean
         // no input or output for a set amount of time results with a true
         // and replenishing the trigger.
-        if(pl.isNight()){
+        if(TimeUtils.isNight()){
             // is it night? I will be quite
             return false;
         }

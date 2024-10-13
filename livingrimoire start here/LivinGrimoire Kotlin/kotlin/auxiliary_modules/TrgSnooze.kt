@@ -8,9 +8,8 @@ class TrgSnooze( //2 recomended
     private var repeats = 0
     private var snooze = true
     private var snoozeInterval = 5
-    private val playGround = TimeUtils()
     fun setSnoozeInterval(snoozeInterval: Int) {
-        if (snoozeInterval > 1 && snoozeInterval < 11) {
+        if (snoozeInterval in 2..10) {
             this.snoozeInterval = snoozeInterval
         }
     }
@@ -28,7 +27,7 @@ class TrgSnooze( //2 recomended
 
     override fun trigger(): Boolean {
         // trigger a snooze alarm?
-        val minutes: Int = playGround.minutesAsInt
+        val minutes: Int = TimeUtils.minutesAsInt
         if (minutes % snoozeInterval != 0) {
             snooze = true
             return false

@@ -1,15 +1,14 @@
 package auxiliary_modules
 
 class TrgTime {
-    var t = "null"
-    var pl: TimeUtils = TimeUtils()
+    private var t = "null"
     private var alarm = true
     fun setTime(v1: String) {
         t = RegexUtil.extractRegex(enumRegexGrimoire.SimpleTimeStamp, v1)
     }
 
     fun alarm(): Boolean {
-        val now: String = pl.currentTimeStamp
+        val now: String = TimeUtils.currentTimeStamp
         if (alarm) {
             if (now == t) {
                 alarm = false

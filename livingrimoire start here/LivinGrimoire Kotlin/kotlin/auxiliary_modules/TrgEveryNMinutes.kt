@@ -5,7 +5,6 @@ class TrgEveryNMinutes(
     private var minutes // minute interval between triggerings
     : Int
 ) : TrGEV3() {
-    private val pl = TimeUtils()
     private val trgTime: TrgTime
     private var timeStamp = ""
 
@@ -23,7 +22,7 @@ class TrgEveryNMinutes(
 
     override fun trigger(): Boolean {
         if (trgTime.alarm()) {
-            timeStamp = pl.getFutureInXMin(minutes)
+            timeStamp = TimeUtils.getFutureInXMin(minutes)
             trgTime.setTime(timeStamp)
             return true
         }
@@ -31,6 +30,6 @@ class TrgEveryNMinutes(
     }
 
     override fun reset() {
-        timeStamp = pl.currentTimeStamp
+        timeStamp = TimeUtils.currentTimeStamp
     }
 }

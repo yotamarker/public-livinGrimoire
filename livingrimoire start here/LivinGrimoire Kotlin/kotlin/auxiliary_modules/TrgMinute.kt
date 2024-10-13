@@ -6,7 +6,6 @@ class TrgMinute : TrGEV3 {
     // trigger true at minute once per hour
     private var hour1 = -1
     var minute: Int
-    private val pl = TimeUtils()
 
     constructor() {
         val rand = Random()
@@ -18,9 +17,9 @@ class TrgMinute : TrGEV3 {
     }
 
     override fun trigger(): Boolean {
-        val tempHour: Int = pl.hoursAsInt
+        val tempHour: Int = TimeUtils.hoursAsInt
         if (tempHour != hour1) {
-            if (pl.minutesAsInt == minute) {
+            if (TimeUtils.minutesAsInt == minute) {
                 hour1 = tempHour
                 return true
             }

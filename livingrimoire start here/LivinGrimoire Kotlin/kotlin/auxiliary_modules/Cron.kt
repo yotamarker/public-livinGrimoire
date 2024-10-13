@@ -6,7 +6,6 @@ class Cron(
     private var minutes // minute interval between triggerings
     : Int, limit: Int
 ) : TrGEV3() {
-    private val pl = TimeUtils()
     private val trgTime: TrgTime
     private var timeStamp = ""
     private var initialTimeStamp = ""
@@ -49,7 +48,7 @@ class Cron(
             return false
         }
         if (trgTime.alarm()) {
-            timeStamp = pl.getFutureInXMin(minutes)
+            timeStamp = TimeUtils.getFutureInXMin(minutes)
             trgTime.setTime(timeStamp)
             counter++
             return true
@@ -64,7 +63,7 @@ class Cron(
             return false
         }
         if (trgTime.alarm()) {
-            timeStamp = pl.getFutureInXMin(minutes)
+            timeStamp = TimeUtils.getFutureInXMin(minutes)
             trgTime.setTime(timeStamp)
             counter++
             return true

@@ -10,7 +10,6 @@ class Engager(burpsPerHour: Int, skillToEngage: String) : Skill() {
     private var skillToEngage = "unknown"
     private val draw: DrawRndDigits = DrawRndDigits()
     private val burpMinutes: LGFIFO<Int> = LGFIFO()
-    private val pl: TimeUtils = TimeUtils()
 
     init {
         if (burpsPerHour in 1..59) {
@@ -31,7 +30,7 @@ class Engager(burpsPerHour: Int, skillToEngage: String) : Skill() {
 
     override fun input(ear: String, skin: String, eye: String) {
         // night? do not burp
-        if (pl.partOfDay().equals("night")) {
+        if (TimeUtils.partOfDay() == "night") {
             return
         }
         // reset burps
@@ -44,10 +43,10 @@ class Engager(burpsPerHour: Int, skillToEngage: String) : Skill() {
             return
         }
         // burp
-        val nowMinutes: Int = pl.minutesAsInt
+        val nowMinutes: Int = TimeUtils.minutesAsInt
         if (burpMinutes.contains(nowMinutes)) {
             burpMinutes.removeItem(nowMinutes)
-            this.kokoro.toHeart.put(skillToEngage, "engage")
+            this.kokoro.toHeart[skillToEngage] = "engage"
         }
     }
 }

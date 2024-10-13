@@ -4,7 +4,6 @@ import java.util.*
 
 class TimedMessages {
     var messages: MutableMap<String, String> = HashMap()
-    private val playGround = TimeUtils()
     private var lastMSG: String = "nothing"
     var msg = false
         private set
@@ -36,7 +35,7 @@ class TimedMessages {
     }
 
     fun tick() {
-        val now: String = playGround.currentTimeStamp
+        val now: String = TimeUtils.currentTimeStamp
         if (messages.containsKey(now)) {
             if (lastMSG != messages[now]) {
                 lastMSG = messages[now]!!

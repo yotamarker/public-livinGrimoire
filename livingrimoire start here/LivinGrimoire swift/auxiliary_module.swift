@@ -35,35 +35,31 @@ enum enumTimes: Int {
 
 class TimeUtils {
     
-    var right_now = Date()
-    var calendar = Calendar.current
-    var dateComponent = DateComponents()
+    static var right_now = Date()
+    static var calendar = Calendar.current
+    static var dateComponent = DateComponents()
     
-    var week_days: [Int:String]
-    var dayOfMonth : [Int: String]
-    init() {
-        self.week_days = [1: "sunday",
-                          2: "monday",
-                          3: "tuesday",
-                          4: "wednesday",
-                          5: "thursday",
-                          6: "friday",
-                          7: "saturday"
-                          ]
-        self.dayOfMonth = [1: "first_of", 2: "second_of", 3: "third_of", 4: "fourth_of", 5: "fifth_of", 6: "sixth_of",
-                           7: "seventh_of",
-                           8: "eighth_of", 9: "nineth_of", 10: "tenth_of", 11: "eleventh_of", 12: "twelveth_of",
-                           13: "thirteenth_of",
-                           14: "fourteenth_of", 15: "fifteenth_of", 16: "sixteenth_of", 17: "seventeenth_of",
-                           18: "eighteenth_of",
-                           19: "nineteenth_of", 20: "twentyth_of", 21: "twentyfirst_of", 22: "twentysecond_of",
-                           23: "twentythird_of",
-                           24: "twentyfourth_of", 25: "twentyfifth_of", 26: "twentysixth_of", 27: "twentyseventh_of",
-                           28: "twentyeighth_of",
-                           29: "twentynineth_of", 30: "thirtyth_of", 31: "thirtyfirst_of"]
-    }
+    static var week_days: [Int:String] = [1: "sunday",
+                                   2: "monday",
+                                   3: "tuesday",
+                                   4: "wednesday",
+                                   5: "thursday",
+                                   6: "friday",
+                                   7: "saturday"
+                                   ]
+    static var dayOfMonth : [Int: String] = [1: "first_of", 2: "second_of", 3: "third_of", 4: "fourth_of", 5: "fifth_of", 6: "sixth_of",
+                                     7: "seventh_of",
+                                     8: "eighth_of", 9: "nineth_of", 10: "tenth_of", 11: "eleventh_of", 12: "twelveth_of",
+                                     13: "thirteenth_of",
+                                     14: "fourteenth_of", 15: "fifteenth_of", 16: "sixteenth_of", 17: "seventeenth_of",
+                                     18: "eighteenth_of",
+                                     19: "nineteenth_of", 20: "twentyth_of", 21: "twentyfirst_of", 22: "twentysecond_of",
+                                     23: "twentythird_of",
+                                     24: "twentyfourth_of", 25: "twentyfifth_of", 26: "twentysixth_of", 27: "twentyseventh_of",
+                                     28: "twentyeighth_of",
+                                     29: "twentynineth_of", 30: "thirtyth_of", 31: "thirtyfirst_of"]
 
-    func getCurrentTimeStamp() -> String {
+    static func getCurrentTimeStamp() -> String {
        // '''This method returns the current time (hh:mm)'''
         right_now = Date()
         let minutes:Int = calendar.component(.minute, from: right_now)
@@ -71,55 +67,55 @@ class TimeUtils {
         return String(calendar.component(.hour, from: right_now)) + ":" + m
     }
 
-    func getMonthAsInt() -> Int {
+    static func getMonthAsInt() -> Int {
        // '''This method returns the current month (MM)'''
         right_now = Date()
         return calendar.component(.month, from: right_now)
     }
 
-    func getDayOfTheMonthAsInt() -> Int {
+    static func getDayOfTheMonthAsInt() -> Int {
        // '''This method returns the current day (dd)'''
         right_now = Date()
         return calendar.component(.day, from: right_now)
     }
 
-    func getYearAsInt() -> Int {
+    static func getYearAsInt() -> Int {
       //  '''This method returns the current year (yyyy)'''
         right_now = Date()
         return calendar.component(.year, from: right_now)
     }
 
-    func getDayAsInt() -> Int {
+    static func getDayAsInt() -> Int {
        // '''This method returns the current day of the week (1, 2, ... 7)'''
         right_now = Date()
         return calendar.component(.weekday, from: right_now)
     }
 
-    func getMinutes() -> String {
+    static func getMinutes() -> String {
        // '''This method returns the current minutes (mm)'''
         right_now = Date()
         return right_now.minute() ?? ""
     }
 
-    func getSeconds() -> String {
+    static func getSeconds() -> String {
       //  '''This method returns the current seconds (ss)'''
         right_now = Date()
         return String(calendar.component(.second, from: right_now))
     }
 
-    func getDayOfDWeek() -> String {
+    static func getDayOfDWeek() -> String {
       //  '''This method returns the current day of the week as a word (monday, ...)'''
         right_now = Date()
         return right_now.dayOfWeek()!
     }
 
-    func translateMonthDay(_ day_num:Int) -> String {
+    static func translateMonthDay(_ day_num:Int) -> String {
        // '''This method returns the current day of the month as a word (first_of, ...)'''
         let currentDay_string = dayOfMonth[day_num] ?? "?"
         return currentDay_string
     }
 
-    func getSpecificTime(time_variable: enumTimes) -> String {
+    static func getSpecificTime(time_variable: enumTimes) -> String {
 //        '''This method returns the current specific date in words (eleventh_of June 2021, ...)'''
 
         right_now = Date()
@@ -141,25 +137,25 @@ class TimeUtils {
         return ""
     }
 
-    func getSecondsAsInt() -> Int {
+    static func getSecondsAsInt() -> Int {
        // '''This method returns the current seconds'''
         right_now = Date()
         return calendar.component(.second, from: right_now)
     }
 
-    func getMinutesAsInt() -> Int {
+    static func getMinutesAsInt() -> Int {
        // '''This method returns the current minutes'''
-        right_now = Date()
-        return calendar.component(.minute, from: right_now)
+        TimeUtils.right_now = Date()
+        return TimeUtils.calendar.component(.minute, from: TimeUtils.right_now)
     }
 
-    func getHoursAsInt() -> Int {
+    static func getHoursAsInt() -> Int {
       //  '''This method returns the current hour'''
         right_now = Date()
         return calendar.component(.hour, from: right_now)
     }
 
-    func getFutureInXMin(extra_minutes: Int) -> String {
+    static func getFutureInXMin(extra_minutes: Int) -> String {
           //  '''This method returns the date in x minutes'''
           
         if extra_minutes > 1440 {return "hmm"}
@@ -171,7 +167,7 @@ class TimeUtils {
         return "\(dif/60):\(minutes)"
         }
 
-    func getPastInXMin(less_minutes: Int) -> String {
+    static func getPastInXMin(less_minutes: Int) -> String {
         if less_minutes > 1440 {return "hmm"}
         let nowSum = getHoursAsInt()*60 + getMinutesAsInt()
         var dif = nowSum - less_minutes
@@ -183,13 +179,13 @@ class TimeUtils {
        
     
 
-    func getFutureHour(startHour: Int, addedHours: Int) -> Int {
+    static func getFutureHour(startHour: Int, addedHours: Int) -> Int {
        // '''This method returns the hour in x hours from the starting hour'''
         return (startHour + addedHours) % 24
    
     }
 
-    func getFutureFromXInYMin(to_add: Int, start: String) -> String {
+    static func getFutureFromXInYMin(to_add: Int, start: String) -> String {
        // '''This method returns the time (hh:mm) in x minutes the starting time (hh:mm)'''
         
         let values = start.components(separatedBy: ":")
@@ -200,7 +196,7 @@ class TimeUtils {
        return new_time
     }
 
-    func timeInXMinutes(x: Int) -> String {
+    static func timeInXMinutes(x: Int) -> String {
        // '''This method returns the time (hh:mm) in x minutes'''
         right_now = Date()
         // reset datecomponents
@@ -210,13 +206,13 @@ class TimeUtils {
         return String(calendar.component(.hour, from: final_time ?? Date())) + ":" + String(calendar.component(.minute, from: final_time ?? Date()))
     
     }
-    func isDayTime() -> Bool {
+    static func isDayTime() -> Bool {
         right_now = Date()
       //  '''This method returns true if it's daytime (6-18)'''
     return 5 < calendar.component(.hour, from: right_now)  &&  calendar.component(.hour, from: right_now) < 19
     }
 
-    func smallToBig(_ a:Int...) -> Bool {
+    static func smallToBig(_ a:Int...) -> Bool {
         for i in 0..<a.count {
     
             guard i + 1 < a.count else {
@@ -232,7 +228,7 @@ class TimeUtils {
     }
     
 
-    func partOfDay() -> String {
+    static func partOfDay() -> String {
        // '''This method returns which part of the day it is (morning, ...)'''
        let hour: Int = self.getHoursAsInt()
         if self.smallToBig(5, hour, 12) {
@@ -246,19 +242,19 @@ class TimeUtils {
 
     }
 
-    func convertToDay(number: Int) -> String {
+    static func convertToDay(number: Int) -> String {
        // '''This method converts the week number to the weekday name'''
      
         return week_days[number] ?? ""
     }
 
-    func isNight() -> Bool {
+    static func isNight() -> Bool {
       //  '''This method returns true if it's night (21-5)'''
        let hour: Int = self.getHoursAsInt()
         return hour > 20 || hour < 6
     }
 
-    func getTomorrow() -> String {
+    static func getTomorrow() -> String {
        // '''This method returns tomorrow'''
         
         let dateFormatter = DateFormatter()
@@ -268,7 +264,7 @@ class TimeUtils {
         
     }
 
-    func getYesterday() -> String {
+    static func getYesterday() -> String {
        // '''This method returns yesterday'''
    
        let dateFormatter = DateFormatter()
@@ -277,18 +273,18 @@ class TimeUtils {
         return dateFormatter.string(from: nowMinusOneDay()).capitalized
     }
 
-    func getGMT() -> Date {
+    static func getGMT() -> Date {
        // '''This method returns the local GMT'''
         right_now = Date()
         return right_now.localToGMT()
         
     }
 
-    func getLocal() -> String {
+    static func getLocal() -> String {
        // '''This method returns the local time zone'''
         return TimeZone.current.identifier
     }
-    func findDay(month:Int,day:Int,year:Int) -> String {
+    static func findDay(month:Int,day:Int,year:Int) -> String {
         // gets weekday from date
         if day > 31 {
             return ""
@@ -315,7 +311,7 @@ class TimeUtils {
         let weekDay = myCalendar.component(.weekday, from: todayDate)
         return self.week_days[weekDay] ?? ""
     }
-    func nxtDayOnDate(dayOfMonth:Int) -> String {
+    static func nxtDayOnDate(dayOfMonth:Int) -> String {
         // get the weekday on the next dayOfMonth
         let today:Int = getDayOfTheMonthAsInt()
         if today <= dayOfMonth {
@@ -325,12 +321,12 @@ class TimeUtils {
         }
         return findDay(month: 1, day: dayOfMonth, year: getYearAsInt() + 1)
     }
-    func isLeapYear(year:Int) -> Bool {
+    static func isLeapYear(year:Int) -> Bool {
         var isLeapYear:Bool
         isLeapYear = (year % 4 == 0)
         return isLeapYear && (year % 100 != 0 || year % 400 == 0)
     }
-    func getCurrentMonthName() -> String {
+    static func getCurrentMonthName() -> String {
         switch (getMonthAsInt()){
                     case 1:
                         return "january"
@@ -359,6 +355,25 @@ class TimeUtils {
                     default:
                         return ""
         }
+    }
+    static func nowPlusOneDay() -> Date {
+        // reset datecomponents
+        right_now = Date()
+        dateComponent = DateComponents()
+      dateComponent.day = 1
+        return Calendar.current.date(byAdding: dateComponent, to: right_now) ?? Date()
+    }
+    static func nowMinusOneDay() -> Date {
+        right_now = Date()
+        // reset datecomponents
+        dateComponent = DateComponents()
+      dateComponent.day = -1
+        return Calendar.current.date(byAdding: dateComponent, to: right_now) ?? Date()
+    }
+    static func getCurrentMonthDay() -> String {
+        right_now = Date()
+        let currentDay_number = calendar.component(.day, from: right_now)
+        return translateMonthDay(currentDay_number)
     }
 }
                       
@@ -406,28 +421,6 @@ extension Date {
     
 }
 
-extension TimeUtils {
-    func nowPlusOneDay() -> Date {
-        // reset datecomponents
-        right_now = Date()
-        dateComponent = DateComponents()
-      dateComponent.day = 1
-        return Calendar.current.date(byAdding: dateComponent, to: right_now) ?? Date()
-    }
-    func nowMinusOneDay() -> Date {
-        right_now = Date()
-        // reset datecomponents
-        dateComponent = DateComponents()
-      dateComponent.day = -1
-        return Calendar.current.date(byAdding: dateComponent, to: right_now) ?? Date()
-    }
-    func getCurrentMonthDay() -> String {
-        right_now = Date()
-        let currentDay_number = calendar.component(.day, from: right_now)
-        return translateMonthDay(currentDay_number)
-    }
-    
-}
 class LGPointDouble{
     var x:Double = 0
     var y:Double = 0
@@ -1113,11 +1106,10 @@ class TrgMinute:TrGEV3{
     init(minute:Int) {
         self.minute = minute
     }
-    let pl:TimeUtils = TimeUtils()
     override func trigger() -> Bool {
-        let tempHour:Int = pl.getHoursAsInt()
+        let tempHour:Int = TimeUtils.getHoursAsInt()
         if tempHour != hour1 {
-            if pl.getMinutesAsInt() == minute {
+            if TimeUtils.getMinutesAsInt() == minute {
                 hour1 = tempHour
                 return true
             }
@@ -2006,13 +1998,12 @@ class TimeAccumulator{
 class TrgTime{
     var t:String = "null"
     let regexUtil:RegexUtil = RegexUtil()
-    var pl:TimeUtils = TimeUtils()
     private var alarm:Bool = true
     func setTime(v1:String){
         t = regexUtil.regexChecker(theRegex: enumRegexGrimoire.simpleTimeStamp, str2Check: v1)
     }
     func trigger()->Bool{
-        let now:String = pl.getCurrentTimeStamp()
+        let now:String = TimeUtils.getCurrentTimeStamp()
         if alarm{
             if now == t{
                 alarm = false
@@ -2028,7 +2019,6 @@ class TrgTime{
 class TrgEveryNMinutes:TrGEV3{
     // trigger returns true every minutes interval, post start time
     private var minutes:Int // minute interval between triggerings
-    private let pl:TimeUtils = TimeUtils()
     private var trgTime:TrgTime
     private var timeStamp:String = ""
     init(startTime:String, minutes:Int) {
@@ -2045,14 +2035,14 @@ class TrgEveryNMinutes:TrGEV3{
     }
     override func trigger() -> Bool {
         if trgTime.trigger() {
-            timeStamp = pl.getFutureInXMin(extra_minutes: minutes)
+            timeStamp = TimeUtils.getFutureInXMin(extra_minutes: minutes)
             trgTime.setTime(v1: timeStamp)
             return true
         }
         return false
     }
     override func reset() {
-        timeStamp = pl.getCurrentTimeStamp()
+        timeStamp = TimeUtils.getCurrentTimeStamp()
         trgTime.setTime(v1: timeStamp)
     }
 }
@@ -2060,7 +2050,6 @@ class Cron:TrGEV3{
     // triggers true, limit times, after initial time, and every minutes interval
     // counter resets at initial time, assuming trigger method was run
     private var minutes:Int // minute interval between triggerings
-    private let pl:TimeUtils = TimeUtils()
     private var trgTime:TrgTime
     private var timeStamp:String = ""
     private var initialTimeStamp:String = ""
@@ -2102,7 +2091,7 @@ class Cron:TrGEV3{
             return false
         }
         if trgTime.trigger() {
-            timeStamp = pl.getFutureInXMin(extra_minutes: minutes)
+            timeStamp = TimeUtils.getFutureInXMin(extra_minutes: minutes)
             trgTime.setTime(v1: timeStamp)
             counter += 1
             return true
@@ -2115,7 +2104,7 @@ class Cron:TrGEV3{
             return false
         }
         if trgTime.trigger() {
-            timeStamp = pl.getFutureInXMin(extra_minutes: minutes)
+            timeStamp = TimeUtils.getFutureInXMin(extra_minutes: minutes)
             trgTime.setTime(v1: timeStamp)
             counter += 1
             return true
@@ -2237,7 +2226,6 @@ class AXNPC {
     }
 }
 class AXTimeContextResponder {
-    private var pl:TimeUtils = TimeUtils()
     var morning:Responder = Responder()
     var afternoon:Responder = Responder()
     var evening:Responder = Responder()
@@ -2252,7 +2240,7 @@ class AXTimeContextResponder {
     }
     
     func respond() -> String {
-        return responders[pl.partOfDay()]?.getAResponse() ?? ""
+        return responders[TimeUtils.partOfDay()]?.getAResponse() ?? ""
     }
 }
 class ChatBot {
@@ -3227,7 +3215,6 @@ class Excluder {
 }
 class TimedMessages {
     var messages: [String: String] = [:]
-    private let playGround :TimeUtils = TimeUtils()
     private var lastMSG = "nothing"
     private var msg:Bool = false
 
@@ -3263,7 +3250,7 @@ class TimedMessages {
     }
 
     func tick() {
-        let now = playGround.getCurrentTimeStamp()
+        let now = TimeUtils.getCurrentTimeStamp()
         if let message = messages[now], lastMSG != message {
             lastMSG = message
             msg = true

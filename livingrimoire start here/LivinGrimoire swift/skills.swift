@@ -8,123 +8,122 @@
 import Foundation
 
 class DiTime:Skill{
-    private let pl:TimeUtils = TimeUtils()
     // hello world skill for testing purposes
     override func input(ear: String, skin: String, eye: String) {
         switch (ear)  {
           case "what is the date":
-            setVerbatimAlg(priority: 4, sayThis: "\(pl.getCurrentMonthDay()) \(pl.getCurrentMonthName()) \(pl.getYearAsInt())")
+            setVerbatimAlg(priority: 4, sayThis: "\(TimeUtils.getCurrentMonthDay()) \(TimeUtils.getCurrentMonthName()) \(TimeUtils.getYearAsInt())")
           case "what is the time":
 //            setVerbatimAlg(priority: 3, sayThis: pl.getCurrentTimeStamp())
-            setSimpleAlg(sayThis: pl.getCurrentTimeStamp())
+            setSimpleAlg(sayThis: TimeUtils.getCurrentTimeStamp())
             break
           case "which day is it":
-            setSimpleAlg(sayThis: pl.getDayOfDWeek())
+            setSimpleAlg(sayThis: TimeUtils.getDayOfDWeek())
             break
           case "good morning","good afternoon","good evening","good night":
-            setSimpleAlg(sayThis: pl.partOfDay())
+            setSimpleAlg(sayThis: TimeUtils.partOfDay())
             break
           case "which month is it":
-            setSimpleAlg(sayThis: pl.getCurrentMonthName())
+            setSimpleAlg(sayThis: TimeUtils.getCurrentMonthName())
             break
           case "which year is it":
-            setSimpleAlg(sayThis: "\(pl.getYearAsInt())")
+            setSimpleAlg(sayThis: "\(TimeUtils.getYearAsInt())")
             break
           case "what is your time zone":
-            setSimpleAlg(sayThis: pl.getLocal())
+            setSimpleAlg(sayThis: TimeUtils.getLocal())
             break
           case "when is the first":
-            setSimpleAlg(sayThis: pl.nxtDayOnDate(dayOfMonth: 1))
+            setSimpleAlg(sayThis: TimeUtils.nxtDayOnDate(dayOfMonth: 1))
             break
           case "when is the second":
-            setSimpleAlg(sayThis: pl.nxtDayOnDate(dayOfMonth: 2))
+            setSimpleAlg(sayThis: TimeUtils.nxtDayOnDate(dayOfMonth: 2))
             break
           case "when is the third":
-            setSimpleAlg(sayThis: pl.nxtDayOnDate(dayOfMonth: 3))
+            setSimpleAlg(sayThis: TimeUtils.nxtDayOnDate(dayOfMonth: 3))
             break
         case "when is the fourth":
-          setSimpleAlg(sayThis: pl.nxtDayOnDate(dayOfMonth: 4))
+          setSimpleAlg(sayThis: TimeUtils.nxtDayOnDate(dayOfMonth: 4))
           break
         case "when is the fifth":
-          setSimpleAlg(sayThis: pl.nxtDayOnDate(dayOfMonth: 5))
+          setSimpleAlg(sayThis: TimeUtils.nxtDayOnDate(dayOfMonth: 5))
           break
         case "when is the sixth":
-          setSimpleAlg(sayThis: pl.nxtDayOnDate(dayOfMonth: 6))
+          setSimpleAlg(sayThis: TimeUtils.nxtDayOnDate(dayOfMonth: 6))
           break
         case "when is the seventh":
-          setSimpleAlg(sayThis: pl.nxtDayOnDate(dayOfMonth: 7))
+          setSimpleAlg(sayThis: TimeUtils.nxtDayOnDate(dayOfMonth: 7))
           break
         case "when is the eighth":
-          setSimpleAlg(sayThis: pl.nxtDayOnDate(dayOfMonth: 8))
+          setSimpleAlg(sayThis: TimeUtils.nxtDayOnDate(dayOfMonth: 8))
           break
         case "when is the ninth":
-          setSimpleAlg(sayThis: pl.nxtDayOnDate(dayOfMonth: 9))
+          setSimpleAlg(sayThis: TimeUtils.nxtDayOnDate(dayOfMonth: 9))
           break
         case "when is the tenth":
-          setSimpleAlg(sayThis: pl.nxtDayOnDate(dayOfMonth: 10))
+          setSimpleAlg(sayThis: TimeUtils.nxtDayOnDate(dayOfMonth: 10))
           break
         case "when is the eleventh":
-          setSimpleAlg(sayThis: pl.nxtDayOnDate(dayOfMonth: 11))
+          setSimpleAlg(sayThis: TimeUtils.nxtDayOnDate(dayOfMonth: 11))
           break
         case "when is the twelfth":
-          setSimpleAlg(sayThis: pl.nxtDayOnDate(dayOfMonth: 12))
+          setSimpleAlg(sayThis: TimeUtils.nxtDayOnDate(dayOfMonth: 12))
           break
         case "when is the thirteenth":
-          setSimpleAlg(sayThis: pl.nxtDayOnDate(dayOfMonth: 13))
+          setSimpleAlg(sayThis: TimeUtils.nxtDayOnDate(dayOfMonth: 13))
           break
         case "when is the fourteenth":
-          setSimpleAlg(sayThis: pl.nxtDayOnDate(dayOfMonth: 14))
+          setSimpleAlg(sayThis: TimeUtils.nxtDayOnDate(dayOfMonth: 14))
           break
         case "when is the fifteenth":
-          setSimpleAlg(sayThis: pl.nxtDayOnDate(dayOfMonth: 15))
+          setSimpleAlg(sayThis: TimeUtils.nxtDayOnDate(dayOfMonth: 15))
           break
         case "when is the sixteenth":
-          setSimpleAlg(sayThis: pl.nxtDayOnDate(dayOfMonth: 16))
+          setSimpleAlg(sayThis: TimeUtils.nxtDayOnDate(dayOfMonth: 16))
           break
         case "when is the seventeenth":
-          setSimpleAlg(sayThis: pl.nxtDayOnDate(dayOfMonth: 17))
+          setSimpleAlg(sayThis: TimeUtils.nxtDayOnDate(dayOfMonth: 17))
           break
         case "when is the eighteenth":
-          setSimpleAlg(sayThis: pl.nxtDayOnDate(dayOfMonth: 18))
+          setSimpleAlg(sayThis: TimeUtils.nxtDayOnDate(dayOfMonth: 18))
           break
         case "when is the nineteenth":
-          setSimpleAlg(sayThis: pl.nxtDayOnDate(dayOfMonth: 19))
+          setSimpleAlg(sayThis: TimeUtils.nxtDayOnDate(dayOfMonth: 19))
           break
         case "when is the twentieth":
-          setSimpleAlg(sayThis: pl.nxtDayOnDate(dayOfMonth: 20))
+          setSimpleAlg(sayThis: TimeUtils.nxtDayOnDate(dayOfMonth: 20))
           break
         case "when is the twenty first":
-          setSimpleAlg(sayThis: pl.nxtDayOnDate(dayOfMonth: 21))
+          setSimpleAlg(sayThis: TimeUtils.nxtDayOnDate(dayOfMonth: 21))
           break
         case "when is the twenty second":
-          setSimpleAlg(sayThis: pl.nxtDayOnDate(dayOfMonth: 22))
+          setSimpleAlg(sayThis: TimeUtils.nxtDayOnDate(dayOfMonth: 22))
           break
         case "when is the twenty third":
-          setSimpleAlg(sayThis: pl.nxtDayOnDate(dayOfMonth: 23))
+          setSimpleAlg(sayThis: TimeUtils.nxtDayOnDate(dayOfMonth: 23))
           break
         case "when is the twenty fourth":
-          setSimpleAlg(sayThis: pl.nxtDayOnDate(dayOfMonth: 24))
+          setSimpleAlg(sayThis: TimeUtils.nxtDayOnDate(dayOfMonth: 24))
           break
         case "when is the twenty fifth":
-          setSimpleAlg(sayThis: pl.nxtDayOnDate(dayOfMonth: 25))
+          setSimpleAlg(sayThis: TimeUtils.nxtDayOnDate(dayOfMonth: 25))
           break
         case "when is the twenty sixth":
-          setSimpleAlg(sayThis: pl.nxtDayOnDate(dayOfMonth: 26))
+          setSimpleAlg(sayThis: TimeUtils.nxtDayOnDate(dayOfMonth: 26))
           break
         case "when is the twenty seventh":
-          setSimpleAlg(sayThis: pl.nxtDayOnDate(dayOfMonth: 27))
+          setSimpleAlg(sayThis: TimeUtils.nxtDayOnDate(dayOfMonth: 27))
           break
         case "when is the twenty eighth":
-          setSimpleAlg(sayThis: pl.nxtDayOnDate(dayOfMonth: 28))
+          setSimpleAlg(sayThis: TimeUtils.nxtDayOnDate(dayOfMonth: 28))
           break
         case "when is the twenty ninth":
-            setSimpleAlg(sayThis: pl.nxtDayOnDate(dayOfMonth: 29) == "" ? "never":pl.nxtDayOnDate(dayOfMonth: 29))
+            setSimpleAlg(sayThis: TimeUtils.nxtDayOnDate(dayOfMonth: 29) == "" ? "never":TimeUtils.nxtDayOnDate(dayOfMonth: 29))
           break
         case "when is the thirtieth":
-            setSimpleAlg(sayThis: pl.nxtDayOnDate(dayOfMonth: 30) == "" ? "never":pl.nxtDayOnDate(dayOfMonth: 30))
+            setSimpleAlg(sayThis: TimeUtils.nxtDayOnDate(dayOfMonth: 30) == "" ? "never":TimeUtils.nxtDayOnDate(dayOfMonth: 30))
           break
         case "when is the thirty first":
-            setSimpleAlg(sayThis: pl.nxtDayOnDate(dayOfMonth: 31) == "" ? "never":pl.nxtDayOnDate(dayOfMonth: 31))
+            setSimpleAlg(sayThis: TimeUtils.nxtDayOnDate(dayOfMonth: 31) == "" ? "never":TimeUtils.nxtDayOnDate(dayOfMonth: 31))
           break
           case "incantation 0":
             // cancel running algorithm entirely at any alg part point
@@ -331,7 +330,6 @@ class DiEngager: Skill {
     private var skillToEngage = "unknown"
     private var draw = DrawRndDigits()
     private var burpMinutes:Array<Int> = [Int]()
-    private var pl = TimeUtils()
     
     init(burpsPerHour: Int, skillToEngage: String) {
         super.init()
@@ -352,7 +350,7 @@ class DiEngager: Skill {
     }
     
     override func input(ear: String, skin: String, eye: String) {
-        if pl.partOfDay() == "night" {
+        if TimeUtils.partOfDay() == "night" {
             return
         }
         
@@ -365,7 +363,7 @@ class DiEngager: Skill {
             return
         }
         
-        let nowMinutes = pl.getMinutesAsInt()
+        let nowMinutes = TimeUtils.getMinutesAsInt()
         if burpMinutes.contains(nowMinutes) {
             // snippet of code : remove item from array list
             burpMinutes.removeAll {value in return value == nowMinutes}
@@ -379,7 +377,6 @@ class DiBurper: Skill {
     private var burps:Responder = Responder("burp","burp2","burp3")
     private var draw = DrawRndDigits()
     private var burpMinutes:Array<Int> = [Int]()
-    private var pl = TimeUtils()
     
     init(burpsPerHour: Int) {
         super.init()
@@ -398,7 +395,7 @@ class DiBurper: Skill {
     }
     
     override func input(ear: String, skin: String, eye: String) {
-        if pl.partOfDay() == "night" {
+        if TimeUtils.partOfDay() == "night" {
             return
         }
         
@@ -411,7 +408,7 @@ class DiBurper: Skill {
             return
         }
         
-        let nowMinutes = pl.getMinutesAsInt()
+        let nowMinutes = TimeUtils.getMinutesAsInt()
         if burpMinutes.contains(nowMinutes) {
             // snippet of code : remove item from array list
             burpMinutes.removeAll {value in return value == nowMinutes}

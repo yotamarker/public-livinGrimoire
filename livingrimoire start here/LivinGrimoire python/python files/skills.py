@@ -4,7 +4,6 @@ from AXPython import *
 
 class DiMisser(Skill):
     def __init__(self):
-        self._pl: TimeUtils = TimeUtils()
         self._cron: Cron = Cron("15:00", 50, 2)
         self._responder: Responder = Responder("welcome", "i have missed you", "welcome back")
         super().__init__()
@@ -12,7 +11,7 @@ class DiMisser(Skill):
     # Override
     def input(self, ear: str, skin: str, eye: str):
         if ear == "i am home":
-            self._cron.setStartTime(self._pl.getPastInXMin(10))
+            self._cron.setStartTime(TimeUtils.getPastInXMin(10))
             self.setVerbatimAlg(4, self._responder.getAResponse())
             return
         if self._cron.trigger():
@@ -32,7 +31,6 @@ class DiBurper(Skill):
         self._responder1: Responder = Responder("burp", "burp2", "burp3")
         self._draw: DrawRndDigits = DrawRndDigits()
         self._burpMinutes: LGFIFO = LGFIFO()
-        self._pl: TimeUtils = TimeUtils()
         for i in range(1, 60):
             self._draw.addElement(i)
         for i in range(0, burps_per_hour):
@@ -47,7 +45,7 @@ class DiBurper(Skill):
     # Override
     def input(self, ear: str, skin: str, eye: str):
         # night? do not burp
-        if self._pl.partOfDay() == "night":
+        if TimeUtils.partOfDay() == "night":
             return
         # reset burps
         if self._trgMinute.trigger():
@@ -57,7 +55,7 @@ class DiBurper(Skill):
                 self._burpMinutes.insert(self._draw.drawAndRemove())
             return
         # burp
-        now_minutes: int = self._pl.getMinutesAsInt()
+        now_minutes: int = TimeUtils.getMinutesAsInt()
         if self._burpMinutes.contains(now_minutes):
             self._burpMinutes.removeItem(now_minutes)
             self.setVerbatimAlg(4, self._responder1.getAResponse())
@@ -74,7 +72,6 @@ class DiSneezer(Skill):
         self._responder1: Responder = Responder("sneeze", "achoo", "atchoo", "achew", "atisshoo")
         self._draw: DrawRndDigits = DrawRndDigits()
         self._sneezeMinutes: LGFIFO = LGFIFO()
-        self._pl: TimeUtils = TimeUtils()
         for i in range(1, 60):
             self._draw.addElement(i)
         for i in range(0, sneezes_per_hour):
@@ -91,7 +88,7 @@ class DiSneezer(Skill):
                 self._sneezeMinutes.insert(self._draw.drawAndRemove())
             return
         # burp
-        now_minutes: int = self._pl.getMinutesAsInt()
+        now_minutes: int = TimeUtils.getMinutesAsInt()
         if self._sneezeMinutes.contains(now_minutes):
             self._sneezeMinutes.removeItem(now_minutes)
             self.setVerbatimAlg(4, self._responder1.getAResponse())
@@ -108,7 +105,6 @@ class DiPetv3(Skill):
         self._responder1: Responder1Word = Responder1Word()
         self._allMinutes: DrawRndDigits = DrawRndDigits()
         self._chirpMinutes: LGFIFO = LGFIFO()
-        self._pl: TimeUtils = TimeUtils()
         for i in range(1, 60):
             self._allMinutes.addElement(i)
         for i in range(0, chirps_per_hour):
@@ -119,7 +115,7 @@ class DiPetv3(Skill):
     def input(self, ear: str, skin: str, eye: str):
         self._responder1.listen(ear)
         # night? do not burp
-        if self._pl.partOfDay() == "night":
+        if TimeUtils.partOfDay() == "night":
             return
         # reset chirps as hour starts
         if self._trgMinute.trigger():
@@ -129,7 +125,7 @@ class DiPetv3(Skill):
                 self._chirpMinutes.insert(self._allMinutes.drawAndRemove())
             return
         # chirp
-        now_minutes: int = self._pl.getMinutesAsInt()
+        now_minutes: int = TimeUtils.getMinutesAsInt()
         if self._chirpMinutes.contains(now_minutes):
             self._chirpMinutes.removeItem(now_minutes)
             self.setVerbatimAlg(3, self._responder1.getAResponse())
@@ -459,99 +455,98 @@ class DiMagic8Ball(Skill):
 class DiTime(Skill):
     def __init__(self):
         super().__init__()
-        self.__pl: TimeUtils = TimeUtils()
 
     # Override
     def input(self, ear: str, skin: str, eye: str):
         match ear:
             case "what is the date":
                 self.setVerbatimAlg(4,
-                                    f'{self.__pl.getCurrentMonthDay()} {self.__pl.getCurrentMonthName()} {self.__pl.getYearAsInt()}')
+                                    f'{TimeUtils.getCurrentMonthDay()} {TimeUtils.getCurrentMonthName()} {TimeUtils.getYearAsInt()}')
             case "what is the time":
-                self.setVerbatimAlg(4, self.__pl.getCurrentTimeStamp())
+                self.setVerbatimAlg(4, TimeUtils.getCurrentTimeStamp())
             case "honey bunny":
                 self.setVerbatimAlg(4, "bunny honey")
             case "i am sleepy":
                 self.setSimpleAlg(
                     "Chi… Chi knows it’s late. Sleep, sleep is good. When you sleep, you can dream. Dreams, dreams are nice. Tomorrow, lots to do. If sleep now, can do best tomorrow. So, let’s sleep. Good night… zzz…")
             case "which day is it":
-                self.setVerbatimAlg(4, self.__pl.getDayOfDWeek())
+                self.setVerbatimAlg(4, TimeUtils.getDayOfDWeek())
             case "good morning":
-                self.setVerbatimAlg(4, f'good {self.__pl.partOfDay()}')  # fstring
+                self.setVerbatimAlg(4, f'good {TimeUtils.partOfDay()}')  # fstring
             case "good night":
-                self.setVerbatimAlg(4, f'good {self.__pl.partOfDay()}')  # fstring
+                self.setVerbatimAlg(4, f'good {TimeUtils.partOfDay()}')  # fstring
             case "good afternoon":
-                self.setVerbatimAlg(4, f'good {self.__pl.partOfDay()}')  # fstring
+                self.setVerbatimAlg(4, f'good {TimeUtils.partOfDay()}')  # fstring
             case "good evening":
-                self.setVerbatimAlg(4, f'good {self.__pl.partOfDay()}')  # fstring
+                self.setVerbatimAlg(4, f'good {TimeUtils.partOfDay()}')  # fstring
             case "which month is it":
-                self.setVerbatimAlg(4, self.__pl.getCurrentMonthName())
+                self.setVerbatimAlg(4, TimeUtils.getCurrentMonthName())
             case "which year is it":
-                self.setVerbatimAlg(4, f'{self.__pl.getYearAsInt()}')
+                self.setVerbatimAlg(4, f'{TimeUtils.getYearAsInt()}')
             case "what is your time zone":
-                self.setVerbatimAlg(4, self.__pl.getLocal())
+                self.setVerbatimAlg(4, TimeUtils.getLocal())
             case "when is the first":
-                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(1))
+                self.setVerbatimAlg(4, TimeUtils.nxtDayOnDate(1))
             case "when is the second":
-                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(2))
+                self.setVerbatimAlg(4, TimeUtils.nxtDayOnDate(2))
             case "when is the third":
-                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(3))
+                self.setVerbatimAlg(4, TimeUtils.nxtDayOnDate(3))
             case "when is the fourth":
-                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(4))
+                self.setVerbatimAlg(4, TimeUtils.nxtDayOnDate(4))
             case "when is the fifth":
-                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(5))
+                self.setVerbatimAlg(4, TimeUtils.nxtDayOnDate(5))
             case "when is the sixth":
-                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(6))
+                self.setVerbatimAlg(4, TimeUtils.nxtDayOnDate(6))
             case "when is the seventh":
-                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(7))
+                self.setVerbatimAlg(4, TimeUtils.nxtDayOnDate(7))
             case "when is the eighth":
-                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(8))
+                self.setVerbatimAlg(4, TimeUtils.nxtDayOnDate(8))
             case "when is the ninth":
-                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(9))
+                self.setVerbatimAlg(4, TimeUtils.nxtDayOnDate(9))
             case "when is the tenth":
-                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(10))
+                self.setVerbatimAlg(4, TimeUtils.nxtDayOnDate(10))
             case "when is the eleventh":
-                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(11))
+                self.setVerbatimAlg(4, TimeUtils.nxtDayOnDate(11))
             case "when is the twelfth":
-                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(12))
+                self.setVerbatimAlg(4, TimeUtils.nxtDayOnDate(12))
             case "when is the thirteenth":
-                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(13))
+                self.setVerbatimAlg(4, TimeUtils.nxtDayOnDate(13))
             case "when is the fourteenth":
-                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(14))
+                self.setVerbatimAlg(4, TimeUtils.nxtDayOnDate(14))
             case "when is the fifteenth":
-                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(15))
+                self.setVerbatimAlg(4, TimeUtils.nxtDayOnDate(15))
             case "when is the sixteenth":
-                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(16))
+                self.setVerbatimAlg(4, TimeUtils.nxtDayOnDate(16))
             case "when is the seventeenth":
-                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(17))
+                self.setVerbatimAlg(4, TimeUtils.nxtDayOnDate(17))
             case "when is the eighteenth":
-                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(18))
+                self.setVerbatimAlg(4, TimeUtils.nxtDayOnDate(18))
             case "when is the nineteenth":
-                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(19))
+                self.setVerbatimAlg(4, TimeUtils.nxtDayOnDate(19))
             case "when is the twentieth":
-                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(20))
+                self.setVerbatimAlg(4, TimeUtils.nxtDayOnDate(20))
             case "when is the twenty first":
-                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(21))
+                self.setVerbatimAlg(4, TimeUtils.nxtDayOnDate(21))
             case "when is the twenty second":
-                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(22))
+                self.setVerbatimAlg(4, TimeUtils.nxtDayOnDate(22))
             case "when is the twenty third":
-                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(23))
+                self.setVerbatimAlg(4, TimeUtils.nxtDayOnDate(23))
             case "when is the twenty fourth":
-                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(24))
+                self.setVerbatimAlg(4, TimeUtils.nxtDayOnDate(24))
             case "when is the twenty fifth":
-                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(25))
+                self.setVerbatimAlg(4, TimeUtils.nxtDayOnDate(25))
             case "when is the twenty sixth":
-                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(26))
+                self.setVerbatimAlg(4, TimeUtils.nxtDayOnDate(26))
             case "when is the twenty seventh":
-                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(27))
+                self.setVerbatimAlg(4, TimeUtils.nxtDayOnDate(27))
             case "when is the twenty eighth":
-                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(28))
+                self.setVerbatimAlg(4, TimeUtils.nxtDayOnDate(28))
             case "when is the twenty ninth":
-                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(29) if (self.__pl.nxtDayOnDate(29) != "") else "never")
+                self.setVerbatimAlg(4, TimeUtils.nxtDayOnDate(29) if (TimeUtils.nxtDayOnDate(29) != "") else "never")
             case "when is the thirtieth":
-                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(30) if (self.__pl.nxtDayOnDate(30) != "") else "never")
+                self.setVerbatimAlg(4, TimeUtils.nxtDayOnDate(30) if (TimeUtils.nxtDayOnDate(30) != "") else "never")
             case "when is the thirty first":
-                self.setVerbatimAlg(4, self.__pl.nxtDayOnDate(31) if (self.__pl.nxtDayOnDate(31) != "") else "never")
+                self.setVerbatimAlg(4, TimeUtils.nxtDayOnDate(31) if (TimeUtils.nxtDayOnDate(31) != "") else "never")
             case "incantation 0":
                 self.setVerbatimAlg(5, "fly", "bless of magic caster", "infinity wall", "magic ward holy",
                                     "life essence")
@@ -589,7 +584,6 @@ class DiEngager(Skill):
         self._trgMinute.setMinute(0)
         self._draw: DrawRndDigits = DrawRndDigits()
         self._burpMinutes: LGFIFO = LGFIFO()
-        self._pl: TimeUtils = TimeUtils()
         self._skillToEngage: str = skillToEngage
         for i in range(1, 60):
             self._draw.addElement(i)
@@ -604,7 +598,7 @@ class DiEngager(Skill):
     # Override
     def input(self, ear: str, skin: str, eye: str):
         # night? do not burp
-        if self._pl.partOfDay() == "night":
+        if TimeUtils.partOfDay() == "night":
             return
         # reset burps
         if self._trgMinute.trigger():
@@ -614,7 +608,7 @@ class DiEngager(Skill):
                 self._burpMinutes.insert(self._draw.drawAndRemove())
             return
         # burp
-        now_minutes: int = self._pl.getMinutesAsInt()
+        now_minutes: int = TimeUtils.getMinutesAsInt()
         if self._burpMinutes.contains(now_minutes):
             self._burpMinutes.removeItem(now_minutes)
             self.getKokoro().toHeart[self._skillToEngage] = "engage"
@@ -1601,7 +1595,6 @@ class DiBurperV2(Skill):
         self._responder1: Responder = Responder("burp", "burp2", "burp3")
         self._draw: DrawRndDigits = DrawRndDigits()
         self._burpMinutes: LGFIFO = LGFIFO()
-        self._pl: TimeUtils = TimeUtils()
         for i in range(1, 60):
             self._draw.addElement(i)
         for i in range(0, burps_per_hour):
@@ -1616,7 +1609,7 @@ class DiBurperV2(Skill):
     # Override
     def input(self, ear: str, skin: str, eye: str):
         # night? do not burp
-        if self._pl.partOfDay() == "night":
+        if TimeUtils.partOfDay() == "night":
             return
         # reset burps
         if self._trgMinute.trigger():
@@ -1626,7 +1619,7 @@ class DiBurperV2(Skill):
                 self._burpMinutes.insert(self._draw.drawAndRemove())
             return
         # burp
-        now_minutes: int = self._pl.getMinutesAsInt()
+        now_minutes: int = TimeUtils.getMinutesAsInt()
         if self._burpMinutes.contains(now_minutes):
             self._burpMinutes.removeItem(now_minutes)
             self.algPartsFusion(4, APHappy(self._responder1.getAResponse()))

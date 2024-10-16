@@ -35,28 +35,28 @@ class enumTimes(Enum):
 
 
 class TimeUtils:
-    def __init__(self):
-        self.week_days = {1: 'sunday',
-                          2: 'monday',
-                          3: 'tuesday',
-                          4: 'wednesday',
-                          5: 'thursday',
-                          6: 'friday',
-                          7: 'saturday',
-                          }
-        self.dayOfMonth = {1: "first_of", 2: "second_of", 3: "third_of", 4: "fourth_of", 5: "fifth_of", 6: "sixth_of",
-                           7: "seventh_of",
-                           8: "eighth_of", 9: "nineth_of", 10: "tenth_of", 11: "eleventh_of", 12: "twelveth_of",
-                           13: "thirteenth_of",
-                           14: "fourteenth_of", 15: "fifteenth_of", 16: "sixteenth_of", 17: "seventeenth_of",
-                           18: "eighteenth_of",
-                           19: "nineteenth_of", 20: "twentyth_of", 21: "twentyfirst_of", 22: "twentysecond_of",
-                           23: "twentythird_of",
-                           24: "twentyfourth_of", 25: "twentyfifth_of", 26: "twentysixth_of", 27: "twentyseventh_of",
-                           28: "twentyeighth_of",
-                           29: "twentynineth_of", 30: "thirtyth_of", 31: "thirtyfirst_of"}
+    week_days = {1: 'sunday',
+                 2: 'monday',
+                 3: 'tuesday',
+                 4: 'wednesday',
+                 5: 'thursday',
+                 6: 'friday',
+                 7: 'saturday',
+                 }
+    dayOfMonth = {1: "first_of", 2: "second_of", 3: "third_of", 4: "fourth_of", 5: "fifth_of", 6: "sixth_of",
+                  7: "seventh_of",
+                  8: "eighth_of", 9: "nineth_of", 10: "tenth_of", 11: "eleventh_of", 12: "twelveth_of",
+                  13: "thirteenth_of",
+                  14: "fourteenth_of", 15: "fifteenth_of", 16: "sixteenth_of", 17: "seventeenth_of",
+                  18: "eighteenth_of",
+                  19: "nineteenth_of", 20: "twentyth_of", 21: "twentyfirst_of", 22: "twentysecond_of",
+                  23: "twentythird_of",
+                  24: "twentyfourth_of", 25: "twentyfifth_of", 26: "twentysixth_of", 27: "twentyseventh_of",
+                  28: "twentyeighth_of",
+                  29: "twentynineth_of", 30: "thirtyth_of", 31: "thirtyfirst_of"}
 
-    def getCurrentTimeStamp(self) -> str:
+    @staticmethod
+    def getCurrentTimeStamp() -> str:
         """This method returns the current time (hh:mm)"""
         right_now = datetime.datetime.now()
         temp_minute: int = right_now.minute
@@ -67,51 +67,60 @@ class TimeUtils:
             tempstr = str(right_now.minute)
         return str(right_now.hour) + ":" + tempstr
 
-    def getMonthAsInt(self) -> int:
+    @staticmethod
+    def getMonthAsInt() -> int:
         """This method returns the current month (MM)"""
         right_now = datetime.datetime.now()
         return right_now.month
 
-    def getDayOfTheMonthAsInt(self) -> int:
+    @staticmethod
+    def getDayOfTheMonthAsInt() -> int:
         """This method returns the current day (dd)"""
         right_now = datetime.datetime.now()
         return right_now.day
 
-    def getYearAsInt(self) -> int:
+    @staticmethod
+    def getYearAsInt() -> int:
         """This method returns the current year (yyyy)"""
         right_now = datetime.datetime.now()
         return right_now.year
 
-    def getDayAsInt(self) -> int:
+    @staticmethod
+    def getDayAsInt() -> int:
         """This method returns the current day of the week (1, 2, ... 7)"""
         right_now = datetime.datetime.now()
         return right_now.isoweekday()
 
-    def getMinutes(self) -> str:
+    @staticmethod
+    def getMinutes() -> str:
         """This method returns the current minutes (mm)"""
         right_now = datetime.datetime.now()
         return str(right_now.minute)
 
-    def getSeconds(self) -> str:
+    @staticmethod
+    def getSeconds() -> str:
         """This method returns the current seconds (ss)"""
         right_now = datetime.datetime.now()
         return str(right_now.second)
 
-    def getDayOfDWeek(self) -> str:
+    @staticmethod
+    def getDayOfDWeek() -> str:
         """This method returns the current day of the week as a word (monday, ...)"""
         right_now = datetime.datetime.now()
         return calendar.day_name[right_now.weekday()]
 
-    def translateMonthDay(self, day: int) -> str:
+    @staticmethod
+    def translateMonthDay(day: int) -> str:
         """This method returns the current day of the month as a word (first_of, ...)"""
-        return self.dayOfMonth.get(day, "")
+        return TimeUtils.dayOfMonth.get(day, "")
 
-    def getSpecificTime(self, time_variable: enumTimes) -> str:
+    @staticmethod
+    def getSpecificTime(time_variable: enumTimes) -> str:
         """This method returns the current specific date in words (eleventh_of June 2021, ...)"""
         enum_temp = time_variable.name
         if enum_temp == "DATE":
             right_now = datetime.datetime.now()
-            output = self.translateMonthDay(right_now.day) + " " + calendar.month_name[right_now.month] + " " + str(
+            output = TimeUtils.translateMonthDay(right_now.day) + " " + calendar.month_name[right_now.month] + " " + str(
                 right_now.year)
         elif enum_temp == "HOUR":
             output = str(datetime.datetime.now().hour)
@@ -125,22 +134,26 @@ class TimeUtils:
             output = ""
         return output
 
-    def getSecondsAsInt(self) -> int:
+    @staticmethod
+    def getSecondsAsInt() -> int:
         """This method returns the current seconds"""
         right_now = datetime.datetime.now()
         return right_now.second
 
-    def getMinutesAsInt(self) -> int:
+    @staticmethod
+    def getMinutesAsInt() -> int:
         """This method returns the current minutes"""
         right_now = datetime.datetime.now()
         return right_now.minute
 
-    def getHoursAsInt(self) -> int:
+    @staticmethod
+    def getHoursAsInt() -> int:
         """This method returns the current hour"""
         right_now = datetime.datetime.now()
         return right_now.hour
 
-    def getFutureInXMin(self, extra_minutes: int) -> str:
+    @staticmethod
+    def getFutureInXMin(extra_minutes: int) -> str:
         """This method returns the date in x minutes"""
         right_now = datetime.datetime.now()
         final_time = right_now + datetime.timedelta(minutes=extra_minutes)
@@ -151,7 +164,8 @@ class TimeUtils:
             s1 = s1[1:]
         return s1
 
-    def getPastInXMin(self, less_minutes: int) -> str:
+    @staticmethod
+    def getPastInXMin(less_minutes: int) -> str:
         """This method returns the date x minutes before"""
         right_now = datetime.datetime.now()
         final_time = right_now - datetime.timedelta(minutes=less_minutes)
@@ -162,11 +176,13 @@ class TimeUtils:
             s1 = s1[1:]
         return s1
 
-    def getFutureHour(self, startHour: int, addedHours: int) -> int:
+    @staticmethod
+    def getFutureHour(startHour: int, addedHours: int) -> int:
         """This method returns the hour in x hours from the starting hour"""
         return (startHour + addedHours) % 24
 
-    def getFutureFromXInYMin(self, to_add: int, start: str) -> str:
+    @staticmethod
+    def getFutureFromXInYMin(to_add: int, start: str) -> str:
         """This method returns the time (hh:mm) in x minutes the starting time (hh:mm)"""
         values = start.split(":")
         times_to_add = (int(values[1]) + to_add) // 60
@@ -174,64 +190,74 @@ class TimeUtils:
         new_time = str((int(values[0]) + times_to_add) % 24) + ":" + str(new_minutes)
         return new_time
 
-    def timeInXMinutes(self, x: int) -> str:
+    @staticmethod
+    def timeInXMinutes(x: int) -> str:
         """This method returns the time (hh:mm) in x minutes"""
         right_now = datetime.datetime.now()
         final_time = right_now + datetime.timedelta(minutes=x)
         return str(final_time.hour) + ":" + str(final_time.minute)
 
-    def isDayTime(self) -> bool:
+    @staticmethod
+    def isDayTime() -> bool:
         """This method returns true if it's daytime (6-18)"""
         return 5 < datetime.datetime.now().hour < 19
 
-    def smallToBig(self, *a) -> bool:
+    @staticmethod
+    def smallToBig(*a) -> bool:
         for i in range(len(a) - 1):
             if a[i] > a[i + 1]:
                 return False
         return True
 
-    def partOfDay(self) -> str:
+    @staticmethod
+    def partOfDay() -> str:
         """This method returns which part of the day it is (morning, ...)"""
-        hour: int = self.getHoursAsInt()
-        if self.smallToBig(5, hour, 12):
+        hour: int = TimeUtils.getHoursAsInt()
+        if TimeUtils.smallToBig(5, hour, 12):
             return "morning"
-        elif self.smallToBig(11, hour, 17):
+        elif TimeUtils.smallToBig(11, hour, 17):
             return "afternoon"
-        elif self.smallToBig(16, hour, 21):
+        elif TimeUtils.smallToBig(16, hour, 21):
             return "evening"
         return "night"
 
-    def convertToDay(self, number: int) -> str:
+    @staticmethod
+    def convertToDay(number: int) -> str:
         """This method converts the week number to the weekday name"""
-        return self.week_days.get(number, "")
+        return TimeUtils.week_days.get(number, "")
 
-    def isNight(self) -> bool:
+    @staticmethod
+    def isNight() -> bool:
         """This method returns true if it's night (21-5)"""
-        hour: int = self.getHoursAsInt()
+        hour: int = TimeUtils.getHoursAsInt()
         return hour > 20 or hour < 6
 
-    def getTomorrow(self) -> str:
+    @staticmethod
+    def getTomorrow() -> str:
         """This method returns tomorrow"""
         right_now = datetime.datetime.now()
         if right_now.weekday() == 6:
             return "sunday"
         return calendar.day_name[right_now.weekday() + 1]
 
-    def getYesterday(self) -> str:
+    @staticmethod
+    def getYesterday() -> str:
         """This method returns yesterday"""
         right_now = datetime.datetime.now()
         if right_now.weekday == 0:
             return "Sunday"
         return calendar.day_name[right_now.weekday() - 1]
 
-    def getGMT(self) -> int:
+    @staticmethod
+    def getGMT() -> int:
         """This method returns the local GMT"""
         right_now = datetime.datetime.now()
         timezone = int(str(right_now.astimezone())[-6:-3])
         return timezone
 
-    def getCurrentMonthName(self) -> str:
-        month: int = self.getMonthAsInt()
+    @staticmethod
+    def getCurrentMonthName() -> str:
+        month: int = TimeUtils.getMonthAsInt()
         match month:
             case 1:
                 return "january"
@@ -259,8 +285,9 @@ class TimeUtils:
                 return "december"
         return ""
 
-    def getCurrentMonthDay(self):
-        return self.dayOfMonth.get(self.getDayOfTheMonthAsInt(), "")
+    @staticmethod
+    def getCurrentMonthDay():
+        return TimeUtils.dayOfMonth.get(TimeUtils.getDayOfTheMonthAsInt(), "")
 
     @staticmethod
     def getLocal() -> str:
@@ -466,6 +493,7 @@ class RegexUtil:
 
     def stripAwayNumbers(self, str1: str) -> str:
         return re.sub(r'\d+', '', str1)
+
 
 ''' --------------- TIMEGATE --------------- '''
 import time
@@ -1470,7 +1498,6 @@ class TrgMinute(TrGEV3):
         super().__init__()
         self._hour1: int = -1
         self._minute: int = random.randint(0, 60)
-        self.pgrd: TimeUtils = TimeUtils()
 
     def setMinute(self, minute):
         if -1 < minute < 61:
@@ -1478,9 +1505,9 @@ class TrgMinute(TrGEV3):
 
     # override
     def trigger(self) -> bool:
-        temp_hour: int = self.pgrd.getHoursAsInt()
+        temp_hour: int = TimeUtils.getHoursAsInt()
         if temp_hour != self._hour1:
-            if self.pgrd.getMinutesAsInt() == self._minute:
+            if TimeUtils.getMinutesAsInt() == self._minute:
                 self._hour1 = temp_hour
                 return True
         return False
@@ -1501,13 +1528,12 @@ class TrgParrot:
             temp_lim = limit
         self._tolerance: TrgTolerance = TrgTolerance(temp_lim)
         self._silencer: Responder = Responder("ok", "okay", "stop", "shut up", "quiet")
-        self._pl: TimeUtils = TimeUtils()
 
     def trigger(self, standBy: bool, ear: str) -> bool:
         """relies on the Kokoro standby boolean
          no input or output for a set amount of time results with a true
          and replenishing the trigger."""
-        if self._pl.isNight():
+        if TimeUtils.isNight():
             # is it night? I will be quite
             return False
         # you want the bird to shut up?
@@ -1536,7 +1562,6 @@ class TrgSnooze(TrGEV3):
         self._maxRepeats: int = maxRepeats
         self._snooze: bool = True
         self._snoozeInterval: int = 5
-        self._playGround: TimeUtils = TimeUtils()
 
     def setSnoozeInterval(self, snoozeInterval):
         if 1 < snoozeInterval < 11:
@@ -1555,7 +1580,7 @@ class TrgSnooze(TrGEV3):
     # override
     def trigger(self) -> bool:
         # trigger a snooze alarm?
-        minutes: int = self._playGround.getMinutesAsInt()
+        minutes: int = TimeUtils.getMinutesAsInt()
         # non interval minute case:
         if minutes % self._snoozeInterval != 0:
             self._snooze = True
@@ -1577,7 +1602,6 @@ class TrgTime:
         super().__init__()
         self._t = "null"
         self._regexUtil: RegexUtil = RegexUtil()
-        self._pl: TimeUtils = TimeUtils()
         self._alarm: bool = True
 
     def setTime(self, v1: str):
@@ -1586,7 +1610,7 @@ class TrgTime:
         self._t = self._regexUtil.extractEnumRegex(enumRegexGrimoire.simpleTimeStamp, v1)
 
     def alarm(self) -> bool:
-        now: str = self._pl.getCurrentTimeStamp()
+        now: str = TimeUtils.getCurrentTimeStamp()
         if self._alarm:
             if now == self._t:
                 self._alarm = False
@@ -2059,7 +2083,6 @@ class Responder1Word:
 class TrgEveryNMinutes(TrGEV3):
     # trigger returns true every minutes interval, post start time
     def __init__(self, startTime: str, minutes: int):
-        self._playGround: TimeUtils = TimeUtils()
         self._minutes: int = minutes  # minute interval between triggerings
         self._timeStamp = startTime
         self._trgTime: TrgTime = TrgTime()
@@ -2072,21 +2095,20 @@ class TrgEveryNMinutes(TrGEV3):
     # override
     def trigger(self) -> bool:
         if self._trgTime.alarm():
-            self._timeStamp = self._playGround.getFutureInXMin(self._minutes)
+            self._timeStamp = TimeUtils.getFutureInXMin(self._minutes)
             self._trgTime.setTime(self._timeStamp)
             return True
         return False
 
     # override
     def reset(self):
-        self._timeStamp = self._playGround.getCurrentTimeStamp()
+        self._timeStamp = TimeUtils.getCurrentTimeStamp()
 
 
 class Cron(TrGEV3):
     # triggers true, limit times, after initial time, and every minutes interval
     # counter resets at initial time, assuming trigger method was run
     def __init__(self, startTime: str, minutes: int, limit: int):
-        self._playGround: TimeUtils = TimeUtils()
         self._minutes: int = minutes  # minute interval between triggerings
         self._timeStamp = startTime
         self._initislTimeStamp = startTime
@@ -2119,7 +2141,7 @@ class Cron(TrGEV3):
             self._counter = 0
             return False
         if self._trgTime.alarm():
-            self._timeStamp = self._playGround.getFutureInXMin(self._minutes)
+            self._timeStamp = TimeUtils.getFutureInXMin(self._minutes)
             self._trgTime.setTime(self._timeStamp)
             self._counter += 1
             return True
@@ -2130,7 +2152,7 @@ class Cron(TrGEV3):
             self._trgTime.setTime(self._initislTimeStamp)
             return False
         if self._trgTime.alarm():
-            self._timeStamp = self._playGround.getFutureInXMin(self._minutes)
+            self._timeStamp = TimeUtils.getFutureInXMin(self._minutes)
             self._trgTime.setTime(self._timeStamp)
             self._counter += 1
             return True
@@ -2219,7 +2241,6 @@ class RefreshQ(UniqueItemSizeLimitedPriorityQueue):
 class AXTimeContextResponder:
     # output reply based on the part of day as context
     def __init__(self):
-        self._pl: TimeUtils = TimeUtils()
         self.morning: Responder = Responder()
         self.afternoon: Responder = Responder()
         self.evening: Responder = Responder()
@@ -2228,7 +2249,7 @@ class AXTimeContextResponder:
                                                   "evening": self.evening, "night": self.night}
 
     def respond(self) -> str:
-        return self._responders[self._pl.partOfDay()].getAResponse()
+        return self._responders[TimeUtils.partOfDay()].getAResponse()
 
 
 class PercentDripper:
@@ -3358,7 +3379,6 @@ class TimedMessages:
 
     def __init__(self) -> None:
         self.messages: dict[str, str] = {}
-        self.playGround: TimeUtils = TimeUtils()  # Assuming PlayGround is defined elsewhere
         self.lastMSG: str = "nothing"
         self.msg: bool = False
 
@@ -3388,7 +3408,7 @@ class TimedMessages:
         self.messages.clear()
 
     def tick(self) -> None:
-        now: str = self.playGround.getCurrentTimeStamp()
+        now: str = TimeUtils.getCurrentTimeStamp()
         if now in self.messages:
             if self.lastMSG != self.messages[now]:
                 self.lastMSG = self.messages[now]

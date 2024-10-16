@@ -1,0 +1,11 @@
+Imports System
+
+Module Program
+    Sub Main(args As String())
+        Dim brain As New Brain()
+        brain.AddLogicalSkill(New DiHelloWorld())
+        brain.AddHardwareSkill(New DiPrinter())
+        brain.DoIt("hello", "", "")
+        Console.ReadLine()
+    End Sub
+End Module

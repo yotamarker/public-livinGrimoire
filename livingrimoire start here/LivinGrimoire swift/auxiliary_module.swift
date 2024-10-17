@@ -1271,6 +1271,25 @@ class DrawRnd {
     func isEmptied() -> Bool {
         return self.strings.count == 0
     }
+    func resetIfEmpty() {
+            if isEmptied() {
+                reset()
+            }
+        }
+
+    func containsElement(element: String) -> Bool {
+        return stringsSource.contains(element)
+    }
+
+    func currentlyContainsElement(element: String) -> Bool {
+        return strings.contains(element)
+    }
+
+    func removeItem(element: String) {
+        if strings.contains(element) {
+            strings.removeAll { $0 == element }
+        }
+    }
 }
 class LGTypeConverter{
     func convertToInt(v1:String)->Int{
@@ -2820,6 +2839,28 @@ class DrawRndDigits {
     func addElement(element:Int) {
         strings.append(element)
         stringsSource.append(element)
+    }
+    func isEmptied() -> Bool {
+        return self.strings.count == 0
+    }
+    func resetIfEmpty() {
+            if isEmptied() {
+                reset()
+            }
+        }
+
+    func containsElement(element: Int) -> Bool {
+        return stringsSource.contains(element)
+    }
+
+    func currentlyContainsElement(element: Int) -> Bool {
+        return strings.contains(element)
+    }
+
+    func removeItem(element: Int) {
+        if strings.contains(element) {
+            strings.removeAll { $0 == element }
+        }
     }
 }
 

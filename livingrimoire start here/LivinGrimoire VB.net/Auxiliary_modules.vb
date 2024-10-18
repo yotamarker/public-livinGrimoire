@@ -1054,6 +1054,23 @@ Module Auxiliary_modules
         Public Function IsEmptied() As Boolean
             Return strings.Count = 0
         End Function
+        Public Sub ResetIfEmpty()
+            If IsEmptied() Then
+                Reset()
+            End If
+        End Sub
+
+        Public Function ContainsElement(element As String) As Boolean
+            Return stringsSource.Contains(element)
+        End Function
+
+        Public Function CurrentlyContainsElement(element As String) As Boolean
+            Return strings.Contains(element)
+        End Function
+
+        Public Sub RemoveItem(element As String)
+            strings.Remove(element)
+        End Sub
     End Class
     Public Class DrawRndDigits
         Private strings As New List(Of Integer)()
@@ -1091,6 +1108,26 @@ Module Auxiliary_modules
         Public Sub Reset()
             Dim dc As New DeepCopier()
             strings = dc.DeepCopyIntList(stringsSource)
+        End Sub
+        Public Function IsEmptied() As Boolean
+            Return strings.Count = 0
+        End Function
+        Public Sub ResetIfEmpty()
+            If IsEmptied() Then
+                Reset()
+            End If
+        End Sub
+
+        Public Function ContainsElement(element As Integer) As Boolean
+            Return stringsSource.Contains(element)
+        End Function
+
+        Public Function CurrentlyContainsElement(element As Integer) As Boolean
+            Return strings.Contains(element)
+        End Function
+
+        Public Sub RemoveItem(element As Integer)
+            strings.Remove(element)
         End Sub
     End Class
     Public Class Responder

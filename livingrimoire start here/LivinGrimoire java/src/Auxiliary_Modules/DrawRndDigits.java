@@ -53,8 +53,6 @@ public class DrawRndDigits {
     }
 
     public void removeItem(int element) {
-        if (strings.contains(element)) {
-            strings.remove(element);
-        }
+        strings.remove(element);
     }
 }

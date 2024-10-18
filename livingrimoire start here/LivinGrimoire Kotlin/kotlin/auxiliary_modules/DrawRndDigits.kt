@@ -58,8 +58,6 @@ class DrawRndDigits(vararg values: Int) {
     }
 
     fun removeItem(element: Int) {
-        if (strings.contains(element)) {
             strings.removeAt(element)
-        }
     }
 }

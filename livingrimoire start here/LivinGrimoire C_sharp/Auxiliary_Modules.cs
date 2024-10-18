@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 public class DeepCopier
 {
     public List<string> DeepCopyStringList(List<string> originalList)
@@ -1300,6 +1301,28 @@ public class DrawRnd
     {
         return strings.Count == 0;
     }
+    public void ResetIfEmpty()
+    {
+        if (IsEmptied())
+        {
+            Reset();
+        }
+    }
+
+    public bool ContainsElement(string element)
+    {
+        return stringsSource.Contains(element);
+    }
+
+    public bool CurrentlyContainsElement(string element)
+    {
+        return strings.Contains(element);
+    }
+
+    public void RemoveItem(string element)
+    {
+        strings.Remove(element);
+    }
 }
 public class DrawRndDigits
 {
@@ -1345,6 +1368,32 @@ public class DrawRndDigits
     {
         DeepCopier dc = new DeepCopier();
         strings = dc.DeepCopyIntList(stringsSource);
+    }
+    public bool IsEmptied()
+    {
+        return strings.Count == 0;
+    }
+    public void ResetIfEmpty()
+    {
+        if (IsEmptied())
+        {
+            Reset();
+        }
+    }
+
+    public bool ContainsElement(int element)
+    {
+        return stringsSource.Contains(element);
+    }
+
+    public bool CurrentlyContainsElement(int element)
+    {
+        return strings.Contains(element);
+    }
+
+    public void RemoveItem(int element)
+    {
+        strings.Remove(element);
     }
 }
 public class Responder

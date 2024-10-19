@@ -5,19 +5,23 @@ from enum import Enum, auto
 import calendar
 import re
 from typing import Match, Pattern
-from collections import Counter
 from math import sqrt
 import random
+import time
+import datetime
+from datetime import timedelta
 
 
 class DeepCopier:
-    def copyList(self, original: list[str]) -> list[str]:
+    @staticmethod
+    def copyList(original: list[str]) -> list[str]:
         deepCopy: list[str] = []
         for item in original:
             deepCopy.append(item)
         return deepCopy
 
-    def copyListOfInts(self, original: list[int]) -> list[int]:
+    @staticmethod
+    def copyListOfInts(original: list[int]) -> list[int]:
         deepCopy: list[int] = []
         for item in original:
             deepCopy.append(item)
@@ -60,7 +64,7 @@ class TimeUtils:
         """This method returns the current time (hh:mm)"""
         right_now = datetime.datetime.now()
         temp_minute: int = right_now.minute
-        tempstr: str = ""
+        tempstr: str
         if temp_minute < 10:
             tempstr = "0" + str(right_now.minute)
         else:
@@ -120,7 +124,8 @@ class TimeUtils:
         enum_temp = time_variable.name
         if enum_temp == "DATE":
             right_now = datetime.datetime.now()
-            output = TimeUtils.translateMonthDay(right_now.day) + " " + calendar.month_name[right_now.month] + " " + str(
+            output = TimeUtils.translateMonthDay(right_now.day) + " " + calendar.month_name[
+                right_now.month] + " " + str(
                 right_now.year)
         elif enum_temp == "HOUR":
             output = str(datetime.datetime.now().hour)
@@ -157,9 +162,8 @@ class TimeUtils:
         """This method returns the date in x minutes"""
         right_now = datetime.datetime.now()
         final_time = right_now + datetime.timedelta(minutes=extra_minutes)
-        regex: RegexUtil = RegexUtil()
         s1: str = str(final_time)
-        s1 = regex.extractEnumRegex(enumRegexGrimoire.simpleTimeStamp, s1)
+        s1 = RegexUtil.extractEnumRegex(enumRegexGrimoire.simpleTimeStamp, s1)
         if s1[0] == '0':
             s1 = s1[1:]
         return s1
@@ -169,9 +173,8 @@ class TimeUtils:
         """This method returns the date x minutes before"""
         right_now = datetime.datetime.now()
         final_time = right_now - datetime.timedelta(minutes=less_minutes)
-        regex: RegexUtil = RegexUtil()
         s1: str = str(final_time)
-        s1 = regex.extractEnumRegex(enumRegexGrimoire.simpleTimeStamp, s1)
+        s1 = RegexUtil.extractEnumRegex(enumRegexGrimoire.simpleTimeStamp, s1)
         if s1[0] == '0':
             s1 = s1[1:]
         return s1
@@ -367,9 +370,9 @@ class LGPointFloat:
     def __repr__(self):
         return "".join(["Point(", str(self.x), ",", str(self.y), ")"])
 
-
-def distance(a, b):
-    return sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2)
+    @staticmethod
+    def distance(a, b):
+        return sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2)
 
 
 class enumRegexGrimoire(Enum):
@@ -394,21 +397,24 @@ class enumRegexGrimoire(Enum):
 
 # returns expression of type theRegex from the string str2Check
 class RegexUtil:
-    def extractRegex(self, theRegex: str, str2Check: str) -> str:
+    @staticmethod
+    def extractRegex(theRegex: str, str2Check: str) -> str:
         regexMatcher = re.search(theRegex, str2Check)
-        if (regexMatcher != None):
+        if regexMatcher is not None:
             return regexMatcher.group(0).strip()
         return ""
 
-    def extractEnumRegex(self, theRegex: enumRegexGrimoire, str2Check: str) -> str:
+    @staticmethod
+    def extractEnumRegex(theRegex: enumRegexGrimoire, str2Check: str) -> str:
         # example usage:
         # print(regexUtil.extractEnumRegex(enumRegexGrimoire.domain,"the site is creamedcorn.com ok?"))
-        regexMatcher = re.search(theRegex.value, str2Check)
-        if (regexMatcher != None):
+        regexMatcher = re.search(theRegex.value.__str__(), str2Check)
+        if regexMatcher is not None:
             return regexMatcher.group(0).strip()
         return ""
 
-    def extractAllRegexes(self, theRegex: str, str2Check: str) -> list[str]:
+    @staticmethod
+    def extractAllRegexes(theRegex: str, str2Check: str) -> list[str]:
         p = re.compile(theRegex)
         return p.findall(str2Check)
         # mylist: list[str] = str2Check.split()
@@ -416,89 +422,38 @@ class RegexUtil:
         # l_final = list(filter(r.match, mylist))
         # return l_final
 
-    def extractAllEnumRegexes(self, theRegex: enumRegexGrimoire, str2Check: str) -> list[str]:
+    @staticmethod
+    def extractAllEnumRegexes(theRegex: enumRegexGrimoire, str2Check: str) -> list[str]:
         # return a list of all matches
-        p = re.compile(theRegex)
+        p = re.compile(theRegex.value.__str__())
         return p.findall(str2Check)
 
-    def pointRegex(self, str2Check: str) -> LGPointInt:
+    @staticmethod
+    def pointRegex(str2Check: str) -> LGPointInt:
         # "[-+]?[0-9]{1,13}(\\.[0-9]*)?" for double numbers
         theRegex: str = "[-+]?[0-9]{1,13}"
         result: LGPointInt = LGPointInt(0, 0)
-        list1: list[str] = []
         regexMatcher = re.search(theRegex, str2Check)
-        if (regexMatcher != None):
+        if regexMatcher is not None:
             result.y = int(regexMatcher.group(0).strip())
         str2Check = str2Check[str2Check.index(f'{result.y}') + 1:len(str2Check)]
         phase2 = str2Check
-        phase2 = self.intRegex(phase2)
-        if (phase2 == ""):
+        phase2 = RegexUtil.extractEnumRegex(enumRegexGrimoire.integer, phase2)
+        if phase2 == "":
             return LGPointInt(result.y, 0)
 
         result.x = int(phase2)
         return LGPointInt(result.y, result.x)
 
-    def contactRegex(self, str2Check: str) -> str:
-        # return a list of all matches
-        theRegex = r"(?<=contact)(.*)"
-        list1: list[str] = []
-        regexMatcher = re.search(theRegex, str2Check)
-        if (regexMatcher != None):
-            return regexMatcher.group(0).strip()
-        return ""
-
-    def duplicateRegex(self, input: str) -> str:
-        # first split given string separated by space
-        # into words
-        words = input.split(' ')
-
-        # now convert list of words into dictionary
-        dict = Counter(words)
-
-        # traverse list of words and check which first word
-        # has frequency > 1
-        for key in words:
-            if dict[key] > 1:
-                return key
-        return ""
-
-    def uniqueWord(self, str1: str) -> str:
-        list1: list[str] = []  # of strings
-        s = str1.split(" ")
-        p = s[0]
-        list1.append(p)
-        # i
-        for i in range(1, len(s)):
-            if (not (p == s[i])):
-                list1.append(s[i])
-            p = s[i]
-        return list1[0]
-
-    def afterWord(self, word: str, str2Check: str) -> str:
+    @staticmethod
+    def afterWord(word: str, str2Check: str) -> str:
         # return a list of all matches
         theRegex = r"(?<=" + word + r")(.*)"
-        list1: list[str] = []
         regexMatcher = re.search(theRegex, str2Check)
-        if (regexMatcher != None):
+        if regexMatcher is not None:
             return regexMatcher.group(0).strip()
         return ""
 
-    def phoneRegex1(self, str2Check: str) -> str:
-        return self.regexChecker(r"[0]\d{2}\d{4}\d{3}$", str2Check)
-
-    def firstWord(self, str2Check: str) -> str:
-        arr: list[str] = str2Check.split(" ", 2)
-        firstWord = arr[0]  # the
-        return firstWord
-
-    def stripAwayNumbers(self, str1: str) -> str:
-        return re.sub(r'\d+', '', str1)
-
-
-''' --------------- TIMEGATE --------------- '''
-import time
-import datetime
-from datetime import timedelta
 
 ''' TIMEGATE CLASS '''
 
@@ -704,47 +659,6 @@ class TrgTolerance(TrGEV3):
         self._repeates = 0
 
 
-class AXFriend:
-    def __init__(self, tolerance: int):
-        # recommended 11
-        self._active = TrgTolerance(tolerance)
-        self.myName: str = "chi"
-        self._friendName: str = "null"
-        self._needFriend: bool = True
-        self._friendIsActive: bool = False
-
-    def reset(self):
-        # should reset once a month
-        self.myName = "null"
-        self._needFriend = True
-        self._active.disable()
-        self._friendIsActive = False
-
-    def getFriendName(self):
-        return self._friendName
-
-    def friendHandShake(self) -> Algorithm:
-        # engage after reset() or at certain time of day if needsFriend, with snooze
-        return self.diSkillUtil.simpleVerbatimAlgorithm("friend_request", "i am" + self.myName)
-
-    def getFriendIsActive(self):
-        return self._friendIsActive
-
-    def handle(self, ear: str, skin: str, eye: str):
-        # returns algorithm or None
-        if self._needFriend and ear.__contains__("i am "):
-            # register new friend
-            self._active.reset()
-            self._friendIsActive = self._active.trigger()
-            self._friendName = ear.replace("i am ", "")
-            self._needFriend = False
-            return self.friendHandShake()
-        if ear.__contains__(self.myName):
-            self._active.reset()
-            self._friendIsActive = self._active.trigger()
-            return None
-
-
 ''' PRIORITYQUEUE CLASS '''
 
 
@@ -890,22 +804,22 @@ class AXLearnability:
         // giving importance to the stick and not the carrot when learning
         // this method is mosly fitting work place situations'''
 
-    def mutateAlg(self, input: str) -> bool:
+    def mutateAlg(self, user_input: str) -> bool:
         # recommendation to mutate the algorithm ? true/ false
         if not self._algSent:
             return False  # no alg sent=> no reason to mutate
-        if self.goals.contains(input):
+        if self.goals.contains(user_input):
             self.trgTolerance.reset()
             self._algSent = False
             return False
-        # goal manifested the sent algorithm is good => no need to mutate the alg
-        if self.defcon5.contains(input):
+        # goal manifested, so the sent algorithm is good => no need to mutate the alg
+        if self.defcon5.contains(user_input):
             self.trgTolerance.reset()
             self._algSent = False
             return True
         '''// ^ something bad happend probably because of the sent alg
         // recommend alg mutation'''
-        if self.defcons.contains(input):
+        if self.defcons.contains(user_input):
             self._algSent = False
             mutate: bool = not self.trgTolerance.trigger()
             if mutate:
@@ -958,30 +872,31 @@ class AXNightRider:
 
 
 class LGTypeConverter:
-    def __init__(self):
-        self._regexUtil: RegexUtil = RegexUtil()
-
-    def convertToInt(self, v1: str) -> int:
-        temp: str = self._regexUtil.extractEnumRegex(enumRegexGrimoire.integer, v1)
+    @staticmethod
+    def convertToInt(v1: str) -> int:
+        temp: str = RegexUtil.extractEnumRegex(enumRegexGrimoire.integer, v1)
         if temp == "":
             return 0
         return int(temp)
 
-    def convertToDouble(self, v1: str) -> float:
-        temp: str = self._regexUtil.extractEnumRegex(enumRegexGrimoire.double_num, v1)
+    @staticmethod
+    def convertToDouble(v1: str) -> float:
+        temp: str = RegexUtil.extractEnumRegex(enumRegexGrimoire.double_num, v1)
         if temp == "":
             return 0.0
         return float(temp)
 
-    def convertToFloat(self, v1: str) -> float:
-        temp: str = self._regexUtil.extractEnumRegex(enumRegexGrimoire.double_num, v1)
+    @staticmethod
+    def convertToFloat(v1: str) -> float:
+        temp: str = RegexUtil.extractEnumRegex(enumRegexGrimoire.double_num, v1)
         if temp == "":
             return 0
         return float(temp)
 
-    def convertToFloatV2(self, v1: str, precision: int) -> float:
+    @staticmethod
+    def convertToFloatV2(v1: str, precision: int) -> float:
         # precision: how many numbers after the .
-        temp: str = self._regexUtil.extractEnumRegex(enumRegexGrimoire.double_num, v1)
+        temp: str = RegexUtil.extractEnumRegex(enumRegexGrimoire.double_num, v1)
         if temp == "":
             return 0
         return round(float(temp), precision)
@@ -995,16 +910,14 @@ class AXPassword:
         self._isOpen: bool = False
         self._maxAttempts: int = 3
         self._loginAttempts = self._maxAttempts
-        self._regexUtil: RegexUtil = RegexUtil()
         self._code = 0
-        self._typeConverter: LGTypeConverter = LGTypeConverter()
 
     def codeUpdate(self, ear: str) -> bool:
         # while the gate is toggled on, the password code can be changed
         if not self._isOpen:
             return False
         if ear.__contains__("code"):
-            temp: str = self._regexUtil.extractEnumRegex(enumRegexGrimoire.integer, ear)
+            temp: str = RegexUtil.extractEnumRegex(enumRegexGrimoire.integer, ear)
             if not temp == "":
                 # if not temp.isEmpty
                 self._code = int(temp)
@@ -1013,7 +926,7 @@ class AXPassword:
 
     def openGate(self, ear: str):
         if ear.__contains__("code") and self._loginAttempts > 0:
-            tempCode: str = self._regexUtil.extractEnumRegex(enumRegexGrimoire.integer, ear)
+            tempCode: str = RegexUtil.extractEnumRegex(enumRegexGrimoire.integer, ear)
             if not tempCode == "":
                 code_x: int = int(tempCode)
                 if code_x == self._code:
@@ -1040,8 +953,8 @@ class AXPassword:
         if ear.__contains__("close"):
             self._isOpen = False
 
-    def setMaxAttempts(self, max: int):
-        self._maxAttempts = max
+    def setMaxAttempts(self, maximum: int):
+        self._maxAttempts = maximum
 
     def getCode(self) -> int:
         if self._isOpen:
@@ -1132,7 +1045,6 @@ class Cycler:
 class DrawRnd:
     # draw a random element, then take said element out
     def __init__(self, *values: str):
-        self.converter: LGTypeConverter = LGTypeConverter()
         self.strings: LGFIFO = LGFIFO()
         self._stringsSource: list[str] = []
         for i in range(0, len(values)):
@@ -1155,9 +1067,10 @@ class DrawRnd:
         if temp is None:
             return 0
         self.strings.removeItem(temp)
-        return self.converter.convertToInt(temp)
+        return LGTypeConverter.convertToInt(temp)
 
-    def getSimpleRNDNum(self, lim: int) -> int:
+    @staticmethod
+    def getSimpleRNDNum(lim: int) -> int:
         return random.randint(0, lim)
 
     def reset(self):
@@ -1194,7 +1107,8 @@ class DrawRndDigits:
         self.strings.removeItem(temp)
         return temp
 
-    def getSimpleRNDNum(self, lim: int) -> int:
+    @staticmethod
+    def getSimpleRNDNum(lim: int) -> int:
         return random.randint(0, lim)
 
     def reset(self):
@@ -1272,17 +1186,16 @@ class EmoDetectorStressed(Responder):
 
 
 class ForcedLearn(UniqueItemSizeLimitedPriorityQueue):
-    '''remembers key inputs because they start with keyword
-   // also can dispense key inputs'''
+    """remembers key inputs because they start with keyword
+   // also can dispense key inputs"""
 
     def __init__(self, queLimit: int):
         super().__init__(queLimit)
-        self._regexUtil: RegexUtil = RegexUtil()
         self.keyword: str = "say"
 
     # override
     def insert(self, data):
-        temp: str = self._regexUtil.afterWord(self.keyword, data)
+        temp: str = RegexUtil.afterWord(self.keyword, data)
         if not temp == "":
             super().insert(temp)
 
@@ -1341,25 +1254,11 @@ class EV3DaisyChainOrMode(TrGEV3):
             return False
 
 
-class InputFilter:
-    """filter out non-relevant input
-    or filter in relevant data"""
-
-    def input(self, ear: str, skin: str, eye: str) -> str:
-        # override me
-        pass
-
-    def filter(self, ear: str) -> AXKeyValuePair:
-        # override me : key = context/category, value: param
-        return AXKeyValuePair()
-
-
 class Map:
     def __init__(self):
         self._pointDescription: dict[str, str] = {}
         self._descriptionPoint: dict[str, str] = {}
         self._currentPosition: LGPointInt = LGPointInt(0, 0)
-        self.regexUtil: RegexUtil = RegexUtil()
 
     def reset(self):
         # sleep location is considered (0,0) location
@@ -1373,7 +1272,7 @@ class Map:
         # use this when the AI is returning home
         if self._descriptionPoint.__contains__(location):
             value: str = self._descriptionPoint[location]
-            p1 = self.regexUtil.pointRegex(value)
+            p1 = RegexUtil.pointRegex(value)
             self._currentPosition.x = p1.x
             self._currentPosition.y = p1.y
 
@@ -1601,13 +1500,12 @@ class TrgTime:
     def __init__(self):
         super().__init__()
         self._t = "null"
-        self._regexUtil: RegexUtil = RegexUtil()
         self._alarm: bool = True
 
     def setTime(self, v1: str):
         if v1.startswith("0"):
             v1 = v1[1:]
-        self._t = self._regexUtil.extractEnumRegex(enumRegexGrimoire.simpleTimeStamp, v1)
+        self._t = RegexUtil.extractEnumRegex(enumRegexGrimoire.simpleTimeStamp, v1)
 
     def alarm(self) -> bool:
         now: str = TimeUtils.getCurrentTimeStamp()
@@ -1686,9 +1584,9 @@ class AXKeyValuePair:
 
 
 class TODOListManager:
-    '''manages to do tasks.
+    """manages to do tasks.
     q1 tasks are mentioned once, and forgotten
-    backup tasks are the memory of recently mentioned tasks'''
+    backup tasks are the memory of recently mentioned tasks"""
 
     def __init__(self, todoLim: int):
         self._q1: UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue(todoLim)
@@ -1814,11 +1712,11 @@ class Strategy:
 
 
 class AXStrategy:
-    '''this auxiliary module is used to output strategies based on context
+    """this auxiliary module is used to output strategies based on context
         can be used for battles, and games
-        upon pain/lose use the evolve methode to update to different new active strategies
+        upon pain/lose use the evolved methode to update to different new active strategies
         check for battle state end externaly (opponent state/hits on rival counter)
-    a dictionary of strategies'''
+    a dictionary of strategies"""
 
     def __init__(self):
         self.strategies: dict[str, Strategy] = {}
@@ -1832,7 +1730,6 @@ class AXStrategy:
 
     def evolve(self):
         # replace active strategies
-        key: str = ""
         for k in self.strategies.keys():
             self.strategies[k].evolveStrategies()
 
@@ -1950,7 +1847,7 @@ class AXMachineCode:
 
     def getMachineCodeFor(self, key: str) -> int:
         # dictionary get or default
-        if not key in self.dic:
+        if key not in self.dic:
             return -1
         return self.dic[key]
 
@@ -2338,7 +2235,6 @@ for i in range(1, 10):
         self.sentences: RefreshQ = RefreshQ(5)
         self.wordToList: dict[str, RefreshQ] = {}
         self.rand = random.Random()
-        self.regexUtil: RegexUtil = RegexUtil()
         self.allParamRef: dict[str, str] = {}
         self.paramLim: int = 5
         self.loggedParams: RefreshQ = RefreshQ(5)
@@ -2362,7 +2258,7 @@ for i in range(1, 10):
         return self.clearRecursion(result)
 
     def clearRecursion(self, result):
-        params = self.regexUtil.extractAllRegexes("(\\w+)(?= #)", result)
+        params = RegexUtil.extractAllRegexes("(\\w+)(?= #)", result)
         for strI in params:
             temp = self.wordToList.get(strI)
             s1 = temp.getRNDElement()
@@ -2418,7 +2314,7 @@ for i in range(1, 10):
     def learnParam(self, s1):
         if self.conjuration not in s1:
             return
-        category = self.regexUtil.afterWord(self.conjuration, s1)
+        category = RegexUtil.afterWord(self.conjuration, s1)
         if category not in self.wordToList:
             return
         param = s1.replace("{} {}".format(self.conjuration, category), "").strip()
@@ -2441,7 +2337,6 @@ for i in range(1, 10):
 
 class Prompt:
     def __init__(self):
-        self.regexUtil: RegexUtil = RegexUtil()
         self.kv: AXKeyValuePair = AXKeyValuePair()
         self.prompt: str = ""
         self.regex: str = ""
@@ -2454,7 +2349,7 @@ class Prompt:
         self.prompt = prompt
 
     def process(self, in1) -> bool:
-        self.kv.value = self.regexUtil.extractRegex(self.regex, in1)
+        self.kv.value = RegexUtil.extractRegex(self.regex, in1)
         return self.kv.value == ""
 
     def getKv(self) -> AXKeyValuePair:
@@ -2820,11 +2715,11 @@ class Eliza:
             self.infoRequest: str = ""  # request more info on input
             # example: Why do you need {0}
 
-        def matches(self, str):
-            return self.matcher.match(str) is not None
+        def matches(self, strX):
+            return self.matcher.match(strX) is not None
 
-        def respond(self, str):
-            m = self.matcher.match(str)
+        def respond(self, strX):
+            m = self.matcher.match(strX)
             self.context = self.matcher.pattern  # context
             p = self.random_phrase()
             for i in range(len(m.groups())):
@@ -3115,7 +3010,7 @@ class ChangeDetector:
         # a->b return 2; b->a return 1; else return 0
         if not ear:
             return 0
-        current = -1
+        current: int
         if self.A in ear:
             current = 1
         elif self.B in ear:
@@ -3251,7 +3146,7 @@ def negate(sentence):
         }
         for word, replacement in replacements.items():
             sentence = sentence.replace(word, replacement)
-        if not "not" in sentence:
+        if "not" not in sentence:
             return "not " + sentence
 
     return sentence
@@ -3344,12 +3239,11 @@ class Excluder:
         self._ends_with.append(f'(.*)(?={s1})')
 
     def exclude(self, ear: str) -> bool:
-        r1: RegexUtil = RegexUtil()
         for temp_str in self._starts_with:
-            if len(r1.extractRegex(temp_str, ear)) > 0:
+            if len(RegexUtil.extractRegex(temp_str, ear)) > 0:
                 return True
         for temp_str in self._ends_with:
-            if len(r1.extractRegex(temp_str, ear)) > 0:
+            if len(RegexUtil.extractRegex(temp_str, ear)) > 0:
                 return True
         return False
 
@@ -3383,10 +3277,9 @@ class TimedMessages:
         self.msg: bool = False
 
     def addMSG(self, ear: str) -> None:
-        ru1: RegexUtil = RegexUtil()
-        tempMSG: str = ru1.extractRegex(r"(?<=remind me to).*?(?=at)", ear)
+        tempMSG: str = RegexUtil.extractRegex(r"(?<=remind me to).*?(?=at)", ear)
         if tempMSG:
-            timeStamp: str = ru1.extractEnumRegex(enumRegexGrimoire.simpleTimeStamp, ear)
+            timeStamp: str = RegexUtil.extractEnumRegex(enumRegexGrimoire.simpleTimeStamp, ear)
             if timeStamp:
                 self.messages[timeStamp] = tempMSG
 

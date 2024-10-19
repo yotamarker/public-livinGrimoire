@@ -997,7 +997,6 @@ class DiBlueCrystal(Skill):
 class DiHoneyBunny(Skill):
     def __init__(self):
         super().__init__()  # Call the parent class constructor
-        self.regex_util: RegexUtil = RegexUtil()
         self.on_off_switch: OnOffSwitch = OnOffSwitch()
         self.on_off_switch.setOn(Responder("honey bunny"))
         self.user = "user"
@@ -1015,7 +1014,7 @@ class DiHoneyBunny(Skill):
     def input(self, ear, skin, eye):
         if len(ear) > 0:
             self._buffer_counter = 0
-            temp = self.regex_util.extractRegex(r'(?<=my name is\s)(.*)', ear)
+            temp = RegexUtil.extractRegex(r'(?<=my name is\s)(.*)', ear)
             if temp:
                 self.user = temp
                 self.algPartsFusion(4, APHappy(f"got it {self.user}"))
@@ -1032,7 +1031,6 @@ class DiAlarmer(Skill):
     def __init__(self):
         super().__init__()
         self.off: Responder = Responder("alarm off", "cancel alarm")
-        self.regexUtil: RegexUtil = RegexUtil()
         self._cron: Cron = Cron("", 3, 3)
 
     def setCron(self, cron):
@@ -1045,7 +1043,7 @@ class DiAlarmer(Skill):
             self.setSimpleAlg("alarm is now off")
             return
 
-        temp = self.regexUtil.extractRegex(r"(?<=set alarm to\s)([0-9]{1,2}:[0-9]{1,2})", ear)
+        temp = RegexUtil.extractRegex(r"(?<=set alarm to\s)([0-9]{1,2}:[0-9]{1,2})", ear)
         if not len(temp) == 0:
             self._cron.setStartTime(temp)
             self.setSimpleAlg(f"alarm set to {temp}")
@@ -1062,7 +1060,6 @@ class DiMemoryGame(Skill):
         self.game_on = False
         self.game_str = ""
         self.game_chars: Responder = Responder("r", "g", "b", "y")
-        self.regexUtil: RegexUtil = RegexUtil()
 
     def input(self, ear, skin, eye):
         if ear == "memory game on":
@@ -1072,7 +1069,7 @@ class DiMemoryGame(Skill):
             self.setSimpleAlg(self.game_str)
 
         if self.game_on:
-            temp = self.regexUtil.extractRegex("^[rgby]+$", ear)
+            temp = RegexUtil.extractRegex("^[rgby]+$", ear)
             if temp:
                 if temp == self.game_str:
                     temp = self.game_chars.getAResponse()

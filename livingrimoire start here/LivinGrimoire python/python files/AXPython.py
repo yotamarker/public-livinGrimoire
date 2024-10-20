@@ -390,6 +390,12 @@ class enumRegexGrimoire(Enum):
     secondlessTimeStamp = "[0-9]{1,2}:[0-9]{1,2}"
     date = "[0-9]{1,4}/[0-9]{1,2}/[0-9]{1,2}"
     fullDate = "[0-9]{1,4}/[0-9]{1,2}/[0-9]{1,2} [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}"
+    duplicatWord = "\\b(\\w+)\\b(?=.*\\b\\1\\b)"
+    firstWord = "^\\w+"
+    lastWord = "\\w+$"
+    surname = "\\s+[^\\s]+"
+    realNumber = "[-+]?[0-9]*[.,][0-9]*"  # -30.77 / 40.05
+    numberStripper = "[^\\d]+"
 
 
 ''' REGEXUTIL CLASS'''

@@ -463,6 +463,57 @@ enum enumRegexGrimoire{
     case email, timeStamp, integer, double, repeatedWord, phone, trackingID, IPV4, domain, number,
     secondlessTimeStamp, date, fullDate, simpleTimeStamp
 }
+class StaticRegexUtil{
+    // static version of RegexUtil, does not require class instantiation for use
+    static func extractAllRegexResults(regex:String, text: String) -> [String] {
+        var results = [String]()
+
+        let emailRegex = regex
+        let nsText = text as NSString
+        do {
+            let regExp = try NSRegularExpression(pattern: emailRegex, options: .caseInsensitive)
+            let range = NSMakeRange(0, text.count)
+            let matches = regExp.matches(in: text, options: .reportProgress, range: range)
+
+            for match in matches {
+                let matchRange = match.range
+                results.append(nsText.substring(with: matchRange))
+            }
+        } catch (_) {
+    
+        }
+        if results.isEmpty {
+            results.append("")
+        }
+        return results
+    }
+    static func regexExtractor(theRegex:String, str2Check:String)->String{
+        // the regex : regex pattern str2check = the input string in which to search for the regex pattern
+        var results = [String]()
+
+        let emailRegex = theRegex
+        let nsText = str2Check as NSString
+        do {
+            let regExp = try NSRegularExpression(pattern: emailRegex, options: .caseInsensitive)
+            let range = NSMakeRange(0, str2Check.count)
+            let matches = regExp.matches(in: str2Check, options: .reportProgress, range: range)
+
+            for match in matches {
+                let matchRange = match.range
+                results.append(nsText.substring(with: matchRange))
+            }
+        } catch (_) {
+            return ""
+        }
+        if results.isEmpty {return ""}
+        return results[0]
+    }
+    static func pointRegex(text: String) -> LGPointDouble {
+        let result = extractAllRegexResults(regex: "[-+]?[0-9]{1,13}(\\.[0-9]*)?", text: text)
+        if result.count == 2 {return LGPointDouble(x: Double(result[0]) ?? 0, y: Double(result[1]) ?? 0)}
+        return LGPointDouble()
+    }
+}
 class RegexUtil{
     var regexDictionary:[enumRegexGrimoire:String] = [:]
     init() {

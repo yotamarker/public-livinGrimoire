@@ -1,0 +1,42 @@
+in the main file add this function(Python code):
+
+import os
+
+# noinspection PyUnusedLocal
+def call_add_DLC_skills(brain: Brain):
+    for file in os.listdir('.'):
+        if file.endswith('.py') and 'DLC' in file:
+            module_name = file[:-3]
+            exec(f"import {module_name}")
+            exec(f"{module_name}.add_DLC_skills(brain)")
+
+in the running code area add:
+call_add_DLC_skills(brain)
+
+this will add skills via .py files with DLC in their file name.
+
+each DLC file must have the following function:
+
+def add_DLC_skills(brain: Brain):
+
+example adding skills in the DLC file:
+
+def add_DLC_skills(brain: Brain):
+    brain.add_logical_skill(DiHelloWorld())
+    brain.add_logical_skill(DiTime())
+
+the method is called:
+dynamic module loading and function invocation and Function Invocation.
+
+DLC stands for Downloadable Content.
+
+there are several merits to this DLC protocol of adding skills:
+
+1. the main file gets cleaner, and now focuses on the UI logic.
+2. skill groups can be split and catagorized in DLC files:
+(hardware skillls, robotic skills, logical skills, async skills and so on)
+3. skills can be added via adding DLC files, without any coding
+4. a group of skills is referred to as mentality, and a whole group can be
+added by adding a DLC file.
+5. additional DLC file logic can be implemented in the main file such as:
+downloading additional DLCs or replacing the active DLCs based on input.

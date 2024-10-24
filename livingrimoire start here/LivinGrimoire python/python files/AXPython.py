@@ -3373,3 +3373,13 @@ class AXSkillBundle:
 
     def get_size(self):
         return len(self.skills)
+
+
+class AXFunnelResponder1(AXFunnelResponder):
+    def __init__(self):
+        super().__init__()
+        r1: Responder = Responder("yes", "lick my feet", "i need you to lick my feet")
+        self.add_kv("may i lick your feet", r1)
+        self.add_kv("let me lick your feet", r1)
+        r1 = Responder("i love you more", "i love you too", "sweet baby", "uwu", "owo", "oooweee")
+        self.add_kv("i love you", r1)

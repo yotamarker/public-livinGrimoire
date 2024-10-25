@@ -26,7 +26,7 @@ def add_DLC_skills(brain: Brain):
     brain.add_logical_skill(DiTime())
 
 the method is called:
-dynamic module loading and function invocation and Function Invocation.
+dynamic module loading and function invocation.
 
 DLC stands for Downloadable Content.
 

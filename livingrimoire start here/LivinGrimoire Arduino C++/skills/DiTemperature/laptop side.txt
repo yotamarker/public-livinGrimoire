@@ -4,6 +4,34 @@ Make sure you have the pyserial library installed.
 You can install it using pip using the PyCharm terminal tab:
 
 pip install pyserial
+##########################################################
+add DiArduinoTemperature(Skill) via code to the LivinGrimoire 
+****************
+*easiest method*
+****************
+or via adding the DLC_Arduino_skills from the python directory, assuming you
+are using the LivinGrimoire DLC protocol 2501:
+
+in the main file add this function(Python code):
+
+import os
+
+# noinspection PyUnusedLocal
+def call_add_DLC_skills(brain: Brain):
+    for file in os.listdir('.'):
+        if file.endswith('.py') and 'DLC' in file:
+            module_name = file[:-3]
+            exec(f"import {module_name}")
+            exec(f"{module_name}.add_DLC_skills(brain)")
+
+in the running code area add:
+call_add_DLC_skills(brain)
+
+this will add skills via .py files with DLC in their file name.
+
+
+########################################################
+alternative stripped python code:
 
 Python code:
 
@@ -11,7 +39,7 @@ import serial
 import time
 
 if __name__ == '__main__':
-    ser = serial.Serial('COM3', 9600, timeout=1)  # Adjust 'COM3' to your port
+    ser = serial.Serial('COM3', 9600, timeout=0.1)  # Adjust 'COM3' to your port
 
     num_readings = 10
 

@@ -1,0 +1,64 @@
+walkthrough for adding a temperature read skill for a LivinGrimoire object.
+
+the temperature is read from an LM35 (temperature) sensor, connected to an Arduino or Elegoo
+microcontroller.
+
+the merit of this example of reading serial input from the Arduino, 
+inside the computer connected to it.
+
+there are 2 parts to adding the skill: 
+
+1. adding the skill to the Arduino
+ in the Arduino IDE:
+tools: select board and port connecting to the Arduino/elegoo
+Sketch->Include Library->Add .ZIP Library...
+select the LivinGrimoireLight290724.zip
+
+https://github.com/yotamarker/public-livinGrimoire/tree/master/livingrimoire%20start%20here/LivinGrimoire%20Arduino%20C%2B%2B
+
+add the temperature skill files (DiTemperature.h and DiTemperature.cpp)
+
+https://github.com/yotamarker/public-livinGrimoire/tree/master/livingrimoire%20start%20here/LivinGrimoire%20Arduino%20C%2B%2B/skills/DiTemperature
+
+add the temperature read skill in the main Arduino code:
+
+#include "DiTemperature.h"
+#include "LivinGrimoireLight.h"
+
+Chobit* c1;
+
+void setup() {
+    Skill* s2 = new DiTemperature(0); // temperature skill created LM35 connected to analog pin 0
+    c1 = new Chobit();
+    c1->addSkill(s2);    
+}
+
+void loop() {
+    c1->think(0, 0, 0);
+}
+
+2. adding the skill to the laptop
+
+pip install pyserial
+
+#######################################################
+
+or via adding the DLC_Arduino_skills from the python directory, assuming you
+are using the LivinGrimoire DLC protocol 2501:
+
+in the main file add this function(Python code):
+
+import os
+
+# noinspection PyUnusedLocal
+def call_add_DLC_skills(brain: Brain):
+    for file in os.listdir('.'):
+        if file.endswith('.py') and 'DLC' in file:
+            module_name = file[:-3]
+            exec(f"import {module_name}")
+            exec(f"{module_name}.add_DLC_skills(brain)")
+
+in the running code area add:
+call_add_DLC_skills(brain)
+
+this will add skills via .py files with DLC in their file name.

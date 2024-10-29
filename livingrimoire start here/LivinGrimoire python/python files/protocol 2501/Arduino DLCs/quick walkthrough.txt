@@ -3,7 +3,7 @@ walkthrough for adding a temperature read skill for a LivinGrimoire object.
 the temperature is read from an LM35 (temperature) sensor, connected to an Arduino or Elegoo
 microcontroller.
 
-the merit of this example of reading serial input from the Arduino, 
+the merit of this example is reading serial input from the Arduino, 
 inside the computer connected to it.
 
 there are 2 parts to adding the skill: 

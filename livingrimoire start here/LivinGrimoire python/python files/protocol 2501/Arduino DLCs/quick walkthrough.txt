@@ -43,7 +43,7 @@ void loop() {
 
 #######################################################
 
-or via adding the DLC_Arduino_skills from the python directory, assuming you
+adding the DLC_Arduino_skills from the python directory, assuming you
 are using the LivinGrimoire DLC protocol 2501:
 
 in the main file add this function(Python code):

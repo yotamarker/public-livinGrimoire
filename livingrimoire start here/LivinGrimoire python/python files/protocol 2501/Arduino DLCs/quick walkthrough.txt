@@ -37,9 +37,9 @@ void loop() {
     c1->think(0, 0, 0);
 }
 
-2. adding the skill to the laptop
+2. adding the skill to the laptop (PyCharm IDE)
 
-pip install pyserial
+(terminal) pip install pyserial
 
 #######################################################
 

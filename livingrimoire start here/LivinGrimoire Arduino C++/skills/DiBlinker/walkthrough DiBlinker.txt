@@ -1,0 +1,133 @@
+this skill blinks the Arduino Led #13 based on commands comming from
+the laptop.
+
+the merit of the skill is in showing how to condition Arduino code to run based on commands comming 
+from the laptop, more specifically, a livingrimoire skill outside the Arduino.
+
+.h
+
+[CODE=cpp]#ifndef DiBlinker_H
+
+#define DiBlinker_H
+
+// using Arduino hardware codes outside main:
+
+#include <Arduino.h>
+
+#include "LivinGrimoireLight.h"
+
+#include "DiHelloWorld.h"
+
+
+
+// example hello world by blinking default Led #13 once
+
+class DiBlinker : public Skill {
+
+    private:
+
+    Led _l1;
+
+    public:
+
+    DiBlinker(Led l1);
+
+    virtual void inOut(byte ear, byte skin, byte eye);
+
+};
+
+#endif[/CODE]
+
+
+
+.cpp
+
+[CODE=cpp]#include <Arduino.h>
+
+#include "DiBlinker.h"
+
+#include "LivinGrimoireLight.h"
+
+#include "DiHelloWorld.h"
+
+
+
+DiBlinker::DiBlinker(Led l1)
+
+{
+
+   Serial.begin(9600);
+
+  _l1 = l1;_l1.init();
+
+}
+
+void DiBlinker::inOut(byte ear, byte skin, byte eye)
+
+{
+
+  // Check if data is available to read
+
+  if (Serial.available() > 0) {
+
+    // Read the incoming byte
+
+    char data = Serial.read();
+
+    // Blink the LED if the received data is '1'
+
+    if (data == '1') {
+
+      // turn the LED on (HIGH is the voltage level)
+
+      _l1.on();
+
+      delay(1000); // Wait for 1000 millisecond(s)
+
+      // turn the LED off by making the voltage LOW
+
+      _l1.off();
+
+      delay(1000); // Wait for 1000 millisecond(s)
+
+    }
+
+  }
+
+}[/CODE]
+
+
+
+main:
+
+
+
+[CODE=cpp]#include "DiBlinker.h"
+
+#include "LivinGrimoireLight.h"
+
+Chobit* c1 = new Chobit();
+
+void setup() {
+
+    Led led1(13); // used to initialize the Hello World skill
+
+    Skill* s2 = new DiBlinker(led1); // example skill created  
+
+    c1->addSkill(s2);
+
+}
+
+
+
+void loop() {
+
+  c1->think(0, 0, 0);
+
+}[/CODE]
+
+
+
+see skill python code at:
+file name: DLC_Arduino_skills.py 
+location: LivinGrimoire python/Python files/protoco; 2501/Arduino DLCs

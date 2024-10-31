@@ -30,6 +30,7 @@ class SerialReader:
 
 
 class DiArduinoTemperature(Skill):
+    # example skill for reading Arduino data
     def __init__(self):
         super().__init__()
 
@@ -39,6 +40,19 @@ class DiArduinoTemperature(Skill):
             self.setVerbatimAlg(4, SerialReader.read_serial_data())
 
 
+class DiBlinker(Skill):
+    # blinks the Arduino led, this is an example of sending commands to the Arduino
+    def __init__(self):
+        super().__init__()
+
+    # Override
+    def input(self, ear: str, skin: str, eye: str):
+        if ear == "blink":
+            self.setVerbatimAlg(4, "blinking")
+            ser.write(b'1')
+
+
 def add_DLC_skills(brain: Brain):
     atexit.register(close)  # wrap up serial object when program closes
     brain.add_logical_skill(DiArduinoTemperature())
+    brain.add_logical_skill(DiBlinker())

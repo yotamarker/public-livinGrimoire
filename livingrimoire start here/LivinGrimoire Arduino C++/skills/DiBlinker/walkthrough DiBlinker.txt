@@ -1,12 +1,23 @@
 this skill blinks the Arduino Led #13 based on commands comming from
-the laptop.
+the laptop(when you say blink, the Arduino/Elegoo Led blinks). :s56: 
 
 the merit of the skill is in showing how to condition Arduino code to run based on commands comming 
 from the laptop, more specifically, a livingrimoire skill outside the Arduino.
 
-.h
+there are 2 parts to adding the skill:
 
-[CODE=cpp]#ifndef DiBlinker_H
+1. adding the skill to the Arduino
+in the Arduino IDE:
+tools: select board and port connecting to the Arduino/elegoo
+Sketch->Include Library->Add .ZIP Library...
+select the LivinGrimoireLight290724.zip
+
+[url=https://github.com/yotamarker/public-livinGrimoire/tree/master/livingrimoire%20start%20here/LivinGrimoire%20Arduino%20C%2B%2B]LivinGrimoireLight_link[/url]
+
+add the temperature skill files:
+DiBlinker.h
+
+[code]#ifndef DiBlinker_H
 
 #define DiBlinker_H
 
@@ -24,25 +35,24 @@ from the laptop, more specifically, a livingrimoire skill outside the Arduino.
 
 class DiBlinker : public Skill {
 
-    private:
+    private:
 
-    Led _l1;
+    Led _l1;
 
-    public:
+    public:
 
-    DiBlinker(Led l1);
+    DiBlinker(Led l1);
 
-    virtual void inOut(byte ear, byte skin, byte eye);
+    virtual void inOut(byte ear, byte skin, byte eye);
 
 };
 
-#endif[/CODE]
+#endif[/code]
 
 
+add: DiBlinker.cpp
 
-.cpp
-
-[CODE=cpp]#include <Arduino.h>
+[code]#include <Arduino.h>
 
 #include "DiBlinker.h"
 
@@ -56,9 +66,9 @@ DiBlinker::DiBlinker(Led l1)
 
 {
 
-   Serial.begin(9600);
+   Serial.begin(9600);
 
-  _l1 = l1;_l1.init();
+  _l1 = l1;_l1.init();
 
 }
 
@@ -66,43 +76,41 @@ void DiBlinker::inOut(byte ear, byte skin, byte eye)
 
 {
 
-  // Check if data is available to read
+  // Check if data is available to read
 
-  if (Serial.available() > 0) {
+  if (Serial.available() > 0) {
 
-    // Read the incoming byte
+    // Read the incoming byte
 
-    char data = Serial.read();
+    char data = Serial.read();
 
-    // Blink the LED if the received data is '1'
+    // Blink the LED if the received data is '1'
 
-    if (data == '1') {
+    if (data == '1') {
 
-      // turn the LED on (HIGH is the voltage level)
+      // turn the LED on (HIGH is the voltage level)
 
-      _l1.on();
+      _l1.on();
 
-      delay(1000); // Wait for 1000 millisecond(s)
+      delay(1000); // Wait for 1000 millisecond(s)
 
-      // turn the LED off by making the voltage LOW
+      // turn the LED off by making the voltage LOW
 
-      _l1.off();
+      _l1.off();
 
-      delay(1000); // Wait for 1000 millisecond(s)
+      delay(1000); // Wait for 1000 millisecond(s)
 
-    }
+    }
 
-  }
+  }
 
-}[/CODE]
+}[/code]
 
-
-
-main:
+main Arduino code:
 
 
 
-[CODE=cpp]#include "DiBlinker.h"
+[code]#include "DiBlinker.h"
 
 #include "LivinGrimoireLight.h"
 
@@ -110,11 +118,11 @@ Chobit* c1 = new Chobit();
 
 void setup() {
 
-    Led led1(13); // used to initialize the Hello World skill
+    Led led1(13); // used to initialize the Hello World skill
 
-    Skill* s2 = new DiBlinker(led1); // example skill created  
+    Skill* s2 = new DiBlinker(led1); // example skill created  
 
-    c1->addSkill(s2);
+    c1->addSkill(s2);
 
 }
 
@@ -122,12 +130,40 @@ void setup() {
 
 void loop() {
 
-  c1->think(0, 0, 0);
+  c1->think(0, 0, 0);
 
-}[/CODE]
+}[/code]
+2. adding the skill to the laptop (PyCharm IDE)
 
+(terminal) pip install pyserial
 
+#######################################################
 
-see skill python code at:
+adding the DLC_Arduino_skills from the python directory:
+
 file name: DLC_Arduino_skills.py 
+[url=https://github.com/yotamarker/public-livinGrimoire/tree/master/livingrimoire%20start%20here/LivinGrimoire%20python/python%20files/protocol%202501/Arduino%20DLCs]Arduino_skills_DLC_link[/url]
 location: LivinGrimoire python/Python files/protoco; 2501/Arduino DLCs
+
+in the main PyCharm IDE file add this function(Python code):
+
+[code]import os
+
+# noinspection PyUnusedLocal
+def call_add_DLC_skills(brain: Brain):
+    for file in os.listdir('.'):
+        if file.endswith('.py') and 'DLC' in file:
+            module_name = file[:-3]
+            exec(f"import {module_name}")
+            exec(f"{module_name}.add_DLC_skills(brain)")
+
+in the running code area add:
+call_add_DLC_skills(brain)[/code]
+
+this will add skills via .py files with DLC in their file name.
+
+note the above walkthrough includes some initial setup for elaboration.
+
+this means adding additional skills is even shorter:
+adding the livingrimoirelight library, adding the code in the python main program file
+just add the skill files, and 1 code line per skill on the Arduino/Elegoo main code file.

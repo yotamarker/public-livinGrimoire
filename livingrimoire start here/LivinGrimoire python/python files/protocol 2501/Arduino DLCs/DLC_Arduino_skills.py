@@ -3,13 +3,31 @@ from LivinGrimoire23 import Skill, Brain
 import serial
 import time
 import atexit
+import serial.tools.list_ports
+
 
 # terminal: pip install pyserial
-ser = serial.Serial('COM3', 9600, timeout=0.1)
+
+def is_port_available(param):
+    ports = serial.tools.list_ports.comports()
+    for port in ports:
+        if port.device == param:
+            return True
+    return False
+
+
+name_of_port = 'COM3'
+if is_port_available(name_of_port):
+    ser = serial.Serial(name_of_port, 9600, timeout=0.1)
+    print("Arduino connected successfully.")
+else:
+    ser = None
+    print("Arduino not connected. Please check the connection.")
 
 
 def close():
-    ser.close()
+    if ser:
+        ser.close()
 
 
 class SerialReader:
@@ -53,6 +71,8 @@ class DiBlinker(Skill):
 
 
 def add_DLC_skills(brain: Brain):
+    if ser is None:
+        return
     atexit.register(close)  # wrap up serial object when program closes
     brain.add_logical_skill(DiArduinoTemperature())
     brain.add_logical_skill(DiBlinker())

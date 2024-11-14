@@ -1339,7 +1339,7 @@ class DiDeducer(Skill):
     def __init__(self, deducer: ElizaDeducer):
         super().__init__()
         self.rcb: RailChatBot = RailChatBot()
-        self.dialog: AXCmdBreaker = AXCmdBreaker("babe")
+        self.dialog: AXCmdBreaker = AXCmdBreaker("over")
         self.filter: UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue(5)
         self.bads: AXCmdBreaker = AXCmdBreaker("is bad")
         self.goods: AXCmdBreaker = AXCmdBreaker("is good")
@@ -1367,12 +1367,11 @@ class DiDeducer(Skill):
             return  # filter in
         temp = self.dialog.extractCmdParam(ear)
         if temp:
+            self.rcb.learnV2(temp, self.elizaDeducer)
             result = self.rcb.respondDialog(temp)
             if self.filter.strContainsResponse(result):
                 return  # filter out
-            self.setSimpleAlg(Eliza.PhraseMatcher.reflect(result))
-            return
-        self.rcb.learnV2(ear, self.elizaDeducer)
+            self.setSimpleAlg(result)
 
 
 class DiBlabberV6(Skill):

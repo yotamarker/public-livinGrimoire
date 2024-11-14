@@ -3124,6 +3124,16 @@ class ElizaDeducerInitializer(ElizaDeducer):
             AXKeyValuePair("what does {0} like", "{0} likes {1}"),
             AXKeyValuePair("what do {0} like", "{0} like {1}")
         ]))  # likes
+        babble_tmp.append(PhraseMatcher("you are just a (.*)", [
+            AXKeyValuePair("you are just a {0}", "i will be the best {0} then"),
+            AXKeyValuePair("you are just a {0}", "kiss my {0} butt"),
+            AXKeyValuePair("you are just a {0}", "shiku shiku")
+        ]))  # anti bully
+        babble_tmp.append(PhraseMatcher("you damn (.*)", [
+            AXKeyValuePair("you damn {0}", "but i am the best {0}"),
+            AXKeyValuePair("you damn {0}", "kiss my {0} butt"),
+            AXKeyValuePair("you damn {0}", "meanie")
+        ]))  # anti bully
         self.babble2 = babble_tmp
 
 

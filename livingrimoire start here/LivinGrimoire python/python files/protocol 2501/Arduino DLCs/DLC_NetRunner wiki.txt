@@ -1,0 +1,43 @@
+DLC_NetRunner for URL hacking
+
+the DLC_NetRunner is a LivinGrimoire skill.
+
+because this is a DLC file, all you need to add the skill to a LivinGrimoire object is
+add the file to the Python project, see wiki for more detail on LivinGrimoire DLC protocol:
+https://github.com/yotamarker/public-livinGrimoire/wiki/LivinGrimoire-DLC-protocol-2501
+
+twiking the skill (just modify the iitems in the list):
+exclusions = ['google.com', 'bing.com', 'facebook.com', 'youtube.com']  # sites to exclude from link scouting
+site_seeds = ['https://www.yotamarker.com/']  # site you want to scout for internal/external links
+site_fuel: list[str] = ['', 'yotamarker', 'coding', 'java', 'python', 'cplusplus', 'swift']  # lists used for domain guessing
+site_fuel2: list[str] = ['', 'forum', 'haven']
+site_endings = ['.com', '.org', '.net', '.io', '.co', '.edu', '.gov', '.info', '.biz', '.moe', 'ninja']  # domain endings for URL guessing
+
+you're gonna to love sliding, there is no telling which site you will arrive at.
+it all depends on the items in your seed_fuel list.
+
+URL hacking enables you to arrive to sites where Search Engines won't take you,
+the very outskirts of the internet.
+
+skill commands:
+nxt url:
+generate next URL hack
+
+each next URL suggested will be a different one, and suggestions will not repeat,
+this enables you to brute force all URL options.
+
+check url:
+checks if the site is operational
+
+surf site:
+surfs to the site with the edge browser
+
+scout:
+get external links of seed_sites
+
+inflate seeds:
+gets seed_sites internal link list
+
+see input method of DiBrowser(Skill) class for more commands.
+
+

@@ -851,7 +851,7 @@ class DiRailChatBot(Skill):
     def __init__(self):
         super().__init__()
         self.rcb: RailChatBot = RailChatBot()
-        self.dialog: AXCmdBreaker = AXCmdBreaker("babe")
+        self.dialog: AXCmdBreaker = AXCmdBreaker("gg")
         self.filter: UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue(5)
         self.bads: AXCmdBreaker = AXCmdBreaker("is bad")
         self.goods: AXCmdBreaker = AXCmdBreaker("is good")
@@ -881,9 +881,10 @@ class DiRailChatBot(Skill):
             result = self.rcb.respondDialog(temp)
             if self.filter.strContainsResponse(result):
                 return  # filter out
+            print(temp)
+            self.rcb.learn(temp)
             self.setSimpleAlg(Eliza.PhraseMatcher.reflect(result))
             return
-        self.rcb.learn(ear)
 
 
 class DiBlueCrystal(Skill):

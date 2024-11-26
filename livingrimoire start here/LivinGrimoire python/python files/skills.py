@@ -881,9 +881,9 @@ class DiRailChatBot(Skill):
             result = self.rcb.respondDialog(temp)
             if self.filter.strContainsResponse(result):
                 return  # filter out
-            print(temp)
             self.rcb.learn(temp)
-            self.setSimpleAlg(Eliza.PhraseMatcher.reflect(result))
+            # self.setSimpleAlg(Eliza.PhraseMatcher.reflect(result))
+            self.setSimpleAlg(result)
             return
 
 

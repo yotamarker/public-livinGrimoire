@@ -2650,7 +2650,7 @@ class RailChatBot:
         return temp
 
     def learn(self, ear):
-        if ear == "":
+        if ear == "" or ear == self.context:
             return
         if ear not in self.dic:
             self.dic[ear] = RefreshQ(self._limit)

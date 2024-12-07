@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import random
-
 from AXPython import *
 
 
@@ -663,6 +661,13 @@ class DiSmoothie0(Skill):
             self.setSimpleAlg(f"{self.draw.drawAndRemove()} and {self.draw.drawAndRemove()}")
             self.draw.reset()
 
+    def skillNotes(self, param: str) -> str:
+        if param == "notes":
+            return "smoothie recipe recommender"
+        elif param == "triggers":
+            return "recommend a smoothie"
+        return "smoothie skill"
+
 
 class DiSmoothie1(Skill):
     def __init__(self):
@@ -681,6 +686,13 @@ class DiSmoothie1(Skill):
             self.setSimpleAlg(
                 f"use {self.base.getAResponse()} as a base than add {self.thickeners.drawAndRemove()}\n and {self.thickeners.drawAndRemove()}")
             self.thickeners.reset()
+
+    def skillNotes(self, param: str) -> str:
+        if param == "notes":
+            return "thick smoothie recipe recommender"
+        elif param == "triggers":
+            return "recommend a smoothie"
+        return "smoothie skill"
 
 
 class DiJumbler(Skill):
@@ -764,6 +776,9 @@ class SkillBranch(Skill):
     # while alg is pending, cause alg mutation ignoring learnability tolerance:
     def addDefconLV5(self, defcon5):
         self._ml.defcon5.insert(defcon5)
+
+    def skillNotes(self, param: str) -> str:
+        return self._skillHub.active_skill_ref().skillNotes(param)
 
 
 class DiActivity(Skill):

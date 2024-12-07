@@ -626,6 +626,9 @@ class SkillHubAlgDispenser:
     def getSize(self) -> int:
         return len(self._skills)
 
+    def active_skill_ref(self) -> Skill:
+        return self._skills[self._activeSkill]
+
 
 class TrGEV3:
     # advanced boolean gates with internal logic

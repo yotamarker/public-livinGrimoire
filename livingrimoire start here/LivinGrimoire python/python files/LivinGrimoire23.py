@@ -279,6 +279,9 @@ class Skill:
                 return temp
         return ""
 
+    def skillNotes(self, param: str) -> str:
+        return "notes unknown"
+
 
 class DiHelloWorld(Skill):
     # Override

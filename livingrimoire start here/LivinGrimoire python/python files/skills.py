@@ -1,4 +1,7 @@
 from __future__ import annotations
+
+import random
+
 from AXPython import *
 
 
@@ -552,6 +555,13 @@ class DiTime(Skill):
                                     "life essence")
             case "evil laugh":
                 self.setSimpleAlg("bwahaha mwahaha")
+
+    def skillNotes(self, param: str) -> str:
+        if param == "notes":
+            return "gets time date or misc"
+        elif param == "triggers":
+            return random.choice(["what is the time", "which day is it", "what is the date", "evil laugh", "good part of day", "when is the fifth"])
+        return "time util skill"
 
 
 class DiCron(Skill):
@@ -1128,6 +1138,11 @@ class DiOneWorder(Skill):
 
         return result
 
+    def skillNotes(self, param: str) -> str:
+        if param == "triggers":
+            return "say chi to toggle skill"
+        return "talks like a cute pet"
+
 
 class DiAware(Skill):
     def __init__(self, chobit: Chobits, name: str, summoner="user"):
@@ -1164,12 +1179,18 @@ class DiAware(Skill):
         self._call: str = f'hey {self.name}'
         self._ggFunnel: AXFunnel = AXFunnel("good girl")
         self._ggFunnel.addK("you are a good girl").addK("such a good girl").addK("you are my good girl")
+        self.skillDex = None
+        self.skill_for_info: int = 0
 
     def input(self, ear, skin, eye):
         match self._ggFunnel.funnel(ear):
-            case "list skills":
-                self.skills = self.chobit.get_skill_list()
-                self.setVebatimAlgFromList(4, self.skills)
+            case "what can you do":
+                if self.skillDex is None:
+                    self.skillDex = UniqueRandomGenerator(len(self.chobit.get_skill_list()))
+                self.skill_for_info = self.skillDex.get_unique_random()
+                self.setSimpleAlg(f'{self.chobit._dClasses[self.skill_for_info].__class__.__name__} {self.chobit._dClasses[self.skill_for_info].skillNotes("notes")}')
+            case "skill triggers":
+                self.setSimpleAlg(self.chobit._dClasses[self.skill_for_info].skillNotes("triggers"))
             case "what is your name":
                 self.setSimpleAlg(self.name)
             case "name summoner":

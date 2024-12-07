@@ -3393,3 +3393,19 @@ class AXFunnelResponder1(AXFunnelResponder):
         self.add_kv("let me lick your feet", r1)
         r1 = Responder("i love you more", "i love you too", "sweet baby", "uwu", "owo", "oooweee")
         self.add_kv("i love you", r1)
+
+class UniqueRandomGenerator:
+    def __init__(self, n1: int):
+        self.n1 = n1
+        self.numbers = list(range(n1))
+        self.remaining_numbers = []  # Declare here to avoid the error
+        self.reset()
+
+    def reset(self):
+        self.remaining_numbers = self.numbers.copy()
+        random.shuffle(self.remaining_numbers)
+
+    def get_unique_random(self) -> int:
+        if not self.remaining_numbers:
+            self.reset()
+        return self.remaining_numbers.pop()

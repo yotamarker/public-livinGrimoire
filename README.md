@@ -15,6 +15,7 @@ advantages of the LivinGrimoire include:
 5. interface is not used, which means it is applicable for all OOP programming languages, meaning cross platform porting.
 6. has lots of auxiliary classes specialized for learnability and trigger management as well as misc. classes for time savings on common coding actions.
 7. can form multistep algorithms, as well as abort algorithms while they run.
+8. built-in skill catalog feature(see wiki to learn more).
 
 to learn how to use the LivinGrimoire:
 

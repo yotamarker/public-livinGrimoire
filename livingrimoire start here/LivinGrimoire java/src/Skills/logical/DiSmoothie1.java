@@ -25,4 +25,13 @@ public class DiSmoothie1 extends Skill {
             thickeners.reset();
         }
     }
+    @Override
+    public String skillNotes(String param) {
+        if (param.equals("notes")) {
+            return "thick smoothie recipe recommender";
+        } else if (param.equals("triggers")) {
+            return "recommend a smoothie";
+        }
+        return "smoothie skill";
+    }
 }

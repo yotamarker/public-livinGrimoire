@@ -62,4 +62,9 @@ public class SkillBranch extends Skill {
         super.setKokoro(kokoro);
         skillHub.setKokoro(kokoro);
     }
+    @Override
+    public String skillNotes(String param) {
+        return this.skillHub.activeSkillRef().skillNotes(param);
+    }
+
 }

@@ -56,4 +56,12 @@ public class DiOneWorder extends Skill {
 
         return result.toString();
     }
+
+    @Override
+    public String skillNotes(String param) {
+        if (param.equals("triggers")) {
+            return "say chi to toggle skill";
+        }
+        return "talks like a cute pet";
+    }
 }

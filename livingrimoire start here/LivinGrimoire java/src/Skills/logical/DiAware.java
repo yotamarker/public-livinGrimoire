@@ -1,6 +1,7 @@
 package Skills.logical;
 
 import Auxiliary_Modules.Responder;
+import Auxiliary_Modules.UniqueRandomGenerator;
 import LivinGrimoire.Chobits;
 import LivinGrimoire.Skill;
 
@@ -12,6 +13,8 @@ public class DiAware extends Skill {
     private String summoner = "user";
     private ArrayList<String> skills = new ArrayList<String>();
     public Responder replies;
+    private UniqueRandomGenerator skillDex = null;
+    private int skillForInfo = 0;
     public DiAware(Chobits chobit, String name, String summoner) {
         this.chobit = chobit;
         this.name = name;
@@ -22,10 +25,16 @@ public class DiAware extends Skill {
     @Override
     public void input(String ear, String skin, String eye) {
         switch(ear) {
-            case "list skills":
-                skills = chobit.getSkillList();
-                setVerbatimAlgFromList(4, skills);
-                return;
+            case "what can you do":
+                if (this.skillDex == null) {
+                    this.skillDex = new UniqueRandomGenerator(this.chobit.getSkillList().size());
+                }
+                this.skillForInfo = this.skillDex.getUniqueRandom();
+                this.setSimpleAlg(this.chobit.dClasses.get(this.skillForInfo).getClass().getSimpleName() + " " + this.chobit.dClasses.get(this.skillForInfo).skillNotes("notes"));
+                break;
+            case "skill triggers":
+                this.setSimpleAlg(this.chobit.dClasses.get(this.skillForInfo).skillNotes("triggers"));
+                break;
             case "what is your name":
                 setSimpleAlg(this.name);
                 return;

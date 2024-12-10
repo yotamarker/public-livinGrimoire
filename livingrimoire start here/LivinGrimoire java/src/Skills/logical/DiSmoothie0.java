@@ -23,4 +23,14 @@ public class DiSmoothie0 extends Skill {
             draw.reset();
         }
     }
+    @Override
+    public String skillNotes(String param) {
+        if (param.equals("notes")) {
+            return "smoothie recipe recommender";
+        } else if (param.equals("triggers")) {
+            return "recommend a smoothie";
+        }
+        return "smoothie skill";
+    }
+
 }

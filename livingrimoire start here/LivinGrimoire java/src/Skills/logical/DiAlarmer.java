@@ -7,7 +7,6 @@ import LivinGrimoire.Skill;
 
 public class DiAlarmer extends Skill {
     private Responder off = new Responder("alarm off","cancel alarm");
-    private RegexUtil regexUtil = new RegexUtil();
     private Cron cron = new Cron("", 3,3);
 
     public void setCron(Cron cron) {
@@ -22,7 +21,7 @@ public class DiAlarmer extends Skill {
             setSimpleAlg("alarm is now off");
             return;
         }
-        String temp = regexUtil.extractRegex("(?<=set alarm to\\s)([0-9]{1,2}:[0-9]{1,2})", ear);
+        String temp = RegexUtil.extractRegex("(?<=set alarm to\\s)([0-9]{1,2}:[0-9]{1,2})", ear);
         if (!temp.isEmpty()){
             cron.setStartTime(temp);
             setSimpleAlg("alarm set to "+ temp);

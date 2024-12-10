@@ -70,4 +70,8 @@ public class SkillHubAlgDispenser {
         }
     }
     public int getSize(){return skills.size();}
+    public Skill activeSkillRef() {
+        return this.skills.get(this.activeSkill);
+    }
+
 }

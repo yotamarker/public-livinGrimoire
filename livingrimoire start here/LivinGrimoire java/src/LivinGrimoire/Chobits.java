@@ -3,7 +3,7 @@ package LivinGrimoire;
 import java.util.ArrayList;
 
 public class Chobits {
-    protected ArrayList<Skill> dClasses = new ArrayList<>();
+    public ArrayList<Skill> dClasses = new ArrayList<>();
     protected Fusion fusion;
     protected Neuron noiron;
     protected Kokoro kokoro = new Kokoro(new AbsDictionaryDB()); // consciousness

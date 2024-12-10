@@ -132,4 +132,16 @@ public class DiTime extends Skill {
                 // code block
         }
     }
+    @Override
+    public String skillNotes(String param) {
+        if (param.equals("notes")) {
+            return "gets time date or misc";
+        } else if (param.equals("triggers")) {
+            String[] triggers = {"what is the time", "which day is it", "what is the date", "evil laugh", "good part of day", "when is the fifth"};
+            int randomIndex = (int) (Math.random() * triggers.length);
+            return triggers[randomIndex];
+        }
+        return "time util skill";
+    }
+
 }

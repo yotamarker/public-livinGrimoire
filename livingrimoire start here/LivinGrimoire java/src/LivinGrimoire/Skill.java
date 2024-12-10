@@ -75,4 +75,8 @@ public class Skill {
         }
         return "";
     }
+    public String skillNotes(String param) {
+        return "notes unknown";
+    }
+
 }

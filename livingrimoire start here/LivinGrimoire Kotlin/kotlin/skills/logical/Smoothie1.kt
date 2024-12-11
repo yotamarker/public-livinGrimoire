@@ -31,4 +31,12 @@ class Smoothie1 : Skill() {
             thickeners.reset()
         }
     }
+    override fun skillNotes(param: String): String {
+        if (param == "notes") {
+            return "thick smoothie recipe recommender"
+        } else if (param == "triggers") {
+            return "recommend a smoothie"
+        }
+        return "smoothie skill"
+    }
 }

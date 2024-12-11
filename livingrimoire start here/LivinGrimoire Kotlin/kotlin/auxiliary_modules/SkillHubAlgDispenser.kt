@@ -76,4 +76,8 @@ class SkillHubAlgDispenser(vararg skillsParams: Skill) {
 
     val size: Int
         get() = skills.size
+
+    fun activeSkillRef(): Skill {
+        return skills[activeSkill]
+    }
 }

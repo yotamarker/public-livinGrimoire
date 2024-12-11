@@ -1,7 +1,5 @@
 package livinGrimoire
 
-import java.util.*
-
 open class Skill {
     open lateinit var kokoro: Kokoro // consciousness, shallow ref class to enable interskill communications
     protected var outAlg: Algorithm? = null // skills output
@@ -77,5 +75,8 @@ open class Skill {
             }
         }
         return ""
+    }
+    open fun skillNotes(param: String): String {
+        return "notes unknown"
     }
 }

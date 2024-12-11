@@ -22,4 +22,12 @@ class Smoothie0 : Skill() {
             draw.reset()
         }
     }
+    override fun skillNotes(param: String): String {
+        if (param == "notes") {
+            return "smoothie recipe recommender"
+        } else if (param == "triggers") {
+            return "recommend a smoothie"
+        }
+        return "smoothie skill"
+    }
 }

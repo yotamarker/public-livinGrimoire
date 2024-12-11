@@ -211,4 +211,21 @@ class Time : Skill() {
             else -> {}
         }
     }
+    override fun skillNotes(param: String): String {
+        if (param == "notes") {
+            return "gets time date or misc"
+        } else if (param == "triggers") {
+            val triggers = arrayOf(
+                "what is the time",
+                "which day is it",
+                "what is the date",
+                "evil laugh",
+                "good part of day",
+                "when is the fifth"
+            )
+            val randomIndex = (Math.random() * triggers.size).toInt()
+            return triggers[randomIndex]
+        }
+        return "time util skill"
+    }
 }

@@ -1,7 +1,7 @@
 package livinGrimoire
 
 class Chobits {
-    protected var dClasses = ArrayList<Skill>()
+    var dClasses = ArrayList<Skill>()
     var fusion: Fusion
         protected set
     protected var noiron: Neuron

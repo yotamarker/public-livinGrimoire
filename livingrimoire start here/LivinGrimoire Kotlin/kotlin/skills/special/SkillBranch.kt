@@ -1,9 +1,11 @@
 package skills.special
 
-import auxiliary_modules.*
+import auxiliary_modules.AXLearnability
+import auxiliary_modules.AlgorithmV2
+import auxiliary_modules.SkillHubAlgDispenser
 import livinGrimoire.AbsDictionaryDB
-import livinGrimoire.Skill
 import livinGrimoire.Kokoro
+import livinGrimoire.Skill
 import java.util.*
 
 class SkillBranch(tolerance: Int) : Skill() {
@@ -70,4 +72,7 @@ class SkillBranch(tolerance: Int) : Skill() {
             field = value
             kokoro.toHeart.put("dibicameral", "null")
         }
+    override fun skillNotes(param: String): String {
+        return skillHub.activeSkillRef().skillNotes(param)
+    }
 }

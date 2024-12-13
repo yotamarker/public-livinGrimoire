@@ -3412,3 +3412,32 @@ class UniqueRandomGenerator:
         if not self.remaining_numbers:
             self.reset()
         return self.remaining_numbers.pop()
+
+class UniqueResponder:
+    # simple random response dispenser
+    def __init__(self, *replies: str):
+        # Ensure replies is not empty to avoid range issues
+        self.responses: list[str] = []
+        self.urg: UniqueRandomGenerator = UniqueRandomGenerator(len(replies))
+        for response in replies:
+            self.responses.append(response)
+
+    def getAResponse(self) -> str:
+        if not self.responses:
+            return ""
+        return self.responses[self.urg.get_unique_random()]
+
+    def responsesContainsStr(self, item: str) -> bool:
+        return self.responses.__contains__(item)
+
+    def strContainsResponse(self, item: str) -> bool:
+        for response in self.responses:
+            if len(response) == 0:
+                continue
+            if item.__contains__(response):
+                return True
+        return False
+
+    def addResponse(self, s1: str):
+        if not self.responses.__contains__(s1):
+            self.responses.append(s1)

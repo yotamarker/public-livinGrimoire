@@ -35,6 +35,17 @@
                     Me.SetVerbatimAlg(5, "fly", "bless of magic caster", "infinity wall", "magic ward holy", "life essen")
             End Select
         End Sub
+        Public Overrides Function SkillNotes(param As String) As String
+            If param = "notes" Then
+                Return "gets time date or misc"
+            ElseIf param = "triggers" Then
+                Dim options As New List(Of String) From {"what is the time", "which day is it", "what is the date", "evil laugh", "good part of day", "when is the fifth"}
+                Dim rnd As New Random()
+                Return options(rnd.Next(options.Count))
+            End If
+            Return "time util skill"
+        End Function
+
     End Class
     Public Class DiBicameral
         Inherits Skill

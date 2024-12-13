@@ -247,6 +247,10 @@
             Next
             Return ""
         End Function
+        Public Overridable Function SkillNotes(param As String) As String
+            Return "notes unknown"
+        End Function
+
     End Class
     Public Class DiHelloWorld
         Inherits Skill
@@ -369,7 +373,7 @@
     End Class
     Public Class Chobits
 
-        Protected dClasses As New List(Of Skill)()
+        Public dClasses As New List(Of Skill)()
         Protected fusion As Fusion
         Protected noiron As Neuron
         Protected kokoro As Kokoro = New Kokoro(New AbsDictionaryDB()) ' consciousness

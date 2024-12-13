@@ -2106,6 +2106,10 @@ Module Auxiliary_modules
         Public Function getSize() As Integer
             Return skills.Count
         End Function
+        Public Function ActiveSkillRef() As Skill
+            Return Me.skills(Me.activeSkill)
+        End Function
+
     End Class
     Public Class SpiderSense
         ' Enables event prediction
@@ -2728,3 +2732,29 @@ Module Auxiliary_modules
         End Function
     End Class
 End Module
+Public Class UniqueRandomGenerator
+    Private numbers As List(Of Integer)
+    Private remainingNumbers As List(Of Integer)
+
+    Public Sub New(n1 As Integer)
+        numbers = Enumerable.Range(0, n1).ToList()
+        remainingNumbers = New List(Of Integer)()
+        Reset()
+    End Sub
+
+    Public Sub Reset()
+        remainingNumbers = New List(Of Integer)(numbers)
+        Dim rnd As New Random()
+        remainingNumbers = remainingNumbers.OrderBy(Function() rnd.Next()).ToList()
+    End Sub
+
+    Public Function GetUniqueRandom() As Integer
+        If remainingNumbers.Count = 0 Then
+            Reset()
+        End If
+        Dim index As Integer = remainingNumbers.Count - 1
+        Dim value As Integer = remainingNumbers(index)
+        remainingNumbers.RemoveAt(index)
+        Return value
+    End Function
+End Class

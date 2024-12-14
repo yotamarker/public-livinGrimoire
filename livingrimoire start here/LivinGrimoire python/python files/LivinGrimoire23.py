@@ -289,6 +289,13 @@ class DiHelloWorld(Skill):
         if ear == "hello":
             self.setVerbatimAlg(4, "hello world")  # # 1->5 1 is the highest algorithm priority
 
+    def skillNotes(self, param: str) -> str:
+        if param == "notes":
+            return "plain hello world skill"
+        elif param == "triggers":
+            return "say hello"
+        return "note unavalible"
+
 
 ''' ----------------- REGEXUTIL ---------------- '''
 

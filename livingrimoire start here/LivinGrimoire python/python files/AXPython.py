@@ -3441,3 +3441,4 @@ class UniqueResponder:
     def addResponse(self, s1: str):
         if not self.responses.__contains__(s1):
             self.responses.append(s1)
+            self.urg: UniqueRandomGenerator = UniqueRandomGenerator(len(self.responses))

@@ -452,6 +452,13 @@ class DiMagic8Ball(Skill):
         if self.magic8Ball.engage(ear):
             self.setVerbatimAlg(4, self.magic8Ball.reply())
 
+    def skillNotes(self, param: str) -> str:
+        if param == "notes":
+            return "magic 8 ball"
+        elif param == "triggers":
+            return "ask a question starting with should i or will i"
+        return "note unavalible"
+
 
 class DiTime(Skill):
     def __init__(self):
@@ -1295,6 +1302,13 @@ class DiBlabberV4(Skill):
                 return
         self.getKokoro().grimoireMemento.simpleSave("blabberv4", self.splitter.stringBuilder(self.npc.responder.queue))
 
+    def skillNotes(self, param: str) -> str:
+        if param == "notes":
+            return "cussing skill"
+        elif param == "triggers":
+            return "try cussing"
+        return "note unavalible"
+
 
 class DiBlabberV5(Skill):
     def __init__(self, memory_size: int = 15, reply_chance: int = 90):
@@ -1764,6 +1778,7 @@ class DiSkillBundle(Skill):
     def __init__(self):
         super().__init__()
         self.axSkillBundle: AXSkillBundle = AXSkillBundle()
+        self.notes : dict[str, UniqueResponder] = {"triggers": UniqueResponder()}
 
     def input(self, ear, skin, eye):
         a1 = self.axSkillBundle.dispense_algorithm(ear, skin, eye)
@@ -1778,6 +1793,22 @@ class DiSkillBundle(Skill):
 
     def add_skill(self, skill):
         self.axSkillBundle.add_skill(skill)
+        for i in range(10):
+            self.manualAddResponse("triggers", f'grind {skill.skillNotes("triggers")}')
+
+    def skillNotes(self, param: str) -> str:
+        if param in self.notes:
+            return self.notes[param].getAResponse()
+        return "notes unavailable"
+
+    def setDefaultNote(self):
+        self.notes["notes"] = UniqueResponder("a bundle of several skills")
+
+    def manualAddResponse(self, key:str, value: str):
+        if key not in self.notes:
+            self.notes[key] = UniqueResponder(value)
+            return
+        self.notes[key].addResponse(value)
 
 
 class GamiPlus(Skill):
@@ -1839,12 +1870,19 @@ class DiGamificationSkillBundle(DiSkillBundle):
 
     def add_grind_skill(self, skill):
         self.axSkillBundle.add_skill(GamiPlus(skill, self.ax_gamification, self.gain))
+        for i in range(10):
+            self.manualAddResponse("triggers", f'grind {skill.skillNotes("triggers")}')
 
     def add_costly_skill(self, skill):
         self.axSkillBundle.add_skill(GamiMinus(skill, self.ax_gamification, self.cost))
+        for i in range(10):
+            self.manualAddResponse("triggers", f'reward {skill.skillNotes("triggers")}')
 
     def getAxGamification(self) -> AXGamification:
         return self.ax_gamification
+
+    def setDefaultNote(self):
+        self.notes["notes"] = UniqueResponder("a bundle of grind and reward skills")
 
 
 class DiGamificationScouter(Skill):

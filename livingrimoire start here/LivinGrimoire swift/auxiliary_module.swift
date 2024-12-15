@@ -3427,3 +3427,78 @@ class AXSkillBundle {
         return skills.count
     }
 }
+class UniqueRandomGenerator {
+    private var n1: Int
+    private var numbers: [Int]
+    private var remainingNumbers: [Int]
+
+    // Constructor
+    init(n1: Int) {
+        self.n1 = n1
+        self.numbers = Array(0..<n1)
+        self.remainingNumbers = []
+        reset()
+    }
+
+    // Method to reset the remaining numbers
+    func reset() {
+        remainingNumbers = numbers
+        remainingNumbers.shuffle()
+    }
+
+    // Method to get a unique random number
+    func getUniqueRandom() -> Int {
+        if remainingNumbers.isEmpty {
+            reset()
+        }
+        return remainingNumbers.removeLast()
+    }
+}
+
+class UniqueResponder {
+    private var responses: [String]
+    private var urg: UniqueRandomGenerator
+
+    // Constructor
+    init(replies: String...) {
+        self.responses = []
+        self.urg = UniqueRandomGenerator(n1: replies.count)
+        for response in replies {
+            self.responses.append(response)
+        }
+    }
+
+    // Method to get a response
+    func getAResponse() -> String {
+        if responses.isEmpty {
+            return ""
+        }
+        return responses[urg.getUniqueRandom()]
+    }
+
+    // Method to check if responses contain a string
+    func responsesContainsStr(_ item: String) -> Bool {
+        return responses.contains(item)
+    }
+
+    // Method to check if a string contains any response
+    func strContainsResponse(_ item: String) -> Bool {
+        for response in responses {
+            if response.isEmpty {
+                continue
+            }
+            if item.contains(response) {
+                return true
+            }
+        }
+        return false
+    }
+
+    // Method to add a response
+    func addResponse(_ s1: String) {
+        if !responses.contains(s1) {
+            responses.append(s1)
+            urg = UniqueRandomGenerator(n1: responses.count)
+        }
+    }
+}

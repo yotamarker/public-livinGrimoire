@@ -3331,3 +3331,117 @@ public class AXSkillBundle
         return skills.Count;
     }
 }
+public class UniqueRandomGenerator
+{
+    private int n1;
+    private List<int> numbers;
+    private List<int> remainingNumbers;
+
+    // Constructor
+    public UniqueRandomGenerator(int n1)
+    {
+        this.n1 = n1;
+        this.numbers = new List<int>();
+        for (int i = 0; i < n1; i++)
+        {
+            this.numbers.Add(i);
+        }
+        this.remainingNumbers = new List<int>();
+        Reset();
+    }
+
+    // Method to reset the remaining numbers
+    public void Reset()
+    {
+        remainingNumbers = new List<int>(numbers);
+        Shuffle(remainingNumbers);
+    }
+
+    // Method to get a unique random number
+    public int GetUniqueRandom()
+    {
+        if (remainingNumbers.Count == 0)
+        {
+            Reset();
+        }
+        int index = remainingNumbers.Count - 1;
+        int uniqueRandom = remainingNumbers[index];
+        remainingNumbers.RemoveAt(index);
+        return uniqueRandom;
+    }
+
+    // Helper method to shuffle the list
+    private void Shuffle(List<int> list)
+    {
+        Random rng = new Random();
+        int n = list.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = rng.Next(n + 1);
+            int value = list[k];
+            list[k] = list[n];
+            list[n] = value;
+        }
+    }
+}
+public class UniqueResponder
+{
+    private List<string> responses;
+    private UniqueRandomGenerator urg;
+
+    // Constructor
+    public UniqueResponder(params string[] replies)
+    {
+        responses = new List<string>();
+        urg = new UniqueRandomGenerator(replies.Length);
+        foreach (string response in replies)
+        {
+            responses.Add(response);
+        }
+    }
+
+    // Method to get a response
+    public string GetAResponse()
+    {
+        if (responses.Count == 0)
+        {
+            return string.Empty;
+        }
+        return responses[urg.GetUniqueRandom()];
+    }
+
+    // Method to check if responses contain a string
+    public bool ResponsesContainsStr(string item)
+    {
+        return responses.Contains(item);
+    }
+
+    // Method to check if a string contains any response
+    public bool StrContainsResponse(string item)
+    {
+        foreach (string response in responses)
+        {
+            if (string.IsNullOrEmpty(response))
+            {
+                continue;
+            }
+            if (item.Contains(response))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Method to add a response
+    public void AddResponse(string s1)
+    {
+        if (!responses.Contains(s1))
+        {
+            responses.Add(s1);
+            urg = new UniqueRandomGenerator(responses.Count);
+        }
+    }
+}
+

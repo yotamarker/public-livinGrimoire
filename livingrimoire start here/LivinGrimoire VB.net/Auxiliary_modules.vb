@@ -2758,3 +2758,51 @@ Public Class UniqueRandomGenerator
         Return value
     End Function
 End Class
+Public Class UniqueResponder
+    Private responses As List(Of String)
+    Private urg As UniqueRandomGenerator
+
+    ' Constructor
+    Public Sub New(ParamArray replies As String())
+        responses = New List(Of String)()
+        urg = New UniqueRandomGenerator(replies.Length)
+        For Each response As String In replies
+            responses.Add(response)
+        Next
+    End Sub
+
+    ' Method to get a response
+    Public Function GetAResponse() As String
+        If responses.Count = 0 Then
+            Return ""
+        End If
+        Return responses(urg.GetUniqueRandom())
+    End Function
+
+    ' Method to check if responses contain a string
+    Public Function ResponsesContainsStr(item As String) As Boolean
+        Return responses.Contains(item)
+    End Function
+
+    ' Method to check if a string contains any response
+    Public Function StrContainsResponse(item As String) As Boolean
+        For Each response As String In responses
+            If response.Length = 0 Then
+                Continue For
+            End If
+            If item.Contains(response) Then
+                Return True
+            End If
+        Next
+        Return False
+    End Function
+
+    ' Method to add a response
+    Public Sub AddResponse(s1 As String)
+        If Not responses.Contains(s1) Then
+            responses.Add(s1)
+            urg = New UniqueRandomGenerator(responses.Count)
+        End If
+    End Sub
+End Class
+

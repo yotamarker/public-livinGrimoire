@@ -43,6 +43,21 @@ public class DiTime : Skill
                 break;
         }
     }
+    public override string SkillNotes(string param)
+    {
+        if (param == "notes")
+        {
+            return "gets time date or misc";
+        }
+        else if (param == "triggers")
+        {
+            List<string> options = new List<string> { "what is the time", "which day is it", "what is the date", "evil laugh", "good part of day", "when is the fifth" };
+            Random rnd = new Random();
+            return options[rnd.Next(options.Count)];
+        }
+        return "time util skill";
+    }
+
 }
 public class DiBicameral : Skill
 {
@@ -171,6 +186,11 @@ public class SkillBranch : Skill
         base.SetKokoro(kokoro);
         skillHub.SetKokoro(kokoro);
     }
+    public override string SkillNotes(string param)
+    {
+        return this.skillHub.ActiveSkillRef().SkillNotes(param);
+    }
+
 }
 public class GamiPlus : Skill
 {

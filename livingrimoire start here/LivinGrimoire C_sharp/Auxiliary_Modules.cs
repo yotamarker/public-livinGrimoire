@@ -2584,6 +2584,11 @@ public class SkillHubAlgDispenser
     {
         return skills.Count;
     }
+    public Skill ActiveSkillRef()
+    {
+        return this.skills[this.activeSkill];
+    }
+
 }
 public class SpiderSense
 {

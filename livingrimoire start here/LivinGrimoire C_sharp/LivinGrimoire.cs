@@ -300,6 +300,11 @@ public class Skill
         }
         return "";
     }
+    public virtual string SkillNotes(string param)
+    {
+        return "notes unknown";
+    }
+
 }
 public class DiHelloWorld : Skill
 {
@@ -449,7 +454,7 @@ public class Fusion
 }
 public class Chobits
 {
-    protected List<Skill> dClasses = new List<Skill>();
+    public List<Skill> dClasses = new List<Skill>();
     protected Fusion fusion;
     protected Neuron noiron;
     protected Kokoro kokoro = new Kokoro(new AbsDictionaryDB()); // consciousness

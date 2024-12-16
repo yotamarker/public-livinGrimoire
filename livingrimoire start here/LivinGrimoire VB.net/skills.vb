@@ -167,6 +167,10 @@
             MyBase.SetKokoro(kokoro)
             skillHub.setKokoro(kokoro)
         End Sub
+        Public Overrides Function SkillNotes(param As String) As String
+            Return Me.skillHub.ActiveSkillRef().SkillNotes(param)
+        End Function
+
     End Class
     Public Class GamiPlus
         Inherits Skill

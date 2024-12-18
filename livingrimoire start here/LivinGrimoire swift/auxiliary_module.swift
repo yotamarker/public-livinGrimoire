@@ -949,6 +949,9 @@ class SkillHubAlgDispenser {
     func getSize() -> Int {
         return skills.count
     }
+    func activeSkillRef() -> Skill {
+        return self.skills[self.activeSkill]
+    }
 }
 // DETECTORS
 class EmoRecognizer {

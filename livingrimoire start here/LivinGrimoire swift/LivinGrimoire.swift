@@ -228,6 +228,9 @@ open class Skill{
         }
         return ""
     }
+    func skillNotes(param: String) -> String {
+        return "notes unknown"
+    }
 }
 class DiHelloWorld:Skill{
     // hello world skill for testing purposes
@@ -321,7 +324,7 @@ class Fusion {
 class Chobits {
     fileprivate(set) var emot = "" // emotion represented by the current active alg part
     var kokoro:Kokoro = Kokoro(absDictionaryDB: AbsDictionaryDB())// consciousness
-    private var dClasses: Array<Skill> // skills of the chobit
+    public var dClasses: Array<Skill> // skills of the chobit
     fileprivate var fusion:Fusion // multitasking center
     fileprivate var noiron:Neuron = Neuron() // algorithms transporter
     init () {

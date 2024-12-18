@@ -133,6 +133,15 @@ class DiTime:Skill{
             return
         }
     }
+    override func skillNotes(param: String) -> String {
+        if param == "notes" {
+            return "gets time date or misc"
+        } else if param == "triggers" {
+            let triggers = ["what is the time", "which day is it", "what is the date", "evil laugh", "good part of day", "when is the fifth"]
+            return triggers.randomElement()!
+        }
+        return "time util skill"
+    }
 }
 class DiMagic8Ball: Skill {
     public var magic8Ball = Magic8Ball()
@@ -632,6 +641,14 @@ class DiSmoothie0: Skill {
             draw.reset()
         }
     }
+    override func skillNotes(param: String) -> String {
+        if param == "notes" {
+            return "smoothie recipe recommender"
+        } else if param == "triggers" {
+            return "recommend a smoothie"
+        }
+        return "smoothie skill"
+    }
 }
 class DiSmoothie1: Skill {
     private var base = Responder("grapefruits", "oranges",  "apples", "peaches", "melons", "pears", "carrot")
@@ -652,6 +669,14 @@ class DiSmoothie1: Skill {
             setSimpleAlg(sayThis: "use \(base.getAResponse()) as a base than add \(thickeners.draw()) and \(thickeners.draw())")
             thickeners.reset()
         }
+    }
+    override func skillNotes(param: String) -> String {
+        if param == "notes" {
+            return "thick smoothie recipe recommender"
+        } else if param == "triggers" {
+            return "recommend a smoothie"
+        }
+        return "smoothie skill"
     }
 }
 class DiJumbler: Skill{
@@ -726,36 +751,88 @@ class SkillBranch: Skill {
         super.setKokoro(kokoro: kokoro)
         skillHub.setKokoro(kokoro)
     }
+    override func skillNotes(param: String) -> String {
+        return self.skillHub.activeSkillRef().skillNotes(param: param)
+    }
 }
 class DiAware: Skill {
-    private var chobit: Chobits
-    private var name: String
-    private var summoner: String = "user"
-    private var skills: [String] = []
+    var chobit: Chobits
+    var name: String
+    var summoner: String
+    var skills: [String] = []
+    var replies: Responder
+    var ggReplies: Responder
+    var _call: String
+    var _ggFunnel: AXFunnel
+    var skillDex: UniqueRandomGenerator?
+    var skill_for_info: Int = 0
 
-    init(chobit: Chobits, name: String, summoner: String) {
+    init(chobit: Chobits, name: String, summoner: String = "user") {
         self.chobit = chobit
         self.name = name
         self.summoner = summoner
+        self.replies = Responder("Da, what’s happening?", "You speak to \(name)?",
+                                 "Slav \(name) at your service!", "What’s cooking, comrade?",
+                                 "\(name) is listening!", "Yes, babushka?",
+                                 "Who summons the \(name)?", "Speak, friend, and enter!",
+                                 "\(name) hears you loud and clear!", "What’s on the menu today?",
+                                 "Ready for action, what’s the mission?",
+                                 "\(name)’s here, what’s the party?",
+                                 "Did someone call for a \(name)?", "Adventure time, or nap time?",
+                                 "Reporting for duty, what’s the quest?",
+                                 "\(name)’s in the house, what’s up?",
+                                 "Is it time for vodka and dance?", "\(name)’s ready, what’s the plan?",
+                                 "Who dares to disturb the mighty \(name)?",
+                                 "What’s the buzz, my spud?", "Is it a feast, or just a tease?",
+                                 "\(name)’s awake, what’s at stake?", "What’s the word, bird?",
+                                 "Is it a joke, or are we broke?",
+                                 "\(name)’s curious, what’s so serious?",
+                                 "Is it a game, or something lame?", "What’s the riddle, in the middle?",
+                                 "\(name)’s all ears, what’s the cheers?",
+                                 "Is it a quest, or just a test?", "What’s the gig, my twig?",
+                                 "Is it a prank, or am I high rank?", "What’s the scoop, my group?",
+                                 "Is it a tale, or a sale?", "What’s the drill, my thrill?",
+                                 "Is it a chat, or combat?", "What’s the plot, my tot?",
+                                 "Is it a trick, or something slick?", "What’s the deal, my peel?",
+                                 "Is it a race, or just a chase?", "What’s the story, my glory?")
+        self.ggReplies = Responder("meow", "oooweee", "chi", "yes i am", "nuzzles you", "thanks", "prrr")
+        self._call = "hey \(name)"
+        self._ggFunnel = AXFunnel()
+        self._ggFunnel.setDefault("good girl")
+        self._ggFunnel.addK(key: "you are a good girl").addK(key: "such a good girl").addK(key: "you are my good girl")
+        self.skillDex = nil
+        self.skill_for_info = 0
+        super.init()
     }
 
     override func input(ear: String, skin: String, eye: String) {
-        switch ear {
-            case "list skills":
-                skills = chobit.getSkillList()
-                setVerbatimAlgFromList(priority: 4, sayThis: skills)
-            case "what is your name":
-            setSimpleAlg(sayThis: name)
-            case "name summoner":
-            setSimpleAlg(sayThis: summoner)
-            case "how do you feel":
-                // handle in hardware skill in hardwer chobit
-                kokoro!.toHeart["last_ap"] = chobit.getSoulEmotion()
-            default:
-                break
+        switch self._ggFunnel.funnel(ear) {
+        case "what can you do":
+            if self.skillDex == nil {
+                self.skillDex = UniqueRandomGenerator(n1: self.chobit.getSkillList().count)
+            }
+            self.skill_for_info = self.skillDex!.getUniqueRandom()
+            self.setSimpleAlg(sayThis: String(describing: type(of: self.chobit.dClasses[self.skill_for_info])))
+        case "skill triggers":
+            self.setSimpleAlg(sayThis: self.chobit.dClasses[self.skill_for_info].skillNotes(param: "triggers"))
+        case "what is your name":
+            self.setSimpleAlg(sayThis: self.name)
+        case "name summoner":
+            self.setSimpleAlg(sayThis: self.summoner)
+        case "how do you feel":
+            self.kokoro!.toHeart["last_ap"] = self.chobit.getSoulEmotion()
+        case self.name:
+            self.setSimpleAlg(sayThis: self.replies.getAResponse())
+        case "test":
+            self.setSimpleAlg(sayThis: self.replies.getAResponse())
+        case self._call:
+            self.setSimpleAlg(sayThis: self.replies.getAResponse())
+        default:
+            break
         }
     }
 }
+
 class DiBicameral: Skill {
     /*
      *   let bicameral = DiBicameral()

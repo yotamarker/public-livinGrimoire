@@ -1,6 +1,7 @@
 package skills.special
 
 import auxiliary_modules.AXGamification
+import auxiliary_modules.UniqueResponder
 import livinGrimoire.Skill
 
 class GamificationSkillBundle : SkillBundle() {
@@ -21,9 +22,18 @@ class GamificationSkillBundle : SkillBundle() {
 
     fun addGrindSkill(skill: Skill) {
         axSkillBundle.addSkill(GamiPlus(skill, axGamification, gain))
+        for (i in 0..9) {
+            notes["triggers"]!!.addResponse("grind " + skill.skillNotes("triggers"))
+        }
     }
 
     fun addCostlySkill(skill: Skill) {
         axSkillBundle.addSkill(GamiMinus(skill, axGamification, cost))
+        for (i in 0..9) {
+            notes["triggers"]!!.addResponse("grind " + skill.skillNotes("triggers"))
+        }
+    }
+    override fun setDefaultNote() {
+        notes["notes"] = UniqueResponder("a bundle of grind and reward skills")
     }
 }

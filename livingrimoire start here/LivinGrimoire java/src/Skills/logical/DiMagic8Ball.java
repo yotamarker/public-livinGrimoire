@@ -28,4 +28,13 @@ public class DiMagic8Ball extends Skill {
             setVerbatimAlg(4, magic8Ball.reply());
         }
     }
+    @Override
+    public String skillNotes(String param) {
+        if ("notes".equals(param)) {
+            return "magic 8 ball";
+        } else if ("triggers".equals(param)) {
+            return "ask a question starting with should I or will I";
+        }
+        return "note unavailable";
+    }
 }

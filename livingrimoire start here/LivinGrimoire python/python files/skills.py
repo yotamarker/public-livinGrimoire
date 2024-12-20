@@ -1794,7 +1794,7 @@ class DiSkillBundle(Skill):
     def add_skill(self, skill):
         self.axSkillBundle.add_skill(skill)
         for i in range(10):
-            self.manualAddResponse("triggers", f'grind {skill.skillNotes("triggers")}')
+            self.notes["triggers"].addResponse(f'grind {skill.skillNotes("triggers")}')
 
     def skillNotes(self, param: str) -> str:
         if param in self.notes:
@@ -1807,7 +1807,6 @@ class DiSkillBundle(Skill):
     def manualAddResponse(self, key:str, value: str):
         if key not in self.notes:
             self.notes[key] = UniqueResponder(value)
-            return
         self.notes[key].addResponse(value)
 
 
@@ -1871,12 +1870,12 @@ class DiGamificationSkillBundle(DiSkillBundle):
     def add_grind_skill(self, skill):
         self.axSkillBundle.add_skill(GamiPlus(skill, self.ax_gamification, self.gain))
         for i in range(10):
-            self.manualAddResponse("triggers", f'grind {skill.skillNotes("triggers")}')
+            self.notes["triggers"].addResponse(f'grind {skill.skillNotes("triggers")}')
 
     def add_costly_skill(self, skill):
         self.axSkillBundle.add_skill(GamiMinus(skill, self.ax_gamification, self.cost))
         for i in range(10):
-            self.manualAddResponse("triggers", f'reward {skill.skillNotes("triggers")}')
+            self.notes["triggers"].addResponse(f'grind {skill.skillNotes("triggers")}')
 
     def getAxGamification(self) -> AXGamification:
         return self.ax_gamification

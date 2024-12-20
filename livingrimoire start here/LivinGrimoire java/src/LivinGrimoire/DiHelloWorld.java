@@ -14,4 +14,13 @@ public class DiHelloWorld extends Skill {
                 break;
         }
     }
+    @Override
+    public String skillNotes(String param) {
+        if ("notes".equals(param)) {
+            return "plain hello world skill";
+        } else if ("triggers".equals(param)) {
+            return "say hello";
+        }
+        return "note unavailable";
+    }
 }

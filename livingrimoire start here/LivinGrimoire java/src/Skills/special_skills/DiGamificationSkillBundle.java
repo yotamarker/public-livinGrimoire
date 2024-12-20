@@ -1,6 +1,7 @@
 package Skills.special_skills;
 
 import Auxiliary_Modules.AXGamification;
+import Auxiliary_Modules.UniqueResponder;
 import LivinGrimoire.Skill;
 
 public class DiGamificationSkillBundle extends DiSkillBundle{
@@ -15,14 +16,27 @@ public class DiGamificationSkillBundle extends DiSkillBundle{
     public void setCost(int cost) {
         if (cost > 0){this.cost = cost;}
     }
-    public void addGrindSkill(Skill skill){
-        axSkillBundle.addSkill(new GamiPlus(skill,axGamification,gain));
+    public void addGrindSkill(Skill skill) {
+        axSkillBundle.addSkill(new GamiPlus(skill, axGamification, gain));
+        for (int i = 0; i < 10; i++) {
+            notes.get("triggers").addResponse("grind " + skill.skillNotes("triggers"));
+        }
     }
-    public void addCostlySkill(Skill skill){
-        axSkillBundle.addSkill(new GamiMinus(skill,axGamification,cost));
+
+    public void addCostlySkill(Skill skill) {
+        axSkillBundle.addSkill(new GamiMinus(skill, axGamification, cost));
+        for (int i = 0; i < 10; i++) {
+            notes.get("triggers").addResponse("grind " + skill.skillNotes("triggers"));
+        }
     }
+
 
     public AXGamification getAxGamification() {
         return axGamification;
     }
+    @Override
+    void setDefaultNote() {
+        notes.put("notes", new UniqueResponder("a bundle of grind and reward skills"));
+    }
+
 }

@@ -80,6 +80,10 @@
         Inherits Skill
 
         Protected axSkillBundle As New AXSkillBundle()
+        Protected ReadOnly notes As New Dictionary(Of String, UniqueResponder) From {
+    {"triggers", New UniqueResponder()}
+}
+
 
         Public Overrides Sub Input(ByVal ear As String, ByVal skin As String, ByVal eye As String)
             Dim a1 As AlgorithmV2 = axSkillBundle.DispenseAlgorithm(ear, skin, eye)
@@ -95,9 +99,29 @@
             axSkillBundle.SetKokoro(kokoro)
         End Sub
 
-        Public Sub AddSkill(ByVal skill As Skill)
+        Sub AddSkill(skill As Skill)
             axSkillBundle.AddSkill(skill)
+            For i As Integer = 0 To 9
+                Me.notes("triggers").AddResponse("grind " & skill.SkillNotes("triggers"))
+            Next
         End Sub
+        Sub ManualAddResponse(key As String, value As String)
+            If Not notes.ContainsKey(key) Then
+                notes(key) = New UniqueResponder(value)
+            End If
+            notes(key).AddResponse(value)
+        End Sub
+
+        Overridable Sub SetDefaultNote()
+            notes("notes") = New UniqueResponder("a bundle of several skills")
+        End Sub
+        Public Overrides Function SkillNotes(param As String) As String
+            If notes.ContainsKey(param) Then
+                Return notes(param).GetAResponse()
+            End If
+            Return "notes unavailable"
+        End Function
+
     End Class
     Public Class SkillBranch
         Inherits Skill
@@ -255,15 +279,25 @@
 
         Public Sub AddGrindSkill(skill As Skill)
             axSkillBundle.AddSkill(New GamiPlus(skill, axGamification, gain))
+            For i As Integer = 0 To 9
+                notes("triggers").AddResponse("grind " & skill.SkillNotes("triggers"))
+            Next
         End Sub
 
         Public Sub AddCostlySkill(skill As Skill)
             axSkillBundle.AddSkill(New GamiMinus(skill, axGamification, cost))
+            For i As Integer = 0 To 9
+                notes("triggers").AddResponse("grind " & skill.SkillNotes("triggers"))
+            Next
         End Sub
 
         Public Function GetAxGamification() As AXGamification
             Return axGamification
         End Function
+        Public Overrides Sub SetDefaultNote()
+            notes("notes") = New UniqueResponder("a bundle of grind and reward skills")
+        End Sub
+
     End Class
     Public Class DiGamificationScouter
         Inherits Skill

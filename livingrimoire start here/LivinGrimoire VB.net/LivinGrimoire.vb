@@ -266,6 +266,15 @@
                     MyBase.SetVerbatimAlg(4, "hello world") ' 1->5 1 is the highest algorithm priority
             End Select
         End Sub
+        Public Overrides Function SkillNotes(param As String) As String
+            If param = "notes" Then
+                Return "plain hello world skill"
+            ElseIf param = "triggers" Then
+                Return "say hello"
+            End If
+            Return "note unavailable"
+        End Function
+
     End Class
     Public Class Cerabellum
         ' Runs an algorithm

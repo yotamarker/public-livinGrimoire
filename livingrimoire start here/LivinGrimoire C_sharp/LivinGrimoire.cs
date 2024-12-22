@@ -322,6 +322,19 @@ public class DiHelloWorld : Skill
                 break;
         }
     }
+    public override string SkillNotes(string param)
+    {
+        if (param == "notes")
+        {
+            return "plain hello world skill";
+        }
+        else if (param == "triggers")
+        {
+            return "say hello";
+        }
+        return "note unavailable";
+    }
+
 }
 public class Cerabellum
 {

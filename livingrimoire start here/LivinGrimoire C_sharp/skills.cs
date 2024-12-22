@@ -99,6 +99,9 @@ public class DiBicameral : Skill
 public class DiSkillBundle : Skill
 {
     protected AXSkillBundle axSkillBundle = new AXSkillBundle();
+    protected readonly Dictionary<string, UniqueResponder> notes = new Dictionary<string, UniqueResponder> {
+    { "triggers", new UniqueResponder() }
+};
 
     public override void Input(string ear, string skin, string eye)
     {
@@ -120,7 +123,35 @@ public class DiSkillBundle : Skill
     public void AddSkill(Skill skill)
     {
         axSkillBundle.AddSkill(skill);
+        for (int i = 0; i < 10; i++)
+        {
+            this.notes["triggers"].AddResponse("grind " + skill.SkillNotes("triggers"));
+        }
     }
+
+    public void ManualAddResponse(string key, string value)
+    {
+        if (!notes.ContainsKey(key))
+        {
+            notes[key] = new UniqueResponder(value);
+        }
+        notes[key].AddResponse(value);
+    }
+
+    public virtual void SetDefaultNote()
+    {
+        notes["notes"] = new UniqueResponder("a bundle of several skills");
+    }
+
+    public override string SkillNotes(string param)
+    {
+        if (notes.ContainsKey(param))
+        {
+            return notes[param].GetAResponse();
+        }
+        return "notes unavailable";
+    }
+
 }
 public class SkillBranch : Skill
 {
@@ -290,17 +321,31 @@ public class DiGamificationSkillBundle : DiSkillBundle
     public void AddGrindSkill(Skill skill)
     {
         axSkillBundle.AddSkill(new GamiPlus(skill, axGamification, gain));
+        for (int i = 0; i < 10; i++)
+        {
+            notes["triggers"].AddResponse("grind " + skill.SkillNotes("triggers"));
+        }
     }
 
     public void AddCostlySkill(Skill skill)
     {
         axSkillBundle.AddSkill(new GamiMinus(skill, axGamification, cost));
+        for (int i = 0; i < 10; i++)
+        {
+            notes["triggers"].AddResponse("grind " + skill.SkillNotes("triggers"));
+        }
     }
+
 
     public AXGamification GetAxGamification()
     {
         return axGamification;
     }
+    public override void SetDefaultNote()
+    {
+        notes["notes"] = new UniqueResponder("a bundle of grind and reward skills");
+    }
+
 }
 
 public class DiGamificationScouter : Skill

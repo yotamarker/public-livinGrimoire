@@ -28,19 +28,19 @@ public class DiSkillBundle extends Skill {
         super.setKokoro(kokoro);
         axSkillBundle.setKokoro(kokoro);
     }
-    void manualAddResponse(String key, String value) {
+    public void manualAddResponse(String key, String value) {
         notes.computeIfAbsent(key, k -> new UniqueResponder(value)).addResponse(value);
     }
 
 
 
-    void addSkill(Skill skill) {
+    public void addSkill(Skill skill) {
         axSkillBundle.addSkill(skill);
         for (int i = 0; i < 10; i++) {
             this.notes.get("triggers").addResponse("grind " + skill.skillNotes("triggers"));
         }
     }
-    void setDefaultNote() {
+    public void setDefaultNote() {
         notes.put("notes", new UniqueResponder("a bundle of several skills"));
     }
 

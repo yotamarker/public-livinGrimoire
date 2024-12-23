@@ -246,6 +246,14 @@ class DiHelloWorld:Skill{
             return
         }
     }
+    override func skillNotes(param: String) -> String {
+        if param == "notes" {
+            return "plain hello world skill"
+        } else if param == "triggers" {
+            return "say hello"
+        }
+        return "note unavailable"
+    }
 }
 class Cerabellum{
     // runs an algorithm

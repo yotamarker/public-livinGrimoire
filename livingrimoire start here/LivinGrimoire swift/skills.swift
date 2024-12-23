@@ -173,6 +173,14 @@ class DiMagic8Ball: Skill {
             setSimpleAlg(sayThis: magic8Ball.reply())
         }
     }
+    override func skillNotes(param: String) -> String {
+        if param == "notes" {
+            return "magic 8 ball"
+        } else if param == "triggers" {
+            return "ask a question starting with should I or will I"
+        }
+        return "note unavailable"
+    }
 }
 class DiCron:Skill{
     private var sound:String = "snore"
@@ -862,6 +870,11 @@ class DiBicameral: Skill {
 }
 class DiSkillBundle: Skill {
     fileprivate let axSkillBundle = AXSkillBundle()
+    var notes: [String: UniqueResponder] = {
+        var tempDict = [String: UniqueResponder]()
+        tempDict["triggers"] = UniqueResponder()
+        return tempDict
+    }()
 
     override func input(ear: String, skin: String, eye: String) {
         if let a1 = axSkillBundle.dispenseAlgorithm(ear: ear, skin: skin, eye: eye) {
@@ -875,8 +888,29 @@ class DiSkillBundle: Skill {
         axSkillBundle.setKokoro(kokoro)
     }
 
-    func addSkill(_ skill: Skill) {
+    func manualAddResponse(key: String, value: String) {
+        if notes[key] == nil {
+            notes[key] = UniqueResponder(replies: value)
+        }
+        notes[key]!.addResponse(value)
+    }
+
+    func addSkill(skill: Skill) {
         axSkillBundle.addSkill(skill)
+        for i in 0..<10 {
+            notes["triggers"]!.addResponse("grind \(skill.skillNotes(param: "triggers"))")
+        }
+    }
+
+    func setDefaultNote() {
+        notes["notes"] = UniqueResponder(replies: "a bundle of several skills")
+    }
+
+    override func skillNotes(param: String) -> String {
+        if let response = notes[param]?.getAResponse() {
+            return response
+        }
+        return "notes unavailable"
     }
 }
 // gamification classes
@@ -955,14 +989,23 @@ class DiGamificationSkillBundle: DiSkillBundle {
 
     func addGrindSkill(_ skill: Skill) {
         axSkillBundle.addSkill(GamiPlus(skill: skill, axGamification: axGamification, gain: gain))
+        for _ in 0..<10 {
+            notes["triggers"]!.addResponse("grind \(skill.skillNotes(param: "triggers"))")
+        }
     }
 
     func addCostlySkill(_ skill: Skill) {
         axSkillBundle.addSkill(GamiMinus(skill: skill, axGamification: axGamification, cost: cost))
+        for _ in 0..<10 {
+            notes["triggers"]!.addResponse("grind \(skill.skillNotes(param: "triggers"))")
+        }
     }
 
     func getAxGamification() -> AXGamification {
         return axGamification
+    }
+    public override func setDefaultNote() {
+        notes["notes"] = UniqueResponder(replies: "a bundle of grind and reward skills")
     }
 }
 

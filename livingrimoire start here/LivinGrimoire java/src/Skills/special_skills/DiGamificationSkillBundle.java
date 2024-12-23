@@ -35,7 +35,7 @@ public class DiGamificationSkillBundle extends DiSkillBundle{
         return axGamification;
     }
     @Override
-    void setDefaultNote() {
+    public void setDefaultNote() {
         notes.put("notes", new UniqueResponder("a bundle of grind and reward skills"));
     }
 

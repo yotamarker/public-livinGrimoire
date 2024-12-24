@@ -6,15 +6,15 @@ buy me a green tea:
 
 #### Advantages of LivinGrimoire
 
-1. **<span style="color:blue">Skill Prioritization</span>**: Can prioritize skills against one another, pause and resume skills according to their priority.
-2. **<span style="color:blue">Algorithm Queueing</span>**: Can queue algorithms while running other algorithms.
-3. **<span style="color:blue">Concurrent Skill Engagement</span>**: Can engage several skills at once and engage the right skills.
-4. **<span style="color:blue">Inter-Skill Communication</span>**: Skills can communicate with each other, pass data, and affect each other.
-5. **<span style="color:blue">Cross-Platform Compatibility</span>**: Interface is not used, making it applicable for all OOP programming languages.
-6. **<span style="color:blue">Auxiliary Classes</span>**: Specialized for learnability and trigger management, with miscellaneous classes for time savings on common coding actions.
-7. **<span style="color:blue">Multistep Algorithms</span>**: Can form multistep algorithms and abort algorithms while they run.
-8. **<span style="color:blue">Built-In Skill Catalog</span>**: Features a built-in skill catalog (see wiki to learn more).
-9. **<span style="color:blue">Dynamic Skill Management</span>**: Uses self-aware skills, enabling them to add or remove other skills while the program is running, similar to a command terminal (see TheShell wiki).
+1. **Skill Prioritization**: Can prioritize skills against one another, pause and resume skills according to their priority.
+2. **Algorithm Queueing**: Can queue algorithms while running other algorithms.
+3. **Concurrent Skill Engagement**: Can engage several skills at once and engage the right skills.
+4. **Inter-Skill Communication**: Skills can communicate with each other, pass data, and affect each other.
+5. **Cross-Platform Compatibility**: Interface is not used, making it applicable for all OOP programming languages.
+6. **Auxiliary Classes**: Specialized for learnability and trigger management, with miscellaneous classes for time savings on common coding actions.
+7. **Multistep Algorithms**: Can form multistep algorithms and abort algorithms while they run.
+8. **Built-In Skill Catalog**: Features a built-in skill catalog (see wiki to learn more).
+9. **Dynamic Skill Management**: Uses self-aware skills, enabling them to add or remove other skills while the program is running, similar to a command terminal (see TheShell wiki).
 
 to learn how to use the LivinGrimoire:
 

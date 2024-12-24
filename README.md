@@ -14,14 +14,14 @@ buy me a green tea:
 6. **Auxiliary Classes**: Specialized for learnability and trigger management, with miscellaneous classes for time savings on common coding actions.
 7. **Multistep Algorithms**: Can form multistep algorithms and abort algorithms while they run.
 8. **Built-In Skill Catalog**: Features a built-in skill catalog (see wiki to learn more).
-9. **Dynamic Skill Management**: Uses self-aware skills, enabling them to add or remove other skills while the program is running, similar to a command terminal (see TheShell wiki).
+9. **Dynamic Skill Management**: Can use self-aware skills, enabling them to add or remove other skills while the program is running, similar to a command terminal (see TheShell wiki).
 
 to learn how to use the LivinGrimoire:
 
 you can view the online course or read the LivinGrimoire pdf.
 for more techniques and skills check out the livingrimoire wikis.
 ***************
-*video course:*
+video course:
 ***************
 intro:
 
@@ -48,11 +48,11 @@ LivinGrimoire database
 
 https://rumble.com/v4hyha6-livingrimoire-database-tutorial.html
 *******
-*book:*
+book:
 *******
 https://github.com/yotamarker/public-livinGrimoire/blob/master/livingrimoire%20start%20here/the%20living%20grimoire.pdf
 ********
-*wikis:*
+wikis:
 ********
 https://github.com/yotamarker/public-livinGrimoire/wiki
 

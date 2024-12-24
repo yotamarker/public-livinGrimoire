@@ -2,20 +2,21 @@ buy me a green tea:
 
 <a href="https://www.buymeacoffee.com/mr_meeseeks" target="_blank"><img src="https://i.ibb.co/CnsJKpC/Thumbnail03.png" alt="LivinGrimoire acceleration" height="300" width="300"></a>
 
+**LivinGrimoire** is a software design pattern that absorbs skills with just one line of code needed to add a skill.
 
-the LivinGrimoire is a software design pattern, that absorbs skills.
-1 line of code is needed to add a skill.
+#### Advantages of LivinGrimoire
 
-advantages of the LivinGrimoire include:
+1. **<span style="color:blue">Skill Prioritization</span>**: Can prioritize skills against one another, pause and resume skills according to their priority.
+2. **<span style="color:blue">Algorithm Queueing</span>**: Can queue algorithms while running other algorithms.
+3. **<span style="color:blue">Concurrent Skill Engagement</span>**: Can engage several skills at once and engage the right skills.
+4. **<span style="color:blue">Inter-Skill Communication</span>**: Skills can communicate with each other, pass data, and affect each other.
+5. **<span style="color:blue">Cross-Platform Compatibility</span>**: Interface is not used, making it applicable for all OOP programming languages.
+6. **<span style="color:blue">Auxiliary Classes</span>**: Specialized for learnability and trigger management, with miscellaneous classes for time savings on common coding actions.
+7. **<span style="color:blue">Multistep Algorithms</span>**: Can form multistep algorithms and abort algorithms while they run.
+8. **<span style="color:blue">Built-In Skill Catalog</span>**: Features a built-in skill catalog (see wiki to learn more).
+9. **<span style="color:blue">Dynamic Skill Management</span>**: Uses self-aware skills, enabling them to add or remove other skills while the program is running, similar to a command terminal (see TheShell wiki).
 
-1. can prioritize skills against one another, pause and resume skills according to their priority
-2. can que algorithm while running other algorithms
-3. can engage several skills at once, and engage the right skills.
-4. inter skill communication: skills can communicate with each other, pass data, and effect each other
-5. interface is not used, which means it is applicable for all OOP programming languages, meaning cross platform porting.
-6. has lots of auxiliary classes specialized for learnability and trigger management as well as misc. classes for time savings on common coding actions.
-7. can form multistep algorithms, as well as abort algorithms while they run.
-8. built-in skill catalog feature(see wiki to learn more).
+If you have any other questions or need further assistance, feel free to ask! 🍳💻
 
 to learn how to use the LivinGrimoire:
 

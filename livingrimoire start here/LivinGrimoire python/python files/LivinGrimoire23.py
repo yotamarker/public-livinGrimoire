@@ -472,6 +472,10 @@ class Brain:
     def add_hardware_skill(self, skill):
         self.hardwareChobit.addSkill(skill)
 
+    def add_skillAware(self, skill):
+        # add a skill with Chobit in its c'tor(has Chobit attribute)
+        self.logicChobit.addSkillAware(skill)
+
 
 ''' Chobits CLASS '''
 
@@ -484,6 +488,8 @@ class Chobits:
         self._fusion: Fusion = Fusion()
         self._noiron: Neuron = Neuron()
         self._kokoro: Kokoro = Kokoro(AbsDictionaryDB())  # soul
+        self._isThinking: bool = False
+        self._awareSkills: list[Skill] = []  # self awareness skills. Chobit Object in their c'tor
 
     '''set the chobit database
         the database is built as a key value dictionary
@@ -494,8 +500,16 @@ class Chobits:
 
     def addSkill(self, skill: Skill) -> Chobits:
         # add a skill (builder design patterned func))
+        if self._isThinking:
+            return self
         skill.setKokoro(self._kokoro)
         self._dClasses.append(skill)
+        return self
+
+    def addSkillAware(self, skill: Skill) -> Chobits:
+        # add a skill with Chobit Object in their c'tor
+        skill.setKokoro(self._kokoro)
+        self._awareSkills.append(skill)
         return self
 
     def clearSkills(self):
@@ -503,11 +517,16 @@ class Chobits:
         self._dClasses.clear()
 
     def addSkills(self, *skills: Skill):
+        if self._isThinking:
+            return
         for skill in skills:
             skill.setKokoro(self._kokoro)
             self._dClasses.append(skill)
 
+
     def removeSkill(self, skill: Skill):
+        if self._isThinking:
+            return
         if skill not in self._dClasses:
             return
         self._dClasses.remove(skill)
@@ -516,8 +535,14 @@ class Chobits:
         return self._dClasses.__contains__(skill)
 
     def think(self, ear: str, skin: str, eye: str) -> str:
+        # main skill loop
+        self._isThinking = True
         for dCls in self._dClasses:
             self.inOut(dCls, ear, skin, eye)
+        self._isThinking = False
+        # loop for skills with access to the Chobit Object:
+        for dCls2 in self._awareSkills:
+            self.inOut(dCls2, ear, skin, eye)
         self._fusion.loadAlgs(self._noiron)
         return self._fusion.runAlgs(ear, skin, eye)
 

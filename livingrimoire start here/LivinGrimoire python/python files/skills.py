@@ -1213,6 +1213,11 @@ class DiAware(Skill):
                 self.setSimpleAlg(f'{self.chobit._dClasses[self.skill_for_info].__class__.__name__} {self.chobit._dClasses[self.skill_for_info].skillNotes("notes")}')
             case "skill triggers":
                 self.setSimpleAlg(self.chobit._dClasses[self.skill_for_info].skillNotes("triggers"))
+            case "remove skill":
+                self.chobit.removeSkill(self.chobit._dClasses[self.skill_for_info])
+                self.skillDex = UniqueRandomGenerator(len(self.chobit.get_skill_list()))
+                self.skill_for_info = self.skillDex.get_unique_random()
+                self.setSimpleAlg("skill removed")
             case "what is your name":
                 self.setSimpleAlg(self.name)
             case "name summoner":

@@ -16,8 +16,6 @@ buy me a green tea:
 8. **<span style="color:blue">Built-In Skill Catalog</span>**: Features a built-in skill catalog (see wiki to learn more).
 9. **<span style="color:blue">Dynamic Skill Management</span>**: Uses self-aware skills, enabling them to add or remove other skills while the program is running, similar to a command terminal (see TheShell wiki).
 
-If you have any other questions or need further assistance, feel free to ask! 🍳💻
-
 to learn how to use the LivinGrimoire:
 
 you can view the online course or read the LivinGrimoire pdf.

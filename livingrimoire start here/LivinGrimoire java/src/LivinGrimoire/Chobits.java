@@ -8,7 +8,7 @@ public class Chobits {
     protected Neuron noiron;
     protected Kokoro kokoro = new Kokoro(new AbsDictionaryDB()); // consciousness
     private boolean isThinking = false;
-    private ArrayList<Skill> awareSkills = new ArrayList<>();
+    private final ArrayList<Skill> awareSkills = new ArrayList<>();
     public Chobits() {
         // c'tor
         super();

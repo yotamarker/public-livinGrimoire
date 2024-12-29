@@ -2101,3 +2101,24 @@ class DiPrincess(Skill):
         if len(self._temp_str) > 0:
             self.setSimpleAlg(f'{self.npc.forceRespond()} sosu')
         self.npc.learn(ear)
+
+class DiTeaParty(Skill):
+    def __init__(self):
+        super().__init__()  # Call the parent class constructor
+        self.on_off_switch: OnOffSwitch = OnOffSwitch()
+        self.on_off_switch.setOn(Responder("tea party"))  # triggers, also turns off automatically after 5 minutes or say off
+        self.drip: PercentDripper = PercentDripper()
+        self.sips: UniqueResponder = UniqueResponder("sip", "sips tea", "good tea", "sip sip sip",
+                                              "green tea sip", "sip maxing", "mwahaha",
+                                              "cheers", "sippy sip", "sip saturation of tea")
+        self.evilLaugh: UniqueResponder = UniqueResponder("mwahaha", "bwahaha", "yes", "we are so evil",
+                                              "good times", "mwahaha bwahaha")
+        self.trg:Responder = Responder("yes")  # ear contains on of these to trigger evil laugh while skill is active
+
+    def input(self, ear, skin, eye):
+        if self.on_off_switch.getMode(ear):
+            if self.trg.strContainsResponse(ear):
+               self.setSimpleAlg(self.evilLaugh.getAResponse())
+               return
+            if self.drip.drip():
+                self.setSimpleAlg(self.sips.getAResponse())

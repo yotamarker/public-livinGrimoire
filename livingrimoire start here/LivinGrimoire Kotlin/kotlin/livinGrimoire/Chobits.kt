@@ -11,6 +11,8 @@ class Chobits {
     // this enables telepathic communications
     // between chobits in the same project
     var kokoro = Kokoro(AbsDictionaryDB()) // consciousness
+    private var isThinking = false
+    private val awareSkills = ArrayList<Skill>()
 
     init {
         // c'tor
@@ -18,23 +20,39 @@ class Chobits {
         noiron = Neuron()
     }
 
-    fun setDataBase(absDictionaryDB: AbsDictionaryDB?) {
+    fun setDataBase(absDictionaryDB: AbsDictionaryDB) {
         kokoro = Kokoro(absDictionaryDB)
     }
 
     fun addSkill(skill: Skill): Chobits {
         // add a skill (builder design patterned func))
+        if (isThinking) {
+            return this
+        }
         skill.kokoro = kokoro
         dClasses.add(skill)
         return this
     }
 
+    fun addSkillAware(skill: Skill): Chobits {
+        // add a skill with Chobit Object in their constructor
+        skill.kokoro = kokoro
+        awareSkills.add(skill)
+        return this
+    }
+
     fun clearSkills() {
         // remove all skills
+        if (isThinking) {
+            return
+        }
         dClasses.clear()
     }
 
     fun addSkills(vararg skills: Skill) {
+        if (isThinking) {
+            return
+        }
         for (skill in skills) {
             skill.kokoro = kokoro
             dClasses.add(skill)
@@ -42,6 +60,9 @@ class Chobits {
     }
 
     fun removeSkill(skill: Skill) {
+        if (isThinking) {
+            return
+        }
         dClasses.remove(skill)
     }
 
@@ -49,9 +70,14 @@ class Chobits {
         return dClasses.contains(skill)
     }
 
-    fun think(ear: String?, skin: String?, eye: String?): String {
+    fun think(ear: String, skin: String, eye: String): String {
+        isThinking = true
         for (dCls in dClasses) {
             inOut(dCls, ear, skin, eye)
+        }
+        isThinking = false
+        for (dCls2 in awareSkills) {
+            inOut(dCls2, ear, skin, eye)
         }
         fusion.loadAlgs(noiron)
         return fusion.runAlgs(ear, skin, eye)

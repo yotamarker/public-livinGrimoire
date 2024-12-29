@@ -7,6 +7,8 @@ public class Chobits {
     protected Fusion fusion;
     protected Neuron noiron;
     protected Kokoro kokoro = new Kokoro(new AbsDictionaryDB()); // consciousness
+    private boolean isThinking = false;
+    private ArrayList<Skill> awareSkills = new ArrayList<>();
     public Chobits() {
         // c'tor
         super();
@@ -18,27 +20,52 @@ public class Chobits {
     }
     public Chobits addSkill(Skill skill){
         // add a skill (builder design patterned func))
+        if (this.isThinking) {
+            return this;
+        }
         skill.setKokoro(this.kokoro);
         this.dClasses.add(skill);
         return this;
     }
+    public Chobits addSkillAware(Skill skill) {
+        // add a skill with Chobit Object in their constructor
+        skill.setKokoro(this.kokoro);
+        this.awareSkills.add(skill);
+        return this;
+    }
     public void clearSkills(){
         // remove all skills
+        if (this.isThinking) {
+            return;
+        }
         this.dClasses.clear();
     }
     public void addSkills(Skill... skills){
+        if (this.isThinking) {
+            return;
+        }
         for(Skill skill:skills){
             skill.setKokoro(this.kokoro);
             this.dClasses.add(skill);
         }
     }
-    public void removeSkill(Skill skill){dClasses.remove(skill);}
+    public void removeSkill(Skill skill){
+        if (this.isThinking) {
+            return;
+        }
+        dClasses.remove(skill);
+    }
     public Boolean containsSkill(Skill skill){
         return dClasses.contains(skill);
     }
     public String think(String ear, String skin, String eye) {
+        this.isThinking = true;
         for (Skill dCls : dClasses) {
             inOut(dCls, ear, skin, eye);
+        }
+        this.isThinking = false;
+        for (Skill dCls2 : awareSkills) {
+            inOut(dCls2, ear, skin, eye);
         }
         fusion.loadAlgs(noiron);
         return fusion.runAlgs(ear, skin, eye);

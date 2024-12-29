@@ -514,6 +514,8 @@ class Chobits:
 
     def clearSkills(self):
         # remove all skills
+        if self._isThinking:
+            return
         self._dClasses.clear()
 
     def addSkills(self, *skills: Skill):

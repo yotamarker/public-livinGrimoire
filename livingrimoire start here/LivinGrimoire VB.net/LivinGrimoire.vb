@@ -386,6 +386,8 @@
         Protected fusion As Fusion
         Protected noiron As Neuron
         Protected kokoro As Kokoro = New Kokoro(New AbsDictionaryDB()) ' consciousness
+        Private isThinking As Boolean = False
+        Private ReadOnly awareSkills As New List(Of Skill)()
 
         Public Sub New()
             MyBase.New()
@@ -398,17 +400,34 @@
         End Sub
 
         Public Function AddSkill(skill As Skill) As Chobits
+            ' add a skill (builder design patterned func)
+            If Me.isThinking Then
+                Return Me
+            End If
             skill.SetKokoro(Me.kokoro)
             Me.dClasses.Add(skill)
             Return Me
         End Function
 
+        Public Function AddSkillAware(skill As Skill) As Chobits
+            ' add a skill with Chobit Object in their constructor
+            skill.SetKokoro(Me.kokoro)
+            Me.awareSkills.Add(skill)
+            Return Me
+        End Function
+
         Public Sub ClearSkills()
             ' Remove all skills
+            If Me.isThinking Then
+                Return
+            End If
             Me.dClasses.Clear()
         End Sub
 
         Public Sub AddSkills(ParamArray skills As Skill())
+            If Me.isThinking Then
+                Return
+            End If
             For Each skill As Skill In skills
                 skill.SetKokoro(Me.kokoro)
                 Me.dClasses.Add(skill)
@@ -416,6 +435,9 @@
         End Sub
 
         Public Sub RemoveSkill(skill As Skill)
+            If Me.isThinking Then
+                Return
+            End If
             dClasses.Remove(skill)
         End Sub
 
@@ -424,8 +446,13 @@
         End Function
 
         Public Function Think(ear As String, skin As String, eye As String) As String
+            Me.isThinking = True
             For Each dCls As Skill In dClasses
                 InOut(dCls, ear, skin, eye)
+            Next
+            Me.isThinking = False
+            For Each dCls2 As Skill In Me.awareSkills
+                InOut(dCls2, ear, skin, eye)
             Next
             fusion.LoadAlgs(noiron)
             Return fusion.RunAlgs(ear, skin, eye)

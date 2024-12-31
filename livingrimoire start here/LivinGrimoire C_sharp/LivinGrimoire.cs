@@ -471,93 +471,135 @@ public class Chobits
     protected Fusion fusion;
     protected Neuron noiron;
     protected Kokoro kokoro = new Kokoro(new AbsDictionaryDB()); // consciousness
+    private bool isThinking = false;
+    private readonly List<Skill> awareSkills = new List<Skill>();
 
-    public Chobits() : base()
+    public Chobits()
     {
-        fusion = new Fusion();
-        noiron = new Neuron();
+        // c'tor
+        this.fusion = new Fusion();
+        this.noiron = new Neuron();
     }
 
     public void SetDataBase(AbsDictionaryDB absDictionaryDB)
     {
-        kokoro = new Kokoro(absDictionaryDB);
+        this.kokoro = new Kokoro(absDictionaryDB);
     }
 
     public Chobits AddSkill(Skill skill)
     {
-        skill.SetKokoro(kokoro);
-        dClasses.Add(skill);
+        // add a skill (builder design patterned func)
+        if (this.isThinking)
+        {
+            return this;
+        }
+        skill.SetKokoro(this.kokoro);
+        this.dClasses.Add(skill);
+        return this;
+    }
+
+    public Chobits AddSkillAware(Skill skill)
+    {
+        // add a skill with Chobit Object in their constructor
+        skill.SetKokoro(this.kokoro);
+        this.awareSkills.Add(skill);
         return this;
     }
 
     public void ClearSkills()
     {
-        // Remove all skills
-        dClasses.Clear();
+        // remove all skills
+        if (this.isThinking)
+        {
+            return;
+        }
+        this.dClasses.Clear();
     }
 
     public void AddSkills(params Skill[] skills)
     {
+        if (this.isThinking)
+        {
+            return;
+        }
         foreach (Skill skill in skills)
         {
-            skill.SetKokoro(kokoro);
-            dClasses.Add(skill);
+            skill.SetKokoro(this.kokoro);
+            this.dClasses.Add(skill);
         }
     }
 
     public void RemoveSkill(Skill skill)
     {
-        dClasses.Remove(skill);
+        if (this.isThinking)
+        {
+            return;
+        }
+        this.dClasses.Remove(skill);
     }
 
     public bool ContainsSkill(Skill skill)
     {
-        return dClasses.Contains(skill);
+        return this.dClasses.Contains(skill);
     }
 
     public string Think(string ear, string skin, string eye)
     {
-        foreach (Skill dCls in dClasses)
+        this.isThinking = true;
+        foreach (Skill dCls in this.dClasses)
         {
             InOut(dCls, ear, skin, eye);
         }
-        fusion.LoadAlgs(noiron);
-        return fusion.RunAlgs(ear, skin, eye);
+        this.isThinking = false;
+        foreach (Skill dCls2 in this.awareSkills)
+        {
+            InOut(dCls2, ear, skin, eye);
+        }
+        this.fusion.LoadAlgs(this.noiron);
+        return this.fusion.RunAlgs(ear, skin, eye);
     }
+
     public string GetSoulEmotion()
     {
-        return fusion.GetEmot();
+        // get the last active AlgPart name
+        // the AP is an action, and it also represents
+        // an emotion
+        return this.fusion.GetEmot();
     }
 
     protected void InOut(Skill dClass, string ear, string skin, string eye)
     {
-        dClass.Input(ear, skin, eye); // New
-        dClass.Output(noiron);
+        dClass.Input(ear, skin, eye); // new
+        dClass.Output(this.noiron);
+    }
+
+    public Kokoro GetKokoro()
+    {
+        // several chobits can use the same soul
+        // this enables telepathic communications
+        // between chobits in the same project
+        return this.kokoro;
+    }
+
+    public void SetKokoro(Kokoro kokoro)
+    {
+        // use this for telepathic communication between different chobits objects
+        this.kokoro = kokoro;
     }
 
     public Fusion GetFusion()
     {
-        return fusion;
+        return this.fusion;
     }
 
     public List<string> GetSkillList()
     {
         List<string> result = new List<string>();
-        foreach (Skill skill in dClasses)
+        foreach (Skill skill in this.dClasses)
         {
             result.Add(skill.GetType().Name);
         }
         return result;
-    }
-
-    public Kokoro GetKokoro()
-    {
-        return kokoro;
-    }
-
-    public void SetKokoro(Kokoro kokoro)
-    {
-        this.kokoro = kokoro;
     }
 }
 public class Brain

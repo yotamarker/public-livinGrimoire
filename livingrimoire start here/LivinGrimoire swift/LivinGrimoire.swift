@@ -330,73 +330,106 @@ class Fusion {
     }
 }
 class Chobits {
-    fileprivate(set) var emot = "" // emotion represented by the current active alg part
-    var kokoro:Kokoro = Kokoro(absDictionaryDB: AbsDictionaryDB())// consciousness
-    public var dClasses: Array<Skill> // skills of the chobit
-    fileprivate var fusion:Fusion // multitasking center
-    fileprivate var noiron:Neuron = Neuron() // algorithms transporter
-    init () {
+    var dClasses: [Skill] = []
+    var fusion: Fusion
+    var noiron: Neuron
+    var kokoro: Kokoro = Kokoro(absDictionaryDB: AbsDictionaryDB()) // consciousness
+    private var isThinking: Bool = false
+    private var awareSkills: [Skill] = []
+
+    init() {
         self.fusion = Fusion()
-        self.dClasses = [Skill]()
-        self.kokoro = Kokoro(absDictionaryDB: AbsDictionaryDB())
+        self.noiron = Neuron()
     }
-    /* set the chobit database
-            the database is built as a key value dictionary
-            the database can be used with by the Kokoro attribute
-        * */
-    func setDataBase(absDictionaryDB:AbsDictionaryDB) {
+
+    func setDataBase(absDictionaryDB: AbsDictionaryDB) {
         self.kokoro = Kokoro(absDictionaryDB: absDictionaryDB)
     }
+
     @discardableResult
-    func addSkill(skill:Skill) -> Chobits {
-        // add a skill (builder design patterned func))
+    func addSkill(skill: Skill) -> Chobits {
+        // add a skill (builder design patterned func)
+        if self.isThinking {
+            return self
+        }
         skill.setKokoro(kokoro: self.kokoro)
         self.dClasses.append(skill)
         return self
     }
+
+    @discardableResult
+    func addSkillAware(skill: Skill) -> Chobits {
+        // add a skill with Chobit Object in their constructor
+        skill.setKokoro(kokoro: self.kokoro)
+        self.awareSkills.append(skill)
+        return self
+    }
+
     func clearSkills() {
         // remove all skills
-        dClasses.removeAll()
+        if self.isThinking {
+            return
+        }
+        self.dClasses.removeAll()
     }
-    func addSkills(skills:Skill...) {
-        for skill in skills{
+
+    func addSkills(skills: Skill...) {
+        if self.isThinking {
+            return
+        }
+        for skill in skills {
             skill.setKokoro(kokoro: self.kokoro)
-            dClasses.append(skill)
+            self.dClasses.append(skill)
         }
     }
-    func removeSkill(skill:Skill) {
-        dClasses.removeAll(where: { $0 === skill })
-    }
-    func containsSkill(skill:Skill)-> Bool {
-        if dClasses.count == 0 {return false}
-        for i in 0...dClasses.count - 1{
-            if dClasses[i] === skill{
-                return true
-            }
+
+    func removeSkill(skill: Skill) {
+        if self.isThinking {
+            return
         }
-        return false
+        if let index = self.dClasses.firstIndex(where: { $0 === skill }) {
+            self.dClasses.remove(at: index)
+        }
     }
+
+    func containsSkill(skill: Skill) -> Bool {
+        return self.dClasses.contains(where: { $0 === skill })
+    }
+
     func think(ear: String, skin: String, eye: String) -> String {
-        // the input will be processed by the chobits' skills
-        for skill:Skill in self.dClasses {
-            inOut(dClass: skill, ear: ear, skin: skin, eye: eye)
+        self.isThinking = true
+        for dCls in self.dClasses {
+            inOut(dClass: dCls, ear: ear, skin: skin, eye: eye)
+        }
+        self.isThinking = false
+        for dCls2 in self.awareSkills {
+            inOut(dClass: dCls2, ear: ear, skin: skin, eye: eye)
         }
         fusion.loadAlgs(neuron: noiron)
         return fusion.runAlgs(ear: ear, skin: skin, eye: eye)
     }
+
     func getSoulEmotion() -> String {
-        // get the last active AlgPart name
-        // the AP is an action, and it also represents
-        // an emotion
         return fusion.getEmot()
     }
-    private func inOut(dClass:Skill,ear:String,skin:String,eye:String) {
-        dClass.input(ear: ear, skin: skin, eye: eye)
-        dClass.output(noiron: self.noiron)
+
+    private func inOut(dClass: Skill, ear: String, skin: String, eye: String) {
+        dClass.input(ear: ear, skin: skin, eye: eye) // new
+        dClass.output(noiron: noiron)
     }
+
+    func getKokoro() -> Kokoro {
+        return kokoro
+    }
+
+    func setKokoro(kokoro: Kokoro) {
+        self.kokoro = kokoro
+    }
+
     func getFusion() -> Fusion {
-        return self.fusion
+        return fusion
     }
+
     func getSkillList() -> [String] {
         var result: [String] = []
         for skill in self.dClasses {

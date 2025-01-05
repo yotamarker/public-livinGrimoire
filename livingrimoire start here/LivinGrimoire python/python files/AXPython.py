@@ -3442,3 +3442,11 @@ class UniqueResponder:
         if not self.responses.__contains__(s1):
             self.responses.append(s1)
             self.urg: UniqueRandomGenerator = UniqueRandomGenerator(len(self.responses))
+
+class EventChat:
+    # funnel input to a unique response bundle
+    def __init__(self, ur: UniqueResponder, *args):
+        self._dic = {arg: ur for arg in args}
+
+    def response(self, in1: str) -> str:
+        return self._dic.get(in1, "").getAResponse() if in1 in self._dic else ""

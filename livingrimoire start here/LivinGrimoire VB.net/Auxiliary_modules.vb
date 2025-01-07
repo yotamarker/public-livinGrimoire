@@ -2805,4 +2805,21 @@ Public Class UniqueResponder
         End If
     End Sub
 End Class
+Public Class EventChat
+    Private dic As Dictionary(Of String, UniqueResponder)
 
+    Public Sub New(ur As UniqueResponder, ParamArray args() As String)
+        dic = New Dictionary(Of String, UniqueResponder)()
+        For Each arg As String In args
+            dic(arg) = ur
+        Next
+    End Sub
+
+    Public Function Response(in1 As String) As String
+        If dic.ContainsKey(in1) Then
+            Return dic(in1).GetAResponse()
+        Else
+            Return ""
+        End If
+    End Function
+End Class

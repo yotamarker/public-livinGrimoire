@@ -3450,3 +3450,28 @@ public class UniqueResponder
     }
 }
 
+public class EventChat
+{
+    private Dictionary<string, UniqueResponder> dic;
+
+    public EventChat(UniqueResponder ur, params string[] args)
+    {
+        dic = new Dictionary<string, UniqueResponder>();
+        foreach (string arg in args)
+        {
+            dic[arg] = ur;
+        }
+    }
+
+    public string Response(string in1)
+    {
+        if (dic.ContainsKey(in1))
+        {
+            return dic[in1].GetAResponse();
+        }
+        else
+        {
+            return "";
+        }
+    }
+}

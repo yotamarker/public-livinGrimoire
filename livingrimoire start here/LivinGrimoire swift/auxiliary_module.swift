@@ -3505,3 +3505,18 @@ class UniqueResponder {
         }
     }
 }
+class EventChat {
+    // Funnel input to a unique response bundle
+    var dic: [String: UniqueResponder]
+
+    init(ur: UniqueResponder, args: String...) {
+        dic = [String: UniqueResponder]()
+        for arg in args {
+            dic[arg] = ur
+        }
+    }
+
+    func response(in1: String) -> String {
+        return dic[in1]?.getAResponse() ?? ""
+    }
+}

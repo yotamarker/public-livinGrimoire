@@ -1166,7 +1166,7 @@ class DiOneWorder(Skill):
         return "talks like a cute pet"
 
 
-class DiAware(Skill):
+class AHAware(Skill):
     def __init__(self, chobit: Chobits, name: str, summoner="user"):
         super().__init__()
         self.chobit: Chobits = chobit
@@ -1203,6 +1203,7 @@ class DiAware(Skill):
         self._ggFunnel.addK("you are a good girl").addK("such a good girl").addK("you are my good girl")
         self.skillDex = None
         self.skill_for_info: int = 0
+        self._removedSkills: list[Skill] = []
 
     def input(self, ear, skin, eye):
         match self._ggFunnel.funnel(ear):
@@ -1214,10 +1215,17 @@ class DiAware(Skill):
             case "skill triggers":
                 self.setSimpleAlg(self.chobit._dClasses[self.skill_for_info].skillNotes("triggers"))
             case "remove skill":
-                self.chobit.removeSkill(self.chobit._dClasses[self.skill_for_info])
+                skillToRemove = self.chobit._dClasses[self.skill_for_info]
+                self.chobit.removeSkill(skillToRemove)
+                self._removedSkills.append(skillToRemove)
                 self.skillDex = UniqueRandomGenerator(len(self.chobit.get_skill_list()))
                 self.skill_for_info = self.skillDex.get_unique_random()
                 self.setSimpleAlg("skill removed")
+            case "restore skills":
+                for skill in self._removedSkills:
+                    self.chobit.addSkill(skill)
+                self._removedSkills.clear()
+                self.setSimpleAlg("all skills have been restored")
             case "what is your name":
                 self.setSimpleAlg(self.name)
             case "name summoner":

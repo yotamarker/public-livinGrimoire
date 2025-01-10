@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import string
+
 from AXPython import *
 
 
@@ -2130,3 +2132,19 @@ class DiTeaParty(Skill):
                return
             if self.drip.drip():
                 self.setSimpleAlg(self.sips.getAResponse())
+
+
+class DiPassGen(Skill):
+    def __init__(self):
+        super().__init__()  # Call the parent class constructor
+
+    def input(self, ear, skin, eye):
+        if ear == "generate a password":
+            self.setSimpleAlg(self.generate_password())
+
+    @staticmethod
+    def generate_password(length=12):
+        # characters = string.ascii_letters + string.digits + string.punctuation
+        characters = string.ascii_letters + string.digits
+        password = ''.join(random.choice(characters) for i in range(length))
+        return password

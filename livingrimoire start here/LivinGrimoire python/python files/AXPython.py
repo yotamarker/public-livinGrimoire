@@ -1699,54 +1699,21 @@ class OutputDripper(Cycler):
 
 
 class Strategy:
-    def __init__(self, allStrategies: DrawRnd, strategiesLim: int):
+    def __init__(self, allStrategies: UniqueResponder, strategiesLim: int):
         # bank of all strategies. out of this pool active strategies are pulled
-        self._allStrategies: DrawRnd = allStrategies
+        self._allStrategies: UniqueResponder = allStrategies
         self._strategiesLim = strategiesLim
         # active strategic options
         self._activeStrategy: UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue(strategiesLim)
+        for i in range(0, self._strategiesLim):
+            self._activeStrategy.insert(self._allStrategies.getAResponse())
 
     def evolveStrategies(self):
-        # add N strategic options to the active strategies bank, from the total strategy bank
-        temp: str = self._allStrategies.drawAndRemove()
         for i in range(0, self._strategiesLim):
-            if temp == "":
-                break
-            self._activeStrategy.insert(temp)
-            temp = self._allStrategies.drawAndRemove()
-        self._allStrategies.reset()
+            self._activeStrategy.insert(self._allStrategies.getAResponse())
 
     def getStrategy(self) -> str:
         return self._activeStrategy.getRNDElement()
-
-
-class AXStrategy:
-    """this auxiliary module is used to output strategies based on context
-        can be used for battles, and games
-        upon pain/lose use the evolved methode to update to different new active strategies
-        check for battle state end externaly (opponent state/hits on rival counter)
-    a dictionary of strategies"""
-
-    def __init__(self):
-        self.strategies: dict[str, Strategy] = {}
-
-    def addStrategy(self, context: str, techniques: DrawRnd, lim: int):
-        # add strategies per context
-        # lim is the limit of active strategies, it should be less than
-        # the total strategies in techniques
-        temp: Strategy = Strategy(techniques, lim)
-        self.strategies[context] = temp
-
-    def evolve(self):
-        # replace active strategies
-        for k in self.strategies.keys():
-            self.strategies[k].evolveStrategies()
-
-    def process(self, context: str) -> str:
-        # process input, return action based on game context now
-        if context in self.strategies:
-            return self.strategies[context].getStrategy()
-        return ""
 
 
 class PersistentQuestion:
@@ -2429,6 +2396,11 @@ class AnnoyedQ:
 
     def isAnnoyed(self, ear: str) -> bool:
         return self._q2.strContainsResponse(ear)
+
+    def reset(self):
+        # Insert unique throwaway strings to reset the state
+        for i in range(self._q1.getLimit()):
+            self.learn(f"throwaway_string_{i}")
 
 
 class AXNPC2(AXNPC):
@@ -3447,6 +3419,16 @@ class EventChat:
     # funnel input to a unique response bundle
     def __init__(self, ur: UniqueResponder, *args):
         self._dic = {arg: ur for arg in args}
+
+    def add_items(self, ur: UniqueResponder, *args):
+        for arg in args:
+            self._dic[arg] = ur
+
+    def add_key_value(self, key: str, value: str):
+        if key in self._dic:
+            self._dic[key].addResponse(value)
+        else:
+            self._dic[key]: UniqueResponder = UniqueResponder(value)
 
     def response(self, in1: str) -> str:
         return self._dic.get(in1, "").getAResponse() if in1 in self._dic else ""

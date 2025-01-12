@@ -2138,6 +2138,7 @@ class DiPassGen(Skill):
     def __init__(self):
         super().__init__()  # Call the parent class constructor
 
+
     def input(self, ear, skin, eye):
         if ear == "generate a password":
             self.setSimpleAlg(self.generate_password())
@@ -2148,3 +2149,61 @@ class DiPassGen(Skill):
         characters = string.ascii_letters + string.digits
         password = ''.join(random.choice(characters) for i in range(length))
         return password
+
+class DiWarrior(Skill):
+    def __init__(self):
+        super().__init__()  # Call the parent class constructor
+        self.fightSpirit: int = 6
+        self.replenisher = TrgEveryNMinutes(TimeUtils.getCurrentTimeStamp(),5)
+        self.evolver = 0  # hits taken
+        self.warmode = False
+        self.attacked: set[str] = {"punch", "kick", "jab", "uppercut", "roundhouse"}
+        self.wimpMoves: UniqueResponder = UniqueResponder("uncle","stop","ouwee","you are a meanie")
+        # war mode:
+        self.trgs: list[set[str]] = []
+        self.trgs.append({"crunch","def"})
+        self.trgs.append({"punch", "kick", "jab", "uppercut", "roundhouse"})
+        self.strategies: list[Strategy] = []
+        self.strategies.append(Strategy(UniqueResponder("punch", "kick", "jab", "uppercut", "roundhouse"),2)) # offense
+        self.strategies.append(Strategy(UniqueResponder("back dash", "weaving"), 2))  # deffense
+        self.ref: Strategy = self.strategies[0]
+
+
+    def input(self, ear, skin, eye):
+        # reset spirit
+        if self.replenisher.trigger():
+            if self.fightSpirit == 0:
+                self.setVerbatimAlg(3,"fight spirit replenished")
+            elif self.fightSpirit < 6:
+                self.setVerbatimAlg(3,"exiting battle mode")
+            self.fightSpirit = 6
+            self.evolver = 0
+            self.warmode = False
+        # attacked?
+        if self.attacked.__contains__(ear): # change to eye or skin when bot body available
+            if self.warmode:  # get hit? evolve strategies
+                self.evolver +=1
+                if self.evolver > 2:
+                    self.ref.evolveStrategies()
+                    self.evolver = 0
+                    # strategy evolved
+            else:
+                if self.fightSpirit > 0:
+                    self.warmode = True
+                    self.setVerbatimAlg(3,"engaging battle mode")
+                    return
+                else:
+                    self.setSimpleAlg(self.wimpMoves.getAResponse())
+        # warmode:
+        if self.warmode:
+            if self.fightSpirit == 0 or ear == "uncle":
+                self.setVerbatimAlg(3,"uncle")
+                self.warmode = False
+                return
+            for i in range(len(self.trgs)):
+                if self.trgs[i].__contains__(ear):
+                    ref = self.strategies[i]
+                    self.fightSpirit -= 1
+                    self.setVerbatimAlg(3,ref.getStrategy())
+                    return
+

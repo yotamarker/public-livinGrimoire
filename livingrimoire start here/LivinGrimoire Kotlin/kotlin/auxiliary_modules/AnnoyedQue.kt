@@ -17,7 +17,14 @@ class AnnoyedQue(queLim: Int) {
         q1.add(ear)
     }
 
-    fun isAnnoyed(ear: String): Boolean {
-        return q2.strContainsResponse(ear)
+    fun isAnnoyed(ear: String?): Boolean {
+        return q2.strContainsResponse(ear!!)
+    }
+
+    fun reset() {
+        // Insert unique throwaway strings to reset the state
+        for (i in 0 until q1.limit) {
+            learn("throwaway_string_$i")
+        }
     }
 }

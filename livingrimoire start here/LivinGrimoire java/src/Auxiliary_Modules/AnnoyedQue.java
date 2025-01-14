@@ -18,4 +18,10 @@ public class AnnoyedQue {
     public boolean isAnnoyed(String ear){
         return q2.strContainsResponse(ear);
     }
+    public void reset() {
+        // Insert unique throwaway strings to reset the state
+        for (int i = 0; i < this.q1.getLimit(); i++) {
+            this.learn("throwaway_string_" + i);
+        }
+    }
 }

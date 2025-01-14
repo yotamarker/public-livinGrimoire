@@ -1,28 +1,31 @@
 package Auxiliary_Modules;
 
 public class Strategy {
-    private final UniqueItemSizeLimitedPriorityQueue activeStrategy; // active strategic options
-    public DrawRnd allStrategies; // bank of all strategies. out of this pool active strategies are pulled
+    private final UniqueResponder allStrategies;
+    private final int strategiesLim;
+    private final UniqueItemSizeLimitedPriorityQueue activeStrategy;
 
-    public Strategy(DrawRnd allStrategies) {
-        // create the strategy Object with a bank of options
+    // Constructor
+    public Strategy(UniqueResponder allStrategies, int strategiesLim) {
         this.allStrategies = allStrategies;
+        this.strategiesLim = strategiesLim;
         this.activeStrategy = new UniqueItemSizeLimitedPriorityQueue();
-    }
-    public void evolveStrategies(int strategiesLimit){
-        // add N strategic options to the active strategies bank, from the total strategy bank
-        activeStrategy.setLimit(strategiesLimit);
-        String temp = allStrategies.draw();
-        for (int i = 0; i < strategiesLimit; i++) {
-            if(temp.isEmpty()){
-                break;
-            }
-            activeStrategy.add(temp);
-            temp = allStrategies.draw();
+        this.activeStrategy.setLimit(strategiesLim);
+        for (int i = 0; i < this.strategiesLim; i++) {
+            this.activeStrategy.add(this.allStrategies.getAResponse());
         }
-        allStrategies.reset();
     }
-    public String getStrategy(){
+
+    // Evolve strategies
+    public void evolveStrategies() {
+        for (int i = 0; i < this.strategiesLim; i++) {
+            this.activeStrategy.add(this.allStrategies.getAResponse());
+        }
+    }
+
+    // Get strategy
+    public String getStrategy() {
         return this.activeStrategy.getRNDElement();
     }
 }
+

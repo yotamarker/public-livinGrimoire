@@ -869,8 +869,8 @@ public class RefreshQ : UniqueItemSizeLimitedPriorityQueue
 }
 public class AnnoyedQue
 {
-    private RefreshQ q1 = new RefreshQ();
-    private RefreshQ q2 = new RefreshQ();
+    private readonly RefreshQ q1 = new RefreshQ();
+    private readonly RefreshQ q2 = new RefreshQ();
 
     public AnnoyedQue(int queLim)
     {
@@ -892,7 +892,17 @@ public class AnnoyedQue
     {
         return q2.StrContainsResponse(ear);
     }
+
+    public void Reset()
+    {
+        // Insert unique throwaway strings to reset the state
+        for (int i = 0; i < q1.Limit; i++)
+        {
+            Learn("throwaway_string_" + i);
+        }
+    }
 }
+
 public class AXCmdBreaker
 {
     // Separate command parameter from the command
@@ -1821,83 +1831,39 @@ public class AXShoutOut
 }
 public class Strategy
 {
-    private UniqueItemSizeLimitedPriorityQueue activeStrategy; // Active strategic options
-    private DrawRnd allStrategies; // Bank of all strategies. Out of this pool, active strategies are pulled
+    private UniqueResponder allStrategies;
+    private int strategiesLim;
+    private UniqueItemSizeLimitedPriorityQueue activeStrategy;
 
-    public Strategy(DrawRnd allStrategies)
+    // Constructor
+    public Strategy(UniqueResponder allStrategies, int strategiesLim)
     {
-        // Create the Strategy Object with a bank of options
         this.allStrategies = allStrategies;
+        this.strategiesLim = strategiesLim;
         this.activeStrategy = new UniqueItemSizeLimitedPriorityQueue();
-    }
-
-    public void EvolveStrategies(int strategiesLimit)
-    {
-        // Add N strategic options to the active strategies bank from the total strategy bank
-        activeStrategy.Limit = strategiesLimit;
-        string temp = allStrategies.Draw();
-        for (int i = 0; i < strategiesLimit; i++)
+        this.activeStrategy.Limit = strategiesLim;
+        for (int i = 0; i < this.strategiesLim; i++)
         {
-            if (string.IsNullOrEmpty(temp))
-            {
-                break;
-            }
-            activeStrategy.Add(temp);
-            temp = allStrategies.Draw();
+            this.activeStrategy.Add(this.allStrategies.GetAResponse());
         }
-        allStrategies.Reset();
     }
 
+    // Evolve strategies
+    public void EvolveStrategies()
+    {
+        for (int i = 0; i < this.strategiesLim; i++)
+        {
+            this.activeStrategy.Add(this.allStrategies.GetAResponse());
+        }
+    }
+
+    // Get strategy
     public string GetStrategy()
     {
-        return activeStrategy.GetRNDElement();
+        return this.activeStrategy.GetRNDElement();
     }
 }
-public class AXStrategy
-{
-    // This auxiliary module is used to output strategies based on context.
-    // It can be used for battles and games.
-    // Upon pain/loss, use the evolve method to update to different new active strategies.
-    // Check for battle state end externally (opponent state/hits on rival counter).
-    // A dictionary of strategies.
 
-    private int lim;
-    private Dictionary<string, Strategy> strategies = new Dictionary<string, Strategy>();
-
-    public AXStrategy(int lim)
-    {
-        // Limit of active strategies (pulled from all available strategies).
-        this.lim = lim;
-    }
-
-    public void AddStrategy(string context, DrawRnd techniques)
-    {
-        // Add strategies per context.
-        Strategy temp = new Strategy(techniques);
-        temp.EvolveStrategies(lim);
-        this.strategies.Add(context, temp);
-    }
-
-    public void Evolve()
-    {
-        // Replace active strategies.
-        foreach (KeyValuePair<string, Strategy> kvp in this.strategies)
-        {
-            string key = kvp.Key;
-            this.strategies[key].EvolveStrategies(lim);
-        }
-    }
-
-    public string Process(string context)
-    {
-        // Process input and return action based on game context now.
-        if (this.strategies.ContainsKey(context))
-        {
-            return this.strategies[context].GetStrategy();
-        }
-        return "";
-    }
-}
 public class AXStringSplit
 {
     // May be used to prepare data before saving or after loading.
@@ -3454,6 +3420,7 @@ public class EventChat
 {
     private Dictionary<string, UniqueResponder> dic;
 
+    // Constructor
     public EventChat(UniqueResponder ur, params string[] args)
     {
         dic = new Dictionary<string, UniqueResponder>();
@@ -3463,15 +3430,32 @@ public class EventChat
         }
     }
 
-    public string Response(string in1)
+    // Add items
+    public void AddItems(UniqueResponder ur, params string[] args)
     {
-        if (dic.ContainsKey(in1))
+        foreach (string arg in args)
         {
-            return dic[in1].GetAResponse();
+            dic[arg] = ur;
+        }
+    }
+
+    // Add key-value pair
+    public void AddKeyValue(string key, string value)
+    {
+        if (dic.ContainsKey(key))
+        {
+            dic[key].AddResponse(value);
         }
         else
         {
-            return "";
+            dic[key] = new UniqueResponder(value);
         }
     }
+
+    // Get response
+    public string Response(string in1)
+    {
+        return dic.ContainsKey(in1) ? dic[in1].GetAResponse() : "";
+    }
 }
+

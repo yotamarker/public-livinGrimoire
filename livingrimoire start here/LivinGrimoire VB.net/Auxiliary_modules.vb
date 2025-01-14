@@ -718,7 +718,15 @@ Module Auxiliary_modules
         Public Function IsAnnoyed(ear As String) As Boolean
             Return q2.StrContainsResponse(ear)
         End Function
+
+        Public Sub Reset()
+            ' Insert unique throwaway strings to reset the state
+            For i As Integer = 0 To q1.Limit - 1
+                Learn("throwaway_string_" & i)
+            Next
+        End Sub
     End Class
+
     Public Class AXCmdBreaker
         ' Separate command parameter from the command
         Public conjuration As String
@@ -1474,71 +1482,35 @@ Module Auxiliary_modules
         End Function
     End Class
     Public Class Strategy
-        Private activeStrategy As UniqueItemSizeLimitedPriorityQueue ' Active strategic options
-        Private allStrategies As DrawRnd ' Bank of all strategies. Out of this pool, active strategies are pulled
+        Private allStrategies As UniqueResponder
+        Private strategiesLim As Integer
+        Private activeStrategy As UniqueItemSizeLimitedPriorityQueue
 
-        Public Sub New(allStrategies As DrawRnd)
-            ' Create the Strategy Object with a bank of options
+        ' Constructor
+        Public Sub New(allStrategies As UniqueResponder, strategiesLim As Integer)
             Me.allStrategies = allStrategies
+            Me.strategiesLim = strategiesLim
             Me.activeStrategy = New UniqueItemSizeLimitedPriorityQueue()
-        End Sub
-
-        Public Sub evolveStrategies(strategiesLimit As Integer)
-            ' Add N strategic options to the active strategies bank from the total strategy bank
-            activeStrategy.Limit = strategiesLimit
-            Dim temp As String = allStrategies.Draw()
-            For i As Integer = 0 To strategiesLimit - 1
-                If temp = "" Then
-                    Exit For
-                End If
-                activeStrategy.Add(temp)
-                temp = allStrategies.Draw()
+            Me.activeStrategy.Limit = strategiesLim
+            For i As Integer = 0 To Me.strategiesLim - 1
+                Me.activeStrategy.Add(Me.allStrategies.GetAResponse())
             Next
-            allStrategies.Reset()
         End Sub
 
-        Public Function getStrategy() As String
+        ' Evolve strategies
+        Public Sub EvolveStrategies()
+            For i As Integer = 0 To Me.strategiesLim - 1
+                Me.activeStrategy.Add(Me.allStrategies.GetAResponse())
+            Next
+        End Sub
+
+        ' Get strategy
+        Public Function GetStrategy() As String
             Return Me.activeStrategy.GetRNDElement()
         End Function
     End Class
-    Public Class AXStrategy
-        ' This auxiliary module is used to output strategies based on context.
-        ' It can be used for battles and games.
-        ' Upon pain/loss, use the evolve method to update to different new active strategies.
-        ' Check for battle state end externally (opponent state/hits on rival counter).
-        ' A dictionary of strategies.
 
-        Private lim As Integer
-        Private strategies As New Dictionary(Of String, Strategy)()
 
-        Public Sub New(lim As Integer)
-            ' Limit of active strategies (pulled from all available strategies).
-            Me.lim = lim
-        End Sub
-
-        Public Sub addStrategy(context As String, techniques As DrawRnd)
-            ' Add strategies per context.
-            Dim temp As New Strategy(techniques)
-            temp.evolveStrategies(lim)
-            Me.strategies.Add(context, temp)
-        End Sub
-
-        Public Sub evolve()
-            ' Replace active strategies.
-            For Each kvp As KeyValuePair(Of String, Strategy) In Me.strategies
-                Dim key As String = kvp.Key
-                Me.strategies(key).evolveStrategies(lim)
-            Next
-        End Sub
-
-        Public Function process(context As String) As String
-            ' Process input and return action based on game context now.
-            If Me.strategies.ContainsKey(context) Then
-                Return Me.strategies(context).getStrategy()
-            End If
-            Return ""
-        End Function
-    End Class
     Public Class AXStringSplit
         ' May be used to prepare data before saving or after loading.
         ' The advantage is fewer data fields. For example: {skills: s1_s2_s3}
@@ -2808,6 +2780,7 @@ End Class
 Public Class EventChat
     Private dic As Dictionary(Of String, UniqueResponder)
 
+    ' Constructor
     Public Sub New(ur As UniqueResponder, ParamArray args() As String)
         dic = New Dictionary(Of String, UniqueResponder)()
         For Each arg As String In args
@@ -2815,6 +2788,23 @@ Public Class EventChat
         Next
     End Sub
 
+    ' Add items
+    Public Sub AddItems(ur As UniqueResponder, ParamArray args() As String)
+        For Each arg As String In args
+            dic(arg) = ur
+        Next
+    End Sub
+
+    ' Add key-value pair
+    Public Sub AddKeyValue(key As String, value As String)
+        If dic.ContainsKey(key) Then
+            dic(key).AddResponse(value)
+        Else
+            dic(key) = New UniqueResponder(value)
+        End If
+    End Sub
+
+    ' Get response
     Public Function Response(in1 As String) As String
         If dic.ContainsKey(in1) Then
             Return dic(in1).GetAResponse()
@@ -2823,3 +2813,4 @@ Public Class EventChat
         End If
     End Function
 End Class
+

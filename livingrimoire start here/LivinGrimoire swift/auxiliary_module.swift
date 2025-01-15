@@ -1661,58 +1661,31 @@ class AXLNeuroSama{
         return self.nyaa.decorate(output: str1)
     }
 }
-class Strategy{
-    private var activeStrategy:UniqueItemsPriorityQue // active strategic options
-    private var allStrategies:DrawRnd // bank of all strategies. out of this pool active strategies are pulled
-    init(allStrategies: DrawRnd) {
-        // create the strategy Object with a bank of options
-        self.allStrategies = allStrategies
-        self.activeStrategy = UniqueItemsPriorityQue()
-    }
-    func evolveStrategies(strategiesLimit:Int){
-        // add N strategic options to the active strategies bank, from the total strategy bank
-        self.activeStrategy.queLimit = strategiesLimit
-        var temp:String = allStrategies.draw()
-        for _ in 0...strategiesLimit{
-            if(temp.isEmpty){break}
-            activeStrategy.input(in1: temp)
-            temp = allStrategies.draw()
-        }
-        allStrategies.reset()
-    }
-    func getStrategy()->String{return activeStrategy.getRndItem()}
-}
-class AXStrategy{
-    /* this auxiliary module is used to output strategies based on context
-            can be used for battles, and games
-            upon pain/lose use the evolve methode to update to different new active strategies
-            check for battle state end externaly (opponent state/hits on rival counter)
-        a dictionary of strategies*/
-    private var lim:Int
-    private var strategies:[String:Strategy]=[:]
-    init(lim: Int) {
-        // limit of active strategies (pulled from all available strategies)
-        self.lim = lim
-    }
-    func addStrategy(context:String, techniques:DrawRnd){
-        // add strategies per context
-        let temp:Strategy = Strategy(allStrategies: techniques)
-        temp.evolveStrategies(strategiesLimit: lim)
-        self.strategies[context] = temp
-    }
-    func evolve(){
-        // replace active strategies
-        let keys = self.strategies.keys
-        for key in keys{
-            self.strategies[key]!.evolveStrategies(strategiesLimit: lim)
-        }
-    }
-    func process(context:String)->String{
-        // process input, return action based on game context now
-        return self.strategies[context]?.getStrategy() ?? ""
-    }
-}
+class Strategy {
+    private var allStrategies: UniqueResponder
+    private var strategiesLim: Int
+    private var activeStrategy: UniqueItemSizeLimitedPriorityQueue
 
+    init(allStrategies: UniqueResponder, strategiesLim: Int) {
+        self.allStrategies = allStrategies
+        self.strategiesLim = strategiesLim
+        self.activeStrategy = UniqueItemSizeLimitedPriorityQueue()
+        self.activeStrategy.setLimit(lim: strategiesLim)
+        for _ in 0..<strategiesLim {
+            self.activeStrategy.input(in1: self.allStrategies.getAResponse())
+        }
+    }
+
+    func evolveStrategies() {
+        for _ in 0..<strategiesLim {
+            self.activeStrategy.input(in1: self.allStrategies.getAResponse())
+        }
+    }
+
+    func getStrategy() -> String {
+        return self.activeStrategy.getRndItem()
+    }
+}
 class TODOListManager{
     /* manages to do tasks.
     q1 tasks are mentioned once, and forgotten
@@ -2657,6 +2630,11 @@ class AnnoyedQue{
     func isAnnoyed(ear:String) -> Bool {
         return q2.strContains(str1: ear)
     }
+    func reset() {
+        for i in 0..<q1.getLimit() {
+            learn(ear: "throwaway_string_\(i)")
+        }
+    }
 }
 class AXNPC2:AXNPC{
     public var annoyedQue:AnnoyedQue = AnnoyedQue(queLim: 5)
@@ -3505,10 +3483,11 @@ class UniqueResponder {
         }
     }
 }
-class EventChat {
-    // Funnel input to a unique response bundle
-    var dic: [String: UniqueResponder]
 
+class EventChat {
+    private var dic: [String: UniqueResponder]
+
+    // Constructor
     init(ur: UniqueResponder, args: String...) {
         dic = [String: UniqueResponder]()
         for arg in args {
@@ -3516,7 +3495,28 @@ class EventChat {
         }
     }
 
+    // Add items
+    func addItems(ur: UniqueResponder, args: String...) {
+        for arg in args {
+            dic[arg] = ur
+        }
+    }
+
+    // Add key-value pair
+    func addKeyValue(key: String, value: String) {
+        if dic.keys.contains(key) {
+            dic[key]?.addResponse(value)
+        } else {
+            dic[key] = UniqueResponder(replies: value)
+        }
+    }
+
+    // Get response
     func response(in1: String) -> String {
-        return dic[in1]?.getAResponse() ?? ""
+        if let responder = dic[in1] {
+            return responder.getAResponse()
+        } else {
+            return ""
+        }
     }
 }

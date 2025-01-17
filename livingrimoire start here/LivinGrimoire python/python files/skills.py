@@ -1283,6 +1283,7 @@ class DiBlabberV4(Skill):
         self._excluder.add_ends_with("over")
 
     def input(self, ear: str, skin: str, eye: str):
+        # prevent class with other skills
         if self._excluder.exclude(ear):
             return
         if not self._initialized:
@@ -2207,3 +2208,59 @@ class DiWarrior(Skill):
                     self.setVerbatimAlg(3,ref.getStrategy())
                     return
 
+
+class DiCusser(Skill):
+    def __init__(self, responder: Responder, memory_size: int = 15, reply_chance: int = 90, ):
+        # responder needs be initialized with varargs of cuss words
+        # reply_chance < 100 prevents infinite cussing between 2 bots
+        super().__init__()
+        self.npc: AXNPC2 = AXNPC2(memory_size, reply_chance)
+        self.splitter: AXStringSplit = AXStringSplit()
+        self._initialized: bool = False
+        self.filter: Responder = responder
+        self._excluder: Excluder = Excluder()  # exclude start and end trigger words of other skills from interacting in this skill
+        self._excluder.add_starts_with("tell me")
+        self._excluder.add_ends_with("over")
+        self.annoyedq: AnnoyedQ = AnnoyedQ(5)  # memory size in regards to detecting repeatition which is annoying
+        self.violenceTRG: PercentDripper = PercentDripper()  # chance of violence as reaction to repeatition.
+
+    def input(self, ear: str, skin: str, eye: str):
+        # prevent clash with other skills; excluder contains other classes trigger words
+        if self._excluder.exclude(ear):
+            return
+        # memory load from .txt
+        if not self._initialized:
+            self.npc.responder.queue = self.splitter.split(self.getKokoro().grimoireMemento.simpleLoad("blabberv4"))
+            self._initialized = True
+        # auto skill activation via DiBicameral skill:
+        if "diblabberv4" == self.getKokoro().toHeart["dibicameral"]:
+            self.algPartsFusion(4, APMad(self.npc.forceRespond()))
+        if len(ear) == 0: # ***
+            return
+        # triggered by usage of remembered repeating strings
+        self.annoyedq.learn(ear)
+        if self.annoyedq.AnnoyedLevel(ear,1):
+            if self.violenceTRG.drip():
+                self.algPartsFusion(3, APMad("attacking"))
+                return
+            self.algPartsFusion(4, APMad(self.npc.forceRespond()))
+            return
+        # filter escape
+        if not self.filter.strContainsResponse(ear):
+            return
+        # blabber
+        temp_str = self.npc.strRespond(ear)
+        if len(temp_str) > 0:
+            self.algPartsFusion(4, APMad(self.npc.forceRespond()))
+        if not self.npc.learn(ear):
+            # str learn
+            if not self.npc.strLearn(ear):
+                return
+        self.getKokoro().grimoireMemento.simpleSave("blabberv4", self.splitter.stringBuilder(self.npc.responder.queue))
+
+    def skillNotes(self, param: str) -> str:
+        if param == "notes":
+            return "cussing skill"
+        elif param == "triggers":
+            return "try cussing"
+        return "note unavalible"

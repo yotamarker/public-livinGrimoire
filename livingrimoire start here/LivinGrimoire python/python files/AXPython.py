@@ -2110,6 +2110,12 @@ class RefreshQ(UniqueItemSizeLimitedPriorityQueue):
             self.removeItem(data)
         super().insert(data)
 
+    def stuff(self, data):
+        # FILO 1st in last out
+        if super().size() == self._limit:
+            super().poll()
+        self.queue.append(data)
+
 
 class AXTimeContextResponder:
     # output reply based on the part of day as context
@@ -2387,10 +2393,12 @@ class AnnoyedQ:
     def __init__(self, queLim: int):
         self._q1: RefreshQ = RefreshQ(queLim)
         self._q2: RefreshQ = RefreshQ(queLim)
+        self._stuffedQue: RefreshQ = RefreshQ(queLim)
 
     def learn(self, ear: str):
         if self._q1.contains(ear):
             self._q2.insert(ear)
+            self._stuffedQue.stuff(ear)
             return
         self._q1.insert(ear)
 
@@ -2401,6 +2409,9 @@ class AnnoyedQ:
         # Insert unique throwaway strings to reset the state
         for i in range(self._q1.getLimit()):
             self.learn(f"throwaway_string_{i}")
+
+    def AnnoyedLevel(self, ear: str, level: int) -> bool:
+        return self._stuffedQue.queue.count(ear) > level
 
 
 class AXNPC2(AXNPC):

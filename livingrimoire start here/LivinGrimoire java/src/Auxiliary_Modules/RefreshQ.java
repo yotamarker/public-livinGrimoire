@@ -13,4 +13,12 @@ public class RefreshQ extends UniqueItemSizeLimitedPriorityQueue{
         }
         super.add(item);
     }
+    public void stuff(String data) {
+        // FILO 1st in last out
+        if (elements.size() == getLimit()) {
+            poll();
+        }
+        elements.add(data);
+    }
+
 }

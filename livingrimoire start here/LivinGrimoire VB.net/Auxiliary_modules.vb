@@ -697,19 +697,30 @@ Module Auxiliary_modules
             End If
             MyBase.Add(item)
         End Sub
+        Public Sub Stuff(data As String)
+            ' FILO 1st in last out
+            If MyBase.Size() = Me.Limit Then
+                MyBase.Poll()
+            End If
+            Me.getElements.Add(data)
+        End Sub
+
     End Class
     Public Class AnnoyedQue
         Private q1 As New RefreshQ()
         Private q2 As New RefreshQ()
+        Private stuffedQue As New RefreshQ()
 
         Public Sub New(queLim As Integer)
             q1.Limit = queLim
             q2.Limit = queLim
+            stuffedQue.Limit = queLim
         End Sub
 
         Public Sub Learn(ear As String)
             If q1.Contains(ear) Then
                 q2.Add(ear)
+                stuffedQue.Stuff(ear)
                 Return
             End If
             q1.Add(ear)
@@ -725,6 +736,16 @@ Module Auxiliary_modules
                 Learn("throwaway_string_" & i)
             Next
         End Sub
+        Public Function AnnoyedLevel(ear As String, level As Integer) As Boolean
+            Dim count As Integer = 0
+            For Each item As String In Me.stuffedQue.getElements
+                If item.Equals(ear) Then
+                    count += 1
+                End If
+            Next
+            Return count > level
+        End Function
+
     End Class
 
     Public Class AXCmdBreaker

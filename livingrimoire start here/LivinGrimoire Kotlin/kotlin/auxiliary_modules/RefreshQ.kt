@@ -12,4 +12,11 @@ class RefreshQ : UniqueItemSizeLimitedPriorityQueue() {
         }
         super.add(item)
     }
+    fun stuff(data: String?) {
+        // FILO 1st in last out
+        if (elements.size === limit) {
+            poll()
+        }
+        elements.add(data!!)
+    }
 }

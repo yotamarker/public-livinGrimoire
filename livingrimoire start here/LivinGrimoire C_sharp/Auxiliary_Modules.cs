@@ -866,16 +866,28 @@ public class RefreshQ : UniqueItemSizeLimitedPriorityQueue
         }
         base.Add(item);
     }
+    public void Stuff(string data)
+    {
+        // FILO 1st in last out
+        if (base.Size() == this.Limit)
+        {
+            base.Poll();
+        }
+        this.GetElements().Add(data);
+    }
+
 }
 public class AnnoyedQue
 {
     private readonly RefreshQ q1 = new RefreshQ();
     private readonly RefreshQ q2 = new RefreshQ();
+    private readonly RefreshQ stuffedQue = new RefreshQ();
 
     public AnnoyedQue(int queLim)
     {
         q1.Limit = queLim;
         q2.Limit = queLim;
+        stuffedQue.Limit = queLim;
     }
 
     public void Learn(string ear)
@@ -883,6 +895,7 @@ public class AnnoyedQue
         if (q1.Contains(ear))
         {
             q2.Add(ear);
+            stuffedQue.Stuff(ear);
             return;
         }
         q1.Add(ear);
@@ -901,6 +914,19 @@ public class AnnoyedQue
             Learn("throwaway_string_" + i);
         }
     }
+    public bool AnnoyedLevel(string ear, int level)
+    {
+        int count = 0;
+        foreach (string item in this.stuffedQue.GetElements())
+        {
+            if (item.Equals(ear))
+            {
+                count++;
+            }
+        }
+        return count > level;
+    }
+
 }
 
 public class AXCmdBreaker

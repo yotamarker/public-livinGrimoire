@@ -2206,6 +2206,13 @@ class RefreshQ:UniqueItemSizeLimitedPriorityQueue{
         }
         super.input(in1: in1)
     }
+    func stuff(data: String) {
+        // FILO 1st in last out
+        if size() == getLimit() {
+            poll()
+        }
+        p1.elements.append(data)
+    }
 }
 class PercentDripper {
     private let dr:DrawRnd = DrawRnd()
@@ -2616,9 +2623,11 @@ class AXPassword {
 class AnnoyedQue{
     private var q1:RefreshQ
     private var q2:RefreshQ
+    private var stuffedQue:RefreshQ
     init(queLim:Int) {
         self.q1 = RefreshQ(queLimit: queLim)
         self.q2 = RefreshQ(queLimit: queLim)
+        self.stuffedQue = RefreshQ(queLimit: queLim)
     }
     func learn(ear:String) {
         if q1.contains(str: ear){
@@ -2634,6 +2643,15 @@ class AnnoyedQue{
         for i in 0..<q1.getLimit() {
             learn(ear: "throwaway_string_\(i)")
         }
+    }
+    func annoyedLevel(ear: String, level: Int) -> Bool {
+        var count = 0
+        for item in stuffedQue.p1.elements{
+            if item == ear {
+                count += 1
+            }
+        }
+        return count > level
     }
 }
 class AXNPC2:AXNPC{

@@ -562,6 +562,9 @@ class DiTime(Skill):
                                     "life essence")
             case "evil laugh":
                 self.setSimpleAlg("bwahaha mwahaha")
+            case "bye":
+                if PercentDripper().dripPlus(35):
+                    self.setSimpleAlg("bye")
 
     def skillNotes(self, param: str) -> str:
         if param == "notes":
@@ -2264,3 +2267,45 @@ class DiCusser(Skill):
         elif param == "triggers":
             return "try cussing"
         return "note unavalible"
+
+class DiBuyer(Skill):
+    def __init__(self):
+        super().__init__()  # Call the parent class constructor
+        self.trg: bool = False
+        self.on: set[str] = {"order me a pizza", "order me a pineapple pizza"}
+        self.off: set[str] = {"ok your order is on the way","your order is on the way","ok your order is on its way"}
+        self.ec: EventChat = EventChat(UniqueResponder("i would like to order a pineapple pizza please"),"hello this is dominos pizza may i take your order please")
+        self.ec.add_key_value("large or medium", "large please")
+        self.ec.add_key_value("would you like a drink with that", "no thanks")
+        self.ec.add_key_value("that will be 17 dollars", "i will pay cash to the delivery guy")
+        self.ec.add_key_value("what is the address", "64 rum road")
+        self.ec.add_key_value("large or medium", "large please")
+        self.ec.add_items(UniqueResponder("thanks","thank you"),"ok your order is on the way","your order is on the way","ok your order is on its way")
+        self.ec.add_key_value("order me a pizza", "will do")
+        self.ec.add_key_value("order me a pineapple pizza", "ok i will order your unhealthy pizza")
+
+    def input(self, ear: str, skin: str, eye: str):
+        if self.on.__contains__(ear):
+            self.trg = True
+        if self.trg:
+            n = self.ec.response(ear)
+            if n:
+                self.setSimpleAlg(n)
+            if self.off.__contains__(ear):
+                self.trg = False
+
+class DiSpiderSenseV1(Skill):
+    def __init__(self):
+        super().__init__()  # Call the parent class constructor
+        self.spiderSense = SpiderSense(5)  # Initialize spiderSense with the initial event "shut off"
+        self.spiderSense.addEvent("shut off")  # Add the event "die"
+        self.spiderSense.addEvent("die")  # Add the event "die"
+
+    # Override
+    def input(self, ear: str, skin: str, eye: str):
+        self.spiderSense.learn(ear)
+        if self.spiderSense.eventTriggered(ear):
+            self.algPartsFusion(2, APMad("no no no"))
+            return
+        if self.spiderSense.getSpiderSense():
+            self.algPartsFusion(3, APVerbatim("my spider sense is tingling"))

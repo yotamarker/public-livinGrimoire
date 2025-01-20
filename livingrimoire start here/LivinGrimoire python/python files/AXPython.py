@@ -1351,7 +1351,7 @@ class SpiderSense:
         self._spiderSense: bool = False
         self._events: UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue(lim)
         self._alerts: UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue(lim)
-        self._prev: str = ""
+        self._prev: str = "null"
 
     def addEvent(self, event: str):
         # builder pattern
@@ -1366,6 +1366,8 @@ class SpiderSense:
      as well as lies (false predictions)"""
 
     def learn(self, in1: str):
+        if len(in1) == 0:
+            return
         # simple prediction of an event from the events que :
         if self._alerts.contains(in1):
             self._spiderSense = True
@@ -1398,6 +1400,9 @@ class SpiderSense:
         """this can for example prevent war, because say once a month or a year you stop
          being on alert against a rival"""
         self._alerts.clear()
+
+    def eventTriggered(self, in1:str) -> bool:
+        return self._events.contains(in1)
 
 
 class TrgMinute(TrGEV3):

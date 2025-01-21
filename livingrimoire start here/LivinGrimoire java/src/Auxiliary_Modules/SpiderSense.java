@@ -47,7 +47,10 @@ public class SpiderSense {
         // being on alert against a rival
         alerts.clear();
     }
+    public boolean eventTriggered(String in1) {
+        return events.contains(in1);
+    }
     // side note:
-    // use separate spider sense for data learned by hear say in contrast to actual experience
+    // use separate spider sense for separate senses
     // as well as lies (false predictions)
 }

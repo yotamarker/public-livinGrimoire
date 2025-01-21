@@ -1428,6 +1428,9 @@ class SpiderSense {
         let t = spiderSense;spiderSense = false
         return t
     }
+    func eventTriggered(_ in1: String) -> Bool {
+        return events.contains(str: in1)
+    }
 }
 class Log:UniqueItemsPriorityQue {
     /// chronological log of inputs

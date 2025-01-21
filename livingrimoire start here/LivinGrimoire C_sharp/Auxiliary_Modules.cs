@@ -2633,6 +2633,11 @@ public class SpiderSense
     {
         alerts.Clear();
     }
+    public bool EventTriggered(string in1)
+    {
+        return events.Contains(in1);
+    }
+
 }
 public class TimeAccumulator
 {

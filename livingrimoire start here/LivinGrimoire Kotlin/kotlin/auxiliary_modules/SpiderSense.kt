@@ -50,7 +50,11 @@ class SpiderSense {
         // this can for example prevent war, because say once a month or a year you stop
         // being on alert against a rival
         alerts.clear()
-    } // side note:
+    }
+    fun eventTriggered(in1: String): Boolean {
+        return events.contains(in1)
+    }
+    // side note:
     // use separate spider sense for data learned by hear say in contrast to actual experience
     // as well as lies (false predictions)
 }

@@ -2157,6 +2157,9 @@ Module Auxiliary_modules
             ' being on alert against a rival
             alerts.Clear()
         End Sub
+        Public Function EventTriggered(ByVal in1 As String) As Boolean
+            Return events.Contains(in1)
+        End Function
 
         ' Side note:
         ' Use separate spider sense for data learned by hearsay in contrast to actual experience

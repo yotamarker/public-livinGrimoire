@@ -3448,3 +3448,20 @@ class EventChat:
 
     def response(self, in1: str) -> str:
         return self._dic.get(in1, "").getAResponse() if in1 in self._dic else ""
+
+
+class AXStandBy:
+    def __init__(self, pause: int):
+        self._tg:TimeGate = TimeGate(pause)
+        self._tg.openForPauseMinutes()
+
+    def standBy(self, ear: str) -> bool:
+        # only returns true after pause minutes of no input
+        if len(ear) > 0:
+            # restart count
+            self._tg.openForPauseMinutes()
+            return False
+        if self._tg.isClosed():
+            # time out without input, stand by is true
+            self._tg.openForPauseMinutes()
+            return True

@@ -3490,3 +3490,31 @@ public class EventChat
     }
 }
 
+public class AXStandBy
+{
+    private readonly TimeGate tg;
+
+    public AXStandBy(int pause)
+    {
+        this.tg = new TimeGate(pause);
+        this.tg.OpenGate();
+    }
+
+    public bool StandBy(string ear)
+    {
+        // only returns true after pause minutes of no input
+        if (ear.Length > 0)
+        {
+            // restart count
+            this.tg.OpenGate();
+            return false;
+        }
+        if (this.tg.IsClosed())
+        {
+            // time out without input, stand by is true
+            this.tg.OpenGate();
+            return true;
+        }
+        return false;
+    }
+}

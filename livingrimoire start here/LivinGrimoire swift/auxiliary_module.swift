@@ -3541,3 +3541,26 @@ class EventChat {
         }
     }
 }
+class AXStandBy {
+    private var tg: TimeGate
+
+    init(pause: Int) {
+        self.tg = TimeGate(pause: pause)
+        self.tg.openGate()
+    }
+
+    func standBy(ear: String) -> Bool {
+        // only returns true after pause minutes of no input
+        if ear.count > 0 {
+            // restart count
+            self.tg.openGate()
+            return false
+        }
+        if self.tg.isClosed() {
+            // time out without input, stand by is true
+            self.tg.openGate()
+            return true
+        }
+        return false
+    }
+}

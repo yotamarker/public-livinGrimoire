@@ -897,7 +897,7 @@ class DiSkillBundle: Skill {
 
     func addSkill(skill: Skill) {
         axSkillBundle.addSkill(skill)
-        for i in 0..<10 {
+        for _ in 0..<10 {
             notes["triggers"]!.addResponse("grind \(skill.skillNotes(param: "triggers"))")
         }
     }

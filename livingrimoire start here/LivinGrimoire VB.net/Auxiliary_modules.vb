@@ -2837,4 +2837,28 @@ Public Class EventChat
         End If
     End Function
 End Class
+Public Class AXStandBy
+    Private ReadOnly tg As TimeGate
+
+    Public Sub New(pause As Integer)
+        Me.tg = New TimeGate(pause)
+        Me.tg.OpenGate()
+    End Sub
+
+    Public Function standBy(ear As String) As Boolean
+        ' only returns true after pause minutes of no input
+        If ear.Length > 0 Then
+            ' restart count
+            Me.tg.OpenGate()
+            Return False
+        End If
+        If Me.tg.IsClosed() Then
+            ' time out without input, stand by is true
+            Me.tg.OpenGate()
+            Return True
+        End If
+        Return False
+    End Function
+End Class
+
 

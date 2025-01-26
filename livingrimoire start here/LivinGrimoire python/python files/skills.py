@@ -2314,27 +2314,15 @@ class DiSpiderSenseV1(Skill):
 class DiStandBy(Skill):
     def __init__(self,standby_minutes: int):
         super().__init__()
+        self._count_down: int = 0
+        self.ec: EventChat = EventChat(UniqueResponder("hugs you", "i am sending you a virtual hug", "hug attack", "super hug attack","hug","hugging"),"huggy wuggy","hug me","hug attack","hug please","hug")
         self._standBy = AXStandBy(standby_minutes)
-        self.mySet: set[str] = {
-    "Hadouken",
-    "Shoryuken",
-    "Sonic Boom",
-    "Get over here",
-    "Finish him",
-    "Falcon Punch",
+        self.mySet: set[str] = {"Hadouken", "Shoryuken", "Sonic Boom", "Get over here",
+
     "Its time to duel",
-    "For the Horde",
-    "For the Alliance",
-    "Justice rains from above",
-    "Heroes never die",
-    "Tactical Visor activated",
-    "I am the law",
-    "Taste my blade",
-    "Feel the wrath of my blade",
     "Prepare to die",
     "Praise the sun",
     "I am the storm that is approaching",
-    "Jackpot",
     "Lets rock, baby",
     "Time to tip the scales",
     "I fight for my friends",
@@ -2344,82 +2332,37 @@ class DiStandBy(Skill):
     "For the Emperor",
     "Blood for the Blood God",
     "WAAAGH",
-    "For Azeroth",
-    "Lok'tar Ogar",
-    "Victory or death",
-    "For the Swarm",
-    "My life for Aiur",
-    "En Taro Adun",
     "Berserker Barrage",
     "Hulk Smash",
     "I am Iron Man",
-    "Avengers Assemble",
-    "For Asgard",
     "I can do this all day",
     "I am Groot",
-    "Wakanda Forever",
     "Flame On",
     "Its Clobberin' Time",
-    "Maximum Effort",
-    "Sweet Christmas",
-    "By the Hoary Hosts of Hoggoth",
-    "With great power comes great responsibility",
     "I am inevitable",
-    "Snikt",
     "Thunderstrike",
     "Unibeam",
     "Shield Throw",
     "Web Sling",
-    "Star-Lords Dance-Off",
-    "Lightning Strike",
-    "Fastball Special",
     "Gamma Crush",
     "Optic Blast",
     "Adamantium Rage",
     "Cosmic Power",
-    "Puny God",
-    "Hellfire",
-    "Thunder Clap",
-    "Vibranium Shield",
-    "Dark Phoenix Rises",
-    "Infinity Gauntlet",
-    "Scarlet Witchs Chaos Magic",
-    "Ant-Mans Giant Punch",
-    "Rockets Big Gun",
-    "Draxs Destroyer",
-    "Gamoras Deadliest Woman",
-    "Nebulas Revenge",
-    "Yondus Arrow",
-    "Mjolnirs Might",
-    "Stormbreaker",
-    "Vibranium Claws",
-    "Iron Spider",
-    "War Machines Arsenal",
-    "Rescues Repulsors",
-    "Black Widows Bite",
-    "Hawkeyes Precision",
-    "Quicksilvers Speed",
-    "Scarlet Witchs Hex",
-    "Visions Mind Stone",
-    "Doctor Stranges Time Loop",
-    "Captain Marvels Photon Blast",
-    "Star-Lords Element Gun",
-    "Groots Shield",
-    "Rockets Explosives",
-    "Draxs Blades",
-    "Gamoras Sword",
-    "Nebulas Cybernetics",
-    "Yondus Whistle",
-    "Valkyries Charge",
-    "Korgs Rock Smash",
-    "Mantiss Empathy",
-    "Shuris Tech",
-    "Okoyes Spear",
-    "Nakias Rings"
 }
 
     def input(self, ear: str, skin: str, eye: str):
         if TimeUtils.partOfDay() == "night":
             return
+        if self._count_down > 0:
+            self._count_down -=1
+            if self.mySet.__contains__(ear):
+                self.setSimpleAlg(random.choice(list(self.mySet)))
+                return
+            n = self.ec.response(ear)
+            if len(n) > 0:
+              self.setSimpleAlg(n)
+              return
+
         if self._standBy.standBy(ear):
             self.setSimpleAlg(random.choice(list(self.mySet)))
+            self._count_down = 10

@@ -6,7 +6,7 @@ class GrimoireMemento(private val absDictionaryDB: AbsDictionaryDB) {
     }
 
     fun simpleSave(key: String, value: String) {
-        if (key.startsWith("AP") || key.isEmpty() || value.isEmpty()) {
+        if (key.isEmpty() || value.isEmpty()) {
             return
         }
         absDictionaryDB.save(key, value)

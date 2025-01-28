@@ -99,7 +99,7 @@ class GrimoireMemento{
         return self.absDictionaryDB.load(key: key)
     }
     func simpleSave(key:String,value:String){
-        if(key.starts(with: "AP") || key.isEmpty || value.isEmpty){return}
+        if(key.isEmpty || value.isEmpty){return}
         self.absDictionaryDB.save(key: key, value: value)
     }
 }

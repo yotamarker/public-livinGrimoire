@@ -51,7 +51,7 @@ class GrimoireMemento:
         return self.absDictionaryDB.load(key)
 
     def simpleSave(self, key: str, value: str):
-        if key.startswith("AP") or key == "" or value == "":
+        if key == "" or value == "":
             return
         self.absDictionaryDB.save(key, value)
 

@@ -106,7 +106,7 @@
         End Function
 
         Public Sub SimpleSave(ByVal key As String, ByVal value As String)
-            If key.StartsWith("AP") Or key = "" Or value = "" Then
+            If key = "" Or value = "" Then
                 Return
             End If
             Me.absDictionaryDB.Save(key, value)

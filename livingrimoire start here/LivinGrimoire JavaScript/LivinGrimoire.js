@@ -85,6 +85,9 @@ class GrimoireMemento {
     }
 
     SimpleSave(key, value) {
+        if (!key || !value) {
+            return;
+        }
         this.absDictionaryDB.save(key, value);
     }
 }

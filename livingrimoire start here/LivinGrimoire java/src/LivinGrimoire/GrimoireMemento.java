@@ -11,7 +11,7 @@ public class GrimoireMemento {
         return this.absDictionaryDB.load(key);
     }
     public void simpleSave(String key, String value){
-        if(key.startsWith("AP")||key.isEmpty()||value.isEmpty()){return;}
+        if(key.isEmpty()||value.isEmpty()){return;}
         this.absDictionaryDB.save(key,value);
     }
 }

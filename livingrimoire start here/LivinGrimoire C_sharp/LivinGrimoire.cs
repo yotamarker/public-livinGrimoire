@@ -128,7 +128,7 @@ public class GrimoireMemento
 
     public void SimpleSave(string key, string value)
     {
-        if (key.StartsWith("AP") || key == "" || value == "")
+        if (key == "" || value == "")
         {
             return;
         }

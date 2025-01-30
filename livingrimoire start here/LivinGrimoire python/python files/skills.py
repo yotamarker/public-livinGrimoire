@@ -2366,3 +2366,123 @@ class DiStandBy(Skill):
         if self._standBy.standBy(ear):
             self.setSimpleAlg(random.choice(list(self.mySet)))
             self._count_down = 10
+
+class DiYoga(Skill):
+    def __init__(self):
+        super().__init__()
+        # yoga poses:
+        self.UResponder: UniqueResponder = UniqueResponder()
+        self.UResponder.addResponse("frog pose")
+        self.UResponder.addResponse("butterfly pose")
+        self.UResponder.addResponse("cow pose")
+        self.UResponder.addResponse("dog pose")
+        self.UResponder.addResponse("dolphin pose")
+        self.UResponder.addResponse("cobra pose")
+        self.UResponder.addResponse("locust pose")
+        self.UResponder.addResponse("horse pose")
+        self.UResponder.addResponse("fish pose")
+        self.UResponder.addResponse("camel pose")
+        # poses elaborations:
+        self.chat: EventChat = EventChat(self.UResponder, "yoga me")
+        self.chat.add_key_value("elaborate frog pose","place feet wide and lower hips into a squat. then lower your hands to the floor between your legs")
+        self.chat.add_key_value("elaborate butterfly pose","sit up straight and bend your legs so that your bottom of your feet touch")
+        self.chat.add_key_value("elaborate camel pose","Kneel arch back. grab your heels and lift chest to form a square")
+        self.chat.add_key_value("elaborate cow pose","come to a table on your hands and knees. then arch your back down and look up")
+        self.chat.add_key_value("elaborate dog pose", "come to a flipped v shape with your hands and feet on the floor")
+        self.chat.add_key_value("elaborate dolphin pose", "plank on the floor and raise your tailbone to the sky")
+        self.chat.add_key_value("elaborate cobra pose", "lie on your tummy. lift your chest and look up")
+        self.chat.add_key_value("elaborate locust pose", "lie on your tummy. lift up your shoulders and chest. put your hands by your sides. then lift your legs up too")
+        self.chat.add_key_value("elaborate fish pose", "lie on your back. put your hands and palms facing down. arch your back")
+        self.elab: str = "null"
+        self.funnel = AXFunnel()
+        self.funnel.addKV("elab", "elaborate")
+
+    def input(self, ear: str, skin: str, eye: str):
+        if len(ear) == 0:
+            return
+        if not self.funnel.funnel(ear) == "elaborate":
+            self.elab = "null"
+        n = self.chat.response(ear)
+        if len(n) >0:
+            self.setSimpleAlg(n)
+            self.elab = f'elaborate {n}'
+            return
+        if self.funnel.funnel(ear) == "elaborate":
+            n2 = self.chat.response(self.elab)
+            print(n2)
+            if len(n2)>0:
+                self.setSimpleAlg(self.chat.response(self.elab))
+            else:
+                self.setSimpleAlg("elaborate what")
+
+class DiYogaSession(Skill):
+    def __init__(self):
+        super().__init__()
+        # yoga poses:
+        self.UResponder: UniqueResponder = UniqueResponder()
+        self.UResponder.addResponse("frog pose")
+        self.UResponder.addResponse("butterfly pose")
+        self.UResponder.addResponse("cow pose")
+        self.UResponder.addResponse("dog pose")
+        self.UResponder.addResponse("dolphin pose")
+        self.UResponder.addResponse("cobra pose")
+        self.UResponder.addResponse("locust pose")
+        self.UResponder.addResponse("horse pose")
+        self.UResponder.addResponse("fish pose")
+        self.UResponder.addResponse("camel pose")
+        self.counter = -1
+        self.maxPoses = 2
+        self.trg: TrgEveryNMinutes = TrgEveryNMinutes(TimeUtils.getCurrentTimeStamp(), 2)
+        self.encouragements: UniqueResponder = UniqueResponder()
+        self.encouragements.addResponse("keep fighting you have got this")
+        self.encouragements.addResponse("push harder you are a champion")
+        self.encouragements.addResponse("dig deep and give it your all")
+        self.encouragements.addResponse("stay strong and keep moving forward")
+        self.encouragements.addResponse("you are unstoppable keep going")
+        self.encouragements.addResponse("no pain no gain keep pushing")
+        self.encouragements.addResponse("you are a warrior stay focused")
+        self.encouragements.addResponse("keep your head up and keep fighting")
+        self.encouragements.addResponse("you are doing great keep it up")
+        self.encouragements.addResponse("stay tough you are almost there")
+        self.encouragements.addResponse("give it everything you have got")
+        self.encouragements.addResponse("you are a fighter keep going")
+        self.encouragements.addResponse("stay determined and keep pushing")
+        self.encouragements.addResponse("you are a champion keep moving")
+        self.encouragements.addResponse("keep your eyes on the prize")
+        self.encouragements.addResponse("you are doing amazing keep it up")
+        self.encouragements.addResponse("stay focused and keep pushing forward")
+        self.encouragements.addResponse("you are a winner keep going")
+        self.encouragements.addResponse("keep pushing you are almost there")
+        self.encouragements.addResponse("you are a legend keep fighting")
+        self.encouragements.addResponse("get up you lazy bum")
+        self.encouragements.addResponse("you are gonna eat lightning and crap thunder")
+
+    def input(self, ear: str, skin: str, eye: str):
+        # start yoga session
+        if ear == "lets yoga":
+            self.counter = self.maxPoses
+            self.trg = TrgEveryNMinutes(TimeUtils.getCurrentTimeStamp(), 2)
+            self.setSimpleAlg("ok lets start your yoga session")
+            return
+        # yoga session active:
+        if self.counter > -1:
+            # stop yoga session
+            if ear == "stop":
+                self.counter = -1
+                self.setSimpleAlg("ok wimp")
+            if self.trg.trigger(): # next pose
+                self.setVerbatimAlg(4, self.match_case_msg(self.counter), "")
+                self.counter -= 1
+            else:
+                # encouragements during yoga session:
+                if PercentDripper().drip():
+                    self.setSimpleAlg(self.encouragements.getAResponse())
+
+    def match_case_msg(self, val1: int):
+        match val1:
+            case 0:
+                return "and your session is complete"
+            case 1:
+                return f'{self.counter} pose to go. {self.UResponder.getAResponse()}'
+            case _:
+                return f'{self.counter} poses to go. {self.UResponder.getAResponse()}'

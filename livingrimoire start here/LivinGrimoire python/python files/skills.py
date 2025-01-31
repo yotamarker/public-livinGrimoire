@@ -2470,7 +2470,8 @@ class DiYogaSession(Skill):
             if ear == "stop":
                 self.counter = -1
                 self.setSimpleAlg("ok wimp")
-            if self.trg.trigger(): # next pose
+                return 
+            if self.trg.trigger():  # next pose
                 self.setVerbatimAlg(4, self.match_case_msg(self.counter), "")
                 self.counter -= 1
             else:

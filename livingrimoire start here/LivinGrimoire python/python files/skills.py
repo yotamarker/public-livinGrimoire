@@ -2408,9 +2408,7 @@ class DiYoga(Skill):
             self.elab = f'elaborate {n}'
             return
         if self.funnel.funnel(ear) == "elaborate":
-            n2 = self.chat.response(self.elab)
-            print(n2)
-            if len(n2)>0:
+            if len(self.chat.response(self.elab))>0:
                 self.setSimpleAlg(self.chat.response(self.elab))
             else:
                 self.setSimpleAlg("elaborate what")

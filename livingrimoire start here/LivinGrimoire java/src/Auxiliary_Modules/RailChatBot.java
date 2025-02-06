@@ -70,8 +70,8 @@ public class RailChatBot {
 //        if (!temp.isEmpty()){context = temp;}
         return dic.get(ear).getRNDElement();
     }
-    public void learnV2(String ear, ElizaDeducer elizaDeducer){
-        feedKeyValuePairs(elizaDeducer.respond(ear));
-        learn(ear);
-    }
+//    public void learnV2(String ear, ElizaDeducer elizaDeducer){
+//        feedKeyValuePairs(elizaDeducer.learn(ear));
+//        learn(ear);
+//    }
 }

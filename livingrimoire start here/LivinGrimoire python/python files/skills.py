@@ -2485,3 +2485,95 @@ class DiYogaSession(Skill):
                 return f'{self.counter} pose to go. {self.UResponder.getAResponse()}'
             case _:
                 return f'{self.counter} poses to go. {self.UResponder.getAResponse()}'
+
+
+class DiMezzoflationGame(Skill):
+    def __init__(self):
+        super().__init__()
+        self.player_score = 0
+        self.last_choices = []
+        self.choices = ["macro", "micro", "mezzo"]
+
+    def check_win(self, player_choice, opponent_choice):
+        """
+        Determines if the player wins against the opponent.
+        Returns True if the player wins, False otherwise.
+        """
+        if player_choice == opponent_choice:
+            return None  # It's a tie
+        elif (player_choice == "macro" and opponent_choice == "mezzo") or \
+             (player_choice == "mezzo" and opponent_choice == "micro") or \
+             (player_choice == "micro" and opponent_choice == "macro"):
+            return True  # Player wins
+        else:
+            return False  # Opponent wins
+
+    def get_opponent_choice(self):
+        if len(self.last_choices) >= 2:
+            if all(choice == self.last_choices[-1] for choice in self.last_choices[-2:]):
+                if self.last_choices[-1] == "macro":
+                    return "micro"
+                elif self.last_choices[-1] == "micro":
+                    return "mezzo"
+                elif self.last_choices[-1] == "mezzo":
+                    return "macro"
+        return random.choice(self.choices)
+
+    def get_taunt(self, score):
+        """
+        Returns a Joey Wheeler taunt based on the player's score.
+        """
+        if score > 0:
+            taunts = [
+                "hmph",
+                "You're just a big bully!",
+                "You're nothing but a cheater!",
+                "You're finished, Kaiba!",
+                "You're gonna pay for this!"
+            ]
+        elif score < 0:
+            taunts = [
+                "Not too shab, but you're not gonna beat me with those lame attacks!",
+                "You're going down, Kaiba!",
+                "This is my duel, and I'm gonna win!",
+                "C'mon, bring it on!",
+                "You're gonna wish you never messed with me!"
+            ]
+        else:
+            taunts = [
+                "It's a tie! You got lucky!",
+                "Looks like we're evenly matched!",
+                "not great not terrible",
+                "This duel is far from over!",
+                "tie for now gigidi gigidi gu"
+            ]
+        return random.choice(taunts)
+
+    def input(self, ear: str, skin: str = None, eye: str = None):
+        match ear:
+            case "macro" | "micro" | "mezzo":
+                self.last_choices.append(ear)
+                if len(self.last_choices) > 5:
+                    self.last_choices.pop(0)
+
+                opponent_choice = self.get_opponent_choice()
+                result = self.check_win(ear, opponent_choice)
+
+                if result is None:
+                    self.setSimpleAlg("It's a tie!")
+                elif result:
+                    self.player_score += 1
+                    self.setSimpleAlg(f"You win! I chose {opponent_choice}. Your score: {self.player_score}.")
+                else:
+                    self.player_score -= 1
+                    self.setSimpleAlg(f"direct I chose {opponent_choice}. Your score: {self.player_score}.")
+
+            case "get score":
+                taunt = self.get_taunt(self.player_score)
+                self.setSimpleAlg(f"Your score: {self.player_score}. {taunt}")
+
+            case "closing":
+                self.player_score = 0
+                self.setSimpleAlg("Scores have been reset.")
+
+

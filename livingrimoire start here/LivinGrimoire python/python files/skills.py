@@ -2569,12 +2569,13 @@ class DiMezzoflationGame(Skill):
                     self.setSimpleAlg(f"direct I chose {opponent_choice}. Your score: {self.player_score}.")
 
             case "macroflation" | "microflation" | "mezzoflation":
-                self.last_choices.append(ear)
+                choice: str = ear.replace("flation", "")
+                self.last_choices.append(choice)
                 if len(self.last_choices) > 5:
                     self.last_choices.pop(0)
 
                 opponent_choice = self.get_opponent_choice()
-                result = self.check_win(ear.replace("flation", ""), opponent_choice)
+                result = self.check_win(choice, opponent_choice)
 
                 if result is None:
                     self.setSimpleAlg("It's a tie!")

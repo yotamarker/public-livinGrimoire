@@ -2211,6 +2211,13 @@ class DiWarrior(Skill):
                     self.setVerbatimAlg(3,ref.getStrategy())
                     return
 
+    def skillNotes(self, param: str) -> str:
+        if param == "notes":
+            return "A warrior skill that engages in battle mode, evolves strategies, and replenishes fight spirit over time."
+        elif param == "triggers":
+            return "Trigger include 'punch', 'kick', 'jab', 'uppercut', 'roundhouse', off trigger is 'uncle'"
+        return "note unavailable"
+
 
 class DiCusser(Skill):
     def __init__(self, responder: Responder, memory_size: int = 15, reply_chance: int = 90, ):
@@ -2309,6 +2316,13 @@ class DiSpiderSenseV1(Skill):
             return
         if self.spiderSense.getSpiderSense():
             self.algPartsFusion(3, APVerbatim("my spider sense is tingling"))
+
+    def skillNotes(self, param: str) -> str:
+        if param == "notes":
+            return "automatically predicts defcon events"
+        elif param == "triggers":
+            return "Triggered by predicting DEFCON levels and defcon events."
+        return "note unavailable"
 
 
 class DiStandBy(Skill):
@@ -2413,6 +2427,14 @@ class DiYoga(Skill):
             else:
                 self.setSimpleAlg("elaborate what")
 
+    def skillNotes(self, param: str) -> str:
+        if param == "notes":
+            return "yoga pose suggestor skill"
+        elif param == "triggers":
+            return "yoga me to get a yoga pose, elab for elaboration on pose"
+        return "note unavailable"
+
+
 class DiYogaSession(Skill):
     def __init__(self):
         super().__init__()
@@ -2485,6 +2507,13 @@ class DiYogaSession(Skill):
                 return f'{self.counter} pose to go. {self.UResponder.getAResponse()}'
             case _:
                 return f'{self.counter} poses to go. {self.UResponder.getAResponse()}'
+
+    def skillNotes(self, param: str) -> str:
+        if param == "notes":
+            return "yoga session"
+        elif param == "triggers":
+            return "lets yoga or stop to stop mid session"
+        return "note unavailable"
 
 
 class DiMezzoflationGame(Skill):
@@ -2591,5 +2620,12 @@ class DiMezzoflationGame(Skill):
             case "closing":
                 self.player_score = 0
                 self.setSimpleAlg("Scores have been reset.")
+
+    def skillNotes(self, param: str) -> str:
+        if param == "notes":
+            return "A game that combines macro, micro, and mezzo choices with strategic taunts."
+        elif param == "triggers":
+            return "Use keywords like 'macro', 'micro', 'mezzo', 'macroflation', 'microflation', 'mezzoflation', 'get score', and 'closing'."
+        return "note unavailable"
 
 

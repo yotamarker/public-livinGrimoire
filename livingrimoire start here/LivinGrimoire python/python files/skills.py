@@ -1145,6 +1145,7 @@ class DiOneWorder(Skill):
             self.setSimpleAlg("toggled")
             return
         if self.mode and self.drip.drip():
+            # can add heavy duty algorithms here
             self.setSimpleAlg(self.convert_to_chi(ear))
 
     def convert_to_chi(self, input_str):
@@ -1477,6 +1478,13 @@ class DiNoteTaker(Skill):
         if first_word == "note":
             self.notes.add(ear.replace("note", ""))
             self.setSimpleAlg("noted")
+
+    def skillNotes(self, param: str) -> str:
+        if param == "notes":
+            return "note taking skill"
+        elif param == "triggers":
+            return "'get note', 'clear notes', 'next note', or 'note [your note]' to add a note"
+        return "note unavailable"
 
 
 class APMad(Mutatable):
@@ -2116,6 +2124,15 @@ class DiPrincess(Skill):
             self.setSimpleAlg(f'{self.npc.forceRespond()} sosu')
         self.npc.learn(ear)
 
+    def skillNotes(self, param: str) -> str:
+        if param == "notes":
+            return "echoing and learning sentences with auto-talk functionality"
+        elif param == "triggers":
+            return "echo [sentence] to learn a sentence, princess to output a sentence, and filth on or shut up to toggle auto mode"
+            # more, again, please, yes, yeah, princess after saying princess to output a sentence
+        return "note unavailable"
+
+
 class DiTeaParty(Skill):
     def __init__(self):
         super().__init__()  # Call the parent class constructor
@@ -2272,7 +2289,7 @@ class DiCusser(Skill):
         if param == "notes":
             return "cussing skill"
         elif param == "triggers":
-            return "try cussing"
+            return "try cussing and repeat to teach"
         return "note unavalible"
 
 class DiBuyer(Skill):

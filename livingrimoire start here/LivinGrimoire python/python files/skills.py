@@ -1930,6 +1930,13 @@ class DiGamificationScouter(Skill):
         else:
             self.algPartsFusion(4, APSad(self.no_mood.getAResponse()))
 
+    def skillNotes(self, param: str) -> str:
+        if param == "notes":
+            return "Determines mood based on gamification counter and responds accordingly."
+        elif param == "triggers":
+            return "Triggered by the phrase 'how are you'. Adjusts mood response based on gamification counter."
+        return "Note unavailable"
+
 
 class DiImprint_PT1(Skill):
     """

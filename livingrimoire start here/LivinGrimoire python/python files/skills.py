@@ -1698,6 +1698,13 @@ class DiBurperV2(Skill):
             self._burpMinutes.removeItem(now_minutes)
             self.algPartsFusion(4, APHappy(self._responder1.getAResponse()))
 
+    def skillNotes(self, param: str) -> str:
+        if param == "notes":
+            return "randomly burps several times an hour during the day. will not occur during the night."
+        elif param == "triggers":
+            return "fully automatic skill"
+        return "note unavailable"
+
 
 class DiBicameral(Skill):
     def __init__(self):
@@ -1718,6 +1725,13 @@ class DiBicameral(Skill):
     def setKokoro(self, kokoro: Kokoro):
         self._kokoro = kokoro
         self.getKokoro().toHeart["dibicameral"] = "null"
+
+    def skillNotes(self, param: str) -> str:
+        if param == "notes":
+            return "DiBicameral is used to centralize triggers for multiple skills. see Bicameral Mind wiki for more."
+        elif param == "triggers":
+            return "fully automatic skill"
+        return "note unavailable"
 
 
 class DiYandere(Skill):
@@ -2143,7 +2157,7 @@ class DiPrincess(Skill):
 class DiTeaParty(Skill):
     def __init__(self):
         super().__init__()  # Call the parent class constructor
-        self.on_off_switch: OnOffSwitch = OnOffSwitch()
+        self.on_off_switch: OnOffSwitch = OnOffSwitch()  # skill stop: "off", "stop", "shut up", "shut it", "whatever", "whateva"
         self.on_off_switch.setOn(Responder("tea party"))  # triggers, also turns off automatically after 5 minutes or say off
         self.drip: PercentDripper = PercentDripper()
         self.sips: UniqueResponder = UniqueResponder("sip", "sips tea", "good tea", "sip sip sip",
@@ -2160,6 +2174,13 @@ class DiTeaParty(Skill):
                return
             if self.drip.drip():
                 self.setSimpleAlg(self.sips.getAResponse())
+
+    def skillNotes(self, param: str) -> str:
+        if param == "notes":
+            return "This skill initiates a tea party with various responses. The skill turns off automatically after 5 minutes."
+        elif param == "triggers":
+            return "trigger with tea party. turn off with stop or wait 5 minutes. while in party mode yes in the input triggers an evil laugh"
+        return "note unavailable"
 
 
 class DiPassGen(Skill):

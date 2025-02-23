@@ -1471,7 +1471,7 @@ class DiNoteTaker(Skill):
 
     # Override
     def input(self, ear: str, skin: str, eye: str):
-        if len(ear) == 0:
+        if not ear:
             return
         match ear:
             case "get note":
@@ -1481,11 +1481,15 @@ class DiNoteTaker(Skill):
                 self.setSimpleAlg("notes cleared")
             case "next note":
                 self.setSimpleAlg(self.notes.get_next_note())
+            case _:
+                if ear.startswith("note "):
+                    self.notes.add(ear[5:])  # Remove 'note ' prefix
+                    self.setSimpleAlg("noted")
 
-        first_word = ear.partition(' ')[0]
-        if first_word == "note":
-            self.notes.add(ear.replace("note", ""))
-            self.setSimpleAlg("noted")
+    def add_notes(self, *notes: str) -> DiNoteTaker:
+        for note in notes:
+            self.notes.add(note)
+        return self
 
     def skillNotes(self, param: str) -> str:
         if param == "notes":

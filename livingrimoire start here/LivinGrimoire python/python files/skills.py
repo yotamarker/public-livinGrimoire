@@ -578,7 +578,8 @@ class DiCron(Skill):
     def __init__(self):
         super().__init__()
         self.__sound: str = "snore"
-        self.__cron: Cron = Cron("12:05", 40, 2)
+        self.t: str = "12:05"
+        self.__cron: Cron = Cron(self.t, 40, 2)
 
     # setters
     def setSound(self, sound: str) -> DiCron:
@@ -593,6 +594,13 @@ class DiCron(Skill):
     def input(self, ear: str, skin: str, eye: str):
         if self.__cron.trigger():
             self.setSimpleAlg(self.__sound)
+
+    def skillNotes(self, param: str) -> str:
+        if param == "notes":
+            return "snores"
+        elif param == "triggers":
+            return f"snores at {self.t}"
+        return "Note unavailable"
 
 
 class DiEngager(Skill):
@@ -2056,6 +2064,7 @@ class DiSleep(Skill):
         self.wakeners: Responder = wakeners
         self.trgTime: TrgTime = TrgTime()
         self.trgTime.setTime("00:00")
+        self._sleepTime = sleep_duration_minutes
 
     def set_sleep_time_stamp(self, sleep_time_stamp: str):
         self.trgTime.setTime(sleep_time_stamp)
@@ -2066,6 +2075,13 @@ class DiSleep(Skill):
             announce: APVerbatim = APVerbatim("initializing sleep")
             ap_sleep: APSleep = APSleep(self.wakeners, self.sleep_duration_minutes)
             self.algPartsFusion(2, announce, ap_sleep)
+
+    def skillNotes(self, param: str) -> str:
+        if param == "notes":
+            return "sleeps"
+        elif param == "triggers":
+            return f"triggers at {self._sleepTime} to wake say {self.wakeners.getAResponse()}"
+        return "Note unavailable"
 
 
 class DiTriggers(Skill):
@@ -2376,6 +2392,7 @@ class DiStandBy(Skill):
         self._count_down: int = 0
         self.ec: EventChat = EventChat(UniqueResponder("hugs you", "i am sending you a virtual hug", "hug attack", "super hug attack","hug","hugging"),"huggy wuggy","hug me","hug attack","hug please","hug")
         self._standBy = AXStandBy(standby_minutes)
+        self._standbyMinutes = standby_minutes
         self.mySet: set[str] = {"Hadouken", "Shoryuken", "Sonic Boom", "Get over here",
 
     "Its time to duel",
@@ -2425,6 +2442,14 @@ class DiStandBy(Skill):
         if self._standBy.standBy(ear):
             self.setSimpleAlg(random.choice(list(self.mySet)))
             self._count_down = 10
+
+    def skillNotes(self, param: str) -> str:
+        if param == "notes":
+            return "seeks attention when bored"
+        elif param == "triggers":
+            return f"triggered by no input for {self._standbyMinutes} minutes"
+        return "Note unavailable"
+
 
 class DiYoga(Skill):
     def __init__(self):

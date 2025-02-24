@@ -1993,6 +1993,13 @@ class DiImprint_PT1(Skill):
         for line in lines:
             self.chobit.think(line, "", "")
 
+    def skill_notes(self, param: str) -> str:
+        if param == "notes":
+            return "imprints kiln file to bot"
+        elif param == "triggers":
+            return "Triggered by the command 'imprint'."
+        return "Note unavailable"
+
 
 class DiImprint_PT2(Skill):
     # complementary skill to DiImprint_PT1
@@ -2010,6 +2017,13 @@ class DiImprint_PT2(Skill):
     def input(self, ear: str, skin: str, eye: str):
         if ear == "imprint":
             self.setSimpleAlg("imprinting")
+
+    def skill_notes(self, param: str) -> str:
+        if param == "notes":
+            return "Tells when bot is imprinted with kiln file."
+        elif param == "triggers":
+            return "Triggered by the command 'imprint'."
+        return "Note unavailable"
 
 
 class DiImprint_recorder(Skill):
@@ -2039,6 +2053,13 @@ class DiImprint_recorder(Skill):
     def record(ear):
         with open("kiln.txt", "a") as file:
             file.write(f"\n{ear}")
+
+    def skill_notes(self, param: str) -> str:
+        if param == "notes":
+            return "Records inputs to kiln text file"
+        elif param == "triggers":
+            return "Activated by verbal commands like 'recorder on'. stop recording to stop."
+        return "Note unavailable"
 
 
 class APSleep(Mutatable):

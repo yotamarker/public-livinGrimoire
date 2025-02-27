@@ -8,12 +8,13 @@ public class ElizaDeducer {
     public List<PhraseMatcher> babble2;
     private java.util.Map<String, List<PhraseMatcher>> patternIndex;
     private java.util.Map<String, List<AXKeyValuePair>> responseCache;
-    private EventChatV2 ec2 = new EventChatV2();
+    private EventChatV2 ec2;
 
-    public ElizaDeducer() {
+    public ElizaDeducer(int lim) {
         babble2 = new ArrayList<>();
         patternIndex = new java.util.HashMap<>();
         responseCache = new java.util.HashMap<>();
+        ec2 = new EventChatV2(lim);
     }
 
     public EventChatV2 getEc2() {

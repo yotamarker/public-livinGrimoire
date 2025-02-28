@@ -32,7 +32,7 @@ public class EventChatV2 {
 
 
     public void addFromDB(String key, String value){
-        if (!value.contains("_")){return;}
+        if (value.isEmpty()||value.equals("null")){return;}
         AXStringSplit tool1 = new AXStringSplit();
         String[] values = tool1.split(value);
         if (!dic.containsKey(key)){dic.put(key, new LimUniqueResponder(lim));}
@@ -59,5 +59,8 @@ public class EventChatV2 {
     // Get response
     public String response(String in1) {
         return dic.containsKey(in1) ? dic.get(in1).getAResponse() : "";
+    }
+    public String getSaveStr(String key) {
+        return dic.get(key).getSavableStr();
     }
 }

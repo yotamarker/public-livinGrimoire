@@ -58,6 +58,13 @@ public class LimUniqueResponder {
     public String getSavableStr() {
         return String.join("_", responses);
     }
+    public String getLastItem() {
+        if (responses.isEmpty()) {
+            return "";
+        }
+        return responses.get(responses.size() - 1);
+    }
+
 }
 
 

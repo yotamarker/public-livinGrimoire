@@ -60,6 +60,9 @@ public class EventChatV2 {
     public String response(String in1) {
         return dic.containsKey(in1) ? dic.get(in1).getAResponse() : "";
     }
+    public String responseLatest(String in1) {
+        return dic.containsKey(in1) ? dic.get(in1).getLastItem() : "";
+    }
     public String getSaveStr(String key) {
         return dic.get(key).getSavableStr();
     }

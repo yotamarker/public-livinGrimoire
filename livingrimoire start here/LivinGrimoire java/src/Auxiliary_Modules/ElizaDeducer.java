@@ -40,6 +40,10 @@ public class ElizaDeducer {
     public String respond(String str1){
         return ec2.response(str1);
     }
+    public String respondLatest(String str1){
+        // get most recent reply/data
+        return ec2.responseLatest(str1);
+    }
 
     private List<PhraseMatcher> getPotentialMatchers(String msg) {
         List<PhraseMatcher> potentialMatchers = new ArrayList<>();

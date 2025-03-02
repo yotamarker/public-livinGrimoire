@@ -5,10 +5,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ElizaDeducer {
+    /*
+    * this class populates a special chat dictionary
+    * based on the matches added via its addPhraseMatcher function
+    * see subclass ElizaDeducerInitializer for example:
+    * ElizaDeducer ed = new ElizaDeducerInitializer(2); // 2 = limit of replies per input
+    * */
     public List<PhraseMatcher> babble2;
-    private java.util.Map<String, List<PhraseMatcher>> patternIndex;
-    private java.util.Map<String, List<AXKeyValuePair>> responseCache;
-    private EventChatV2 ec2;
+    private final java.util.Map<String, List<PhraseMatcher>> patternIndex;
+    private final java.util.Map<String, List<AXKeyValuePair>> responseCache;
+    private final EventChatV2 ec2; // chat dictionary, use getter for access. hardcoded replies can also be added
 
     public ElizaDeducer(int lim) {
         babble2 = new ArrayList<>();
@@ -22,6 +28,7 @@ public class ElizaDeducer {
     }
 
     public void learn(String msg) {
+        // populate EventChat dictionary
         // Check cache first
         if (responseCache.containsKey(msg)) {
             ec2.addKeyValues(new ArrayList<>(responseCache.get(msg)));
@@ -36,6 +43,28 @@ public class ElizaDeducer {
                 ec2.addKeyValues(response);
             }
         }
+    }
+    public boolean learnedBool(String msg) {
+        // same as learn method but returns true if it learned new replies
+        boolean learned = false;
+        // populate EventChat dictionary
+        // Check cache first
+        if (responseCache.containsKey(msg)) {
+            ec2.addKeyValues(new ArrayList<>(responseCache.get(msg)));
+            learned = true;
+        }
+
+        // Search for matching patterns
+        List<PhraseMatcher> potentialMatchers = getPotentialMatchers(msg);
+        for (PhraseMatcher pm : potentialMatchers) {
+            if (pm.matches(msg)) {
+                ArrayList<AXKeyValuePair> response = pm.respond(msg);
+                responseCache.put(msg, response);
+                ec2.addKeyValues(response);
+                learned = true;
+            }
+        }
+        return learned;
     }
     public String respond(String str1){
         return ec2.response(str1);
@@ -71,7 +100,7 @@ public class ElizaDeducer {
         }
     }
 
-    public class PhraseMatcher {
+    public static class PhraseMatcher {
         public final Pattern matcher;
         public final List<AXKeyValuePair> responses;
 

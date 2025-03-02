@@ -184,7 +184,7 @@ public class LGFIFO<T>
     {
         if (Size() == 0)
         {
-            return default(T);
+            return default(T)!;
         }
         return elements[0];
     }
@@ -193,7 +193,7 @@ public class LGFIFO<T>
     {
         if (Size() == 0)
         {
-            return default(T);
+            return default(T)!;
         }
         T result = elements[0];
         elements.RemoveAt(0);
@@ -219,7 +219,7 @@ public class LGFIFO<T>
     {
         if (elements.Count == 0)
         {
-            return default(T);
+            return default(T)!;
         }
         return elements[rand.Next(elements.Count)];
     }
@@ -1168,9 +1168,13 @@ public class TrgTolerance : TrGEV3
 public class AXLearnability
 {
     private bool algSent = false;
-    public UniqueItemSizeLimitedPriorityQueue defcons = new UniqueItemSizeLimitedPriorityQueue(); // Default size = 5
-    public UniqueItemSizeLimitedPriorityQueue defcon5 = new UniqueItemSizeLimitedPriorityQueue();
-    public UniqueItemSizeLimitedPriorityQueue goals = new UniqueItemSizeLimitedPriorityQueue();
+    // Problems that may result because of the last deployed algorithm:
+    public HashSet<string> defcons = new HashSet<string>();
+    // Major chaotic problems that may result because of the last deployed algorithm:
+    public HashSet<string> defcon5 = new HashSet<string>();
+    // Goals the last deployed algorithm aims to achieve:
+    public HashSet<string> goals = new HashSet<string>();
+    // How many failures / problems till the algorithm needs to mutate (change)
     public TrgTolerance trgTolerance;
 
     public AXLearnability(int tolerance)
@@ -1226,6 +1230,7 @@ public class AXLearnability
         trgTolerance.Reset();
     }
 }
+
 public class AXLHousing
 {
     public virtual string Decorate(string str1)
@@ -1759,7 +1764,7 @@ public class AXPrompt
     private bool isActive = false;
     private int index = 0;
     private List<Prompt> prompts = new List<Prompt>();
-    private AXKeyValuePair kv = null;
+    private AXKeyValuePair? kv = null;
 
     public void AddPrompt(Prompt p1)
     {
@@ -1798,7 +1803,7 @@ public class AXPrompt
         return isActive;
     }
 
-    public AXKeyValuePair GetKv()
+    public AXKeyValuePair? GetKv()
     {
         if (kv == null)
         {
@@ -2530,14 +2535,14 @@ public class SkillHubAlgDispenser
         return this;
     }
 
-    public AlgorithmV2 DispenseAlgorithm(string ear, string skin, string eye)
+    public AlgorithmV2? DispenseAlgorithm(string ear, string skin, string eye)
     {
-        // Return value to outAlg param of (external) summoner DiskillV2
+        // Return value to outAlg param of (external) summoner Skill
         skills[activeSkill].Input(ear, skin, eye);
         skills[activeSkill].Output(tempN);
         for (int i = 1; i < 6; i++)
         {
-            Algorithm temp = tempN.GetAlg(i);
+            Algorithm? temp = tempN.GetAlg(i);
             if (temp != null)
             {
                 return new AlgorithmV2(i, temp);
@@ -3250,7 +3255,7 @@ public class TimedMessages
 public class AlgorithmV2
 {
     private int priority = 4;
-    private Algorithm alg = null;
+    private Algorithm? alg = null;
 
     public AlgorithmV2(int priority, Algorithm alg)
     {
@@ -3270,7 +3275,7 @@ public class AlgorithmV2
 
     public Algorithm GetAlg()
     {
-        return alg;
+        return alg!;
     }
 
     public void SetAlg(Algorithm alg)
@@ -3310,7 +3315,7 @@ public class AXSkillBundle
         return this;
     }
 
-    public AlgorithmV2 DispenseAlgorithm(string ear, string skin, string eye)
+    public AlgorithmV2? DispenseAlgorithm(string ear, string skin, string eye)
     {
         foreach (Skill skill in skills)
         {
@@ -3318,7 +3323,7 @@ public class AXSkillBundle
             skill.Output(tempN);
             for (int j = 1; j <= 5; j++)
             {
-                Algorithm temp = tempN.GetAlg(j);
+                Algorithm? temp = tempN.GetAlg(j);
                 if (temp != null)
                 {
                     return new AlgorithmV2(j, temp);

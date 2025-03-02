@@ -1,16 +1,18 @@
 package auxiliary_modules
 
+import java.util.HashSet
+
 class AXLearnability(tolerance: Int) {
     private var algSent = false
 
     // problems that may result because of the last deployed algorithm:
-    var defcons = UniqueItemSizeLimitedPriorityQueue() // default size = 5
+    var defcons = HashSet<String>()
 
     // major chaotic problems that may result because of the last deployed algorithm:
-    var defcon5 = UniqueItemSizeLimitedPriorityQueue()
+    var defcon5 = HashSet<String>()
 
     // goals the last deployed algorithm aims to achieve:
-    var goals = UniqueItemSizeLimitedPriorityQueue()
+    var goals = HashSet<String>()
 
     // how many failures / problems till the algorithm needs to mutate (change)
     var trgTolerance: TrgTolerance

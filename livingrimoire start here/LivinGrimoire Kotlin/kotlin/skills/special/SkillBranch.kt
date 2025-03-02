@@ -8,7 +8,7 @@ import livinGrimoire.Kokoro
 import livinGrimoire.Skill
 import java.util.*
 
-class SkillBranch(tolerance: Int) : Skill() {
+open class SkillBranch(tolerance: Int) : Skill() {
     // unique skill used to bind similar skills
     /*
     * contains collection of skills

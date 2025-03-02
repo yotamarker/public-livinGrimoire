@@ -71,7 +71,7 @@ public class DiBicameral : Skill
     {
         msgCol.Tick();
 
-        if (!kokoro.toHeart["dibicameral"].Equals("null"))
+        if (!kokoro!.toHeart["dibicameral"]!.Equals("null"))
         {
             kokoro.toHeart["dibicameral"] = "null";
         }
@@ -105,7 +105,7 @@ public class DiSkillBundle : Skill
 
     public override void Input(string ear, string skin, string eye)
     {
-        AlgorithmV2 a1 = axSkillBundle.DispenseAlgorithm(ear, skin, eye);
+        AlgorithmV2? a1 = axSkillBundle.DispenseAlgorithm(ear, skin, eye);
         if (a1 == null)
         {
             return;
@@ -187,7 +187,7 @@ public class SkillBranch : Skill
             SetSimpleAlg("hmm");
         }
         // alg engage
-        AlgorithmV2 a1 = skillHub.DispenseAlgorithm(ear, skin, eye);
+        AlgorithmV2? a1 = skillHub.DispenseAlgorithm(ear, skin, eye);
         if (a1 == null) { return; }
         this.outAlg = a1.GetAlg();
         this.outpAlgPriority = a1.GetPriority();
@@ -223,6 +223,22 @@ public class SkillBranch : Skill
     }
 
 }
+
+public class SkillBranch1Liner : SkillBranch
+{
+    public SkillBranch1Liner(string goal, string defcon, int tolerance, params Skill[] skills)
+        : base(tolerance)
+    {
+        this.AddGoal(goal);
+        this.AddDefcon(defcon);
+        foreach (Skill skill in skills)
+        {
+            this.AddSkill(skill);
+        }
+    }
+}
+
+
 public class GamiPlus : Skill
 {
     // The grind side of the game, see GamificationN for the reward side

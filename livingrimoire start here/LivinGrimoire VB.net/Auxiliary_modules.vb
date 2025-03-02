@@ -944,39 +944,53 @@ Module Auxiliary_modules
     End Class
     Public Class AXLearnability
         Private algSent As Boolean = False
-        Public defcons As New UniqueItemSizeLimitedPriorityQueue() ' Default size = 5
-        Public defcon5 As New UniqueItemSizeLimitedPriorityQueue()
-        Public goals As New UniqueItemSizeLimitedPriorityQueue()
+        ' Problems that may result because of the last deployed algorithm:
+        Public defcons As HashSet(Of String) = New HashSet(Of String)()
+        ' Major chaotic problems that may result because of the last deployed algorithm:
+        Public defcon5 As HashSet(Of String) = New HashSet(Of String)()
+        ' Goals the last deployed algorithm aims to achieve:
+        Public goals As HashSet(Of String) = New HashSet(Of String)()
+        ' How many failures / problems till the algorithm needs to mutate (change)
         Public trgTolerance As TrgTolerance
 
-        Public Sub New(ByVal tolerance As Integer)
-            Me.trgTolerance = New TrgTolerance(tolerance)
+        Public Sub New(tolerance As Integer)
+            trgTolerance = New TrgTolerance(tolerance)
             trgTolerance.Reset()
         End Sub
 
-        Public Sub PendAlg()
+        Public Sub pendAlg()
+            ' An algorithm has been deployed
+            ' Call this method when an algorithm is deployed (in a DiSkillV2 object)
             algSent = True
             trgTolerance.Trigger()
         End Sub
 
-        Public Sub PendAlgWithoutConfirmation()
+        Public Sub pendAlgWithoutConfirmation()
+            ' An algorithm has been deployed
             algSent = True
+            ' No need to await for a thank you or check for goal manifestation :
+            ' trgTolerance.trigger()
+            ' Using this method instead of the default "pendAlg" is the same as
+            ' giving importance to the stick and not the carrot when learning
+            ' This method is mostly fitting workplace situations
         End Sub
 
-        Public Function MutateAlg(ByVal input As String) As Boolean
-            If Not algSent Then
-                Return False ' No alg sent => no reason to mutate
-            End If
+        Public Function mutateAlg(input As String) As Boolean
+            ' Recommendation to mutate the algorithm? true/false
+            If Not algSent Then Return False ' No alg sent => no reason to mutate
             If goals.Contains(input) Then
                 trgTolerance.Reset()
                 algSent = False
                 Return False
             End If
+            ' Goal manifested; the sent algorithm is good => no need to mutate the alg
             If defcon5.Contains(input) Then
                 trgTolerance.Reset()
                 algSent = False
                 Return True
             End If
+            ' ^ Something bad happened probably because of the sent alg
+            ' Recommend alg mutation
             If defcons.Contains(input) Then
                 algSent = False
                 Dim mutate As Boolean = Not trgTolerance.Trigger()
@@ -985,13 +999,16 @@ Module Auxiliary_modules
                 End If
                 Return mutate
             End If
+            ' ^ Negative result, mutate the alg if this occurs too much
             Return False
         End Function
 
-        Public Sub ResetTolerance()
+        Public Sub resetTolerance()
+            ' Use when you run code to change algorithms regardless of learnability
             trgTolerance.Reset()
         End Sub
     End Class
+
     Public Class AXLHousing
         Public Function Decorate(ByVal str1 As String) As String
             ' Override me

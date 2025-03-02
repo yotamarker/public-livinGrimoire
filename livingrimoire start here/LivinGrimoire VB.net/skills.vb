@@ -196,6 +196,20 @@
         End Function
 
     End Class
+
+    Public Class SkillBranch1Liner
+        Inherits SkillBranch
+
+        Public Sub New(goal As String, defcon As String, tolerance As Integer, ParamArray skills() As Skill)
+            MyBase.New(tolerance)
+            Me.addGoal(goal)
+            Me.addDefcon(defcon)
+            For Each skill As Skill In skills
+                Me.addSkill(skill)
+            Next
+        End Sub
+    End Class
+
     Public Class GamiPlus
         Inherits Skill
 

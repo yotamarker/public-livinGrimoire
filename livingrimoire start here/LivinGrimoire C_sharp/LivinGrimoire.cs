@@ -199,7 +199,7 @@ public class Neuron
         }
     }
 
-    public Algorithm GetAlg(int defcon)
+    public Algorithm? GetAlg(int defcon)
     {
         if (defcons[defcon].Count > 0)
         {
@@ -212,8 +212,8 @@ public class Neuron
 }
 public class Skill
 {
-    protected Kokoro kokoro = null; // consciousness, shallow ref class to enable interskill communications
-    protected Algorithm outAlg = null; // skills output
+    protected Kokoro? kokoro = null; // consciousness, shallow ref class to enable interskill communications
+    protected Algorithm? outAlg = null; // skills output
     protected int outpAlgPriority = -1; // defcon 1->5
 
     public Skill()
@@ -342,7 +342,7 @@ public class Cerabellum
     private int fin;
     private int at;
     private bool incrementAt = false;
-    public Algorithm alg;
+    public Algorithm? alg;
     private bool ia = false; // isActive attribute
     private string emot = "";
 
@@ -397,9 +397,9 @@ public class Cerabellum
         }
         if (at < fin)
         {
-            axnStr = alg.GetAlgParts()[at].Action(ear, skin, eye);
-            emot = alg.GetAlgParts()[at].MyName();
-            if (alg.GetAlgParts()[at].Completed())
+            axnStr = alg!.GetAlgParts()[at].Action(ear, skin, eye);
+            emot = alg!.GetAlgParts()[at].MyName();
+            if (alg!.GetAlgParts()[at].Completed())
             {
                 incrementAt = true;
             }
@@ -409,7 +409,7 @@ public class Cerabellum
 
     public void DeActivation()
     {
-        ia = IsActive() && !alg.GetAlgParts()[at].algKillSwitch;
+        ia = IsActive() && !alg!.GetAlgParts()[at].algKillSwitch;
     }
 }
 public class Fusion
@@ -437,7 +437,7 @@ public class Fusion
         {
             if (!ceraArr[i - 1].IsActive())
             {
-                Algorithm temp = neuron.GetAlg(i);
+                Algorithm temp = neuron.GetAlg(i)!;
                 if (temp != null)
                 {
                     ceraArr[i - 1].SetAlgorithm(temp);

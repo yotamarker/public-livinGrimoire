@@ -1,13 +1,15 @@
 package Auxiliary_Modules;
 
+import java.util.HashSet;
+
 public class AXLearnability {
     private Boolean algSent = false;
     // problems that may result because of the last deployed algorithm:
-    public UniqueItemSizeLimitedPriorityQueue defcons = new UniqueItemSizeLimitedPriorityQueue();// default size = 5
+    public HashSet<String> defcons = new HashSet<>();
     // major chaotic problems that may result because of the last deployed algorithm:
-    public UniqueItemSizeLimitedPriorityQueue defcon5 = new UniqueItemSizeLimitedPriorityQueue();
+    public HashSet<String> defcon5 = new HashSet<>();
     // goals the last deployed algorithm aims to achieve:
-    public UniqueItemSizeLimitedPriorityQueue goals = new UniqueItemSizeLimitedPriorityQueue();
+    public HashSet<String> goals = new HashSet<>();
     // how many failures / problems till the algorithm needs to mutate (change)
     public TrgTolerance trgTolerance;
 

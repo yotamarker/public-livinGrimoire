@@ -17,9 +17,9 @@ public class SkillBranch extends Skill {
     * negative feedback
     * positive feedback negates active skill mutation
     * */
-    private Hashtable<String,Integer> skillRef = new Hashtable<>();
-    private SkillHubAlgDispenser skillHub = new SkillHubAlgDispenser();
-    private AXLearnability ml;
+    private final Hashtable<String,Integer> skillRef = new Hashtable<>();
+    private final SkillHubAlgDispenser skillHub = new SkillHubAlgDispenser();
+    private final AXLearnability ml;
 
     public SkillBranch(int tolerance) {
         ml = new AXLearnability(tolerance);

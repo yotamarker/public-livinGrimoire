@@ -788,17 +788,25 @@ class SkillBranch(Skill):
 
     # learnability params
     def addDefcon(self, defcon):
-        self._ml.defcons.insert(defcon)
+        self._ml.defcons.add(defcon)
 
     def addGoal(self, goal):
-        self._ml.goals.insert(goal)
+        self._ml.goals.add(goal)
 
     # while alg is pending, cause alg mutation ignoring learnability tolerance:
     def addDefconLV5(self, defcon5):
-        self._ml.defcon5.insert(defcon5)
+        self._ml.defcon5.add(defcon5)
 
     def skillNotes(self, param: str) -> str:
         return self._skillHub.active_skill_ref().skillNotes(param)
+
+class SkillBranch1Liner(SkillBranch):
+    def __init__(self, goal, defcon, tolerance, *skills):
+        super().__init__(tolerance)
+        self.addGoal(goal)
+        self.addDefcon(defcon)
+        for skill in skills:
+            self.addSkill(skill)
 
 
 class DiActivity(Skill):

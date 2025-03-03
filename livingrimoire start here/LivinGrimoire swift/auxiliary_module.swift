@@ -1355,45 +1355,68 @@ class LGTypeConverter{
 }
 // (*) learnability
 class AXLearnability {
-    var algSent:Bool = false
-    // problems that may result because of the last deployed algorithm:
-    var defcons:UniqueItemsPriorityQue = UniqueItemsPriorityQue() // default size = 5
-    var goal:UniqueItemsPriorityQue = UniqueItemsPriorityQue()
-    // major problems that force an alg to mutate
-    var defcon5:UniqueItemsPriorityQue = UniqueItemsPriorityQue()
-    let trg:TrgCountDown = TrgCountDown() // set lim
+    private var algSent = false
+    // Problems that may result because of the last deployed algorithm
+    var defcons = Set<String>()
+    // Major chaotic problems that may result because of the last deployed algorithm
+    var defcon5 = Set<String>()
+    // Goals the last deployed algorithm aims to achieve
+    var goals = Set<String>()
+    // How many failures/problems till the algorithm needs to mutate (change)
+    var trgTolerance: TrgCountDown = TrgCountDown() // set lim
+
+    init(tolerance: Int) {
+        self.trgTolerance.maxCount = tolerance
+    }
+
     func pendAlg() {
-        // an algorithm has been deployed
-        // call this method when an algorithm is deployed (in a DiSkillV2 object)
+        // An algorithm has been deployed
+        // Call this method when an algorithm is deployed (in a DiSkillV2 object)
         algSent = true
-        trg.countDown()
+        trgTolerance.countDown()
     }
+
     func pendAlgWithoutConfirmation() {
-        // an algorithm has been deployed
-        // call this method when an algorithm is deployed (in a DiSkillV2 object)
+        // An algorithm has been deployed
         algSent = true
-        //no need to await for a thank you or check for goal manifestation :
-        // trgTolerance.trigger();
-        // using this method instead of the default "pendAlg" is the same as
+        // No need to await for a thank you or check for goal manifestation
+        // trgTolerance.trigger()
+        // Using this method instead of the default "pendAlg" is the same as
         // giving importance to the stick and not the carrot when learning
-        // this method is mosly fitting work place situations
+        // This method is mostly fitting workplace situations
     }
-    func mutateAlg(input:String) -> Bool {
-        // you can use an input filter to define defcons
-        // recommendation to mutate the algorithm ? true/ false
-        if !algSent {return false} // no alg sent=> no reason to mutate
-        if goal.contains(str: input){trg.reset();algSent = false;return false}
-        // goal manifested the sent algorithm is good => no need to mutate the alg
-        if defcon5.contains(str: input) {trg.reset();algSent = false; return true}
-        // something bad happend probably because of the sent alg
-        // recommend alg mutation
-        if defcons.contains(str: input){algSent = false;return trg.countDown()}
-        // negative result, mutate the alg if this occures too much
+
+    func mutateAlg(input: String) -> Bool {
+        // Recommendation to mutate the algorithm? true/false
+        guard algSent else { return false } // No alg sent => no reason to mutate
+        if goals.contains(input) {
+            trgTolerance.reset()
+            algSent = false
+            return false
+        }
+        // Goal manifested the sent algorithm is good => no need to mutate the alg
+        if defcon5.contains(input) {
+            trgTolerance.reset()
+            algSent = false
+            return true
+        }
+        // Something bad happened probably because of the sent alg
+        // Recommend alg mutation
+        if defcons.contains(input) {
+            algSent = false
+            let mutate = !trgTolerance.countDown()
+            if mutate {
+                trgTolerance.reset()
+            }
+            return mutate
+        }
+        // Negative result, mutate the alg if this occurs too much
         return false
     }
+
     func resetTolerance() {
-        // use when you run code to change algorithms regardless of learnability
-        trg.reset()
+        // Use when you run code to change algorithms regardless of learnability
+        trgTolerance.reset()
     }
 }
 class SpiderSense {

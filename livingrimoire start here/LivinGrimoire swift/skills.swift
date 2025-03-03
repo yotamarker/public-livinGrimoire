@@ -716,8 +716,7 @@ class SkillBranch: Skill {
     private var ml: AXLearnability
 
     init(tolerance: Int) {
-        ml = AXLearnability()
-        ml.trg.maxCount = tolerance
+        ml = AXLearnability(tolerance: tolerance)
     }
 
     override func input(ear: String, skin: String, eye: String) {
@@ -750,10 +749,10 @@ class SkillBranch: Skill {
     }
 
     // learnability params
-    func addDefcon(_ defcon: String){ml.defcons.input(in1: defcon)}
-    func addGoal(_ goal: String){ml.goal.input(in1: goal)}
+    func addDefcon(_ defcon: String){ml.defcons.insert(defcon)}
+    func addGoal(_ goal: String){ml.goals.insert(goal)}
     // while alg is pending, cause alg mutation ignoring learnability tolerance:
-    func addDefconLV5(_ defcon5: String){ml.defcon5.input(in1: defcon5)}
+    func addDefconLV5(_ defcon5: String){ml.defcon5.insert(defcon5)}
 
     override func setKokoro(kokoro: Kokoro) {
         super.setKokoro(kokoro: kokoro)
@@ -761,6 +760,16 @@ class SkillBranch: Skill {
     }
     override func skillNotes(param: String) -> String {
         return self.skillHub.activeSkillRef().skillNotes(param: param)
+    }
+}
+class SkillBranch1Liner: SkillBranch {
+    init(goal: String, defcon: String, tolerance: Int, skills: Skill...) {
+        super.init(tolerance: tolerance)
+        self.addGoal(goal)
+        self.addDefcon(defcon)
+        for skill in skills {
+            self.addSkill(skill)
+        }
     }
 }
 class DiAware: Skill {

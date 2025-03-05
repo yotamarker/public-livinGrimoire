@@ -5,10 +5,9 @@ import java.util.ArrayList;
 public class ElizaDeducerInitializer extends ElizaDeducer {
 
     public ElizaDeducerInitializer(int lim) {
-        // recommended lim = 5; its the limit of responses per key in the eventchat dictionary
+        // recommended lim = 5; it's the limit of responses per key in the eventchat dictionary
         // the purpose of the lim is to make saving and loading data easier
         super(lim);
-        babble2 = new ArrayList<>();
         initializeBabble2();
     }
 

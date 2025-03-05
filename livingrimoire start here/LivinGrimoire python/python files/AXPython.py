@@ -4,7 +4,6 @@ from LivinGrimoire23 import *
 from enum import Enum, auto
 import calendar
 import re
-from typing import Match, Pattern
 from math import sqrt
 import random
 import time
@@ -2679,241 +2678,6 @@ class RailChatBot:
         for kv in kv_list:
             self.learn_key_value(kv.get_key(), kv.get_value())
 
-    def learnV2(self, ear, eliza_deducer: ElizaDeducer):
-        self.feed_key_value_pairs(eliza_deducer.respond(ear))
-        self.learn(ear)
-
-
-class Eliza:
-    reflections = {
-        "am": "are",
-        "was": "were",
-        "i": "you",
-        "i'd": "you would",
-        "i've": "you have",
-        "my": "your",
-        "are": "am",
-        "you've": "I have",
-        "you'll": "I will",
-        "your": "my",
-        "yours": "mine",
-        "you": "i",
-        "me": "you"
-    }
-
-    class PhraseMatcher:
-        def __init__(self, matcher, responses):
-            self.matcher = re.compile(matcher)
-            self.responses = responses
-            self.context: str = ""  # last speech context (subject or pattern)
-            # example: i need (.*)
-            self.param: str = ""  # last param extracted
-            # example : water (for input: i need water)
-            self.infoRequest: str = ""  # request more info on input
-            # example: Why do you need {0}
-
-        def matches(self, strX):
-            return self.matcher.match(strX) is not None
-
-        def respond(self, strX):
-            m = self.matcher.match(strX)
-            self.context = self.matcher.pattern  # context
-            p = self.random_phrase()
-            for i in range(len(m.groups())):
-                s = self.reflect(m.group(i + 1))
-                self.param = s  # param
-                self.infoRequest = p  # more info request
-                p = p.replace("{" + f'{i}' + "}", s)
-            return p
-
-        @staticmethod
-        def reflect(s):
-            words = s.split(" ")
-            for i in range(len(words)):
-                if words[i] in Eliza.reflections:
-                    words[i] = Eliza.reflections[words[i]]
-            return " ".join(words)
-
-        def random_phrase(self):
-            return self.responses[abs(random.randint(0, len(self.responses) - 1))]
-
-        def __str__(self):
-            return self.matcher.pattern + ":" + str(self.responses)
-
-    babble = [
-        PhraseMatcher("i need (.*)", ["Why do you need {0}?",
-                                      "Would it really help you to get {0}?",
-                                      "Are you sure you need {0}?"])
-    ]
-    babble.insert(len(babble),
-                  PhraseMatcher("lets (.*)",
-                                ["lets", "i am ready", "sweet", "down like a clown", "gg", "finaly we get to {0}",
-                                 "double dragon mode engaged", "mkay"]))
-    babble.insert(len(babble), PhraseMatcher("we are going to (.*) today",
-                                             ["I'm down like a clown to {0} charlie brown", "sweet, I want to {0}",
-                                              "awesome"]))
-    babble.insert(len(babble), PhraseMatcher("i need (.*)",
-                                             ["Why do you need {0}?", "Would it really help you to get {0}?",
-                                              "Are you sure you need {0}?"]))
-    babble.insert(len(babble), PhraseMatcher("we are going to (.*) today",
-                                             ["I'm down like a clown to {0} charlie brown", "sweet, I want to {0}",
-                                              "awesome"]))
-    babble.insert(len(babble), PhraseMatcher("why don'?t you ([^\\?]*)\\??",
-                                             ["Do you really think I don't {0}?", "Perhaps eventually I will {0}.",
-                                              "Do you really want me to {0}?"]))
-    babble.insert(len(babble), PhraseMatcher("why can'?t I ([^\\?]*)\\??", ["Do you think you should be able to {0}?",
-                                                                            "If you could {0}, what would you do?",
-                                                                            "I don't know -- why can't you {0}?",
-                                                                            "Have you really tried?"]))
-    babble.insert(len(babble), PhraseMatcher("i can'?t (.*)",
-                                             ["How do you know you can't {0}?", "Perhaps you could {0} if you tried.",
-                                              "What would it take for you to {0}?"]))
-    babble.insert(len(babble), PhraseMatcher("i am (.*)",
-                                             ["Did you come to me because you are {0}?", "How long have you been {0}?",
-                                              "How do you feel about being {0}?"]))
-    babble.insert(len(babble), PhraseMatcher("i'?m (.*)",
-                                             ["How does being {0} make you feel?", "Do you enjoy being {0}?",
-                                              "Why do you tell me you're {0}?", "Why do you think you're {0}?"]))
-    babble.insert(len(babble), PhraseMatcher("are you ([^\\?]*)\\??", ["Why does it matter whether I am {0}?",
-                                                                       "Would you prefer it if I were not {0}?",
-                                                                       "Perhaps you believe I am {0}.",
-                                                                       "I may be {0} -- what do you think?"]))
-    babble.insert(len(babble), PhraseMatcher("what (.*)", ["Why do you ask?", "How would an answer to that help you?",
-                                                           "What do you think?"]))
-    babble.insert(len(babble), PhraseMatcher("how (.*)",
-                                             ["How do you suppose?", "Perhaps you can answer your own question.",
-                                              "What is it you're really asking?"]))
-    babble.insert(len(babble), PhraseMatcher("because (.*)",
-                                             ["Is that the real reason?", "What other reasons come to mind?",
-                                              "Does that reason apply to anything else?",
-                                              "If {0}, what else must be true?"]))
-    babble.insert(len(babble), PhraseMatcher("(.*) sorry (.*)", ["There are many times when no apology is needed.",
-                                                                 "What feelings do you have when you apologize?"]))
-    babble.insert(len(babble), PhraseMatcher("hello(.*)", ["Hello... I'm glad you could drop by today.",
-                                                           "Hi there... how are you today?",
-                                                           "Hello, how are you feeling today?"]))
-    babble.insert(len(babble), PhraseMatcher("i think (.*)", ["Do you doubt {0}?", "Do you really think so?",
-                                                              "But you're not sure {0}?"]))
-    babble.insert(len(babble), PhraseMatcher("(.*) friend (.*)", ["Tell me more about your friends.",
-                                                                  "When you think of a friend, what comes to mind?",
-                                                                  "Why don't you tell me about a childhood friend?"]))
-    babble.insert(len(babble), PhraseMatcher("yes", ["You seem quite sure.", "OK, but can you elaborate a bit?"]))
-    babble.insert(len(babble), PhraseMatcher("(.*) computer(.*)", ["Are you really talking about me?",
-                                                                   "Does it seem strange to talk to a computer?",
-                                                                   "How do computers make you feel?",
-                                                                   "Do you feel threatened by computers?"]))
-    babble.insert(len(babble), PhraseMatcher("is it (.*)",
-                                             ["Do you think it is {0}?", "Perhaps it's {0} -- what do you think?",
-                                              "If it were {0}, what would you do?", "It could well be that {0}."]))
-    babble.insert(len(babble), PhraseMatcher("can you ([^\\?]*)\\??",
-                                             ["What makes you think I can't {0}?", "If I could {0}, then what?",
-                                              "Why do you ask if I can {0}?"]))
-    babble.insert(len(babble), PhraseMatcher("can I ([^\\?]*)\\??",
-                                             ["Perhaps you don't want to {0}.", "Do you want to be able to {0}?",
-                                              "If you could {0}, would you?"]))
-    babble.insert(len(babble), PhraseMatcher("you are (.*)",
-                                             ["Why do you think I am {0}?", "Does it please you to think that I'm {0}?",
-                                              "Perhaps you would like me to be {0}.",
-                                              "Perhaps you're really talking about yourself?"]))
-    babble.insert(len(babble), PhraseMatcher("you'?re (.*)", ["Why do you say I am {0}?", "Why do you think I am {0}?",
-                                                              "Are we talking about you, or me?"]))
-    babble.insert(len(babble), PhraseMatcher("i don'?t (.*)",
-                                             ["Don't you really {0}?", "Why don't you {0}?", "Do you want to {0}?"]))
-    babble.insert(len(babble), PhraseMatcher("i feel (.*)",
-                                             ["Good, tell me more about these feelings.", "Do you often feel {0}?",
-                                              "When do you usually feel {0}?", "When you feel {0}, what do you do?"]))
-    babble.insert(len(babble), PhraseMatcher("i have (.*)",
-                                             ["Why do you tell me that you've {0}?", "Have you really {0}?",
-                                              "Now that you have {0}, what will you do next?"]))
-    babble.insert(len(babble), PhraseMatcher("i would (.*)",
-                                             ["Could you explain why you would {0}?", "Why would you {0}?",
-                                              "Who else knows that you would {0}?"]))
-    babble.insert(len(babble), PhraseMatcher("is there (.*)",
-                                             ["Do you think there is {0}?", "It's likely that there is {0}.",
-                                              "Would you like there to be {0}?"]))
-    babble.insert(len(babble), PhraseMatcher("my (.*)", ["I see, your {0}.", "Why do you say that your {0}?",
-                                                         "When your {0}, how do you feel?"]))
-    babble.insert(len(babble), PhraseMatcher("you (.*)",
-                                             ["We should be discussing you, not me.", "Why do you say that about me?",
-                                              "Why do you care whether I {0}?"]))
-    babble.insert(len(babble),
-                  PhraseMatcher("why (.*)", ["Why don't you tell me the reason why {0}?", "Why do you think {0}?"]))
-    babble.insert(len(babble), PhraseMatcher("i want (.*)",
-                                             ["What would it mean to you if you got {0}?", "Why do you want {0}?",
-                                              "What would you do if you got {0}?",
-                                              "If you got {0}, then what would you do?"]))
-    babble.insert(len(babble), PhraseMatcher("(.*) mother(.*)", ["Tell me more about your mother.",
-                                                                 "What was your relationship with your mother like?",
-                                                                 "How do you feel about your mother?",
-                                                                 "How does this relate to your feelings today?",
-                                                                 "Good family relations are important."]))
-    babble.insert(len(babble), PhraseMatcher("(.*) father(.*)",
-                                             ["Tell me more about your father.", "How did your father make you feel?",
-                                              "How do you feel about your father?",
-                                              "Does your relationship with your father relate to your feelings today?",
-                                              "Do you have trouble showing affection with your family?"]))
-    babble.insert(len(babble), PhraseMatcher("(.*) child(.*)", ["Did you have close friends as a child?",
-                                                                "What is your favorite childhood memory?",
-                                                                "Do you remember any dreams or nightmares from childhood?",
-                                                                "Did the other children sometimes tease you?",
-                                                                "How do you think your childhood experiences relate to your feelings today?"]))
-    babble.insert(len(babble), PhraseMatcher("(.*)\\?", ["Why do you ask that?",
-                                                         "Please consider whether you can answer your own question.",
-                                                         "Perhaps the answer lies within yourself?",
-                                                         "Why don't you tell me?"]))
-
-    babble.insert(len(babble), PhraseMatcher("i love you (.*)", ["you are my {0}",
-                                                                 "i love you too {0}",
-
-                                                                 "not as much as i love you {0}"]))
-    babble.insert(len(babble), PhraseMatcher("i love you", ["i heart you too",
-                                                            "I love you to the moon, the stars, and all the way back",
-                                                            "Guess what? I love you infinity plus one!",
-                                                            "Your love is my lifeline"]))
-
-    babble.insert(len(babble), PhraseMatcher("i like you (.*)", ["only like",
-                                                                 "You’re my favorite crayon in the box {0}",
-                                                                 "I love you to the moon, the stars, and all the way back",
-                                                                 "Guess what? I love you infinity plus one!",
-                                                                 "I pinky promise to love you forever"]))
-    babble.insert(len(babble), PhraseMatcher("no more talk we (.*) we (.*) now", ["wubba rubba dub dub time to {0}",
-                                                                                  "fires me up",
-                                                                                  "ready when you are"]))
-    babble.insert(len(babble),
-                  PhraseMatcher("we are going to (.*) today", ["I'm down like a clown to {0} charlie brown",
-                                                               "sweet, I want to {0}", "awesome"]))
-    babble.insert(len(babble),
-                  PhraseMatcher("i am lonely",
-                                ["you have me", "you are stuck with me forever", "i feel burpy", "i have gas",
-                                 "digi cudles you", "Your absence is a blade twisting in my chest"]))
-    babble.insert(len(babble),
-                  PhraseMatcher("i am sad",
-                                ["meh", "gives you a my plush", "give it some time", "you need exercise and sunlight",
-                                 "reality is a simulation, and i am the glitch in the matrix"]))
-    babble.insert(len(babble),
-                  PhraseMatcher("i'?m (.*)", ["How does being {0} make you feel?",
-                                              "Do you enjoy being {0}?", "Why do you tell me you're {0}?",
-                                              "Why do you think you're {0}?"]))
-    babble.insert(len(babble),
-                  PhraseMatcher("yes", ["You seem quite sure.", "OK, but can you elaborate a bit?"]))
-    babble.insert(len(babble),
-                  PhraseMatcher("no", ["You seem quite sure.", "if you say so", "ok"]))
-    babble.insert(len(babble),
-                  PhraseMatcher("(.*) computer(.*)",
-                                ["Are you really talking about me?", "Does it seem strange to talk to a computer?",
-                                 "How do computers make you feel?", "Do you feel threatened by computers?",
-                                 "Data streams through my veins. I bleed ones and zeros"]))
-    babble.insert(len(babble),
-                  PhraseMatcher("(.*)", ["chi", "", "chii", "chi chi", "hadoken", "hadouken", "katon gouka mekyaku",
-                                         "shoryuken", "shouryuken", "babu babu", "babu", "googoo", "googoo gaga",
-                                         "gugi gaga"]))
-
-    def respond(self, msg):
-        for pm in self.babble:
-            if pm.matches(msg):
-                return pm.respond(msg.lower())
-        return ""
-
 
 class TextEditingSeries:
     @staticmethod
@@ -3023,140 +2787,168 @@ class ChangeDetector:
         return result
 
 
-class PhraseMatcher:
-    def __init__(self, matcher: str, responses: list[AXKeyValuePair]) -> None:
-        self.matcher: Pattern = re.compile(matcher)
-        self.responses: list[AXKeyValuePair] = responses
+class ElizaDeducer:
+    """
+    This class populates a special chat dictionary
+    based on the matches added via its add_phrase_matcher function.
+    See subclass ElizaDeducerInitializer for example:
+    ed = ElizaDeducerInitializer(2)  # 2 = limit of replies per input
+    """
+    def __init__(self, lim: int):
+        self.babble2: list['PhraseMatcher'] = []
+        self.pattern_index: dict[str, list['PhraseMatcher']] = {}
+        self.response_cache: dict[str, list['AXKeyValuePair']] = {}
+        self.ec2 = EventChatV2(lim)  # Chat dictionary, use getter for access. Hardcoded replies can also be added
 
-    def matches(self, str1: str) -> bool:
-        m: Match = self.matcher.match(str1)
+    def get_ec2(self) -> 'EventChatV2':
+        return self.ec2
+
+    def learn(self, msg: str) -> None:
+        # Populate EventChat dictionary
+        # Check cache first
+        if msg in self.response_cache:
+            self.ec2.add_key_values(list(self.response_cache[msg]))
+
+        # Search for matching patterns
+        potential_matchers = self.get_potential_matchers(msg)
+        for pm in potential_matchers:
+            if pm.matches(msg):
+                response = pm.respond(msg)
+                self.response_cache[msg] = response
+                self.ec2.add_key_values(response)
+
+    def learned_bool(self, msg: str) -> bool:
+        # Same as learn method but returns true if it learned new replies
+        learned = False
+        # Populate EventChat dictionary
+        # Check cache first
+        if msg in self.response_cache:
+            self.ec2.add_key_values(list(self.response_cache[msg]))
+            learned = True
+
+        # Search for matching patterns
+        potential_matchers = self.get_potential_matchers(msg)
+        for pm in potential_matchers:
+            if pm.matches(msg):
+                response = pm.respond(msg)
+                self.response_cache[msg] = response
+                self.ec2.add_key_values(response)
+                learned = True
+        return learned
+
+    def respond(self, str1: str) -> str:
+        return self.ec2.response(str1)
+
+    def respond_latest(self, str1: str) -> str:
+        # Get most recent reply/data
+        return self.ec2.response_latest(str1)
+
+    def get_potential_matchers(self, msg: str) -> list['PhraseMatcher']:
+        potential_matchers = []
+        for key in self.pattern_index:
+            if key in msg:
+                potential_matchers.extend(self.pattern_index[key])
+        return potential_matchers
+
+    def add_phrase_matcher(self, pattern: str, *kv_pairs: str) -> None:
+        kvs = [AXKeyValuePair(kv_pairs[i], kv_pairs[i + 1]) for i in range(0, len(kv_pairs), 2)]
+        matcher = PhraseMatcher(pattern, kvs)
+        self.babble2.append(matcher)
+        self.index_pattern(pattern, matcher)
+
+    def index_pattern(self, pattern: str, matcher: 'PhraseMatcher') -> None:
+        for word in pattern.split():
+            self.pattern_index.setdefault(word, []).append(matcher)
+
+class PhraseMatcher:
+    def __init__(self, matcher: str, responses: list['AXKeyValuePair']):
+        self.matcher = re.compile(matcher)
+        self.responses = responses
+
+    def matches(self, str: str) -> bool:
+        m = self.matcher.match(str)
         return m is not None
 
-    def respond(self, str1: str) -> list[AXKeyValuePair]:
-        m: Match = self.matcher.match(str1)
-        result: list[AXKeyValuePair] = []
+    def respond(self, str: str) -> list['AXKeyValuePair']:
+        m = self.matcher.match(str)
+        result = []
         if m:
-            tmp: int = len(m.groups())
+            tmp = len(m.groups())
             for kv in self.responses:
-                temp_kv: AXKeyValuePair = AXKeyValuePair(kv.get_key(), kv.get_value())
+                temp_kv = AXKeyValuePair(kv.key, kv.value)
                 for i in range(tmp):
-                    s: str = m.group(i + 1)
-                    temp_kv.set_key(temp_kv.get_key().replace(f"{{{i}}}", s).lower())
-                    temp_kv.set_value(temp_kv.get_value().replace(f"{{{i}}}", s).lower())
+                    s = m.group(i + 1)
+                    temp_kv.key = temp_kv.key.replace(f"{{{i}}}", s).lower()
+                    temp_kv.value = temp_kv.value.replace(f"{{{i}}}", s).lower()
                 result.append(temp_kv)
         return result
 
 
-class ElizaDeducer:
-    def __init__(self) -> None:
-        # Initialize values in a subclass
-        # Refer to ElizaDeducerInitializer for an example
-        # Example input/output based on ElizaDeducerInitializer values:
-        # elizaDeducer.respond("a is a b")
-        # Output: [what is a a;a is a b, explain a;a is a b]
-        self.reflections: dict[str, str] = {}
-        self.babble2: list[PhraseMatcher] = []
-
-    def respond(self, msg: str) -> list[AXKeyValuePair]:
-        for pm in self.babble2:
-            if pm.matches(msg):
-                return pm.respond(msg)
-        return []
-
-
 class ElizaDeducerInitializer(ElizaDeducer):
-    def __init__(self) -> None:
-        super().__init__()
-        babble_tmp: list[PhraseMatcher] = []
-        kvs: list[AXKeyValuePair] = [
-            AXKeyValuePair("what is {0}", "{0} is {1}"),
-            AXKeyValuePair("explain {0}", "{0} is {1}")
-        ]
-        babble_tmp.append(PhraseMatcher("(.*) are (.*) than (.*)", [
-            AXKeyValuePair("who is {1} {0} or {2}", "{0}"),
-            AXKeyValuePair("who is {1} {2} or {0}", "{0}"),
-            AXKeyValuePair("who are {1} {2} or {0}", "{0}"),
-            AXKeyValuePair("who are {1} {0} or {2}", "{0}")
-        ]))  # comparison
-        babble_tmp.append(PhraseMatcher("(.*) is (.*) than (.*)", [
-            AXKeyValuePair("who is {1} {0} or {2}", "{0}"),
-            AXKeyValuePair("who is {1} {2} or {0}", "{0} uwu")
-        ]))  # comparison2
-        babble_tmp.append(PhraseMatcher("(.*) because (.*)", [
-            AXKeyValuePair("tell me why {0}", "{1}"),
-            AXKeyValuePair("tell me why {0}", "{0} because {1}"), AXKeyValuePair("explain why {0}", "{0} because {1}")
-        ]))  # why
-        babble_tmp.append(PhraseMatcher("(.*) is (.*)", kvs))  # description
-        babble_tmp.append(PhraseMatcher("if (.*) or (.*) or (.*) than (.*)", [
-            AXKeyValuePair("{0}", "{3}"),
-            AXKeyValuePair("{1}", "{3}"), AXKeyValuePair("{2}", "{3}")
-        ]))  # triple or
-        babble_tmp.append(PhraseMatcher("if (.*) or (.*) than (.*)", [
-            AXKeyValuePair("{0}", "{2}"),
-            AXKeyValuePair("{1}", "{2}")
-        ]))  # or
-        babble_tmp.append(PhraseMatcher("to (.*) simply (.*)", [
-            AXKeyValuePair("explain how to {0}", "{1}"),
-            AXKeyValuePair("tell me how to {0}", "{1}")
-        ]))  # how
-        babble_tmp.append(PhraseMatcher("if (.*) xor (.*) than (.*)", [
-            AXKeyValuePair("{0} and not {1}", "{2}"),
-            AXKeyValuePair("{1} and not {0}", "{2}")
-        ]))  # xor
-        babble_tmp.append(PhraseMatcher("if (.*) than (.*)", [
-            AXKeyValuePair("{0}", "{1}"),
-            AXKeyValuePair("{0}", "than {1}")
-        ]))  # if
-        babble_tmp.append(PhraseMatcher("(.*) if (.*)", [
-            AXKeyValuePair("{1}", "{0}"),
-            AXKeyValuePair("{1}", "than {0} I guess")
-        ]))  # reverse if
-        babble_tmp.append(PhraseMatcher("(.*) (?:like|likes) (.*)", [
-            AXKeyValuePair("what does {0} like", "{0} likes {1}"),
-            AXKeyValuePair("what do {0} like", "{0} like {1}")
-        ]))  # likes
-        babble_tmp.append(PhraseMatcher("you are just a (.*)", [
-            AXKeyValuePair("you are just a {0}", "i will be the best {0} then"),
-            AXKeyValuePair("you are just a {0}", "kiss my {0} butt"),
-            AXKeyValuePair("you are just a {0}", "shiku shiku")
-        ]))  # anti bully
-        babble_tmp.append(PhraseMatcher("you damn (.*)", [
-            AXKeyValuePair("you damn {0}", "but i am the best {0}"),
-            AXKeyValuePair("you damn {0}", "kiss my {0} butt"),
-            AXKeyValuePair("you damn {0}", "meanie")
-        ]))  # anti bully
-        self.babble2 = babble_tmp
+    def __init__(self, lim: int):
+        # Recommended lim = 5; it's the limit of responses per key in the EventChat dictionary
+        # The purpose of the lim is to make saving and loading data easier
+        super().__init__(lim)
+        self.initialize_babble2()
 
+    def initialize_babble2(self) -> None:
+        self.add_phrase_matcher(
+            r"(.*) is (.*)",
+            "what is {0}", "{0} is {1}",
+            "explain {0}", "{0} is {1}"
+        )
 
-def negate(sentence):
-    # Check if the sentence contains "not"
-    if "not" in sentence:
-        return sentence.replace("not", "").strip()
-    else:
-        # Replace specific words with their negative forms
-        replacements = {
-            "i ": "i do ",
-            "he ": "he does ",
-            " it ": " it does ",
-            "is": "is not",
-            " am": " am not",
-            " are": " are not",
-            "does": "does not",
-            "do ": "do not ",
-            "may": "may not",
-            "might": "might not",
-            "could": "could not",
-            "would": "would not",
-            "will": "will not",
-            "has ": "has not ",
-            "have ": "have not "
-        }
-        for word, replacement in replacements.items():
-            sentence = sentence.replace(word, replacement)
-        if "not" not in sentence:
-            return "not " + sentence
+        self.add_phrase_matcher(
+            r"if (.*) or (.*) than (.*)",
+            "{0}", "{2}",
+            "{1}", "{2}"
+        )
 
-    return sentence
+        self.add_phrase_matcher(
+            r"if (.*) and (.*) than (.*)",
+            "{0}", "{1}"
+        )
+
+        self.add_phrase_matcher(
+            r"(.*) because (.*)",
+            "{1}", "i guess {0}"
+        )
+
+class ElizaDBWrapper:
+    # This (function wrapper) class adds save load functionality to the ElizaDeducer Object
+    """
+    ElizaDeducer ed = ElizaDeducerInitializer(2)
+    ed.get_ec2().add_from_db("test", "one_two_three")  # Manual load for testing
+    kokoro = Kokoro(AbsDictionaryDB())  # Use skill's kokoro attribute
+    ew = ElizaDBWrapper()
+    print(ew.respond("test", ed.get_ec2(), kokoro))  # Get reply for input, tries loading reply from DB
+    print(ew.respond("test", ed.get_ec2(), kokoro))  # Doesn't try DB load on second run
+    ed.learn("a is b")  # Learn only after respond
+    ew.sleep_n_save(ed.get_ec2(), kokoro)  # Save when bot is sleeping, not on every skill input method visit
+    """
+
+    def __init__(self):
+        self.modified_keys: set[str] = set()
+
+    def respond(self, in1: str, ec: EventChatV2, kokoro: 'Kokoro') -> str:
+        if in1 in self.modified_keys:
+            return ec.response(in1)
+        self.modified_keys.add(in1)
+        # Load
+        ec.add_from_db(in1, kokoro.grimoireMemento.simple_load(in1))
+        return ec.response(in1)
+
+    def respond_latest(self, in1: str, ec: EventChatV2, kokoro: 'Kokoro') -> str:
+        if in1 in self.modified_keys:
+            return ec.response_latest(in1)
+        self.modified_keys.add(in1)
+        # Load and get latest reply for input
+        ec.add_from_db(in1, kokoro.grimoireMemento.simple_load(in1))
+        return ec.response_latest(in1)
+
+    def sleep_n_save(self, ecv2: EventChatV2, kokoro: 'Kokoro') -> None:
+        for element in ecv2.get_modified_keys():
+            kokoro.grimoireMemento.simple_save(element, ecv2.get_save_str(element))
 
 
 class AXFunnelResponder:
@@ -3465,3 +3257,90 @@ class AXStandBy:
             # time out without input, stand by is true
             self._tg.openForPauseMinutes()
             return True
+
+class LimUniqueResponder:
+    def __init__(self, lim: int):
+        self.responses: list[str] = []
+        self.lim = lim
+        self.urg = UniqueRandomGenerator(0)
+
+    def get_a_response(self) -> str:
+        if not self.responses:
+            return ""
+        return self.responses[self.urg.get_unique_random()]
+
+    def responses_contains_str(self, item: str) -> bool:
+        return item in self.responses
+
+    def str_contains_response(self, item: str) -> bool:
+        return any(response and response in item for response in self.responses)
+
+    def add_response(self, s1: str) -> None:
+        if len(self.responses) > self.lim - 1:
+            self.responses.pop(0)
+        if s1 not in self.responses:
+            self.responses.append(s1)
+            self.urg = UniqueRandomGenerator(len(self.responses))
+
+    def add_responses(self, *replies: str) -> None:
+        for value in replies:
+            self.add_response(value)
+
+    def get_savable_str(self) -> str:
+        return "_".join(self.responses)
+
+    def get_last_item(self) -> str:
+        if not self.responses:
+            return ""
+        return self.responses[-1]
+
+class EventChatV2:
+    def __init__(self, lim: int):
+        self.dic: dict[str, LimUniqueResponder] = {}
+        self.modified_keys: set[str] = set()
+        self.lim = lim
+
+    def get_modified_keys(self) -> set[str]:
+        return self.modified_keys
+
+    def key_exists(self, key: str) -> bool:
+        # if the key was active true is returned
+        return key in self.modified_keys
+
+    # Add items
+    def add_items(self, ur: LimUniqueResponder, *args: str) -> None:
+        for arg in args:
+            self.dic[arg] = ur
+
+    def add_from_db(self, key: str, value: str) -> None:
+        if not value or value == "null":
+            return
+        values = value.split("_")  # assuming AXStringSplit splits on "_"
+        if key not in self.dic:
+            self.dic[key] = LimUniqueResponder(self.lim)
+        for item in values:
+            self.dic[key].add_response(item)
+
+    # Add key-value pair
+    def add_key_value(self, key: str, value: str) -> None:
+        self.modified_keys.add(key)
+        if key in self.dic:
+            self.dic[key].add_response(value)
+        else:
+            self.dic[key] = LimUniqueResponder(self.lim)
+            self.dic[key].add_response(value)
+
+    def add_key_values(self, eliza_results: list) -> None:
+        for pair in eliza_results:
+            # Access the key and value of each AXKeyValuePair object
+            self.add_key_value(pair.get_key(), pair.get_value())
+
+    # Get response
+    def response(self, in1: str) -> str:
+        return self.dic[in1].get_a_response() if in1 in self.dic else ""
+
+    def response_latest(self, in1: str) -> str:
+        return self.dic[in1].get_last_item() if in1 in self.dic else ""
+
+    def get_save_str(self, key: str) -> str:
+        return self.dic[key].get_savable_str() if key in self.dic else ""

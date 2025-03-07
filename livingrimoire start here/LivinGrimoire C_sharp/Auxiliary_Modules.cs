@@ -2148,105 +2148,6 @@ public class Differ
         powerLevel = pl;
     }
 }
-public class Eliza
-{
-    private static Dictionary<string, string> reflections = new Dictionary<string, string>
-    {
-        {"am", "are"},
-        {"was", "were"},
-        {"i", "you"},
-        {"i'd", "you would"},
-        {"i've", "you have"},
-        {"my", "your"},
-        {"are", "am"},
-        {"you've", "I have"},
-        {"you'll", "I will"},
-        {"your", "my"},
-        {"yours", "mine"},
-        {"you", "i"},
-        {"me", "you"}
-    };
-    public class PhraseMatcher
-    {
-        private Regex matcher;
-        private List<string> responses;
-        public string context = "";
-        public string param = "";
-        public string infoRequest = "";
-
-        public PhraseMatcher(string matcher, List<string> responses)
-        {
-            this.matcher = new Regex(matcher);
-            this.responses = responses;
-        }
-
-        public bool Matches(string s)
-        {
-            return this.matcher.IsMatch(s);
-        }
-
-        public string Respond(string s)
-        {
-            Match m = this.matcher.Match(s);
-            this.context = this.matcher.ToString(); // context
-            string p = this.RandomPhrase();
-            for (int i = 0; i < m.Groups.Count - 1; i++)
-            {
-                string groupValue = Reflect(m.Groups[i + 1].Value);
-                this.param = groupValue; // param
-                this.infoRequest = p; // more info request
-                p = p.Replace("{" + i + "}", groupValue);
-            }
-            return p;
-        }
-
-        public static string Reflect(string s)
-        {
-            string[] words = s.Split(' ');
-            for (int i = 0; i < words.Length; i++)
-            {
-                if (Eliza.reflections.ContainsKey(words[i]))
-                {
-                    words[i] = Eliza.reflections[words[i]];
-                }
-            }
-            return string.Join(" ", words);
-        }
-
-        public string RandomPhrase()
-        {
-            Random rand = new Random();
-            int randomIndex = Math.Abs(rand.Next(0, this.responses.Count));
-            return this.responses[randomIndex];
-        }
-        public override string ToString()
-        {
-            return $"{this.matcher.ToString()}: {string.Join(", ", this.responses)}";
-        }
-
-    }
-    public List<PhraseMatcher> Babble { get; } = new List<PhraseMatcher>
-    {
-        new PhraseMatcher("i need (.*)", new List<string>
-        {
-            "Why do you need {0}?",
-            "Would it really help you to get {0}?",
-            "Are you sure you need {0}?"
-        })
-    };
-
-    public string Respond(string msg)
-    {
-        foreach (var pm in Babble)
-        {
-            if (pm.Matches(msg))
-            {
-                return pm.Respond(msg.ToLower());
-            }
-        }
-        return "";
-    }
-}
 public class InputFilter
 {
     // Filter out non-relevant input or filter in relevant data
@@ -2485,11 +2386,11 @@ public class RailChatBot
             LearnKeyValue(kv.GetKey(), kv.GetValue());
         }
     }
-    public void LearnV2(string ear, ElizaDeducer eliza_deducer)
-    {
-        FeedKeyValuePairs(eliza_deducer.Respond(ear));
-        Learn(ear);
-    }
+    //public void LearnV2(string ear, ElizaDeducer eliza_deducer)
+    //{
+    //    FeedKeyValuePairs(eliza_deducer.Respond(ear));
+    //    Learn(ear);
+    //}
 }
 public class SkillHubAlgDispenser
 {
@@ -3056,84 +2957,6 @@ public class ChangeDetector
         return result;
     }
 }
-public class ElizaDeducer
-{
-    public List<PhraseMatcher> babble2 = new List<PhraseMatcher>();
-
-    public ElizaDeducer()
-    {
-        // init values in subclass
-        // see ElizaDeducerInitializer for example
-        // example input ountput based on ElizaDeducerInitializer values :
-        // elizaDeducer.respond("a is a b")
-        // [what is a a;a is a b, explain a;a is a b]
-    }
-
-    public List<AXKeyValuePair> Respond(string msg)
-    {
-        foreach (PhraseMatcher pm in babble2)
-        {
-            if (pm.Matches(msg))
-            {
-                return pm.Respond(msg);
-            }
-        }
-        return new List<AXKeyValuePair>();
-    }
-
-    public class PhraseMatcher
-    {
-        public readonly Regex matcher;
-        public readonly List<AXKeyValuePair> responses;
-
-        public PhraseMatcher(string matcher, List<AXKeyValuePair> responses)
-        {
-            this.matcher = new Regex(matcher);
-            this.responses = responses;
-        }
-
-        public bool Matches(string str)
-        {
-            Match m = matcher.Match(str);
-            return m.Success;
-        }
-
-        public List<AXKeyValuePair> Respond(string str)
-        {
-            Match m = matcher.Match(str);
-            if (m.Success)
-            {
-                List<AXKeyValuePair> result = new List<AXKeyValuePair>();
-                int tmp = m.Groups.Count;
-                foreach (AXKeyValuePair kv in responses)
-                {
-                    AXKeyValuePair tempKV = new AXKeyValuePair(kv.GetKey(), kv.GetValue());
-                    for (int i = 0; i < tmp - 1; i++)
-                    {
-                        string s = m.Groups[i + 1].Value;
-                        tempKV.SetKey(tempKV.GetKey().Replace("{" + i + "}", s).ToLower());
-                        tempKV.SetValue(tempKV.GetValue().Replace("{" + i + "}", s).ToLower());
-                    }
-                    result.Add(tempKV);
-                }
-                return result;
-            }
-            return new List<AXKeyValuePair>();
-        }
-    }
-}
-public class ElizaDeducerInitializer : ElizaDeducer
-{
-    public ElizaDeducerInitializer()
-    {
-        List<PhraseMatcher> babbleTmp = new List<PhraseMatcher>();
-        List<AXKeyValuePair> kvs = new List<AXKeyValuePair>();
-        kvs.Add(new AXKeyValuePair("what is a {0}", "{0} is a {1}"));
-        kvs.Add(new AXKeyValuePair("explain {0}", "{0} is a {1}"));
-        babbleTmp.Add(new PhraseMatcher("(.*) is a (.*)", kvs));
-        babble2 = babbleTmp;
-    }
-}
 public class Excluder
 {
     private readonly List<string> startsWith = new List<string>();
@@ -3521,5 +3344,433 @@ public class AXStandBy
             return true;
         }
         return false;
+    }
+}
+
+public class LimUniqueResponder
+{
+    private List<string> responses;
+    private UniqueRandomGenerator urg = new UniqueRandomGenerator(0);
+    private readonly int lim;
+
+    // Constructor
+    public LimUniqueResponder(int lim)
+    {
+        responses = new List<string>();
+        this.lim = lim;
+    }
+
+    // Method to get a response
+    public string GetAResponse()
+    {
+        if (responses.Count == 0)
+        {
+            return "";
+        }
+        return responses[urg.GetUniqueRandom()];
+    }
+
+    // Method to check if responses contain a string
+    public bool ResponsesContainsStr(string item)
+    {
+        return responses.Contains(item);
+    }
+
+    // Method to check if a string contains any response
+    public bool StrContainsResponse(string item)
+    {
+        foreach (string response in responses)
+        {
+            if (string.IsNullOrEmpty(response))
+            {
+                continue;
+            }
+            if (item.Contains(response))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Method to add a response
+    public void AddResponse(string s1)
+    {
+        if (this.responses.Count > lim - 1)
+        {
+            responses.RemoveAt(0);
+        }
+        if (!responses.Contains(s1))
+        {
+            responses.Add(s1);
+            urg = new UniqueRandomGenerator(responses.Count);
+        }
+    }
+
+    // Method to add multiple responses
+    public void AddResponses(params string[] replies)
+    {
+        foreach (string value in replies)
+        {
+            AddResponse(value);
+        }
+    }
+
+    // Method to get a savable string
+    public string GetSavableStr()
+    {
+        return string.Join("_", responses);
+    }
+
+    // Method to get the last item
+    public string GetLastItem()
+    {
+        if (responses.Count == 0)
+        {
+            return "";
+        }
+        return responses[responses.Count - 1];
+    }
+}
+
+public class EventChatV2
+{
+    private readonly Dictionary<string, LimUniqueResponder> dic = new Dictionary<string, LimUniqueResponder>();
+    private readonly HashSet<string> modifiedKeys = new HashSet<string>();
+    private readonly int lim;
+
+    // Constructor
+    public EventChatV2(int lim)
+    {
+        this.lim = lim;
+    }
+
+    // Get modified keys
+    public HashSet<string> GetModifiedKeys()
+    {
+        return modifiedKeys;
+    }
+
+    // Check if a key exists
+    public bool KeyExists(string key)
+    {
+        return modifiedKeys.Contains(key);
+    }
+
+    // Add items
+    public void AddItems(LimUniqueResponder ur, params string[] args)
+    {
+        foreach (var arg in args)
+        {
+            dic[arg] = ur;
+        }
+    }
+
+    // Add from database
+    public void AddFromDB(string key, string value)
+    {
+        if (string.IsNullOrEmpty(value) || value == "null")
+        {
+            return;
+        }
+        var tool1 = new AXStringSplit();
+        var values = tool1.Split(value);
+        if (!dic.ContainsKey(key))
+        {
+            dic[key] = new LimUniqueResponder(lim);
+        }
+        foreach (var item in values)
+        {
+            dic[key].AddResponse(item);
+        }
+    }
+
+    // Add key-value pair
+    public void AddKeyValue(string key, string value)
+    {
+        modifiedKeys.Add(key);
+        if (dic.ContainsKey(key))
+        {
+            dic[key].AddResponse(value);
+        }
+        else
+        {
+            dic[key] = new LimUniqueResponder(lim);
+            dic[key].AddResponse(value);
+        }
+    }
+
+    // Add key-values from a list of AXKeyValuePair
+    public void AddKeyValues(List<AXKeyValuePair> elizaResults)
+    {
+        foreach (var pair in elizaResults)
+        {
+            AddKeyValue(pair.GetKey(), pair.GetValue());
+        }
+    }
+
+    // Get response
+    public string Response(string in1)
+    {
+        return dic.ContainsKey(in1) ? dic[in1].GetAResponse() : "";
+    }
+
+    // Get latest response
+    public string ResponseLatest(string in1)
+    {
+        return dic.ContainsKey(in1) ? dic[in1].GetLastItem() : "";
+    }
+
+    // Get save string
+    public string GetSaveStr(string key)
+    {
+        return dic[key].GetSavableStr();
+    }
+}
+public class ElizaDeducer
+{
+    // This class populates a special chat dictionary based on the matches added via its AddPhraseMatcher function.
+    // See subclass ElizaDeducerInitializer for example:
+    // var ed = new ElizaDeducerInitializer(2); // 2 = limit of replies per input
+
+    public List<PhraseMatcher> Babble2 { get; private set; }
+    private readonly Dictionary<string, List<PhraseMatcher>> patternIndex;
+    private readonly Dictionary<string, List<AXKeyValuePair>> responseCache;
+    private readonly EventChatV2 ec2; // Chat dictionary, use getter for access. Hardcoded replies can also be added.
+
+    public ElizaDeducer(int lim)
+    {
+        Babble2 = new List<PhraseMatcher>();
+        patternIndex = new Dictionary<string, List<PhraseMatcher>>();
+        responseCache = new Dictionary<string, List<AXKeyValuePair>>();
+        ec2 = new EventChatV2(lim);
+    }
+
+    public EventChatV2 GetEc2()
+    {
+        return ec2;
+    }
+
+    public void Learn(string msg)
+    {
+        // Populate EventChat dictionary
+        // Check cache first
+        if (responseCache.ContainsKey(msg))
+        {
+            ec2.AddKeyValues(new List<AXKeyValuePair>(responseCache[msg]));
+        }
+
+        // Search for matching patterns
+        List<PhraseMatcher> potentialMatchers = GetPotentialMatchers(msg);
+        foreach (var pm in potentialMatchers)
+        {
+            if (pm.Matches(msg))
+            {
+                List<AXKeyValuePair> response = pm.Respond(msg);
+                responseCache[msg] = response;
+                ec2.AddKeyValues(response);
+            }
+        }
+    }
+
+    public bool LearnedBool(string msg)
+    {
+        // Same as Learn method but returns True if it learned new replies
+        bool learned = false;
+
+        // Populate EventChat dictionary
+        // Check cache first
+        if (responseCache.ContainsKey(msg))
+        {
+            ec2.AddKeyValues(new List<AXKeyValuePair>(responseCache[msg]));
+            learned = true;
+        }
+
+        // Search for matching patterns
+        List<PhraseMatcher> potentialMatchers = GetPotentialMatchers(msg);
+        foreach (var pm in potentialMatchers)
+        {
+            if (pm.Matches(msg))
+            {
+                List<AXKeyValuePair> response = pm.Respond(msg);
+                responseCache[msg] = response;
+                ec2.AddKeyValues(response);
+                learned = true;
+            }
+        }
+
+        return learned;
+    }
+
+    public string Respond(string str1)
+    {
+        return ec2.Response(str1);
+    }
+
+    public string RespondLatest(string str1)
+    {
+        // Get most recent reply/data
+        return ec2.ResponseLatest(str1);
+    }
+
+    private List<PhraseMatcher> GetPotentialMatchers(string msg)
+    {
+        var potentialMatchers = new List<PhraseMatcher>();
+        foreach (var key in patternIndex.Keys)
+        {
+            if (msg.Contains(key))
+            {
+                potentialMatchers.AddRange(patternIndex[key]);
+            }
+        }
+        return potentialMatchers;
+    }
+
+    public void AddPhraseMatcher(string pattern, params string[] kvPairs)
+    {
+        var kvs = new List<AXKeyValuePair>();
+        for (int i = 0; i < kvPairs.Length; i += 2)
+        {
+            kvs.Add(new AXKeyValuePair(kvPairs[i], kvPairs[i + 1]));
+        }
+        var matcher = new PhraseMatcher(pattern, kvs);
+        Babble2.Add(matcher);
+        IndexPattern(pattern, matcher);
+    }
+
+    private void IndexPattern(string pattern, PhraseMatcher matcher)
+    {
+        foreach (var word in pattern.Split(' '))
+        {
+            if (!patternIndex.ContainsKey(word))
+            {
+                patternIndex[word] = new List<PhraseMatcher>();
+            }
+            patternIndex[word].Add(matcher);
+        }
+    }
+
+    public class PhraseMatcher
+    {
+        public Regex Matcher { get; private set; }
+        public List<AXKeyValuePair> Responses { get; private set; }
+
+        public PhraseMatcher(string matcher, List<AXKeyValuePair> responses)
+        {
+            Matcher = new Regex(matcher);
+            Responses = responses;
+        }
+
+        public bool Matches(string str)
+        {
+            return Matcher.IsMatch(str);
+        }
+
+        public List<AXKeyValuePair> Respond(string str)
+        {
+            Match m = Matcher.Match(str);
+            var result = new List<AXKeyValuePair>();
+            if (m.Success)
+            {
+                int tmp = m.Groups.Count - 1; // GroupCount in Java is equivalent to Groups.Count - 1 in .NET
+                foreach (var kv in Responses)
+                {
+                    var tempKV = new AXKeyValuePair(kv.GetKey(), kv.GetValue());
+                    for (int i = 0; i < tmp; i++)
+                    {
+                        string s = m.Groups[i + 1].Value;
+                        tempKV.SetKey(tempKV.GetKey().Replace("{" + i + "}", s).ToLower());
+                        tempKV.SetValue(tempKV.GetValue().Replace("{" + i + "}", s).ToLower());
+                    }
+                    result.Add(tempKV);
+                }
+            }
+            return result;
+        }
+    }
+}
+
+public class ElizaDeducerInitializer : ElizaDeducer
+{
+    // Constructor
+    public ElizaDeducerInitializer(int lim) : base(lim)
+    {
+        // Recommended lim = 5; it's the limit of responses per key in the EventChat dictionary.
+        // The purpose of the lim is to make saving and loading data easier.
+        InitializeBabble2();
+    }
+
+    // Initialize the babble2 list with predefined phrase matchers
+    private void InitializeBabble2()
+    {
+        AddPhraseMatcher(
+            "(.*) is (.*)",
+            "what is {0}", "{0} is {1}",
+            "explain {0}", "{0} is {1}"
+        );
+
+        AddPhraseMatcher(
+            "if (.*) or (.*) than (.*)",
+            "{0}", "{2}",
+            "{1}", "{2}"
+        );
+
+        AddPhraseMatcher(
+            "if (.*) and (.*) than (.*)",
+            "{0}", "{1}"
+        );
+
+        AddPhraseMatcher(
+            "(.*) because (.*)",
+            "{1}", "i guess {0}"
+        );
+    }
+}
+
+public class ElizaDBWrapper
+{
+    // This (function wrapper) class adds save/load functionality to the ElizaDeducer Object.
+    // Example usage:
+    // var ed = new ElizaDeducerInitializer(2);
+    // ed.GetEc2().AddFromDB("test", "one_two_three"); // Manual load for testing
+    // var k = new Kokoro(new AbsDictionaryDB()); // Use skill's kokoro attribute
+    // var ew = new ElizaDBWrapper();
+    // Console.WriteLine(ew.Respond("test", ed.GetEc2(), k)); // Get reply for input, tries loading reply from DB
+    // Console.WriteLine(ew.Respond("test", ed.GetEc2(), k)); // Doesn't try DB load on second run
+    // ed.Learn("a is b"); // Learn only after respond
+    // ew.SleepNSave(ed.GetEc2(), k); // Save when bot is sleeping, not on every skill input method visit
+
+    private readonly HashSet<string> modifiedKeys = new HashSet<string>();
+
+    public string Respond(string in1, EventChatV2 ec, Kokoro kokoro)
+    {
+        if (modifiedKeys.Contains(in1))
+        {
+            return ec.Response(in1);
+        }
+        modifiedKeys.Add(in1);
+        // Load
+        ec.AddFromDB(in1, kokoro.grimoireMemento.SimpleLoad(in1));
+        return ec.Response(in1);
+    }
+
+    public string RespondLatest(string in1, EventChatV2 ec, Kokoro kokoro)
+    {
+        if (modifiedKeys.Contains(in1))
+        {
+            return ec.ResponseLatest(in1);
+        }
+        modifiedKeys.Add(in1);
+        // Load and get latest reply for input
+        ec.AddFromDB(in1, kokoro.grimoireMemento.SimpleLoad(in1));
+        return ec.ResponseLatest(in1);
+    }
+
+    public void SleepNSave(EventChatV2 ecv2, Kokoro kokoro)
+    {
+        foreach (var element in ecv2.GetModifiedKeys())
+        {
+            kokoro.grimoireMemento.SimpleSave(element, ecv2.GetSaveStr(element));
+        }
     }
 }

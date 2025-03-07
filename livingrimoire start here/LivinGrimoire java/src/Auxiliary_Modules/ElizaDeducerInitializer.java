@@ -1,7 +1,5 @@
 package Auxiliary_Modules;
 
-import java.util.ArrayList;
-
 public class ElizaDeducerInitializer extends ElizaDeducer {
 
     public ElizaDeducerInitializer(int lim) {

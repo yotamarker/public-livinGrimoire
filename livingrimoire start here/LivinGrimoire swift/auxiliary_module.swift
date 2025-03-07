@@ -2940,96 +2940,6 @@ class DrawRndDigits {
     }
 }
 
-class Eliza {
-    static let reflections = [
-        "am": "are",
-        "was": "were",
-        "i": "you",
-        "i'd": "you would",
-        "i've": "you have",
-        "my": "your",
-        "are": "am",
-        "you've": "I have",
-        "you'll": "I will",
-        "your": "my",
-        "yours": "mine",
-        "you": "i",
-        "me": "you"
-    ]
-
-    class PhraseMatcher {
-        let matcher: NSRegularExpression
-        let responses: [String]
-        var context: String = ""  // last speech context (subject or pattern)
-        var param: String = ""  // last param extracted
-        var infoRequest: String = ""  // request more info on input
-
-        init(matcher: String, responses: [String]) {
-            self.matcher = try! NSRegularExpression(pattern: matcher, options: [])
-            self.responses = responses
-        }
-
-        func matches(_ str: String) -> Bool {
-            let range = NSRange(location: 0, length: str.utf16.count)
-            return matcher.firstMatch(in: str, options: [], range: range) != nil
-        }
-
-        func respond(_ str: String) -> String {
-            let range = NSRange(location: 0, length: str.utf16.count)
-            guard let m = matcher.firstMatch(in: str, options: [], range: range) else { return "" }
-            context = matcher.pattern  // context
-            var p = randomPhrase()
-            for i in 0..<m.numberOfRanges {
-                let s = reflect(getParam(string2: str, string1: context))
-                param = s  // param
-                infoRequest = p  // more info request
-                p = p.replacingOccurrences(of: "{\(i)}", with: s)
-            }
-            return p
-        }
-        func getParam(string2:String,string1:String) -> String {
-
-            let words1 = string1.split(separator: " ").map(String.init)
-            let words2 = string2.split(separator: " ").map(String.init)
-
-            let difference = words2.filter { !words1.contains($0) }
-            let differenceAsString = difference.joined(separator: " ")
-            return differenceAsString
-        }
-        func reflect(_ s: String) -> String {
-            var words = s.split(separator: " ")
-            for i in 0..<words.count {
-                if let reflection = Eliza.reflections[String(words[i])] {
-                    words[i] = Substring(reflection)
-                }
-            }
-            return words.joined(separator: " ")
-        }
-
-        func randomPhrase() -> String {
-            return responses[Int.random(in: 0..<responses.count)]
-        }
-
-        var description: String {
-            return "\(matcher.pattern): \(responses)"
-        }
-    }
-
-    var babble = [
-        PhraseMatcher(matcher: "i need (.*)", responses: ["Why do you need {0}?",
-                                                          "Would it really help you to get {0}?",
-                                                          "Are you sure you need {0}?"])
-    ]
-
-    func respond(_ msg: String) -> String {
-        for pm in babble {
-            if pm.matches(msg) {
-                return pm.respond(msg.lowercased())
-            }
-        }
-        return ""
-    }
-}
 class RailChatBot {
     private var dic: [String: RefreshQ] = [:]
     private var context: String = "default"
@@ -3097,10 +3007,10 @@ class RailChatBot {
             learnKeyValue(context: kv.key, reply: kv.value)
         }
     }
-    func learnV2(_ ear: String, _ elizaDeducer: ElizaDeducer) {
-        feedKeyValuePairs(elizaDeducer.respond(ear))
-        learn(ear: ear)
-    }
+//    func learnV2(_ ear: String, _ elizaDeducer: ElizaDeducer) {
+//        feedKeyValuePairs(elizaDeducer.respond(ear))
+//        learn(ear: ear)
+//    }
 }
 class OnOffSwitch {
     private var mode: Bool = false
@@ -3207,98 +3117,7 @@ class ChangeDetector {
         return result
     }
 }
-class ElizaDeducer {
-    var babble2: [PhraseMatcher]
 
-    init() {
-        // init values in subclass
-        // see ElizaDeducerInitializer for example
-        // example input ountput based on ElizaDeducerInitializer values :
-        // elizaDeducer.respond("a is a b")
-        // [what is a a;a is a b, explain a;a is a b]
-        self.babble2 = []
-    }
-
-    func respond(_ msg: String) -> [AXKeyValuePair] {
-        for pm in babble2 {
-            if pm.matches(msg) {
-                return pm.respond(msg)
-            }
-        }
-        return []
-    }
-
-    class PhraseMatcher {
-        let matcher: NSRegularExpression
-        let responses: [AXKeyValuePair]
-        let regex: String
-
-        init(matcher: String, responses: [AXKeyValuePair]) {
-            do {
-                self.matcher = try NSRegularExpression(pattern: matcher, options: [])
-            } catch {
-                fatalError("Error creating regular expression: \(error)")
-            }
-            self.responses = responses
-            self.regex = matcher
-        }
-
-        func matches(_ str: String) -> Bool {
-            let range = NSRange(location: 0, length: str.utf16.count)
-            return matcher.firstMatch(in: str, options: [], range: range) != nil
-        }
-        func getMatchedString(for pattern: String, in input: String) -> String {
-            do {
-                // Create an NSRegularExpression instance
-                let regex = try NSRegularExpression(pattern: pattern, options: [])
-
-                // Find all matches in the input string
-                let matches = regex.matches(in: input, options: [], range: NSRange(location: 0, length: input.utf16.count))
-
-                // Extract and concatenate the matched substrings
-                var result = ""
-                for match in matches {
-                    for i in 1..<match.numberOfRanges {
-                        if let range = Range(match.range(at: i), in: input) {
-                            result += input[range] + "_"
-                        }
-                    }
-                }
-                result = String(result.dropLast()) // Remove the trailing space
-                return result
-            } catch {
-                print("Error creating regular expression: \(error)")
-                return ""
-            }
-        }
-        func respond(_ str: String) -> [AXKeyValuePair] {
-            var result: [AXKeyValuePair] = []
-            for kv in responses {
-                let tempKV = AXKeyValuePair(key: kv.key, value: kv.value)
-                let s1: String = getMatchedString(for: self.regex, in: str)
-                let sa = s1.split(separator: "_").map { String($0) }
-                for i in 0..<sa.count {
-                        let s = sa[i]
-                        tempKV.key = tempKV.key.replacingOccurrences(of: "{\(i)}", with: s.lowercased())
-                        tempKV.value = tempKV.value.replacingOccurrences(of: "{\(i)}", with: s.lowercased())
-                    }
-                result.append(tempKV)
-            }
-            return result
-        }
-    }
-}
-class ElizaDeducerInitializer: ElizaDeducer {
-    override init() {
-        super.init()
-        var babbleTmp: [PhraseMatcher] = []
-        var kvs: [AXKeyValuePair] = []
-        kvs.append(AXKeyValuePair(key: "what is a {0}", value: "{0} is {1}"))
-        kvs.append(AXKeyValuePair(key: "explain {0}", value: "{0} is {1}"))
-        babbleTmp.append(PhraseMatcher(matcher: "(.*) is (.*)", responses: kvs))
-        babble2 = babbleTmp
-    }
-}
 class Excluder {
     private var startsWith:Array<String> = [String]()
     private var endsWith:Array<String> = [String]()
@@ -3585,5 +3404,349 @@ class AXStandBy {
             return true
         }
         return false
+    }
+}
+
+class LimUniqueResponder {
+    private var responses: [String] = []
+    private var urg: UniqueRandomGenerator
+    private let lim: Int
+
+    // Constructor
+    init(lim: Int) {
+        self.lim = lim
+        self.urg = UniqueRandomGenerator(n1: 0)
+    }
+
+    // Method to get a response
+    func getAResponse() -> String {
+        if responses.isEmpty {
+            return ""
+        }
+        return responses[urg.getUniqueRandom()]
+    }
+
+    // Method to check if responses contain a string
+    func responsesContainsStr(_ item: String) -> Bool {
+        return responses.contains(item)
+    }
+
+    // Method to check if a string contains any response
+    func strContainsResponse(_ item: String) -> Bool {
+        for response in responses {
+            if response.isEmpty {
+                continue
+            }
+            if item.contains(response) {
+                return true
+            }
+        }
+        return false
+    }
+
+    // Method to add a response
+    func addResponse(_ s1: String) {
+        if responses.count > lim - 1 {
+            responses.removeFirst()
+        }
+        if !responses.contains(s1) {
+            responses.append(s1)
+            urg = UniqueRandomGenerator(n1: responses.count)
+        }
+    }
+
+    func addResponses(_ replies: String...) {
+        for value in replies {
+            addResponse(value)
+        }
+    }
+
+    func getSavableStr() -> String {
+        return responses.joined(separator: "_")
+    }
+
+    func getLastItem() -> String {
+        if responses.isEmpty {
+            return ""
+        }
+        return responses.last!
+    }
+}
+class EventChatV2 {
+    private var dic: [String: LimUniqueResponder] = [:]
+    private var modifiedKeys: Set<String> = []
+    private let lim: Int
+
+    // Constructor
+    init(lim: Int) {
+        self.lim = lim
+    }
+
+    func getModifiedKeys() -> Set<String> {
+        return modifiedKeys
+    }
+
+    func keyExists(_ key: String) -> Bool {
+        // if the key was active true is returned
+        return modifiedKeys.contains(key)
+    }
+
+    // Add items
+    func addItems(_ ur: LimUniqueResponder, _ args: String...) {
+        for arg in args {
+            dic[arg] = ur
+        }
+    }
+
+    func addFromDB(_ key: String, _ value: String) {
+        if value.isEmpty || value == "null" {
+            return
+        }
+        let tool1 = AXStringSplit()
+        let values = tool1.splitStr(s1: value)
+        if dic[key] == nil {
+            dic[key] = LimUniqueResponder(lim: lim)
+        }
+        for item in values {
+            dic[key]?.addResponse(item)
+        }
+    }
+
+    // Add key-value pair
+    func addKeyValue(_ key: String, _ value: String) {
+        modifiedKeys.insert(key)
+        if dic[key] != nil {
+            dic[key]?.addResponse(value)
+        } else {
+            dic[key] = LimUniqueResponder(lim: lim)
+            dic[key]?.addResponse(value)
+        }
+    }
+
+    func addKeyValues(_ elizaResults: [AXKeyValuePair]) {
+        for pair in elizaResults {
+            // Access the key and value of each AXKeyValuePair object
+            addKeyValue(pair.getKey(), pair.getValue())
+        }
+    }
+
+    // Get response
+    func response(_ in1: String) -> String {
+        return dic[in1]?.getAResponse() ?? ""
+    }
+
+    func responseLatest(_ in1: String) -> String {
+        return dic[in1]?.getLastItem() ?? ""
+    }
+
+    func getSaveStr(_ key: String) -> String {
+        return dic[key]?.getSavableStr() ?? ""
+    }
+}
+class ElizaDeducer {
+    /*
+    * this class populates a special chat dictionary
+    * based on the matches added via its addPhraseMatcher function
+    * see subclass ElizaDeducerInitializer for example:
+    * ElizaDeducer ed = new ElizaDeducerInitializer(2); // 2 = limit of replies per input
+    */
+    var babble2: [PhraseMatcher] = []
+    private var patternIndex: [String: [PhraseMatcher]] = [:]
+    private var responseCache: [String: [AXKeyValuePair]] = [:]
+    private let ec2: EventChatV2 // chat dictionary, use getter for access. hardcoded replies can also be added
+
+    init(lim: Int) {
+        self.ec2 = EventChatV2(lim: lim)
+    }
+
+    func getEc2() -> EventChatV2 {
+        return ec2
+    }
+
+    func learn(_ msg: String) {
+        // populate EventChat dictionary
+        // Check cache first
+        if let cachedResponses = responseCache[msg] {
+            ec2.addKeyValues(cachedResponses)
+        }
+
+        // Search for matching patterns
+        let potentialMatchers = getPotentialMatchers(msg)
+        for pm in potentialMatchers {
+            if pm.matches(msg) {
+                let response = pm.respond(msg)
+                responseCache[msg] = response
+                ec2.addKeyValues(response)
+            }
+        }
+    }
+
+    func learnedBool(_ msg: String) -> Bool {
+        // same as learn method but returns true if it learned new replies
+        var learned = false
+        // populate EventChat dictionary
+        // Check cache first
+        if let cachedResponses = responseCache[msg] {
+            ec2.addKeyValues(cachedResponses)
+            learned = true
+        }
+
+        // Search for matching patterns
+        let potentialMatchers = getPotentialMatchers(msg)
+        for pm in potentialMatchers {
+            if pm.matches(msg) {
+                let response = pm.respond(msg)
+                responseCache[msg] = response
+                ec2.addKeyValues(response)
+                learned = true
+            }
+        }
+        return learned
+    }
+
+    func respond(_ str1: String) -> String {
+        return ec2.response(str1)
+    }
+
+    func respondLatest(_ str1: String) -> String {
+        // get most recent reply/data
+        return ec2.responseLatest(str1)
+    }
+
+    private func getPotentialMatchers(_ msg: String) -> [PhraseMatcher] {
+        var potentialMatchers: [PhraseMatcher] = []
+        for (key, matchers) in patternIndex {
+            if msg.contains(key) {
+                potentialMatchers.append(contentsOf: matchers)
+            }
+        }
+        return potentialMatchers
+    }
+
+    func addPhraseMatcher(_ pattern: String, _ kvPairs: String...) {
+        var kvs: [AXKeyValuePair] = []
+        for i in stride(from: 0, to: kvPairs.count, by: 2) {
+            kvs.append(AXKeyValuePair(key: kvPairs[i], value: kvPairs[i + 1]))
+        }
+        let matcher = PhraseMatcher(matcher: pattern, responses: kvs)
+        babble2.append(matcher)
+        indexPattern(pattern, matcher)
+    }
+
+    private func indexPattern(_ pattern: String, _ matcher: PhraseMatcher) {
+        for word in pattern.components(separatedBy: .whitespaces) {
+            if patternIndex[word] == nil {
+                patternIndex[word] = []
+            }
+            patternIndex[word]?.append(matcher)
+        }
+    }
+
+    class PhraseMatcher {
+        let matcher: NSRegularExpression
+        let responses: [AXKeyValuePair]
+
+        init(matcher: String, responses: [AXKeyValuePair]) {
+            self.matcher = try! NSRegularExpression(pattern: matcher)
+            self.responses = responses
+        }
+
+        func matches(_ str: String) -> Bool {
+            let range = NSRange(location: 0, length: str.utf16.count)
+            return matcher.firstMatch(in: str, options: [], range: range) != nil
+        }
+
+        func respond(_ str: String) -> [AXKeyValuePair] {
+            let range = NSRange(location: 0, length: str.utf16.count)
+            var result: [AXKeyValuePair] = []
+            if let match = matcher.firstMatch(in: str, options: [], range: range) {
+                let tmp = match.numberOfRanges - 1
+                for kv in self.responses {
+                    let tempKV = AXKeyValuePair(key: kv.getKey(), value: kv.getValue())
+                    for i in 0..<tmp {
+                        if let groupRange = Range(match.range(at: i + 1), in: str) {
+                            let s = String(str[groupRange])
+                            tempKV.setKey(tempKV.getKey().replacingOccurrences(of: "{\(i)}", with: s).lowercased())
+                            tempKV.setValue(tempKV.getValue().replacingOccurrences(of: "{\(i)}", with: s).lowercased())
+                        }
+                    }
+                    result.append(tempKV)
+                }
+            }
+            return result
+        }
+    }
+}
+class ElizaDeducerInitializer: ElizaDeducer {
+
+    override init(lim: Int) {
+        // recommended lim = 5; it's the limit of responses per key in the eventchat dictionary
+        // the purpose of the lim is to make saving and loading data easier
+        super.init(lim: lim)
+        initializeBabble2()
+    }
+
+    private func initializeBabble2() {
+        addPhraseMatcher(
+            "(.*) is (.*)",
+            "what is {0}", "{0} is {1}",
+            "explain {0}", "{0} is {1}"
+        )
+
+        addPhraseMatcher(
+            "if (.*) or (.*) than (.*)",
+            "{0}", "{2}",
+            "{1}", "{2}"
+        )
+
+        addPhraseMatcher(
+            "if (.*) and (.*) than (.*)",
+            "{0}", "{1}"
+        )
+
+        addPhraseMatcher(
+            "(.*) because (.*)",
+            "{1}", "i guess {0}"
+        )
+    }
+}
+class ElizaDBWrapper {
+    // this (function wrapper) class adds save load functionality to the ElizaDeducer Object
+    /*
+        ElizaDeducer ed = new ElizaDeducerInitializer(2);
+        ed.getEc2().addFromDB("test","one_two_three"); // manual load for testing
+        Kokoro k = new Kokoro(new AbsDictionaryDB()); // use skill's kokoro attribute
+        ElizaDBWrapper ew = new ElizaDBWrapper();
+        System.out.println(ew.respond("test", ed.getEc2(), k)); // get reply for input, tries loading reply from DB
+        System.out.println(ew.respond("test", ed.getEc2(), k)); // doesn't try DB load on second run
+        ed.learn("a is b"); // learn only after respond
+        ew.sleepNSave(ed.getEc2(), k); // save when bot is sleeping, not on every skill input method visit
+    */
+    private var modifiedKeys: Set<String> = []
+
+    func respond(_ in1: String, _ ec: EventChatV2, _ kokoro: Kokoro) -> String {
+        if modifiedKeys.contains(in1) {
+            return ec.response(in1)
+        }
+        modifiedKeys.insert(in1)
+        // load
+        ec.addFromDB(in1, kokoro.grimoireMemento.simpleLoad(key: in1))
+        return ec.response(in1)
+    }
+
+    func respondLatest(_ in1: String, _ ec: EventChatV2, _ kokoro: Kokoro) -> String {
+        if modifiedKeys.contains(in1) {
+            return ec.responseLatest(in1)
+        }
+        modifiedKeys.insert(in1)
+        // load and get latest reply for input
+        ec.addFromDB(in1, kokoro.grimoireMemento.simpleLoad(key: in1))
+        return ec.responseLatest(in1)
+    }
+
+    func sleepNSave(_ ecv2: EventChatV2, _ kokoro: Kokoro) {
+        for element in ecv2.getModifiedKeys() {
+            kokoro.grimoireMemento.simpleSave(key: element, value: ecv2.getSaveStr(element))
+        }
     }
 }

@@ -2036,10 +2036,10 @@ Module Auxiliary_modules
                 LearnKeyValue(kv.GetKey, kv.GetValue)
             Next
         End Sub
-        Public Sub LearnV2(ByVal ear As String, ByVal eliza_deducer As ElizaDeducer)
-            FeedKeyValuePairs(eliza_deducer.Respond(ear))
-            Learn(ear)
-        End Sub
+        'Public Sub LearnV2(ByVal ear As String, ByVal eliza_deducer As ElizaDeducer)
+        '    FeedKeyValuePairs(eliza_deducer.Respond(ear))
+        '    Learn(ear)
+        'End Sub
     End Class
     Public Class SkillHubAlgDispenser
         ' Super class to output an algorithm out of a selection of skills
@@ -2518,73 +2518,6 @@ Module Auxiliary_modules
             Return result
         End Function
     End Class
-    Public Class ElizaDeducer
-        Public babble2 As New List(Of PhraseMatcher)()
-
-        Public Sub New()
-            ' init values in subclass
-            ' see ElizaDeducerInitializer for example
-            ' example input ountput based on ElizaDeducerInitializer values :
-            ' elizaDeducer.respond("a is a b")
-            ' [what is a a;a is a b, explain a;a is a b]
-
-        End Sub
-
-        Public Function Respond(ByVal msg As String) As List(Of AXKeyValuePair)
-            For Each pm As PhraseMatcher In babble2
-                If pm.Matches(msg) Then
-                    Return pm.Respond(msg)
-                End If
-            Next
-            Return New List(Of AXKeyValuePair)()
-        End Function
-
-        Public Class PhraseMatcher
-            Public ReadOnly matcher As Regex
-            Public ReadOnly responses As List(Of AXKeyValuePair)
-
-            Public Sub New(ByVal matcher As String, ByVal responses As List(Of AXKeyValuePair))
-                Me.matcher = New Regex(matcher)
-                Me.responses = responses
-            End Sub
-
-            Public Function Matches(ByVal str As String) As Boolean
-                Dim m As Match = matcher.Match(str)
-                Return m.Success
-            End Function
-
-            Public Function Respond(ByVal str As String) As List(Of AXKeyValuePair)
-                Dim m As Match = matcher.Match(str)
-                If m.Success Then
-                    Dim result As New List(Of AXKeyValuePair)()
-                    Dim tmp As Integer = m.Groups.Count
-                    For Each kv As AXKeyValuePair In responses
-                        Dim tempKV As New AXKeyValuePair(kv.GetKey, kv.GetValue)
-                        For i As Integer = 0 To tmp - 1
-                            Dim s As String = m.Groups(i + 1).Value
-                            tempKV.SetKey(tempKV.GetKey.Replace("{" & i & "}", s).ToLower())
-                            tempKV.SetValue(tempKV.GetValue.Replace("{" & i & "}", s).ToLower())
-                        Next
-                        result.Add(tempKV)
-                    Next
-                    Return result
-                End If
-                Return New List(Of AXKeyValuePair)()
-            End Function
-        End Class
-    End Class
-    Public Class ElizaDeducerInitializer
-        Inherits ElizaDeducer
-
-        Public Sub New()
-            Dim babbleTmp As New List(Of PhraseMatcher)()
-            Dim kvs As New List(Of AXKeyValuePair)()
-            kvs.Add(New AXKeyValuePair("what is a {0}", "{0} is {1}"))
-            kvs.Add(New AXKeyValuePair("explain {0}", "{0} is {1}"))
-            babbleTmp.Add(New PhraseMatcher("(.*) is (.*)", kvs))
-            babble2 = babbleTmp
-        End Sub
-    End Class
     Public Class Excluder
         Private ReadOnly startsWith As New List(Of String)()
         Private ReadOnly endsWith As New List(Of String)()
@@ -2744,138 +2677,495 @@ Module Auxiliary_modules
             Return skills.Count
         End Function
     End Class
-End Module
-Public Class UniqueRandomGenerator
-    Private numbers As List(Of Integer)
-    Private remainingNumbers As List(Of Integer)
+    Public Class UniqueRandomGenerator
+        Private numbers As List(Of Integer)
+        Private remainingNumbers As List(Of Integer)
 
-    Public Sub New(n1 As Integer)
-        numbers = Enumerable.Range(0, n1).ToList()
-        remainingNumbers = New List(Of Integer)()
-        Reset()
-    End Sub
-
-    Public Sub Reset()
-        remainingNumbers = New List(Of Integer)(numbers)
-        Dim rnd As New Random()
-        remainingNumbers = remainingNumbers.OrderBy(Function() rnd.Next()).ToList()
-    End Sub
-
-    Public Function GetUniqueRandom() As Integer
-        If remainingNumbers.Count = 0 Then
+        Public Sub New(n1 As Integer)
+            numbers = Enumerable.Range(0, n1).ToList()
+            remainingNumbers = New List(Of Integer)()
             Reset()
-        End If
-        Dim index As Integer = remainingNumbers.Count - 1
-        Dim value As Integer = remainingNumbers(index)
-        remainingNumbers.RemoveAt(index)
-        Return value
-    End Function
-End Class
-Public Class UniqueResponder
-    Private responses As List(Of String)
-    Private urg As UniqueRandomGenerator
+        End Sub
 
-    ' Constructor
-    Public Sub New(ParamArray replies As String())
-        responses = New List(Of String)()
-        urg = New UniqueRandomGenerator(replies.Length)
-        For Each response As String In replies
-            responses.Add(response)
-        Next
-    End Sub
+        Public Sub Reset()
+            remainingNumbers = New List(Of Integer)(numbers)
+            Dim rnd As New Random()
+            remainingNumbers = remainingNumbers.OrderBy(Function() rnd.Next()).ToList()
+        End Sub
 
-    ' Method to get a response
-    Public Function GetAResponse() As String
-        If responses.Count = 0 Then
-            Return ""
-        End If
-        Return responses(urg.GetUniqueRandom())
-    End Function
-
-    ' Method to check if responses contain a string
-    Public Function ResponsesContainsStr(item As String) As Boolean
-        Return responses.Contains(item)
-    End Function
-
-    ' Method to check if a string contains any response
-    Public Function StrContainsResponse(item As String) As Boolean
-        For Each response As String In responses
-            If response.Length = 0 Then
-                Continue For
+        Public Function GetUniqueRandom() As Integer
+            If remainingNumbers.Count = 0 Then
+                Reset()
             End If
-            If item.Contains(response) Then
+            Dim index As Integer = remainingNumbers.Count - 1
+            Dim value As Integer = remainingNumbers(index)
+            remainingNumbers.RemoveAt(index)
+            Return value
+        End Function
+    End Class
+    Public Class UniqueResponder
+        Private responses As List(Of String)
+        Private urg As UniqueRandomGenerator
+
+        ' Constructor
+        Public Sub New(ParamArray replies As String())
+            responses = New List(Of String)()
+            urg = New UniqueRandomGenerator(replies.Length)
+            For Each response As String In replies
+                responses.Add(response)
+            Next
+        End Sub
+
+        ' Method to get a response
+        Public Function GetAResponse() As String
+            If responses.Count = 0 Then
+                Return ""
+            End If
+            Return responses(urg.GetUniqueRandom())
+        End Function
+
+        ' Method to check if responses contain a string
+        Public Function ResponsesContainsStr(item As String) As Boolean
+            Return responses.Contains(item)
+        End Function
+
+        ' Method to check if a string contains any response
+        Public Function StrContainsResponse(item As String) As Boolean
+            For Each response As String In responses
+                If response.Length = 0 Then
+                    Continue For
+                End If
+                If item.Contains(response) Then
+                    Return True
+                End If
+            Next
+            Return False
+        End Function
+
+        ' Method to add a response
+        Public Sub AddResponse(s1 As String)
+            If Not responses.Contains(s1) Then
+                responses.Add(s1)
+                urg = New UniqueRandomGenerator(responses.Count)
+            End If
+        End Sub
+    End Class
+    Public Class EventChat
+        Private dic As Dictionary(Of String, UniqueResponder)
+
+        ' Constructor
+        Public Sub New(ur As UniqueResponder, ParamArray args() As String)
+            dic = New Dictionary(Of String, UniqueResponder)()
+            For Each arg As String In args
+                dic(arg) = ur
+            Next
+        End Sub
+
+        ' Add items
+        Public Sub AddItems(ur As UniqueResponder, ParamArray args() As String)
+            For Each arg As String In args
+                dic(arg) = ur
+            Next
+        End Sub
+
+        ' Add key-value pair
+        Public Sub AddKeyValue(key As String, value As String)
+            If dic.ContainsKey(key) Then
+                dic(key).AddResponse(value)
+            Else
+                dic(key) = New UniqueResponder(value)
+            End If
+        End Sub
+
+        ' Get response
+        Public Function Response(in1 As String) As String
+            If dic.ContainsKey(in1) Then
+                Return dic(in1).GetAResponse()
+            Else
+                Return ""
+            End If
+        End Function
+    End Class
+    Public Class AXStandBy
+        Private ReadOnly tg As TimeGate
+
+        Public Sub New(pause As Integer)
+            Me.tg = New TimeGate(pause)
+            Me.tg.OpenGate()
+        End Sub
+
+        Public Function standBy(ear As String) As Boolean
+            ' only returns true after pause minutes of no input
+            If ear.Length > 0 Then
+                ' restart count
+                Me.tg.OpenGate()
+                Return False
+            End If
+            If Me.tg.IsClosed() Then
+                ' time out without input, stand by is true
+                Me.tg.OpenGate()
                 Return True
             End If
-        Next
-        Return False
-    End Function
-
-    ' Method to add a response
-    Public Sub AddResponse(s1 As String)
-        If Not responses.Contains(s1) Then
-            responses.Add(s1)
-            urg = New UniqueRandomGenerator(responses.Count)
-        End If
-    End Sub
-End Class
-Public Class EventChat
-    Private dic As Dictionary(Of String, UniqueResponder)
-
-    ' Constructor
-    Public Sub New(ur As UniqueResponder, ParamArray args() As String)
-        dic = New Dictionary(Of String, UniqueResponder)()
-        For Each arg As String In args
-            dic(arg) = ur
-        Next
-    End Sub
-
-    ' Add items
-    Public Sub AddItems(ur As UniqueResponder, ParamArray args() As String)
-        For Each arg As String In args
-            dic(arg) = ur
-        Next
-    End Sub
-
-    ' Add key-value pair
-    Public Sub AddKeyValue(key As String, value As String)
-        If dic.ContainsKey(key) Then
-            dic(key).AddResponse(value)
-        Else
-            dic(key) = New UniqueResponder(value)
-        End If
-    End Sub
-
-    ' Get response
-    Public Function Response(in1 As String) As String
-        If dic.ContainsKey(in1) Then
-            Return dic(in1).GetAResponse()
-        Else
-            Return ""
-        End If
-    End Function
-End Class
-Public Class AXStandBy
-    Private ReadOnly tg As TimeGate
-
-    Public Sub New(pause As Integer)
-        Me.tg = New TimeGate(pause)
-        Me.tg.OpenGate()
-    End Sub
-
-    Public Function standBy(ear As String) As Boolean
-        ' only returns true after pause minutes of no input
-        If ear.Length > 0 Then
-            ' restart count
-            Me.tg.OpenGate()
             Return False
-        End If
-        If Me.tg.IsClosed() Then
-            ' time out without input, stand by is true
-            Me.tg.OpenGate()
-            Return True
-        End If
-        Return False
-    End Function
-End Class
+        End Function
+    End Class
 
+    Public Class LimUniqueResponder
+        Private responses As List(Of String)
+        Private urg As UniqueRandomGenerator = New UniqueRandomGenerator(0)
+        Private ReadOnly lim As Integer
 
+        ' Constructor
+        Public Sub New(lim As Integer)
+            responses = New List(Of String)()
+            Me.lim = lim
+        End Sub
+
+        ' Method to get a response
+        Public Function GetAResponse() As String
+            If responses.Count = 0 Then
+                Return ""
+            End If
+            Return responses(urg.GetUniqueRandom())
+        End Function
+
+        ' Method to check if responses contain a string
+        Public Function ResponsesContainsStr(item As String) As Boolean
+            Return responses.Contains(item)
+        End Function
+
+        ' Method to check if a string contains any response
+        Public Function StrContainsResponse(item As String) As Boolean
+            For Each response As String In responses
+                If String.IsNullOrEmpty(response) Then
+                    Continue For
+                End If
+                If item.Contains(response) Then
+                    Return True
+                End If
+            Next
+            Return False
+        End Function
+
+        ' Method to add a response
+        Public Sub AddResponse(s1 As String)
+            If Me.responses.Count > lim - 1 Then
+                responses.RemoveAt(0)
+            End If
+            If Not responses.Contains(s1) Then
+                responses.Add(s1)
+                urg = New UniqueRandomGenerator(responses.Count)
+            End If
+        End Sub
+
+        ' Method to add multiple responses
+        Public Sub AddResponses(ParamArray replies As String())
+            For Each value As String In replies
+                AddResponse(value)
+            Next
+        End Sub
+
+        ' Method to get a savable string
+        Public Function GetSavableStr() As String
+            Return String.Join("_", responses)
+        End Function
+
+        ' Method to get the last item
+        Public Function GetLastItem() As String
+            If responses.Count = 0 Then
+                Return ""
+            End If
+            Return responses(responses.Count - 1)
+        End Function
+    End Class
+
+    Public Class EventChatV2
+        Private ReadOnly dic As New Dictionary(Of String, LimUniqueResponder)()
+        Private ReadOnly modifiedKeys As New HashSet(Of String)()
+        Private ReadOnly lim As Integer
+
+        ' Constructor
+        Public Sub New(lim As Integer)
+            Me.lim = lim
+        End Sub
+
+        ' Get modified keys
+        Public Function GetModifiedKeys() As HashSet(Of String)
+            Return modifiedKeys
+        End Function
+
+        ' Check if a key exists
+        Public Function KeyExists(key As String) As Boolean
+            Return modifiedKeys.Contains(key)
+        End Function
+
+        ' Add items
+        Public Sub AddItems(ur As LimUniqueResponder, ParamArray args As String())
+            For Each arg As String In args
+                dic(arg) = ur
+            Next
+        End Sub
+
+        ' Add from database
+        Public Sub AddFromDB(key As String, value As String)
+            If String.IsNullOrEmpty(value) OrElse value = "null" Then
+                Return
+            End If
+            Dim tool1 As New AXStringSplit()
+            Dim values As String() = tool1.split(value)
+            If Not dic.ContainsKey(key) Then
+                dic(key) = New LimUniqueResponder(lim)
+            End If
+            For Each item As String In values
+                dic(key).AddResponse(item)
+            Next
+        End Sub
+
+        ' Add key-value pair
+        Public Sub AddKeyValue(key As String, value As String)
+            modifiedKeys.Add(key)
+            If dic.ContainsKey(key) Then
+                dic(key).AddResponse(value)
+            Else
+                dic(key) = New LimUniqueResponder(lim)
+                dic(key).AddResponse(value)
+            End If
+        End Sub
+
+        ' Add key-values from a list of AXKeyValuePair
+        Public Sub AddKeyValues(elizaResults As List(Of AXKeyValuePair))
+            For Each pair As AXKeyValuePair In elizaResults
+                AddKeyValue(pair.GetKey(), pair.GetValue())
+            Next
+        End Sub
+
+        ' Get response
+        Public Function Response(in1 As String) As String
+            Return If(dic.ContainsKey(in1), dic(in1).GetAResponse(), "")
+        End Function
+
+        ' Get latest response
+        Public Function ResponseLatest(in1 As String) As String
+            Return If(dic.ContainsKey(in1), dic(in1).GetLastItem(), "")
+        End Function
+
+        ' Get save string
+        Public Function GetSaveStr(key As String) As String
+            Return dic(key).GetSavableStr()
+        End Function
+    End Class
+
+    Public Class ElizaDeducer
+        ' This class populates a special chat dictionary based on the matches added via its AddPhraseMatcher function.
+        ' See subclass ElizaDeducerInitializer for example:
+        ' Dim ed As New ElizaDeducerInitializer(2) ' 2 = limit of replies per input
+
+        Public babble2 As List(Of PhraseMatcher)
+        Private ReadOnly patternIndex As Dictionary(Of String, List(Of PhraseMatcher))
+        Private ReadOnly responseCache As Dictionary(Of String, List(Of AXKeyValuePair))
+        Private ReadOnly ec2 As EventChatV2 ' Chat dictionary, use getter for access. Hardcoded replies can also be added.
+
+        Public Sub New(lim As Integer)
+            babble2 = New List(Of PhraseMatcher)()
+            patternIndex = New Dictionary(Of String, List(Of PhraseMatcher))()
+            responseCache = New Dictionary(Of String, List(Of AXKeyValuePair))()
+            ec2 = New EventChatV2(lim)
+        End Sub
+
+        Public Function GetEc2() As EventChatV2
+            Return ec2
+        End Function
+
+        Public Sub Learn(msg As String)
+            ' Populate EventChat dictionary
+            ' Check cache first
+            If responseCache.ContainsKey(msg) Then
+                ec2.AddKeyValues(New List(Of AXKeyValuePair)(responseCache(msg)))
+            End If
+
+            ' Search for matching patterns
+            Dim potentialMatchers As List(Of PhraseMatcher) = GetPotentialMatchers(msg)
+            For Each pm As PhraseMatcher In potentialMatchers
+                If pm.Matches(msg) Then
+                    Dim response As List(Of AXKeyValuePair) = pm.Respond(msg)
+                    responseCache(msg) = response
+                    ec2.AddKeyValues(response)
+                End If
+            Next
+        End Sub
+
+        Public Function LearnedBool(msg As String) As Boolean
+            ' Same as Learn method but returns True if it learned new replies
+            Dim learned As Boolean = False
+
+            ' Populate EventChat dictionary
+            ' Check cache first
+            If responseCache.ContainsKey(msg) Then
+                ec2.AddKeyValues(New List(Of AXKeyValuePair)(responseCache(msg)))
+                learned = True
+            End If
+
+            ' Search for matching patterns
+            Dim potentialMatchers As List(Of PhraseMatcher) = GetPotentialMatchers(msg)
+            For Each pm As PhraseMatcher In potentialMatchers
+                If pm.Matches(msg) Then
+                    Dim response As List(Of AXKeyValuePair) = pm.Respond(msg)
+                    responseCache(msg) = response
+                    ec2.AddKeyValues(response)
+                    learned = True
+                End If
+            Next
+
+            Return learned
+        End Function
+
+        Public Function Respond(str1 As String) As String
+            Return ec2.Response(str1)
+        End Function
+
+        Public Function RespondLatest(str1 As String) As String
+            ' Get most recent reply/data
+            Return ec2.ResponseLatest(str1)
+        End Function
+
+        Private Function GetPotentialMatchers(msg As String) As List(Of PhraseMatcher)
+            Dim potentialMatchers As New List(Of PhraseMatcher)()
+            For Each key As String In patternIndex.Keys
+                If msg.Contains(key) Then
+                    potentialMatchers.AddRange(patternIndex(key))
+                End If
+            Next
+            Return potentialMatchers
+        End Function
+
+        Public Sub AddPhraseMatcher(pattern As String, ParamArray kvPairs As String())
+            Dim kvs As New List(Of AXKeyValuePair)()
+            For i As Integer = 0 To kvPairs.Length - 1 Step 2
+                kvs.Add(New AXKeyValuePair(kvPairs(i), kvPairs(i + 1)))
+            Next
+            Dim matcher As New PhraseMatcher(pattern, kvs)
+            babble2.Add(matcher)
+            IndexPattern(pattern, matcher)
+        End Sub
+
+        Private Sub IndexPattern(pattern As String, matcher As PhraseMatcher)
+            For Each word As String In pattern.Split(" "c)
+                If Not patternIndex.ContainsKey(word) Then
+                    patternIndex(word) = New List(Of PhraseMatcher)()
+                End If
+                patternIndex(word).Add(matcher)
+            Next
+        End Sub
+
+        Public Class PhraseMatcher
+            Public ReadOnly Matcher As Regex
+            Public ReadOnly Responses As List(Of AXKeyValuePair)
+
+            Public Sub New(matcher As String, responses As List(Of AXKeyValuePair))
+                Me.matcher = New Regex(matcher)
+                Me.responses = responses
+            End Sub
+
+            Public Function Matches(str As String) As Boolean
+                Return matcher.IsMatch(str)
+            End Function
+
+            Public Function Respond(str As String) As List(Of AXKeyValuePair)
+                Dim m As Match = matcher.Match(str)
+                Dim result As New List(Of AXKeyValuePair)()
+                If m.Success Then
+                    Dim tmp As Integer = m.Groups.Count - 1 ' GroupCount in Java is equivalent to Groups.Count - 1 in .NET
+                    For Each kv As AXKeyValuePair In Me.responses
+                        Dim tempKV As New AXKeyValuePair(kv.GetKey(), kv.GetValue())
+                        For i As Integer = 0 To tmp - 1
+                            Dim s As String = m.Groups(i + 1).Value
+                            tempKV.SetKey(tempKV.GetKey().Replace("{" & i & "}", s).ToLower())
+                            tempKV.SetValue(tempKV.GetValue().Replace("{" & i & "}", s).ToLower())
+                        Next
+                        result.Add(tempKV)
+                    Next
+                End If
+                Return result
+            End Function
+        End Class
+    End Class
+
+    Public Class ElizaDeducerInitializer
+        Inherits ElizaDeducer
+
+        ' Constructor
+        Public Sub New(lim As Integer)
+            ' Recommended lim = 5; it's the limit of responses per key in the EventChat dictionary.
+            ' The purpose of the lim is to make saving and loading data easier.
+            MyBase.New(lim)
+            InitializeBabble2()
+        End Sub
+
+        ' Initialize the babble2 list with predefined phrase matchers
+        Private Sub InitializeBabble2()
+            AddPhraseMatcher(
+                "(.*) is (.*)",
+                "what is {0}", "{0} is {1}",
+                "explain {0}", "{0} is {1}"
+            )
+
+            AddPhraseMatcher(
+                "if (.*) or (.*) than (.*)",
+                "{0}", "{2}",
+                "{1}", "{2}"
+            )
+
+            AddPhraseMatcher(
+                "if (.*) and (.*) than (.*)",
+                "{0}", "{1}"
+            )
+
+            AddPhraseMatcher(
+                "(.*) because (.*)",
+                "{1}", "i guess {0}"
+            )
+        End Sub
+    End Class
+
+    Public Class ElizaDBWrapper
+        ' This (function wrapper) class adds save/load functionality to the ElizaDeducer Object.
+        ' Example usage:
+        ' Dim ed As New ElizaDeducerInitializer(2)
+        ' ed.GetEc2().AddFromDB("test", "one_two_three") ' Manual load for testing
+        ' Dim k As New Kokoro(New AbsDictionaryDB()) ' Use skill's kokoro attribute
+        ' Dim ew As New ElizaDBWrapper()
+        ' Console.WriteLine(ew.Respond("test", ed.GetEc2(), k)) ' Get reply for input, tries loading reply from DB
+        ' Console.WriteLine(ew.Respond("test", ed.GetEc2(), k)) ' Doesn't try DB load on second run
+        ' ed.Learn("a is b") ' Learn only after respond
+        ' ew.SleepNSave(ed.GetEc2(), k) ' Save when bot is sleeping, not on every skill input method visit
+
+        Private ReadOnly modifiedKeys As New HashSet(Of String)()
+
+        Public Function Respond(in1 As String, ec As EventChatV2, kokoro As Kokoro) As String
+            If modifiedKeys.Contains(in1) Then
+                Return ec.Response(in1)
+            End If
+            modifiedKeys.Add(in1)
+            ' Load
+            ec.AddFromDB(in1, kokoro.grimoireMemento.SimpleLoad(in1))
+            Return ec.Response(in1)
+        End Function
+
+        Public Function RespondLatest(in1 As String, ec As EventChatV2, kokoro As Kokoro) As String
+            If modifiedKeys.Contains(in1) Then
+                Return ec.ResponseLatest(in1)
+            End If
+            modifiedKeys.Add(in1)
+            ' Load and get latest reply for input
+            ec.AddFromDB(in1, kokoro.grimoireMemento.SimpleLoad(in1))
+            Return ec.ResponseLatest(in1)
+        End Function
+
+        Public Sub SleepNSave(ecv2 As EventChatV2, kokoro As Kokoro)
+            For Each element As String In ecv2.GetModifiedKeys()
+                kokoro.grimoireMemento.SimpleSave(element, ecv2.GetSaveStr(element))
+            Next
+        End Sub
+    End Class
+
+End Module

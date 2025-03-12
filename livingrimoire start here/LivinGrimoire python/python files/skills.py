@@ -1084,7 +1084,7 @@ class DiHoneyBunny(Skill):
 class DiAlarmer(Skill):
     def __init__(self):
         super().__init__()
-        self.off: Responder = Responder("alarm off", "cancel alarm")
+        self.off: Responder = Responder("shut up")
         self._cron: Cron = Cron("", 3, 3)
 
     def setCron(self, cron):
@@ -1105,6 +1105,13 @@ class DiAlarmer(Skill):
 
         if self._cron.triggerWithoutRenewal():
             self.setSimpleAlg("beep beep beep")
+
+    def skillNotes(self, param: str) -> str:
+        if param == "notes":
+            return "alarm clock skill"
+        elif param == "triggers":
+            return "set alarm to 9:40. shut up to stop and cancel snooze"
+        return "alarm clock skill"
 
 
 class DiMemoryGame(Skill):
@@ -1143,6 +1150,7 @@ class DiOneWorder(Skill):
         self.toggler: str = phrase
         self.drip: PercentDripper = PercentDripper()  # Assuming PercentDripper is implemented
         self.mode: bool = False
+        self.drip.setLimit(90)
 
     def set_cry(self, cry):
         self.cry = cry + " "
@@ -1262,45 +1270,6 @@ class AHAware(Skill):
                 self.algPartsFusion(4, APHappy(self.ggReplies.getAResponse()))
             case self._call:
                 self.setSimpleAlg(self.replies.getAResponse())
-
-
-class DiDeducer(Skill):
-    def __init__(self, deducer: ElizaDeducer):
-        super().__init__()
-        self.rcb: RailChatBot = RailChatBot()
-        self.dialog: AXCmdBreaker = AXCmdBreaker("over")
-        self.filter: UniqueItemSizeLimitedPriorityQueue = UniqueItemSizeLimitedPriorityQueue(5)
-        self.bads: AXCmdBreaker = AXCmdBreaker("is bad")
-        self.goods: AXCmdBreaker = AXCmdBreaker("is good")
-        self.filterTemp: str = ""
-        self.elizaDeducer: ElizaDeducer = deducer
-
-    def setQueLim(self, lim):
-        self.filter.setLimit(lim)
-
-    def input(self, ear, skin, eye):
-        # filter learn:
-        self.filterTemp = self.bads.extractCmdParam(ear)
-        if self.filterTemp:
-            self.filter.insert(self.filterTemp)
-            self.filterTemp = ""
-            self.setSimpleAlg("i will keep that in mind")
-            return
-        self.filterTemp = self.goods.extractCmdParam(ear)
-        if self.filterTemp:
-            self.filter.removeItem(self.filterTemp)
-            self.filterTemp = ""
-            self.setSimpleAlg("understood")
-            return
-        if self.filter.strContainsResponse(ear):
-            return  # filter in
-        temp = self.dialog.extractCmdParam(ear)
-        if temp:
-            self.rcb.learnV2(temp, self.elizaDeducer)
-            result = self.rcb.respondDialog(temp)
-            if self.filter.strContainsResponse(result):
-                return  # filter out
-            self.setSimpleAlg(result)
 
 
 class DiBlabberV6(Skill):
@@ -1590,7 +1559,7 @@ class DiBicameral(Skill):
 
     def skillNotes(self, param: str) -> str:
         if param == "notes":
-            return "DiBicameral is used to centralize triggers for multiple skills. see Bicameral Mind wiki for more."
+            return "used to centralize triggers for multiple skills. see Bicameral Mind wiki for more."
         elif param == "triggers":
             return "fully automatic skill"
         return "note unavailable"
@@ -1675,6 +1644,13 @@ class DiYandere(Skill):
             for i in range(d1.getSimpleRNDNum(3)):
                 tempList.append(self.sadYandere.getAResponse())
             self.algPartsFusion(4, APVerbatim(tempList))
+
+    def skillNotes(self, param: str) -> str:
+        if param == "notes":
+            return "lovey dovey skill"
+        elif param == "triggers":
+            return "reply i love you or i hate you, when i say it"
+        return "Note unavailable."
 
 
 class DiSkillBundle(Skill):

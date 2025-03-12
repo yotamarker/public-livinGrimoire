@@ -194,3 +194,10 @@ class DaExePath(Skill):
         my_thread = threading.Thread(target=self._async_func, args=(command,))
         my_thread.daemon = True
         my_thread.start()
+
+    def skillNotes(self, param: str) -> str:
+        if param == "notes":
+            return "engages external programs"
+        elif param == "triggers":
+            return "say 'calculator' or 'notepad'."
+        return "note unavailable"

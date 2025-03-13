@@ -127,6 +127,13 @@ class DaRainAlerts(ShorniSplash):
         else:
             return "City Not Found"
 
+    def skillNotes(self, param: str) -> str:
+        if param == "notes":
+            return "weather information"
+        elif param == "triggers":
+            return "temp for temperature. rain alerts and get weather"
+        return "note unavailable"
+
 
 class DaRSSFeed(ShorniSplash):
     def __init__(self, rss_URL: str):

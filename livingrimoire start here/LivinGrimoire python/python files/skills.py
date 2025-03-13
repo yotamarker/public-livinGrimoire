@@ -661,6 +661,12 @@ class DiSayer(Skill):
             self.setSimpleAlg(self.command)
             self.command = ""
 
+    def skillNotes(self, param: str) -> str:
+        if param == "notes":
+            return "says parameter"
+        elif param == "triggers":
+            return "say something or say it"
+        return "smoothie skill"
 
 # the smoothie skills are simple skills for testing purposes,
 # such as testing the BranchSkill. but they have their own merit
@@ -726,6 +732,13 @@ class DiJumbler(Skill):
         if not temp:  # In Python, an empty string is considered False in a boolean context
             return
         self.setSimpleAlg(self.jumble_string(temp))
+
+    def skillNotes(self, param: str) -> str:
+        if param == "notes":
+            return "string jumbler"
+        elif param == "triggers":
+            return "jumble string"
+        return "smoothie skill"
 
     @staticmethod
     def jumble_string(s: str) -> str:
@@ -1046,6 +1059,13 @@ class DiBlueCrystal(Skill):
         if len(self._categories) == 0:
             return
         self._keyList = list(self._categories[self._categoryIndex].keys())
+
+    def skillNotes(self, param: str) -> str:
+        if param == "notes":
+            return "language learning skill"
+        elif param == "triggers":
+            return "teach, next category, randomize category, score, level. to answer say it means translation"
+        return "note unavailable"
 
 
 class DiHoneyBunny(Skill):
@@ -2059,6 +2079,13 @@ class DiPassGen(Skill):
         if ear == "generate a password":
             self.setSimpleAlg(self.generate_password())
 
+    def skillNotes(self, param: str) -> str:
+        if param == "notes":
+            return "password generator"
+        elif param == "triggers":
+            return "generate a password"
+        return "smoothie skill"
+
     @staticmethod
     def generate_password(length=12):
         # characters = string.ascii_letters + string.digits + string.punctuation
@@ -2160,13 +2187,13 @@ class DiCusser(Skill):
         if len(ear) == 0: # ***
             return
         # triggered by usage of remembered repeating strings
-        self.annoyedq.learn(ear)
-        if self.annoyedq.AnnoyedLevel(ear,1):
-            if self.violenceTRG.drip():
-                self.algPartsFusion(3, APMad("attacking"))
-                return
-            self.algPartsFusion(4, APMad(self.npc.forceRespond()))
-            return
+        # self.annoyedq.learn(ear)
+        # if self.annoyedq.AnnoyedLevel(ear,1):
+        #     if self.violenceTRG.drip():
+        #         self.algPartsFusion(3, APMad("attacking"))
+        #         return
+        #     self.algPartsFusion(4, APMad(self.npc.forceRespond()))
+        #     return
         # filter escape
         if not self.filter.strContainsResponse(ear):
             return

@@ -2577,3 +2577,63 @@ class DiMezzoflationGame(Skill):
         return "note unavailable"
 
 
+class DiOneWorderV2(Skill):
+    def __init__(self, ed: ElizaDeducer, phrase: str = "chi"):
+        super().__init__()  # Call the superclass constructor
+        self.cry: str = f'{phrase} '
+        self.toggler: str = phrase
+        self.drip: PercentDripper = PercentDripper()  # Assuming PercentDripper is implemented
+        self.mode: bool = False
+        self.drip.setLimit(90)
+        self.ed: ElizaDeducer = ed
+
+    def set_cry(self, cry):
+        self.cry = cry + " "
+
+    def set_toggler(self, toggler):
+        self.toggler = toggler
+
+    def set_drip_percent(self, n: int):
+        self.drip.setLimit(n)
+
+    def input(self, ear, skin, eye):
+        if not ear:
+            return
+        if ear == self.toggler:
+            self.mode = not self.mode
+            self.setSimpleAlg("toggled")
+            return
+        if self.mode and self.drip.drip():
+            # can add heavy duty algorithms here
+            if self.ed.learned_bool(ear):
+                self.setSimpleAlg("got it")
+            else:
+                reply = self.ed.respond(ear)
+                if len(reply)>0:
+                    self.setSimpleAlg(reply)
+                    return
+                self.setSimpleAlg(self.convert_to_chi(ear))
+
+    def convert_to_chi(self, input_str):
+        # Split the input string into words
+        words = input_str.split()
+
+        # Initialize an empty result string
+        result = ""
+
+        # Iterate through each word
+        for _ in words:
+            # Append "chi" to the result
+            result += self.cry
+
+        # Remove the trailing space
+        if result:
+            result = result[:-1]
+
+        return result
+
+    def skillNotes(self, param: str) -> str:
+        if param == "triggers":
+            return "say chi to toggle skill"
+        return "talks like a cute pet"
+

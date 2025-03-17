@@ -3263,6 +3263,7 @@ class LimUniqueResponder:
         self.responses: list[str] = []
         self.lim = lim
         self.urg = UniqueRandomGenerator(0)
+        self.lastInsert = ""
 
     def get_a_response(self) -> str:
         if not self.responses:
@@ -3276,10 +3277,14 @@ class LimUniqueResponder:
         return any(response and response in item for response in self.responses)
 
     def add_response(self, s1: str) -> None:
+        if self.lastInsert == s1:
+            # exits because repeat insert attempt
+            return
         if len(self.responses) > self.lim - 1:
             self.responses.pop(0)
         if s1 not in self.responses:
             self.responses.append(s1)
+            self.lastInsert = s1
             self.urg = UniqueRandomGenerator(len(self.responses))
 
     def add_responses(self, *replies: str) -> None:
@@ -3344,3 +3349,123 @@ class EventChatV2:
 
     def get_save_str(self, key: str) -> str:
         return self.dic[key].get_savable_str() if key in self.dic else ""
+
+
+class ElizaDeducerInitializer2(ElizaDeducer):
+    def __init__(self, lim: int):
+        # Recommended lim = 5; it's the limit of responses per key in the EventChat dictionary
+        # The purpose of the lim is to make saving and loading data easier
+        super().__init__(lim)
+        self.initialize_babble2()
+
+    def initialize_babble2(self) -> None:
+        # Adding phrase matchers for various patterns and responses to enhance conversation logic
+
+        # Description
+        # self.add_phrase_matcher(
+        #     r"(.*) is (.*)",
+        #     "what is {0}", "{0} is {1}",
+        #     "explain {0}", "{0} is {1}"
+        # )
+
+        # Comparison
+        # self.add_phrase_matcher(
+        #     r"(.*) are (.*) than (.*)",
+        #     "who is {1} {0} or {2}", "{0}",
+        #     "who is {1} {2} or {0}", "{0}",
+        #     "who are {1} {2} or {0}", "{0}",
+        #     "who are {1} {0} or {2}", "{0}"
+        # )
+
+        # Why
+        self.add_phrase_matcher(
+            r"(.*) because (.*)",
+            "tell me why {0}", "{1}",
+            "explain why {0}", "{0} because {1}"
+        )
+
+        # Triple OR
+        # self.add_phrase_matcher(
+        #     r"if (.*) or (.*) or (.*) than (.*)",
+        #     "{0}", "{3}",
+        #     "{1}", "{3}",
+        #     "{2}", "{3}"
+        # )
+
+        # OR
+        # self.add_phrase_matcher(
+        #     r"if (.*) or (.*) than (.*)",
+        #     "{0}", "{2}",
+        #     "{1}", "{2}"
+        # )
+
+        # How
+        self.add_phrase_matcher(
+            r"to (.*) simply (.*)",
+            "explain how to {0}", "{1}"
+        )
+
+        # XOR
+        # self.add_phrase_matcher(
+        #     r"if (.*) xor (.*) than (.*)",
+        #     "{0} and not {1}", "{2}",
+        #     "{1} and not {0}", "{2}"
+        # )
+
+        # If
+        # self.add_phrase_matcher(
+        #     r"if (.*) than (.*)",
+        #     "{0}", "{1}"
+        # )
+
+        # say
+        self.add_phrase_matcher(
+            r"say (.*)",
+            "speak", "{0}"
+        )
+
+        # Reverse If
+        # self.add_phrase_matcher(
+        #     r"(.*) if (.*)",
+        #     "{1}", "{0}",
+        #     "{1}", "than {0} I guess"
+        # )
+
+        # Likes
+        self.add_phrase_matcher(
+            r"(.*) like (.*)",
+            "what do {0} like", "{0} like {1}"
+        )
+        self.add_phrase_matcher(
+            r"(.*) likes (.*)",
+            "what does {0} like", "{0} likes {1}"
+        )
+        # Anti-bully 1
+        # self.add_phrase_matcher(
+        #     r"you are just a (.*)",
+        #     "you are just a {0}", "i will be the best {0} then",
+        #     "you are just a {0}", "kiss my {0} butt",
+        #     "you are just a {0}", "shiku shiku"
+        # )
+
+        # Anti-bully 2
+        # self.add_phrase_matcher(
+        #     r"you damn (.*)",
+        #     "you damn {0}", "but i am the best {0}",
+        #     "you damn {0}", "kiss my {0} butt",
+        #     "you damn {0}", "meanie"
+        # )
+
+        # contacts
+        self.add_phrase_matcher(
+            r"(.*) owns the email (.*)",
+            "email {0}", "{1}",
+            "what is the email for {0}", "{1}"
+        )
+
+        # phone
+        self.add_phrase_matcher(
+            r"(.*)'s phone is (.*)",
+            "phone {0}", "{1}",
+            "what is the phone for {0}", "{1}"
+        )

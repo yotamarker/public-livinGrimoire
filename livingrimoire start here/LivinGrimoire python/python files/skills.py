@@ -2586,6 +2586,7 @@ class DiOneWorderV2(Skill):
         self.mode: bool = False
         self.drip.setLimit(90)
         self.ed: ElizaDeducer = ed
+        self.gotIt: Responder = Responder("got it", "roger that", "acknowledged", "alright", "sure thing", "all clear","yep")
 
     def set_cry(self, cry):
         self.cry = cry + " "
@@ -2601,12 +2602,12 @@ class DiOneWorderV2(Skill):
             return
         if ear == self.toggler:
             self.mode = not self.mode
-            self.setSimpleAlg("toggled")
+            self.setSimpleAlg("toggled on" if self.mode else "toggled off")
             return
         if self.mode and self.drip.drip():
-            # can add heavy duty algorithms here
+            # can add heavy-duty algorithms here
             if self.ed.learned_bool(ear):
-                self.setSimpleAlg("got it")
+                self.setSimpleAlg(self.gotIt.getAResponse())
             else:
                 reply = self.ed.respond(ear)
                 if len(reply)>0:

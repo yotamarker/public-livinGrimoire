@@ -47,10 +47,6 @@ https://rumble.com/v4cr5ot-the-livingrimoire-skill-branch.html
 LivinGrimoire database
 
 https://rumble.com/v4hyha6-livingrimoire-database-tutorial.html
-*******
-book:
-*******
-https://github.com/yotamarker/public-livinGrimoire/blob/master/livingrimoire%20start%20here/the%20living%20grimoire.pdf
 ********
 wikis:
 ********

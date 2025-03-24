@@ -208,3 +208,56 @@ class DaExePath(Skill):
         elif param == "triggers":
             return "say 'calculator' or 'notepad'."
         return "note unavailable"
+
+class DaDeepseekRun(ShorniSplash):
+    def __init__(self):
+        super().__init__()
+        self.input_text = ""  # Temporary storage for input text
+
+    def trigger(self, ear: str, skin: str, eye: str) -> bool:
+        # Check if the ear string ends with the word "run"
+        return ear.strip().endswith("run")
+
+    @staticmethod
+    def _async_func(this_cls):
+        # Use the stored input text
+        input_text = this_cls.input_text
+
+        # Call the Deepseek API (replace with actual API endpoint and logic)
+        try:
+            response = this_cls.call_deepseek_api(input_text)
+            this_cls._result = response
+        except Exception as e:
+            this_cls._result = f"Error calling Deepseek API: {str(e)}"
+
+    def input(self, ear: str, skin: str, eye: str):
+        # Check if the skill should trigger
+        if self.trigger(ear, skin, eye):
+            # Remove the last word "run" from the ear string
+            self.input_text = ear.rsplit(" ", 1)[0].strip()
+
+            # Start the async operation in a daemon thread
+            my_thread = threading.Thread(
+                target=self._async_func,
+                args=(self,)  # Pass self as the only argument
+            )
+            my_thread.daemon = True
+            my_thread.start()
+
+        # Output the result if available
+        if len(self._result) > 0:
+            self.output_result()
+            self._result = ""
+
+    @staticmethod
+    def call_deepseek_api(input_text: str) -> str:
+        # Replace this with the actual Deepseek API call logic
+        # Example:
+        # api_url = "https://api.deepseek.com/chat"
+        # payload = {"input": input_text}
+        # headers = {"Authorization": "Bearer YOUR_API_KEY"}
+        # response = requests.post(api_url, json=payload, headers=headers)
+        # return response.json().get("response", "No response from API")
+
+        # For now, just return a mock response
+        return f"Deepseek response to: {input_text}"

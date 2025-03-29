@@ -1,8 +1,11 @@
 package Auxiliary_Modules;
 
+import LivinGrimoire.Kokoro;
+
 public class RailBot {
     private final EventChatV2 ec;
     private String context;
+    private ElizaDBWrapper elizaWrapper = null; // Starts null (no DB)
 
     public RailBot(int limit) {
         ec = new EventChatV2(limit);
@@ -10,6 +13,18 @@ public class RailBot {
 
     public RailBot() {
         this(5);
+    }
+    /**
+     * Enables database features. Must be called before any save/load operations.
+     * If never called, RailBot works in memory-only mode.
+     */
+    public void enableDBWrapper() {
+        if (elizaWrapper == null) {
+            elizaWrapper = new ElizaDBWrapper();
+        }
+    }
+    public void disableDBWrapper() {
+        elizaWrapper = null;
     }
 
     public void setContext(String context) {
@@ -61,4 +76,29 @@ public class RailBot {
             learnKeyValue(kv.getKey(), kv.getValue());
         }
     }
+    // save/load functionalities
+    public void saveLearnedData(Kokoro kokoro){
+        if (elizaWrapper == null) {return;}
+        elizaWrapper.sleepNSave(ec, kokoro);
+    }
+    private String loadableMonologMechanics(String ear, Kokoro kokoro) {
+        // loads data if available
+        if (ear.isEmpty()) {
+            return "";
+        }
+        String temp = elizaWrapper.respond(ear,ec,kokoro);
+        if (!temp.isEmpty()) {
+            this.context = temp;
+        }
+        return temp;
+    }
+    public String loadableMonolog(Kokoro kokoro) {
+        if(elizaWrapper == null){return monolog();}
+        return loadableMonologMechanics(this.context,kokoro);
+    }
+    public String loadableDialog(String ear, Kokoro kokoro) {
+        if(elizaWrapper == null){return respondDialog(ear);}
+        return elizaWrapper.respond(ear,ec,kokoro);
+    }
+
 }

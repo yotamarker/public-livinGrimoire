@@ -2,6 +2,7 @@ package Skills.logical;
 
 import Auxiliary_Modules.AXContextCmd;
 import Auxiliary_Modules.PhraseInflector;
+import Auxiliary_Modules.QuestionChecker;
 import Auxiliary_Modules.RailBot;
 import LivinGrimoire.Skill;
 
@@ -26,6 +27,8 @@ public class DiRail extends Skill {
     @Override
     public void input(String ear, String skin, String eye) {
         if(ear.isEmpty()){return;}
+        // Add this line to ignore questions
+        if(QuestionChecker.isQuestion(ear)){return;}
         if(monologer.engageCommand(ear)){
             String t1 = railBot.monolog();
             if(!t1.isEmpty()){

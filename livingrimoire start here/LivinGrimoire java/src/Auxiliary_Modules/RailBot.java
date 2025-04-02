@@ -4,7 +4,7 @@ import LivinGrimoire.Kokoro;
 
 public class RailBot {
     private final EventChatV2 ec;
-    private String context;
+    private String context = "stand by";
     private ElizaDBWrapper elizaWrapper = null; // Starts null (no DB)
 
     public RailBot(int limit) {

@@ -3774,3 +3774,300 @@ public class ElizaDBWrapper
         }
     }
 }
+
+public class QuestionChecker
+{
+    private static readonly HashSet<string> QUESTION_WORDS = new HashSet<string>
+    {
+        "what", "who", "where", "when", "why", "how",
+        "is", "are", "was", "were", "do", "does", "did",
+        "can", "could", "would", "will", "shall", "should",
+        "have", "has", "am", "may", "might"
+    };
+
+    public static bool IsQuestion(string input)
+    {
+        if (string.IsNullOrWhiteSpace(input))
+        {
+            return false;
+        }
+
+        string trimmed = input.Trim().ToLower();
+
+        // Check for question mark
+        if (trimmed.EndsWith("?"))
+        {
+            return true;
+        }
+
+        // Extract the first word
+        int firstSpace = trimmed.IndexOf(' ');
+        string firstWord = firstSpace == -1 ? trimmed : trimmed.Substring(0, firstSpace);
+
+        // Check for contractions like "who's"
+        if (firstWord.Contains("'"))
+        {
+            firstWord = firstWord.Substring(0, firstWord.IndexOf('\''));
+        }
+
+        // Check if first word is a question word
+        return QUESTION_WORDS.Contains(firstWord);
+    }
+}
+
+public class PhraseInflector
+{
+    // Dictionary for pronoun and verb inflection
+    private static readonly Dictionary<string, string> inflectionMap = new Dictionary<string, string>
+    {
+        {"i", "you"},
+        {"me", "you"},
+        {"my", "your"},
+        {"mine", "yours"},
+        {"you", "i"}, // Default inflection
+        {"your", "my"},
+        {"yours", "mine"},
+        {"am", "are"},
+        {"are", "am"},
+        {"was", "were"},
+        {"were", "was"},
+        {"i'd", "you would"},
+        {"i've", "you have"},
+        {"you've", "I have"},
+        {"you'll", "I will"}
+    };
+
+    // Function to inflect a phrase
+    public static string InflectPhrase(string phrase)
+    {
+        string[] words = phrase.Split(' ');
+        var result = new System.Text.StringBuilder();
+
+        for (int i = 0; i < words.Length; i++)
+        {
+            string word = words[i];
+            string lowerWord = word.ToLower();
+            string inflectedWord = word; // Default to the original word
+
+            // Check if the word needs to be inflected
+            if (inflectionMap.ContainsKey(lowerWord))
+            {
+                inflectedWord = inflectionMap[lowerWord];
+
+                // Special case for "you"
+                if (lowerWord == "you")
+                {
+                    // Inflect to "me" if it's at the end of the sentence or after a verb
+                    if (i == words.Length - 1 || (i > 0 && IsVerb(words[i - 1].ToLower())))
+                    {
+                        inflectedWord = "me";
+                    }
+                    else
+                    {
+                        inflectedWord = "I";
+                    }
+                }
+            }
+
+            // Preserve capitalization
+            if (char.IsUpper(word[0]))
+            {
+                inflectedWord = char.ToUpper(inflectedWord[0]) + inflectedWord.Substring(1);
+            }
+
+            result.Append(inflectedWord).Append(" ");
+        }
+
+        return result.ToString().Trim();
+    }
+
+    // Helper function to check if a word is a verb
+    private static bool IsVerb(string word)
+    {
+        return word == "am" || word == "are" || word == "was" || word == "were" ||
+               word == "have" || word == "has" || word == "had" ||
+               word == "do" || word == "does" || word == "did";
+    }
+}
+
+public class RailBot
+{
+    private readonly EventChatV2 ec;
+    private string context = "stand by";
+    private ElizaDBWrapper? elizaWrapper = null; // Starts as null (no DB)
+
+    // Constructor with limit parameter
+    public RailBot(int limit)
+    {
+        ec = new EventChatV2(limit);
+    }
+
+    // Default constructor
+    public RailBot() : this(5) { }
+
+    /// <summary>
+    /// Enables database features. Must be called before any save/load operations.
+    /// If never called, RailBot works in memory-only mode.
+    /// </summary>
+    public void EnableDBWrapper()
+    {
+        if (elizaWrapper == null)
+        {
+            elizaWrapper = new ElizaDBWrapper();
+        }
+    }
+
+    /// <summary>
+    /// Disables database features.
+    /// </summary>
+    public void DisableDBWrapper()
+    {
+        elizaWrapper = null;
+    }
+
+    /// <summary>
+    /// Sets the context.
+    /// </summary>
+    /// <param name="newContext">The new context string.</param>
+    public void SetContext(string newContext)
+    {
+        if (string.IsNullOrEmpty(newContext))
+        {
+            return;
+        }
+        context = newContext;
+    }
+
+    /// <summary>
+    /// Private helper method for monolog response.
+    /// </summary>
+    private string RespondMonolog(string ear)
+    {
+        if (string.IsNullOrEmpty(ear))
+        {
+            return "";
+        }
+
+        string temp = ec.Response(ear);
+        if (!string.IsNullOrEmpty(temp))
+        {
+            context = temp;
+        }
+        return temp;
+    }
+
+    /// <summary>
+    /// Learns a new response for the current context.
+    /// </summary>
+    public void Learn(string ear)
+    {
+        if (string.IsNullOrEmpty(ear) || ear.Equals(context))
+        {
+            return;
+        }
+        ec.AddKeyValue(context, ear);
+        context = ear;
+    }
+
+    /// <summary>
+    /// Returns a monolog based on the current context.
+    /// </summary>
+    public string Monolog()
+    {
+        return RespondMonolog(context);
+    }
+
+    /// <summary>
+    /// Responds to a dialog input.
+    /// </summary>
+    public string RespondDialog(string ear)
+    {
+        return ec.Response(ear);
+    }
+
+    /// <summary>
+    /// Responds to the latest input.
+    /// </summary>
+    public string RespondLatest(string ear)
+    {
+        return ec.ResponseLatest(ear);
+    }
+
+    /// <summary>
+    /// Adds a new key-value pair to the memory.
+    /// </summary>
+    public void LearnKeyValue(string newContext, string reply)
+    {
+        ec.AddKeyValue(newContext, reply);
+    }
+
+    /// <summary>
+    /// Feeds a list of key-value pairs into the memory.
+    /// </summary>
+    public void FeedKeyValuePairs(System.Collections.Generic.List<AXKeyValuePair> kvList)
+    {
+        if (kvList.Count == 0)
+        {
+            return;
+        }
+        foreach (AXKeyValuePair kv in kvList)
+        {
+            LearnKeyValue(kv.GetKey(), kv.GetValue());
+        }
+    }
+
+    /// <summary>
+    /// Saves learned data using the provided Kokoro instance.
+    /// </summary>
+    public void SaveLearnedData(Kokoro kokoro)
+    {
+        if (elizaWrapper == null)
+        {
+            return;
+        }
+        elizaWrapper.SleepNSave(ec, kokoro);
+    }
+
+    /// <summary>
+    /// Private helper method for loadable monolog mechanics.
+    /// </summary>
+    private string LoadableMonologMechanics(string ear, Kokoro kokoro)
+    {
+        if (string.IsNullOrEmpty(ear))
+        {
+            return "";
+        }
+
+        string temp = elizaWrapper!.Respond(ear, ec, kokoro);
+        if (!string.IsNullOrEmpty(temp))
+        {
+            context = temp;
+        }
+        return temp;
+    }
+
+    /// <summary>
+    /// Returns a loadable monolog based on the current context.
+    /// </summary>
+    public string LoadableMonolog(Kokoro kokoro)
+    {
+        if (elizaWrapper == null)
+        {
+            return Monolog();
+        }
+        return LoadableMonologMechanics(context, kokoro);
+    }
+
+    /// <summary>
+    /// Returns a loadable dialog response.
+    /// </summary>
+    public string LoadableDialog(string ear, Kokoro kokoro)
+    {
+        if (elizaWrapper == null)
+        {
+            return RespondDialog(ear);
+        }
+        return elizaWrapper.Respond(ear, ec, kokoro);
+    }
+}
+

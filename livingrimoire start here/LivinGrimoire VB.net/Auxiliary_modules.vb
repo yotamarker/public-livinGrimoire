@@ -3168,4 +3168,258 @@ Module Auxiliary_modules
         End Sub
     End Class
 
+    Public Class QuestionChecker
+        Private Shared ReadOnly QUESTION_WORDS As HashSet(Of String) = New HashSet(Of String) From {
+        "what", "who", "where", "when", "why", "how",
+        "is", "are", "was", "were", "do", "does", "did",
+        "can", "could", "would", "will", "shall", "should",
+        "have", "has", "am", "may", "might"
+    }
+
+        Public Shared Function IsQuestion(ByVal input As String) As Boolean
+            If String.IsNullOrWhiteSpace(input) Then
+                Return False
+            End If
+
+            Dim trimmed As String = input.Trim().ToLower()
+
+            ' Check for question mark
+            If trimmed.EndsWith("?") Then
+                Return True
+            End If
+
+            ' Extract the first word
+            Dim firstSpace As Integer = trimmed.IndexOf(" "c)
+            Dim firstWord As String = If(firstSpace = -1, trimmed, trimmed.Substring(0, firstSpace))
+
+            ' Check for contractions like "who's"
+            If firstWord.Contains("'") Then
+                firstWord = firstWord.Substring(0, firstWord.IndexOf("'"c))
+            End If
+
+            ' Check if first word is a question word
+            Return QUESTION_WORDS.Contains(firstWord)
+        End Function
+    End Class
+
+    Public Class PhraseInflector
+        ' Dictionary for pronoun and verb inflection
+        Private Shared ReadOnly inflectionMap As New Dictionary(Of String, String) From {
+        {"i", "you"},
+        {"me", "you"},
+        {"my", "your"},
+        {"mine", "yours"},
+        {"you", "i"}, ' Default inflection
+        {"your", "my"},
+        {"yours", "mine"},
+        {"am", "are"},
+        {"are", "am"},
+        {"was", "were"},
+        {"were", "was"},
+        {"i'd", "you would"},
+        {"i've", "you have"},
+        {"you've", "I have"},
+        {"you'll", "I will"}
+    }
+
+        ' Function to inflect a phrase
+        Public Shared Function InflectPhrase(ByVal phrase As String) As String
+            Dim words As String() = phrase.Split(" "c)
+            Dim result As New Text.StringBuilder()
+
+            For i As Integer = 0 To words.Length - 1
+                Dim word As String = words(i)
+                Dim lowerWord As String = word.ToLower()
+                Dim inflectedWord As String = word ' Default to the original word
+
+                ' Check if the word needs to be inflected
+                If inflectionMap.ContainsKey(lowerWord) Then
+                    inflectedWord = inflectionMap(lowerWord)
+
+                    ' Special case for "you"
+                    If lowerWord = "you" Then
+                        ' Inflect to "me" if it's at the end of the sentence or after a verb
+                        If i = words.Length - 1 OrElse (i > 0 AndAlso IsVerb(words(i - 1).ToLower())) Then
+                            inflectedWord = "me"
+                        Else
+                            inflectedWord = "I"
+                        End If
+                    End If
+                End If
+
+                ' Preserve capitalization
+                If Char.IsUpper(word(0)) Then
+                    inflectedWord = inflectedWord.Substring(0, 1).ToUpper() & inflectedWord.Substring(1)
+                End If
+
+                result.Append(inflectedWord).Append(" ")
+            Next
+
+            Return result.ToString().Trim()
+        End Function
+
+        ' Helper function to check if a word is a verb
+        Private Shared Function IsVerb(ByVal word As String) As Boolean
+            Return word = "am" OrElse word = "are" OrElse word = "was" OrElse word = "were" OrElse
+               word = "have" OrElse word = "has" OrElse word = "had" OrElse
+               word = "do" OrElse word = "does" OrElse word = "did"
+        End Function
+    End Class
+
+    Public Class RailBot
+        Private ReadOnly ec As EventChatV2
+        Private context As String = "stand by"
+        Private elizaWrapper As ElizaDBWrapper = Nothing ' Starts as Nothing (no DB)
+
+        ' Constructor with limit parameter
+        Public Sub New(ByVal limit As Integer)
+            ec = New EventChatV2(limit)
+        End Sub
+
+        ' Default constructor
+        Public Sub New()
+            Me.New(5)
+        End Sub
+
+        ''' <summary>
+        ''' Enables database features. Must be called before any save/load operations.
+        ''' If never called, RailBot works in memory-only mode.
+        ''' </summary>
+        Public Sub EnableDBWrapper()
+            If elizaWrapper Is Nothing Then
+                elizaWrapper = New ElizaDBWrapper()
+            End If
+        End Sub
+
+        ''' <summary>
+        ''' Disables database features.
+        ''' </summary>
+        Public Sub DisableDBWrapper()
+            elizaWrapper = Nothing
+        End Sub
+
+        ''' <summary>
+        ''' Sets the context.
+        ''' </summary>
+        ''' <param name="newContext">The new context string.</param>
+        Public Sub SetContext(ByVal newContext As String)
+            If String.IsNullOrEmpty(newContext) Then
+                Return
+            End If
+            context = newContext
+        End Sub
+
+        ''' <summary>
+        ''' Private helper method for monolog response.
+        ''' </summary>
+        Private Function RespondMonolog(ByVal ear As String) As String
+            If String.IsNullOrEmpty(ear) Then
+                Return ""
+            End If
+
+            Dim temp As String = ec.Response(ear)
+            If Not String.IsNullOrEmpty(temp) Then
+                context = temp
+            End If
+            Return temp
+        End Function
+
+        ''' <summary>
+        ''' Learns a new response for the current context.
+        ''' </summary>
+        Public Sub Learn(ByVal ear As String)
+            If String.IsNullOrEmpty(ear) OrElse ear.Equals(context) Then
+                Return
+            End If
+            ec.AddKeyValue(context, ear)
+            context = ear
+        End Sub
+
+        ''' <summary>
+        ''' Returns a monolog based on the current context.
+        ''' </summary>
+        Public Function Monolog() As String
+            Return RespondMonolog(context)
+        End Function
+
+        ''' <summary>
+        ''' Responds to a dialog input.
+        ''' </summary>
+        Public Function RespondDialog(ByVal ear As String) As String
+            Return ec.Response(ear)
+        End Function
+
+        ''' <summary>
+        ''' Responds to the latest input.
+        ''' </summary>
+        Public Function RespondLatest(ByVal ear As String) As String
+            Return ec.ResponseLatest(ear)
+        End Function
+
+        ''' <summary>
+        ''' Adds a new key-value pair to the memory.
+        ''' </summary>
+        Public Sub LearnKeyValue(ByVal newContext As String, ByVal reply As String)
+            ec.AddKeyValue(newContext, reply)
+        End Sub
+
+        ''' <summary>
+        ''' Feeds a list of key-value pairs into the memory.
+        ''' </summary>
+        Public Sub FeedKeyValuePairs(ByVal kvList As List(Of AXKeyValuePair))
+            If kvList.Count = 0 Then
+                Return
+            End If
+            For Each kv As AXKeyValuePair In kvList
+                LearnKeyValue(kv.GetKey(), kv.GetValue())
+            Next
+        End Sub
+
+        ''' <summary>
+        ''' Saves learned data using the provided Kokoro instance.
+        ''' </summary>
+        Public Sub SaveLearnedData(ByVal kokoro As Kokoro)
+            If elizaWrapper Is Nothing Then
+                Return
+            End If
+            elizaWrapper.SleepNSave(ec, kokoro)
+        End Sub
+
+        ''' <summary>
+        ''' Private helper method for loadable monolog mechanics.
+        ''' </summary>
+        Private Function LoadableMonologMechanics(ByVal ear As String, ByVal kokoro As Kokoro) As String
+            If String.IsNullOrEmpty(ear) Then
+                Return ""
+            End If
+
+            Dim temp As String = elizaWrapper.Respond(ear, ec, kokoro)
+            If Not String.IsNullOrEmpty(temp) Then
+                context = temp
+            End If
+            Return temp
+        End Function
+
+        ''' <summary>
+        ''' Returns a loadable monolog based on the current context.
+        ''' </summary>
+        Public Function LoadableMonolog(ByVal kokoro As Kokoro) As String
+            If elizaWrapper Is Nothing Then
+                Return Monolog()
+            End If
+            Return LoadableMonologMechanics(context, kokoro)
+        End Function
+
+        ''' <summary>
+        ''' Returns a loadable dialog response.
+        ''' </summary>
+        Public Function LoadableDialog(ByVal ear As String, ByVal kokoro As Kokoro) As String
+            If elizaWrapper Is Nothing Then
+                Return RespondDialog(ear)
+            End If
+            Return elizaWrapper.Respond(ear, ec, kokoro)
+        End Function
+    End Class
+
+
 End Module

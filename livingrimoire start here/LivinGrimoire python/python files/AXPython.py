@@ -3469,3 +3469,173 @@ class ElizaDeducerInitializer2(ElizaDeducer):
             "phone {0}", "{1}",
             "what is the phone for {0}", "{1}"
         )
+
+class QuestionChecker:
+    QUESTION_WORDS = {
+        "what", "who", "where", "when", "why", "how",
+        "is", "are", "was", "were", "do", "does", "did",
+        "can", "could", "would", "will", "shall", "should",
+        "have", "has", "am", "may", "might"
+    }
+
+    @staticmethod
+    def is_question(input_text):
+        if not input_text or not input_text.strip():
+            return False
+
+        trimmed = input_text.strip().lower()
+
+        # Check for question mark
+        if trimmed.endswith("?"):
+            return True
+
+        # Extract the first word
+        first_space = trimmed.find(' ')
+        first_word = trimmed if first_space == -1 else trimmed[:first_space]
+
+        # Check for contractions like "who's"
+        if "'" in first_word:
+            first_word = first_word.split("'")[0]
+
+        # Check if the first word is a question word
+        return first_word in QuestionChecker.QUESTION_WORDS
+
+class PhraseInflector:
+    # Maps for pronoun and verb inflection
+    inflection_map = {
+        "i": "you",
+        "me": "you",
+        "my": "your",
+        "mine": "yours",
+        "you": "i",  # Default inflection
+        "your": "my",
+        "yours": "mine",
+        "am": "are",
+        "are": "am",
+        "was": "were",
+        "were": "was",
+        "i'd": "you would",
+        "i've": "you have",
+        "you've": "I have",
+        "you'll": "I will"
+    }
+
+    @staticmethod
+    def is_verb(word):
+        verbs = {"am", "are", "was", "were", "have", "has", "had", "do", "does", "did"}
+        return word in verbs
+
+    @staticmethod
+    def inflect_phrase(phrase):
+        words = phrase.split()
+        result = []
+
+        for i, word in enumerate(words):
+            lower_word = word.lower()
+            inflected_word = word  # Default to original word
+
+            # Check if word needs inflection
+            if lower_word in PhraseInflector.inflection_map:
+                inflected_word = PhraseInflector.inflection_map[lower_word]
+
+                # Special case for "you"
+                if lower_word == "you":
+                    if i == len(words) - 1 or (i > 0 and PhraseInflector.is_verb(words[i - 1].lower())):
+                        inflected_word = "me"
+                    else:
+                        inflected_word = "I"
+
+            # Preserve capitalization
+            if word[0].isupper():
+                inflected_word = inflected_word.capitalize()
+
+            result.append(inflected_word)
+
+        return " ".join(result)
+
+class RailBot:
+    def __init__(self, limit=5):
+        self.ec = EventChatV2(limit)
+        self.context = "stand by"
+        self.eliza_wrapper = None  # Starts as None (no DB)
+
+    def enable_db_wrapper(self):
+        """Enables database features. Must be called before any save/load operations."""
+        if self.eliza_wrapper is None:
+            self.eliza_wrapper = ElizaDBWrapper()
+
+    def disable_db_wrapper(self):
+        """Disables database features."""
+        self.eliza_wrapper = None
+
+    def set_context(self, context):
+        """Sets the current context."""
+        if not context:
+            return
+        self.context = context
+
+    def respond_monolog(self, ear):
+        """Private helper for monolog response."""
+        if not ear:
+            return ""
+        temp = self.ec.response(ear)
+        if temp:
+            self.context = temp
+        return temp
+
+    def learn(self, ear):
+        """Learns a new response for the current context."""
+        if not ear or ear == self.context:
+            return
+        self.ec.add_key_value(self.context, ear)
+        self.context = ear
+
+    def monolog(self):
+        """Returns a monolog based on the current context."""
+        return self.respond_monolog(self.context)
+
+    def respond_dialog(self, ear):
+        """Responds to a dialog input."""
+        return self.ec.response(ear)
+
+    def respond_latest(self, ear):
+        """Responds to the latest input."""
+        return self.ec.response_latest(ear)
+
+    def learn_key_value(self, context, reply):
+        """Adds a new key-value pair to the memory."""
+        self.ec.add_key_value(context, reply)
+
+    def feed_key_value_pairs(self, kv_list):
+        """Feeds a list of key-value pairs into the memory."""
+        if not kv_list:
+            return
+        for kv in kv_list:
+            self.learn_key_value(kv.get_key(), kv.get_value())
+
+    def save_learned_data(self, kokoro):
+        """Saves learned data using the provided Kokoro instance."""
+        if self.eliza_wrapper is None:
+            return
+        self.eliza_wrapper.sleep_n_save(self.ec, kokoro)
+
+    def loadable_monolog_mechanics(self, ear, kokoro):
+        """Private helper for loadable monolog mechanics."""
+        if not ear:
+            return ""
+        temp = self.eliza_wrapper.respond(ear, self.ec, kokoro)
+        if temp:
+            self.context = temp
+        return temp
+
+    def loadable_monolog(self, kokoro):
+        """Returns a loadable monolog based on the current context."""
+        if self.eliza_wrapper is None:
+            return self.monolog()
+        return self.loadable_monolog_mechanics(self.context, kokoro)
+
+    def loadable_dialog(self, ear, kokoro):
+        """Returns a loadable dialog response."""
+        if self.eliza_wrapper is None:
+            return self.respond_dialog(ear)
+        return self.eliza_wrapper.respond(ear, self.ec, kokoro)

@@ -2638,3 +2638,46 @@ class DiOneWorderV2(Skill):
             return "say chi to toggle skill"
         return "talks like a cute pet"
 
+class DiRail(Skill):
+    # DiRail skill for testing purposes
+    def __init__(self, lim=5):
+        super().__init__()
+        self.rail_bot = RailBot(lim)
+        self.monologer = AXContextCmd()
+        self.monologer.contextCommands.insert("talk more")
+        self.monologer.commands.insert("more")
+
+    @staticmethod
+    def ends_with_ok(input_text):
+        return input_text is not None and input_text.endswith("ok")
+
+    @staticmethod
+    def strip_ok(input_text):
+        return input_text[:-2]
+
+    def input(self, ear, skin=None, eye=None):
+        if not ear:
+            return
+        # Add this line to ignore questions
+        if QuestionChecker.is_question(ear):
+            return
+        if self.monologer.engageCommand(ear):
+            t1 = self.rail_bot.monolog()
+            if t1:
+                self.setSimpleAlg(PhraseInflector.inflect_phrase(t1))
+                return
+        if not self.ends_with_ok(ear):
+            return
+        temp = self.strip_ok(ear)
+        temp2 = self.rail_bot.respond_dialog(temp)
+        if temp2:
+            self.setSimpleAlg(PhraseInflector.inflect_phrase(temp2))
+        self.rail_bot.learn(temp)
+
+    def skillNotes(self, param):
+        if param == "notes":
+            return "experimental chatbot"
+        elif param == "triggers":
+            return "end input with the word ok"
+        return "note unavailable"
+

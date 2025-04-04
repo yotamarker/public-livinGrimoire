@@ -3750,3 +3750,210 @@ class ElizaDBWrapper {
         }
     }
 }
+class QuestionChecker {
+    private static let QUESTION_WORDS: Set<String> = [
+        "what", "who", "where", "when", "why", "how",
+        "is", "are", "was", "were", "do", "does", "did",
+        "can", "could", "would", "will", "shall", "should",
+        "have", "has", "am", "may", "might"
+    ]
+    
+    static func isQuestion(_ input: String) -> Bool {
+        let trimmed = input.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        
+        // Check for empty input
+        guard !trimmed.isEmpty else {
+            return false
+        }
+        
+        // Check for question mark
+        if trimmed.hasSuffix("?") {
+            return true
+        }
+        
+        // Extract the first word
+        let firstWord: String
+        if let firstSpace = trimmed.firstIndex(of: " ") {
+            firstWord = String(trimmed[..<firstSpace])
+        } else {
+            firstWord = trimmed
+        }
+        
+        // Check for contractions like "who's"
+        if let apostropheIndex = firstWord.firstIndex(of: "'") {
+            let baseWord = String(firstWord[..<apostropheIndex])
+            return QUESTION_WORDS.contains(baseWord)
+        }
+        
+        // Check if the first word is a question word
+        return QUESTION_WORDS.contains(firstWord)
+    }
+}
+
+class PhraseInflector {
+    // Dictionary for pronoun and verb inflection
+    private static let inflectionMap: [String: String] = [
+        "i": "you",
+        "me": "you",
+        "my": "your",
+        "mine": "yours",
+        "you": "i", // Default inflection
+        "your": "my",
+        "yours": "mine",
+        "am": "are",
+        "are": "am",
+        "was": "were",
+        "were": "was",
+        "i'd": "you would",
+        "i've": "you have",
+        "you've": "I have",
+        "you'll": "I will"
+    ]
+    
+    // Function to inflect a phrase
+    static func inflectPhrase(_ phrase: String) -> String {
+        let words = phrase.split(separator: " ")
+        var result = [String]()
+        
+        for (index, word) in words.enumerated() {
+            let lowerWord = word.lowercased()
+            var inflectedWord = String(word) // Default to the original word
+            
+            // Check if the word needs to be inflected
+            if let mappedWord = inflectionMap[lowerWord] {
+                inflectedWord = mappedWord
+                
+                // Special case for "you"
+                if lowerWord == "you" {
+                    // Inflect to "me" if it's at the end of the sentence or after a verb
+                    if index == words.count - 1 || (index > 0 && isVerb(String(words[index - 1]).lowercased())) {
+                        inflectedWord = "me"
+                    } else {
+                        inflectedWord = "I"
+                    }
+                }
+            }
+            
+            // Preserve capitalization
+            if let first = word.first, first.isUppercase {
+                inflectedWord = inflectedWord.prefix(1).uppercased() + inflectedWord.dropFirst()
+            }
+            
+            result.append(inflectedWord)
+        }
+        
+        return result.joined(separator: " ")
+    }
+    
+    // Helper function to check if a word is a verb
+    private static func isVerb(_ word: String) -> Bool {
+        return ["am", "are", "was", "were", "have", "has", "had", "do", "does", "did"].contains(word)
+    }
+}
+
+class RailBot {
+    private let ec: EventChatV2
+    private var context: String = "stand by"
+    private var elizaWrapper: ElizaDBWrapper? = nil // Starts as nil (no DB)
+
+    // Constructor with limit parameter
+    init(limit: Int) {
+        self.ec = EventChatV2(lim: limit)
+    }
+
+    // Default constructor
+    convenience init() {
+        self.init(limit: 5)
+    }
+
+    /// Enables database features. Must be called before any save/load operations.
+    /// If never called, RailBot works in memory-only mode.
+    func enableDBWrapper() {
+        if elizaWrapper == nil {
+            elizaWrapper = ElizaDBWrapper()
+        }
+    }
+
+    /// Disables database features.
+    func disableDBWrapper() {
+        elizaWrapper = nil
+    }
+
+    /// Sets the context.
+    func setContext(_ newContext: String) {
+        guard !newContext.isEmpty else { return }
+        context = newContext
+    }
+
+    /// Private helper method for monolog response.
+    private func respondMonolog(_ ear: String) -> String {
+        guard !ear.isEmpty else { return "" }
+        let temp = ec.response(ear)
+        if !temp.isEmpty {
+            context = temp
+        }
+        return temp
+    }
+
+    /// Learns a new response for the current context.
+    func learn(_ ear: String) {
+        guard !ear.isEmpty && ear != context else { return }
+        ec.addKeyValue(context, ear)
+        context = ear
+    }
+
+    /// Returns a monolog based on the current context.
+    func monolog() -> String {
+        return respondMonolog(context)
+    }
+
+    /// Responds to a dialog input.
+    func respondDialog(_ ear: String) -> String {
+        return ec.response(ear)
+    }
+
+    /// Responds to the latest input.
+    func respondLatest(_ ear: String) -> String {
+        return ec.responseLatest(ear)
+    }
+
+    /// Adds a new key-value pair to the memory.
+    func learnKeyValue(newContext: String, reply: String) {
+        ec.addKeyValue(newContext, reply)
+    }
+
+    /// Feeds a list of key-value pairs into the memory.
+    func feedKeyValuePairs(_ kvList: [AXKeyValuePair]) {
+        guard !kvList.isEmpty else { return }
+        for kv in kvList {
+            learnKeyValue(newContext: kv.getKey(), reply: kv.getValue())
+        }
+    }
+
+    /// Saves learned data using the provided Kokoro instance.
+    func saveLearnedData(kokoro: Kokoro) {
+        guard let elizaWrapper = elizaWrapper else { return }
+        elizaWrapper.sleepNSave(ec, kokoro)
+    }
+
+    /// Private helper method for loadable monolog mechanics.
+    private func loadableMonologMechanics(ear: String, kokoro: Kokoro) -> String {
+        guard !ear.isEmpty else { return "" }
+        if let temp = elizaWrapper?.respond(ear, ec, kokoro), !temp.isEmpty {
+            context = temp
+        }
+        return context
+    }
+
+    /// Returns a loadable monolog based on the current context.
+    func loadableMonolog(kokoro: Kokoro) -> String {
+        guard let elizaWrapper = elizaWrapper else { return monolog() }
+        return loadableMonologMechanics(ear: context, kokoro: kokoro)
+    }
+
+    /// Returns a loadable dialog response.
+    func loadableDialog(ear: String, kokoro: Kokoro) -> String {
+        guard let elizaWrapper = elizaWrapper else { return respondDialog(ear) }
+        return elizaWrapper.respond(ear, ec, kokoro)
+    }
+}

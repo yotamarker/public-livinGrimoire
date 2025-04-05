@@ -3263,7 +3263,6 @@ class LimUniqueResponder:
         self.responses: list[str] = []
         self.lim = lim
         self.urg = UniqueRandomGenerator(0)
-        self.lastInsert = ""
 
     def get_a_response(self) -> str:
         if not self.responses:
@@ -3277,15 +3276,16 @@ class LimUniqueResponder:
         return any(response and response in item for response in self.responses)
 
     def add_response(self, s1: str) -> None:
-        if self.lastInsert == s1:
-            # exits because repeat insert attempt
+        if s1 in self.responses:
+            self.responses.remove(s1)
+            self.responses.append(s1)
             return
         if len(self.responses) > self.lim - 1:
             self.responses.pop(0)
-        if s1 not in self.responses:
-            self.responses.append(s1)
-            self.lastInsert = s1
-            self.urg = UniqueRandomGenerator(len(self.responses))
+        else:
+            self.urg = UniqueRandomGenerator(len(self.responses)+1)
+        self.responses.append(s1)
+
 
     def add_responses(self, *replies: str) -> None:
         for value in replies:
@@ -3298,6 +3298,14 @@ class LimUniqueResponder:
         if not self.responses:
             return ""
         return self.responses[-1]
+
+    def clone(self) -> LimUniqueResponder:
+        cloned_responder = LimUniqueResponder(self.lim)  # Create a new instance with the same limit
+        cloned_responder.responses = self.responses.copy()  # Copy the responses list
+        cloned_responder.urg = UniqueRandomGenerator(
+            len(cloned_responder.responses))  # Recreate the UniqueRandomGenerator
+        return cloned_responder
+
 
 class EventChatV2:
     def __init__(self, lim: int):
@@ -3315,7 +3323,7 @@ class EventChatV2:
     # Add items
     def add_items(self, ur: LimUniqueResponder, *args: str) -> None:
         for arg in args:
-            self.dic[arg] = ur
+            self.dic[arg] = ur.clone()
 
     def add_from_db(self, key: str, value: str) -> None:
         if not value or value == "null":

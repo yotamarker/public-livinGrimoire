@@ -3446,13 +3446,17 @@ class LimUniqueResponder {
 
     // Method to add a response
     func addResponse(_ s1: String) {
-        if responses.count > lim - 1 {
-            responses.removeFirst()
-        }
-        if !responses.contains(s1) {
+        if let index = responses.firstIndex(of: s1) {
+            responses.remove(at: index)
             responses.append(s1)
-            urg = UniqueRandomGenerator(n1: responses.count)
+            return
         }
+        if responses.count > lim - 1 {
+            responses.remove(at: 0)
+        } else {
+            urg = UniqueRandomGenerator(n1: responses.count + 1)
+        }
+        responses.append(s1)
     }
 
     func addResponses(_ replies: String...) {
@@ -3470,6 +3474,12 @@ class LimUniqueResponder {
             return ""
         }
         return responses.last!
+    }
+    func clone() -> LimUniqueResponder {
+        let clonedResponder = LimUniqueResponder(lim: self.lim)
+        clonedResponder.responses = self.responses
+        clonedResponder.urg = UniqueRandomGenerator(n1: clonedResponder.responses.count)
+        return clonedResponder
     }
 }
 class EventChatV2 {
@@ -3494,7 +3504,7 @@ class EventChatV2 {
     // Add items
     func addItems(_ ur: LimUniqueResponder, _ args: String...) {
         for arg in args {
-            dic[arg] = ur
+            dic[arg] = ur.clone()
         }
     }
 

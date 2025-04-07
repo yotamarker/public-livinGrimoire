@@ -1,8 +1,5 @@
 package auxiliary_modules
 
-import java.util.HashMap
-import java.util.HashSet
-
 class EventChatV2    // Constructor
     (private val lim: Int) {
     private val dic: MutableMap<String, LimUniqueResponder> = HashMap()
@@ -16,7 +13,7 @@ class EventChatV2    // Constructor
     // Add items
     fun addItems(ur: LimUniqueResponder, vararg args: String) {
         for (arg in args) {
-            dic[arg] = ur
+            dic[arg] = ur.clone()
         }
     }
 

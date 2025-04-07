@@ -1,13 +1,8 @@
 package auxiliary_modules
 
 class LimUniqueResponder(private val lim: Int) {
-    private val responses: MutableList<String>
+    private var responses: MutableList<String> = ArrayList()
     private var urg = UniqueRandomGenerator(0)
-
-    // Constructor
-    init {
-        responses = ArrayList()
-    }
 
     val aResponse: String
         // Method to get a response
@@ -35,19 +30,30 @@ class LimUniqueResponder(private val lim: Int) {
 
     // Method to add a response
     fun addResponse(s1: String) {
+        if (responses.contains(s1)) {
+            responses.remove(s1)
+            responses.add(s1)
+            return
+        }
         if (responses.size > lim - 1) {
             responses.removeAt(0)
+        } else {
+            urg = UniqueRandomGenerator(responses.size + 1)
         }
-        if (!responses.contains(s1)) {
-            responses.add(s1)
-            urg = UniqueRandomGenerator(responses.size)
-        }
+        responses.add(s1)
     }
 
     fun addResponses(vararg replies: String) {
         for (value in replies) {
             addResponse(value)
         }
+    }
+
+    fun clone(): LimUniqueResponder {
+        val clonedResponder = LimUniqueResponder(lim)
+        clonedResponder.responses = java.util.ArrayList(responses)
+        clonedResponder.urg = UniqueRandomGenerator(clonedResponder.responses.size)
+        return clonedResponder
     }
 
     val savableStr: String

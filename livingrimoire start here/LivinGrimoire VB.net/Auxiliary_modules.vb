@@ -2849,13 +2849,17 @@ Module Auxiliary_modules
 
         ' Method to add a response
         Public Sub AddResponse(s1 As String)
-            If Me.responses.Count > lim - 1 Then
-                responses.RemoveAt(0)
-            End If
-            If Not responses.Contains(s1) Then
+            If responses.Contains(s1) Then
+                responses.Remove(s1)
                 responses.Add(s1)
-                urg = New UniqueRandomGenerator(responses.Count)
+                Return
             End If
+            If responses.Count > lim - 1 Then
+                responses.RemoveAt(0)
+            Else
+                urg = New UniqueRandomGenerator(responses.Count + 1)
+            End If
+            responses.Add(s1)
         End Sub
 
         ' Method to add multiple responses
@@ -2876,6 +2880,12 @@ Module Auxiliary_modules
                 Return ""
             End If
             Return responses(responses.Count - 1)
+        End Function
+        Public Function Clone() As LimUniqueResponder
+            Dim clonedResponder As New LimUniqueResponder(Me.lim)
+            clonedResponder.responses = New List(Of String)(Me.responses)
+            clonedResponder.urg = New UniqueRandomGenerator(clonedResponder.responses.Count)
+            Return clonedResponder
         End Function
     End Class
 
@@ -2902,7 +2912,7 @@ Module Auxiliary_modules
         ' Add items
         Public Sub AddItems(ur As LimUniqueResponder, ParamArray args As String())
             For Each arg As String In args
-                dic(arg) = ur
+                dic(arg) = ur.Clone()
             Next
         End Sub
 

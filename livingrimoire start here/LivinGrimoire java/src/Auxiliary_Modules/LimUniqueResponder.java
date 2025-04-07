@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LimUniqueResponder {
-    private final List<String> responses;
+    private List<String> responses;
     private UniqueRandomGenerator urg= new UniqueRandomGenerator(0);
     private final int lim;
 
@@ -44,11 +44,17 @@ public class LimUniqueResponder {
 
     // Method to add a response
     public void addResponse(String s1) {
-        if(this.responses.size() > lim - 1){responses.remove(0);}
-        if (!responses.contains(s1)) {
+        if (responses.contains(s1)) {
+            responses.remove(s1);
             responses.add(s1);
-            urg = new UniqueRandomGenerator(responses.size());
+            return;
         }
+        if (responses.size() > lim - 1) {
+            responses.remove(0);
+        } else {
+            urg = new UniqueRandomGenerator(responses.size() + 1);
+        }
+        responses.add(s1);
     }
     public void addResponses(String... replies){
         for (String value : replies) {
@@ -63,6 +69,13 @@ public class LimUniqueResponder {
             return "";
         }
         return responses.get(responses.size() - 1);
+    }
+
+    public LimUniqueResponder clone() {
+        LimUniqueResponder clonedResponder = new LimUniqueResponder(this.lim);
+        clonedResponder.responses = new ArrayList<>(this.responses);
+        clonedResponder.urg = new UniqueRandomGenerator(clonedResponder.responses.size());
+        return clonedResponder;
     }
 
 }

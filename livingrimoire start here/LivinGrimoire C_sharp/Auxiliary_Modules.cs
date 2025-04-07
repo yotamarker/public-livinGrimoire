@@ -3396,15 +3396,21 @@ public class LimUniqueResponder
     // Method to add a response
     public void AddResponse(string s1)
     {
-        if (this.responses.Count > lim - 1)
+        if (responses.Contains(s1))
+        {
+            responses.Remove(s1);
+            responses.Add(s1);
+            return;
+        }
+        if (responses.Count > lim - 1)
         {
             responses.RemoveAt(0);
         }
-        if (!responses.Contains(s1))
+        else
         {
-            responses.Add(s1);
-            urg = new UniqueRandomGenerator(responses.Count);
+            urg = new UniqueRandomGenerator(responses.Count + 1);
         }
+        responses.Add(s1);
     }
 
     // Method to add multiple responses
@@ -3430,6 +3436,13 @@ public class LimUniqueResponder
             return "";
         }
         return responses[responses.Count - 1];
+    }
+    public LimUniqueResponder Clone()
+    {
+        var clonedResponder = new LimUniqueResponder(this.lim);
+        clonedResponder.responses = new List<string>(this.responses);
+        clonedResponder.urg = new UniqueRandomGenerator(clonedResponder.responses.Count);
+        return clonedResponder;
     }
 }
 
@@ -3462,7 +3475,7 @@ public class EventChatV2
     {
         foreach (var arg in args)
         {
-            dic[arg] = ur;
+            dic[arg] = ur.Clone();
         }
     }
 

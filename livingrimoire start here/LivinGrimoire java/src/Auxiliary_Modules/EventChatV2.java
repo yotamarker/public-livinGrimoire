@@ -26,7 +26,7 @@ public class EventChatV2 {
     // Add items
     public void addItems(LimUniqueResponder ur, String... args) {
         for (String arg : args) {
-            dic.put(arg, ur);
+            dic.put(arg, ur.clone());
         }
     }
 
